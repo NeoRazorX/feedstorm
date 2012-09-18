@@ -43,14 +43,20 @@ class main_page extends fs_controller
              array(),
              array()
          );
-         $i = TRUE;
+         $size0 = 0;
+         $size1 = 0;
          foreach($this->stories as $s)
          {
-            if($i)
+            if( $size0 <= $size1 )
+            {
                $columns[0][] = $s;
+               $size0 += $s->size();
+            }
             else
+            {
                $columns[1][] = $s;
-            $i = !$i;
+               $size1 += $s->size();
+            }
          }
       }
       return $columns;

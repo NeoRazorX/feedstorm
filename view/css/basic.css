@@ -24,8 +24,6 @@ a:visited {
 div.header {
    margin: 0px;
    padding: 0px;
-   padding-left: 10px;
-   padding-right: 10px;
    display: table;
    width: 100%;
 }
@@ -35,6 +33,7 @@ div.header_1 {
 }
 
 div.logo {
+   padding-left: 15px;
    display: table-cell;
    font-size: 40px;
 }
@@ -45,6 +44,7 @@ div.logo a {
 }
 
 div.extra {
+   padding-right: 15px;
    display: table-cell;
    vertical-align: middle;
    text-align: right;

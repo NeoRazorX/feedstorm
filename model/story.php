@@ -130,6 +130,19 @@ class story
       return 'index.php?page=go_to&url=' . urlencode($this->link);
    }
    
+   /// returns the aproximated story size in the screen
+   public function size()
+   {
+      $size = 2;
+      if( $this->youtube )
+         $size += 15;
+      else if( $this->image )
+         $size += 8;
+      if( strlen($this->description) > 0 )
+         $size += strlen($this->description) / 60;
+      return $size;
+   }
+
    public function save_all($stories)
    {
       $all = array();

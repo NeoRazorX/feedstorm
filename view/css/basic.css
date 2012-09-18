@@ -1,0 +1,106 @@
+/* 
+    Document   : basic
+    Created on : 15-sep-2012, 17:42:01
+    Author     : carlos
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+   background-color: #4C769E;
+   color: white;
+   margin: 0px;
+   padding: 0px;
+   font-family: Verdana, sans-serif;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: normal;
+}
+
+a:visited {
+   color: black;
+}
+
+div.header {
+   margin: 0px;
+   padding: 0px;
+   padding-left: 10px;
+   padding-right: 10px;
+   display: table;
+   width: 100%;
+}
+
+div.header_1 {
+   display: table-row;
+}
+
+div.logo {
+   display: table-cell;
+   font-size: 40px;
+}
+
+div.logo a {
+   color: white;
+   text-decoration: none;
+}
+
+div.extra {
+   display: table-cell;
+   vertical-align: middle;
+   text-align: right;
+}
+
+div.error, div.message {
+   display: block;
+   border: 1px solid #333333;
+   padding: 10px;
+   margin: 5px;
+   text-align: center;
+}
+
+div.error {
+   background-color: #EC6655;
+   color: black;
+}
+
+div.message {
+   background-color: #F4F596;
+   color: black;
+}
+
+div.story {
+   margin: 5px;
+   padding: 5px;
+   background-color: #f1f1f1;
+   border: 1px solid #333333;
+   color: black;
+   text-align: justify;
+}
+
+div.story h1 {
+   margin: 0px;
+   margin-bottom: 5px;
+   padding: 5px;
+   background-color: #e1e1e1;
+   font-size: 18px;
+}
+
+div.story div.image,
+div.story div.youtube {
+   text-align: center;
+   margin-bottom: 5px;
+}
+
+div.story div.image img {
+   max-width: 300px;
+}
+
+div.story div.date {
+   font-size: 11px;
+   text-align: right;
+}
+
+div.footer {
+   margin: 10px;
+   text-align: center;
+}

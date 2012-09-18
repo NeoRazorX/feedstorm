@@ -1,0 +1,33 @@
+{include="header"}
+
+<table width="100%">
+   <tr>
+      {loop="$fsc->get_columns()"}
+      <td valign="top" {if condition="$counter1==1"}style="width: 50%;"{/if}>
+            {loop="$value"}
+            <div class="story">
+                     <h1><a target="_blank" href="{$value->go_to_url()}">{$value2->title}</a></h1>
+                     {if condition="$value2->youtube"}
+                        <div class="youtube">
+                           <iframe width="420" height="315" src="http://www.youtube.com/embed/{$value2->youtube}" frameborder="0" allowfullscreen>
+                           </iframe>
+                        </div>
+                     {else}
+                        {if condition="$value2->image"}
+                        <div class="image">
+                           <a href="{$value2->image}"><img src="{$value2->image}" alt="{$value2->title}"/></a>
+                        </div>
+                        {/if}
+                     {/if}
+                     {$value2->description}
+                     <div class="date">{$value2->show_date()}</div>
+            </div>
+            {else}
+               <div class="message">No data!</div>
+            {/loop}
+      </td>
+      {/loop}
+   </tr>
+</table>
+
+{include="footer"}

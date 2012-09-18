@@ -1,0 +1,34 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
+<head>
+   <title>{$fsc->title}</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <meta name="Robots" content="all" />
+   <link href="{$path}/view/img/favicon.ico" rel="icon" type="image/x-icon" />
+   <link href="{$path}/view/css/basic.css" rel="stylesheet" type="text/css" />
+   {if condition="$analytics"}
+   <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '{$analytics}']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+   </script>
+   {/if}
+</head>
+<body>
+<div class="header">
+   <div class="header_1">
+      <div class="logo"><a href="{$path}/index.php">{$name}</a></div>
+      <div class="extra">{$description}</div>
+   </div>
+</div>
+{if condition="$fsc->error_msg"}
+   <div class="error">{$fsc->error_msg}</div>
+{/if}
+{if condition="$fsc->message"}
+   <div class="message">{$fsc->message}</div>
+{/if}

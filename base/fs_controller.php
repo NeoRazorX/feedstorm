@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/feed.php';
 require_once 'model/story.php';
 require_once 'model/visitor.php';
 

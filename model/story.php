@@ -22,14 +22,16 @@ require_once 'base/fs_cache.php';
 class story
 {
    private $cache;
+   
    public $title;
    public $description;
    public $link;
    public $image;
    public $youtube;
    public $date;
+   public $feedname;
    
-   public function __construct($item=FALSE)
+   public function __construct($item=FALSE, $fn=FALSE)
    {
       $this->cache = new fs_cache();
       
@@ -53,11 +55,14 @@ class story
          $this->image = NULL;
          $this->youtube = NULL;
       }
+      $this->feedname = $fn;
    }
    
    private function set_description($desc)
    {
       $desc = strip_tags( preg_replace("/(<br\ ?\/?>)+/", "\n", $desc) );
+      if( strlen($desc) > 500 )
+         $desc = substr($desc, 0, 500) . '...';
       return preg_replace("/(\n)+/", "<br/>", trim($desc));
    }
    
@@ -141,32 +146,6 @@ class story
       if( strlen($this->description) > 0 )
          $size += strlen($this->description) / 60;
       return $size;
-   }
-
-   public function save_all($stories)
-   {
-      $all = array();
-      while(count($all) != count($stories) AND count($all) < FS_MAX_STORIES)
-      {
-         $selected = FALSE;
-         foreach($stories as $s)
-         {
-            if( !in_array($s, $all) )
-            {
-               if( !$selected  )
-                  $selected = $s;
-               else if( $s->date > $selected->date )
-                  $selected = $s;
-            }
-         }
-         $all[] = $selected;
-      }
-      $this->cache->set('story_all', $all, 28800);
-   }
-   
-   public function all()
-   {
-      return $this->cache->get_array('story_all');
    }
 }
 

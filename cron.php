@@ -18,48 +18,10 @@
  */
 
 require_once 'config.php';
-require_once 'model/story.php';
+require_once 'model/feed.php';
 
-class cron_job
-{
-   public function __construct()
-   {
-      if( FS_FEEDS )
-      {
-         $stories = array();
-         foreach(explode(',', FS_FEEDS) as $feed)
-            $stories = array_merge($stories, $this->read_feed( trim($feed) ));
-         if( count($stories) > 0 )
-         {
-            $story = new story();
-            $story->save_all($stories);
-            echo "Total: ".count( $stories ) . " stories.\n";
-         }
-         else
-            echo "Total: 0 stories.\n";
-      }
-   }
-   
-   public function read_feed($feed)
-   {
-      $stories = array();
-      echo 'Reading ' . $feed . " ...\n";
-      $ch = curl_init( $feed );
-      curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-      $html = curl_exec($ch);
-      $xml = simplexml_load_string( $html );
-      if( $xml )
-      {
-         foreach($xml->channel->item as $item)
-            $stories[] = new story($item);
-      }
-      curl_close($ch);
-      return $stories;
-   }
-}
-
-$cj = new cron_job();
+$feed = new feed();
+foreach($feed->all() as $f)
+   $f->read();
 
 ?>

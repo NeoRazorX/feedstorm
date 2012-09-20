@@ -18,13 +18,16 @@
  */
 
 require_once 'base/fs_cache.php';
+require_once 'model/feed.php';
 require_once 'model/story.php';
 
 class visitor
 {
    private $cache;
+   
    public $key;
    public $history;
+   public $feeds;
    
    public function __construct($k=FALSE)
    {
@@ -39,6 +42,10 @@ class visitor
          $this->key = sha1( strval(rand()) );
          $this->history = array();
       }
+      
+      $this->feeds = array();
+      foreach(split(',', FS_FEEDS) as $fn)
+         $this->feeds[] = new feed($fn);
    }
    
    public function mobile()
@@ -62,15 +69,31 @@ class visitor
    
    public function get_new_stories()
    {
-      $story = new story();
-      $stories = $story->all();
-      $news = array();
-      foreach($stories as $s)
+      /// reads all feed's stories
+      $all = array();
+      foreach($this->feeds as $f)
+         $all = array_merge( $all, $f->get_stories() );
+      /// sort by date and limit to FS_MAX_STORIES
+      $stories = array();
+      while(count($stories) != count($all) AND count($stories) < FS_MAX_STORIES)
       {
-         if( !$this->in_history($s->link) )
-            $news[] = $s;
+         $selected = FALSE;
+         foreach($all as $s)
+         {
+            if( !in_array($s, $stories) )
+            {
+               if( !$this->in_history($s->link) )
+               {
+                  if( !$selected  )
+                     $selected = $s;
+                  else if( $s->date > $selected->date )
+                     $selected = $s;
+               }
+            }
+         }
+         $stories[] = $selected;
       }
-      return $news;
+      return $stories;
    }
 }
 

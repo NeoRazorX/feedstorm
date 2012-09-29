@@ -89,12 +89,16 @@ div.story div.date {
    text-align: right;
 }
 
-div.footer {
-   margin: 10px;
-   text-align: center;
+table.footer {
+   width: 100%;
 }
 
-div.footer a {
+table.footer td {
+   padding-left: 10px;
+   padding-right: 10px;
+}
+
+table.footer a {
    color: white;
    font-weight: bold;
 }

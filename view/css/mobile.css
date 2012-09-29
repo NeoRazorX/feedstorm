@@ -18,7 +18,7 @@ a:visited {
 table#top_menu {
    width: 100%;
    margin: 0px;
-   font-size: 16px;
+   font-size: 15px;
 }
 
 a#fs_logo {
@@ -26,7 +26,7 @@ a#fs_logo {
    margin-left: 10px;
    margin-right: 10px;
    font-family: 'Chau Philomene One', sans-serif;
-   font-size: 40px;
+   font-size: 35px;
    text-decoration: none;
    color: white;
 }
@@ -69,18 +69,25 @@ div.story h1 {
    margin-bottom: 5px;
    padding: 5px;
    background-color: #e1e1e1;
-   font-size: 18px;
+   font-size: 17px;
 }
 
 div.story div.image,
 div.story div.youtube {
+   background-color: black;
    text-align: center;
    margin-bottom: 5px;
 }
 
+div.story div.image a,
+div.story div.youtube a {
+   color: white;
+}
+
+div.story div.youtube iframe,
+div.story div.youtube img,
 div.story div.image img {
-   max-width: 420px;
-   max-height: 236px;
+   max-width: 90%;
 }
 
 div.story div.date {

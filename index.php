@@ -31,8 +31,8 @@ if( isset($_GET['page']) )
    }
    else
    {
-      require_once 'controller/main_page.php';
-      $fsc = new main_page();
+      require_once 'controller/not_found.php';
+      $fsc = new not_found();
    }
 }
 else

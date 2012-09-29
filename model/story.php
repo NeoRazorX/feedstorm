@@ -142,9 +142,17 @@ class story
       if( $this->youtube )
          $size += 15;
       else if( $this->image )
-         $size += 8;
+         $size += 10;
       if( strlen($this->description) > 0 )
+      {
          $size += strlen($this->description) / 60;
+         $brs = array();
+         if( preg_match_all("/(<br\ ?\/?>)+/", $this->description, $brs) )
+         {
+            foreach($brs as $br)
+               $size++;
+         }
+      }
       return $size;
    }
 }

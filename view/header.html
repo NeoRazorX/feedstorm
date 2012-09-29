@@ -5,8 +5,14 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
    <meta name="Robots" content="all" />
    <link href="{$path}/view/img/favicon.ico" rel="icon" type="image/x-icon" />
+{if condition="$fsc->visitor->mobile()"}
+   <meta name="HandheldFriendly" content="true" />
+   <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no" />
+   <link href="{$path}/view/css/mobile.css" rel="stylesheet" type="text/css" />
+{else}
    <link href="{$path}/view/css/basic.css" rel="stylesheet" type="text/css" />
-   {if condition="$analytics"}
+{/if}
+{if condition="$analytics"}
    <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '{$analytics}']);
@@ -17,15 +23,17 @@
          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
    </script>
-   {/if}
+{/if}
 </head>
 <body>
-<div class="header">
-   <div class="header_1">
-      <div class="logo"><a href="{$path}/index.php">{$name}</a></div>
-      <div class="extra">{$description}</div>
-   </div>
-</div>
+   <table id="top_menu">
+      <tr>
+         <td>
+            <a id="fs_logo" href="{$path}/index.php">{$name}</a>
+            {$description}
+         </td>
+      </tr>
+   </table>
 {if condition="$fsc->error_msg"}
    <div class="error">{$fsc->error_msg}</div>
 {/if}

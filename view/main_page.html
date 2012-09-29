@@ -6,7 +6,7 @@
       <td valign="top" {if condition="$counter1==1"}style="width: 50%;"{/if}>
             {loop="$value"}
             <div class="story">
-               <h1><a target="_blank" href="{$value->go_to_url()}">{$value2->title}</a></h1>
+               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value2->title}</a></h1>
                {if condition="$value2->youtube"}
                <div class="youtube">
                   {if condition="$fsc->visitor->mobile()"}

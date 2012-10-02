@@ -1,12 +1,14 @@
 <table class="footer">
    <tr>
       <td>
+         {if condition="$analytics==''"}
          <a href="http://www.webcounter.com">
             <img border="0" src="http://www.webcounter.com/506711141b68d/counter.png"/>
          </a>
+         {/if}
       </td>
       <td align="right">
-         Built by <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a> in {$fsc->duration()}
+         Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a> en {$fsc->duration()}
       </td>
    </tr>
 </table>

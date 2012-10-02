@@ -17,49 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_controller.php';
-
 class main_page extends fs_controller
 {
-   public $stories;
-   
    public function __construct()
    {
-      parent::__construct('main_page', FS_NAME, FALSE);
+      parent::__construct('main_page', FS_NAME);
    }
    
    protected function process()
    {
       $this->stories = $this->visitor->get_new_stories();
-   }
-   
-   public function get_columns()
-   {
-      if($this->visitor->mobile() OR count($this->stories) < 10)
-         $columns = array( $this->stories );
-      else
-      {
-         $columns = array(
-             array(),
-             array()
-         );
-         $size0 = 0;
-         $size1 = 0;
-         foreach($this->stories as $s)
-         {
-            if( $size0 <= $size1 )
-            {
-               $columns[0][] = $s;
-               $size0 += $s->size();
-            }
-            else
-            {
-               $columns[1][] = $s;
-               $size1 += $s->size();
-            }
-         }
-      }
-      return $columns;
    }
 }
 

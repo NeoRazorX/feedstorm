@@ -1,12 +1,7 @@
 <IfModule mod_rewrite.c>
    RewriteEngine On
    RewriteRule ^view/  -  [L]
-   RewriteRule ^(.*)/(.*)/(.*)/(.*)/$ index.php?page=$1&param1=$2&param2=$3&param3=$4 [L]
-   RewriteRule ^(.*)/(.*)/(.*)/([^/.]+)$ index.php?page=$1&param1=$2&param2=$3&param3=$4 [L]
-   RewriteRule ^(.*)/(.*)/(.*)/$ index.php?page=$1&param1=$2&param2=$3 [L]
-   RewriteRule ^(.*)/(.*)/([^/.]+)$ index.php?page=$1&param1=$2&param2=$3 [L]
-   RewriteRule ^(.*)/(.*)/$ index.php?page=$1&param1=$2 [L]
-   RewriteRule ^(.*)/([^/.]+)$ index.php?page=$1&param1=$2 [L]
+   RewriteRule ^(.*)/(.*)$ index.php?page=$1&param1=$2 [L]
    RewriteRule ^(.*)/$ index.php?page=$1 [L]
    RewriteRule ^([^/.]+)$ index.php?page=$1 [L]
 </IfModule>

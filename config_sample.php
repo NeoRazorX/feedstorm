@@ -9,7 +9,6 @@ define('FS_CACHE_HOST', 'localhost');
 define('FS_CACHE_PORT', 11211);
 define('FS_CACHE_PREFIX', '');
 
-define('FS_FEEDS', '');
 define('FS_MAX_STORIES', 50);
 
 ?>

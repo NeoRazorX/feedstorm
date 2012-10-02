@@ -23,11 +23,13 @@ class go_to extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('go_to', 'Redirecting...', FALSE);
+      parent::__construct('go_to', 'Redireccionando...');
    }
    
    protected function process()
    {
+      $this->template = FALSE;
+      
       if( isset($_GET['url']) )
       {
          $url = urldecode( $_GET['url'] );

@@ -32,11 +32,29 @@
             <a id="fs_logo" href="{$path}/index.php">{$name}</a>
             {$description}
          </td>
+         <td align="right">
+            <a id="fs_b_feeds" href="{$path}/index.php?page=select_feeds">
+               <img src="{$path}/view/img/tools.png" alt="seleccionar fuentes" title="seleccionar fuentes"/>
+               Fuentes
+            </a>
+         </td>
       </tr>
    </table>
-{if condition="$fsc->error_msg"}
-   <div class="error">{$fsc->error_msg}</div>
+{if condition="$fsc->errors"}
+   <div class="error">
+      <ul>
+      {loop="$fsc->errors"}
+         <li>{$value}</li>
+      {/loop}
+      </ul>
+   </div>
 {/if}
-{if condition="$fsc->message"}
-   <div class="message">{$fsc->message}</div>
+{if condition="$fsc->messages"}
+   <div class="message">
+      <ul>
+      {loop="$fsc->messages"}
+         <li>{$value}</li>
+      {/loop}
+      </ul>
+   </div>
 {/if}

@@ -15,20 +15,60 @@ a:visited {
    color: black;
 }
 
+input[type='submit'], input[type='button'] {
+   display: inline-block;
+   vertical-align: middle;
+   padding: 1px;
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #55BA42;
+   border: 1px solid #333333;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   text-transform: capitalize;
+   font-variant: small-caps;
+   font-weight: bold;
+   font-size: 16px;
+   color: white;
+}
+
 table#top_menu {
    width: 100%;
    margin: 0px;
-   font-size: 15px;
+   font-size: 13px;
+}
+
+table#top_menu td {
+   padding-left: 5px;
+   padding-right: 5px;
 }
 
 a#fs_logo {
    display: inline-block;
-   margin-left: 10px;
-   margin-right: 10px;
+   margin-right: 5px;
    font-family: 'Chau Philomene One', sans-serif;
-   font-size: 35px;
+   font-size: 30px;
    text-decoration: none;
    color: white;
+}
+
+a#fs_b_feeds {
+   display: inline-block;
+   padding: 2px;
+   padding-right: 5px;
+   background-color: #333333;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   color: white;
+   text-decoration: none;
+}
+
+a#fs_b_feeds img {
+   vertical-align: bottom;
 }
 
 div.error, div.message {
@@ -36,7 +76,6 @@ div.error, div.message {
    border: 1px solid #333333;
    padding: 10px;
    margin: 5px;
-   text-align: center;
 }
 
 div.error {
@@ -47,6 +86,12 @@ div.error {
 div.message {
    background-color: #F4F596;
    color: black;
+}
+
+div.error ul, div.message ul {
+   margin: 0px;
+   padding: 0px;
+   padding-left: 25px;
 }
 
 table.stories {
@@ -98,6 +143,7 @@ div.story div.date {
 
 table.footer {
    width: 100%;
+   font-size: 11px;
 }
 
 table.footer td {

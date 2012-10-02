@@ -17,12 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_cache.php';
+require_once 'base/fs_model.php';
 
-class story
+class story extends fs_model
 {
-   private $cache;
-   
    public $title;
    public $description;
    public $link;
@@ -31,17 +29,42 @@ class story
    public $date;
    public $feedname;
    
+   public $selected;
+   
    public function __construct($item=FALSE, $fn=FALSE)
    {
-      $this->cache = new fs_cache();
-      
+      parent::__construct();
       if( $item )
       {
          $this->title = (string)$item->title;
          $this->link = (string)$item->link;
-         $this->date = strtotime( (string)$item->pubDate );
          
-         $description = (string)$item->description;
+         if( $item->pubDate )
+            $this->date = strtotime( (string)$item->pubDate );
+         else if( $item->published )
+            $this->date = strtotime( (string)$item->published );
+         else
+            $this->date = strtotime( Date('Y-m-d') );
+         
+         if( $item->description )
+            $description = (string)$item->description;
+         else if( $item->content )
+            $description = (string)$item->content;
+         else if( $item->summary )
+            $description = (string)$item->summary;
+         else
+         {
+            $description = '';
+            foreach($item->children('atom', TRUE) as $element)
+            {
+               if($element->getName() == 'summary')
+               {
+                  $description = (string)$element;
+                  break;
+               }
+            }
+         }
+         
          $this->description = $this->set_description($description);
          $this->image = $this->find_image($description);
          $this->youtube = $this->find_youtube($description);
@@ -56,6 +79,7 @@ class story
          $this->youtube = NULL;
       }
       $this->feedname = $fn;
+      $this->selected = FALSE;
    }
    
    private function set_description($desc)

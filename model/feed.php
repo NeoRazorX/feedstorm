@@ -17,30 +17,51 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_cache.php';
+require_once 'base/fs_model.php';
 require_once 'model/story.php';
 
-class feed
+class feed extends fs_model
 {
-   private $cache;
-   
    public $name;
    public $url;
+   public $default;
    
-   public function __construct($fn=FALSE)
+   public $selected;
+   
+   public function __construct($f=FALSE)
    {
-      $this->cache = new fs_cache();
-      if( $fn )
+      parent::__construct();
+      if( $f )
       {
-         $this->url = trim( $fn );
-         $aux = split('/', $this->url);
-         $this->name = $aux[2];
+         $this->name = (string)$f->name;
+         $this->url = (string)$f->url;
+         if( $f->default )
+            $this->default = TRUE;
+         else
+            $this->default = FALSE;
       }
       else
       {
          $this->name = NULL;
          $this->url = NULL;
+         $this->default = FALSE;
       }
+      
+      $this->selected = FALSE;
+   }
+   
+   public function get($fn)
+   {
+      $feed = FALSE;
+      foreach($this->all() as $f)
+      {
+         if($f->name == $fn)
+         {
+            $feed = $f;
+            break;
+         }
+      }
+      return $feed;
    }
    
    public function get_stories()
@@ -64,26 +85,99 @@ class feed
       $xml = simplexml_load_string( $html );
       if( $xml )
       {
-         $i = 0;
-         foreach($xml->channel->item as $item)
+         if( $xml->channel )
          {
-            if( $i < FS_MAX_STORIES )
-               $stories[] = new story($item, $this->name);
-            else
-               break;
-            $i++;
+            $i = 0;
+            foreach($xml->channel->item as $item)
+            {
+               if( $i < FS_MAX_STORIES )
+                  $stories[] = new story($item, $this->name);
+               else
+                  break;
+               $i++;
+            }
+            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }
-         $this->cache->set('stories_from_'.$this->name, $stories, 28800);
+         else if( $xml->item )
+         {
+            $i = 0;
+            foreach($xml->item as $item)
+            {
+               if( $i < FS_MAX_STORIES )
+                  $stories[] = new story($item, $this->name);
+               else
+                  break;
+               $i++;
+            }
+            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
+         }
+         else if( $xml->feed )
+         {
+            $i = 0;
+            foreach($xml->feed->entry as $item)
+            {
+               if( $i < FS_MAX_STORIES )
+                  $stories[] = new story($item, $this->name);
+               else
+                  break;
+               $i++;
+            }
+            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
+         }
+         else if( $xml->entry )
+         {
+            $i = 0;
+            foreach($xml->entry as $item)
+            {
+               if( $i < FS_MAX_STORIES )
+                  $stories[] = new story($item, $this->name);
+               else
+                  break;
+               $i++;
+            }
+            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
+         }
+         else
+            $this->new_error("Estructura irreconocible en el feed: ".$this->name);
       }
+      else
+         $this->new_error("Imposible leer el feed: ".$this->name);
       return $stories;
    }
    
    public function all()
    {
       $feeds = array();
-      foreach(split(',', FS_FEEDS) as $fn)
-         $feeds[] = new feed($fn);
+      if( file_exists('feeds.xml') )
+      {
+         $xml = simplexml_load_file('feeds.xml');
+         if( $xml )
+         {
+            if( $xml->feed )
+            {
+               foreach($xml->feed as $item)
+                  $feeds[] = new feed($item);
+            }
+            else
+               $this->new_error("Error al leer el archivo feeds.xml");
+         }
+         else
+            $this->new_error("Imposible leer el archivo feeds.xml");
+      }
+      else
+         $this->new_error("No se encuentra el archivo feeds.xml");
       return $feeds;
+   }
+   
+   public function defaults()
+   {
+      $defaults = array();
+      foreach($this->all() as $f)
+      {
+         if( $f->default )
+            $defaults[] = $f;
+      }
+      return $defaults;
    }
 }
 

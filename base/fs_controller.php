@@ -24,24 +24,26 @@ require_once 'model/visitor.php';
 class fs_controller
 {
    private $uptime;
-   public $error_msg;
-   public $message;
+   public $errors;
+   public $messages;
    public $page;
    public $title;
-   private $admin_page;
    public $template;
    public $visitor;
    
-   public function __construct($name='not_found', $title='home', $admin=FALSE)
+   public $stories;
+   
+   public function __construct($name='not_found', $title='home', $template='main_page')
    {
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
       $this->title = $title;
-      $this->admin_page = $admin;
-      $this->template = $name;
-      $this->error_msg = FALSE;
-      $this->message = FALSE;
+      $this->template = $template;
+      $this->errors = array();
+      $this->messages = array();
+      
+      $this->stories = array();
       
       if( isset($_COOKIE['key']) )
       {
@@ -54,22 +56,21 @@ class fs_controller
       }
       
       $this->process();
+      
+      $this->errors = array_merge($this->errors, $this->visitor->get_errors());
+      $this->messages = array_merge($this->messages, $this->visitor->get_messages());
    }
    
    public function new_error_msg($msg)
    {
-      if( !$this->error_msg )
-         $this->error_msg = $msg;
-      else
-         $this->error_msg .= "<br/>" . $msg;
+      if( $msg )
+         $this->errors[] = (string)$msg;
    }
    
    public function new_message($msg)
    {
-      if( !$this->message )
-         $this->message = $msg;
-      else
-         $this->message .= '<br/>' . $msg;
+      if( $msg )
+         $this->messages[] = (string)$msg;
    }
    
    public function duration()
@@ -83,14 +84,38 @@ class fs_controller
       
    }
    
-   public function is_admin_page()
-   {
-      return $this->admin_page;
-   }
-   
    public function url()
    {
       return 'index.php?page='.$this->page;
+   }
+   
+   public function get_columns()
+   {
+      if($this->visitor->mobile() OR count($this->stories) < 10)
+         $columns = array( $this->stories );
+      else
+      {
+         $columns = array(
+             array(),
+             array()
+         );
+         $size0 = 0;
+         $size1 = 0;
+         foreach($this->stories as $s)
+         {
+            if( $size0 <= $size1 )
+            {
+               $columns[0][] = $s;
+               $size0 += $s->size();
+            }
+            else
+            {
+               $columns[1][] = $s;
+               $size1 += $s->size();
+            }
+         }
+      }
+      return $columns;
    }
 }
 

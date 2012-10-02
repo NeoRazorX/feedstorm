@@ -1,0 +1,25 @@
+{include="header"}
+
+<div class="story">
+   <h1>Fuentes:</h1>
+   <form action="{$fsc->url()}" method="post">
+      <ul class="horizontal">
+      {loop="$fsc->feeds"}
+         <li>
+            {if condition="$value->selected"}
+            <input type="checkbox" name="feeds[]" value="{$value->name}" checked="checked"/>
+            {else}
+            <input type="checkbox" name="feeds[]" value="{$value->name}"/>
+            {/if}
+            <a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a>
+            {if condition="$value->default"}(recomendado){/if}
+         </li>
+      {/loop}
+   </ul>
+      <div style="text-align: right;">
+         <input type="submit" value="guardar"/>
+      </div>
+   </form>
+</div>
+
+{include="footer"}

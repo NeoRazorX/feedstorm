@@ -17,21 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_cache.php';
+require_once 'base/fs_model.php';
 require_once 'model/feed.php';
 require_once 'model/story.php';
 
-class visitor
+class visitor extends fs_model
 {
-   private $cache;
-   
    public $key;
    public $history;
-   public $feeds;
+   private $feeds;
    
    public function __construct($k=FALSE)
    {
-      $this->cache = new fs_cache();
+      parent::__construct();
       if( $k )
       {
          $this->key = $k;
@@ -42,10 +40,6 @@ class visitor
          $this->key = sha1( strval(rand()) );
          $this->history = array();
       }
-      
-      $this->feeds = array();
-      foreach(split(',', FS_FEEDS) as $fn)
-         $this->feeds[] = new feed($fn);
    }
    
    public function mobile()
@@ -67,31 +61,94 @@ class visitor
       }
    }
    
+   public function get_feeds()
+   {
+      if( !isset($this->feeds) )
+      {
+         $feed = new feed();
+         if( isset($_COOKIE['feeds']) )
+         {
+            $cookie_feeds = split(';', urldecode($_COOKIE['feeds']));
+            $this->feeds = array();
+            foreach($feed->all() as $f)
+            {
+               if( in_array($f->name, $cookie_feeds) )
+                  $this->feeds[] = $f;
+            }
+         }
+         else
+         {
+            $this->feeds = $feed->defaults();
+            $this->save_feeds();
+         }
+      }
+      return $this->feeds;
+   }
+   
+   public function clean_feeds()
+   {
+      $this->feeds = array();
+   }
+   
+   public function add_feed($fn)
+   {
+      $this->get_feeds();
+      
+      $feed = new feed();
+      $feed0 = $feed->get($fn);
+      if($feed0)
+         $this->feeds[] = $feed0;
+   }
+   
+   public function delete_feed($fn)
+   {
+      $this->get_feeds();
+      
+      $i = 0;
+      while($i < count($this->feeds))
+      {
+         if( $this->feeds[$i]->name == $fn )
+            unset($this->feeds[$i]);
+         $i++;
+      }
+   }
+   
+   public function save_feeds()
+   {
+      $fns = array();
+      foreach($this->get_feeds() as $f)
+         $fns[] = $f->name;
+      setcookie('feeds', implode(';', $fns), time()+31536000);
+   }
+   
    public function get_new_stories()
    {
       /// reads all feed's stories
       $all = array();
-      foreach($this->feeds as $f)
+      foreach($this->get_feeds() as $f)
          $all = array_merge( $all, $f->get_stories() );
       /// sort by date and limit to FS_MAX_STORIES
       $stories = array();
       while(count($stories) != count($all) AND count($stories) < FS_MAX_STORIES)
       {
          $selected = FALSE;
-         foreach($all as $s)
+         $i = 0;
+         while($i < count($all))
          {
-            if( !in_array($s, $stories) )
+            if( !$all[$i]->selected )
             {
-               if( !$this->in_history($s->link) )
+               if( !$this->in_history($all[$i]->link) )
                {
                   if( !$selected  )
-                     $selected = $s;
-                  else if( $s->date > $selected->date )
-                     $selected = $s;
+                     $selected = $i;
+                  else if( $all[$i]->date > $all[$selected]->date )
+                     $selected = $i;
                }
             }
+            $i++;
          }
-         $stories[] = $selected;
+         $all[$selected]->selected = TRUE;
+         $stories[] = $all[$selected];
       }
       return $stories;
    }

@@ -11,7 +11,7 @@
             {else}
             <input type="checkbox" name="feeds[]" value="{$value->name}"/>
             {/if}
-            <a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a>
+            <a target="_blank" href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a>
             {if condition="$value->default"}(recomendado){/if}
          </li>
       {/loop}
@@ -23,22 +23,21 @@
 </div>
 
 {if condition="!$fsc->visitor->mobile()"}
+<a name="fisgona"></a>
 <div class="box">
    <h1>Fisgona:</h1>
    <table width="100%">
       <tr>
-         <th align="left">Info.</th>
+         <th align="left">IP</th>
          <th>Veces</th>
-         <th>IP</th>
-         <th>Agente</th>
+         <th align="left">Info.</th>
          <th align="right">Fecha</th>
       </tr>
       {loop="$fsc->visitor->get_logs()"}
       <tr>
-         <td><a href="{$value.url}">{$value.info}</a></td>
+         <td align="left"><span title="{$value.user_agent}">{$value.ip}</span></td>
          <td align="center">{$value.count}</td>
-         <td align="center">{$value.ip}</td>
-         <td>{$value.user_agent}</td>
+         <td><a target="_blank" href="{$value.url}">{$value.info}</a></td>
          <td align="right">{$value.date}</td>
       </tr>
       {/loop}

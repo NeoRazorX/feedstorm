@@ -42,7 +42,24 @@ class story extends fs_model
       if( $item )
       {
          $this->title = (string)$item->title;
-         $this->link = (string)$item->link;
+         
+         $this->link = $f->url();
+         if( $item->link )
+         {
+            if( substr((string)$item->link, 0, 4) == 'http' )
+               $this->link = (string)$item->link;
+            else
+            {
+               foreach($item->children('feedburner', TRUE) as $element)
+               {
+                  if($element->getName() == 'origLink')
+                  {
+                     $this->link = (string)$element;
+                     break;
+                  }
+               }
+            }
+         }
          
          if( $item->pubDate )
             $this->date = strtotime( (string)$item->pubDate );

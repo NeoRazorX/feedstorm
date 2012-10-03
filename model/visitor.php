@@ -86,6 +86,15 @@ class visitor extends fs_model
       $logs = $this->get_logs(FALSE);
       if( count($logs) > 0 )
       {
+         /// reducimos
+         if( count($logs) > 100 )
+         {
+            $new_logs = array();
+            for($j=50; $j<count($logs); $j++)
+               $new_logs[] = $logs[$j];
+            $logs = $new_logs;
+         }
+         
          $i = count($logs) - 1;
          if($logs[$i]['ip'] == $entry['ip'] AND $logs[$i]['url'] == $entry['url'] AND $logs[$i]['info'] == $entry['info'] AND $logs[$i]['user_agent'] == $entry['user_agent'])
          {
@@ -175,17 +184,17 @@ class visitor extends fs_model
    
    public function get_new_stories()
    {
-      /// reads all feed's stories
+      /// leemos todas las historias de los feeds
       $all = array();
       foreach($this->get_feeds() as $f)
          $all = array_merge( $all, $f->get_stories() );
-      /// sort by date and limit to FS_MAX_STORIES
+      /// ordenamos por fecha, no visitados y limitamos a FS_MAX_STORIES
       $stories = array();
-      while(count($stories) != count($all) AND count($stories) < FS_MAX_STORIES)
+      $selections = 0;
+      while($selections < count($all) AND count($stories) < FS_MAX_STORIES)
       {
          $selected = -1;
-         $i = 0;
-         while($i < count($all))
+         for($i=0; $i < count($all); $i++)
          {
             if( !$all[$i]->selected )
             {
@@ -197,10 +206,14 @@ class visitor extends fs_model
                      $selected = $i;
                }
             }
-            $i++;
          }
-         $all[$selected]->selected = TRUE;
-         $stories[] = $all[$selected];
+         $selections++;
+         
+         if($selected >= 0)
+         {
+            $all[$selected]->selected = TRUE;
+            $stories[] = $all[$selected];
+         }
       }
       return $stories;
    }

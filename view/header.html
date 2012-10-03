@@ -55,6 +55,9 @@
       <a id="fs_b_close_menu" href="#">X</a>
       <a href="{$path}/index.php">portada</a>
       <a href="{$path}/index.php?page=select_feeds">preferencias</a>
+      {if condition="!$fsc->visitor->mobile()"}
+      <a href="{$path}/index.php?page=select_feeds#fisgona">fisgona</a>
+      {/if}
    </div>
 {if condition="$fsc->errors"}
    <div class="error">

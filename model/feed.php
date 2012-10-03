@@ -50,6 +50,11 @@ class feed extends fs_model
       $this->selected = FALSE;
    }
    
+   public function url()
+   {
+      return 'index.php?page=explore_feed&feed='.$this->name;
+   }
+   
    public function get($fn)
    {
       $feed = FALSE;
@@ -73,7 +78,24 @@ class feed extends fs_model
          return $this->read();
    }
    
-   public function read()
+   public function get_story_by_url($url)
+   {
+      $story = FALSE;
+      $stories = $this->cache->get_array('stories_from_'.$this->name);
+      if( !$stories )
+         $stories = $this->read();
+      foreach($stories as $s)
+      {
+         if($s->link == $url)
+         {
+            $story = $s;
+            break;
+         }
+      }
+      return $story;
+   }
+   
+   public function read($images=FALSE)
    {
       $stories = array();
       $ch = curl_init( $this->url );
@@ -91,12 +113,11 @@ class feed extends fs_model
             foreach($xml->channel->item as $item)
             {
                if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this->name);
+                  $stories[] = new story($item, $this);
                else
                   break;
                $i++;
             }
-            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }
          else if( $xml->item )
          {
@@ -104,12 +125,11 @@ class feed extends fs_model
             foreach($xml->item as $item)
             {
                if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this->name);
+                  $stories[] = new story($item, $this);
                else
                   break;
                $i++;
             }
-            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }
          else if( $xml->feed )
          {
@@ -117,12 +137,11 @@ class feed extends fs_model
             foreach($xml->feed->entry as $item)
             {
                if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this->name);
+                  $stories[] = new story($item, $this);
                else
                   break;
                $i++;
             }
-            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }
          else if( $xml->entry )
          {
@@ -130,15 +149,24 @@ class feed extends fs_model
             foreach($xml->entry as $item)
             {
                if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this->name);
+                  $stories[] = new story($item, $this);
                else
                   break;
                $i++;
             }
-            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }
          else
             $this->new_error("Estructura irreconocible en el feed: ".$this->name);
+         
+         if( $stories )
+         {
+            if( $images )
+            {
+               foreach($stories as $s)
+                  $s->process_image();
+            }
+            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
+         }
       }
       else
          $this->new_error("Imposible leer el feed: ".$this->name);

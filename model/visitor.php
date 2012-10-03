@@ -47,6 +47,58 @@ class visitor extends fs_model
       return (strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') || strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'android'));
    }
    
+   public function get_logs($reverse=TRUE)
+   {
+      if( $reverse )
+         return array_reverse( $this->cache->get_array('logs') );
+      else
+         return $this->cache->get_array('logs');
+   }
+   
+   public function add2log($info='-')
+   {
+      $entry = array(
+          'date' => Date('Y-m-d H:i:s'),
+          'ip' => 'X.X.X.X',
+          'user_agent' => 'unknown',
+          'url' => '/',
+          'info' => $info,
+          'count' => 1
+      );
+      
+      if( isset($_SERVER['REMOTE_ADDR']) )
+      {
+         $ip4 = explode('.', $_SERVER['REMOTE_ADDR']);
+         $ip6 = explode(':', $_SERVER['REMOTE_ADDR']);
+         if( count($ip4) == 4 )
+            $entry['ip'] = $ip4[0].'.'.$ip4[1].'.'.$ip4[2].'.X';
+         else if( count($ip6) == 8 )
+            $entry['ip'] = $ip6[0].':'.$ip6[1].':'.$ip6[2].':'.$ip6[3].':X:X:X:X';
+      }
+      
+      if( isset($_SERVER['HTTP_USER_AGENT']) )
+         $entry['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+      
+      if( isset($_SERVER['REQUEST_URI']) )
+         $entry['url'] = $_SERVER['REQUEST_URI'];
+      
+      $encontrado = FALSE;
+      $logs = $this->get_logs(FALSE);
+      if( count($logs) > 0 )
+      {
+         $i = count($logs) - 1;
+         if($logs[$i]['ip'] == $entry['ip'] AND $logs[$i]['url'] == $entry['url'] AND $logs[$i]['info'] == $entry['info'] AND $logs[$i]['user_agent'] == $entry['user_agent'])
+         {
+            $logs[$i]['date'] = Date('Y-m-d H:i:s');
+            $logs[$i]['count']++;
+            $encontrado = TRUE;
+         }
+      }
+      if( !$encontrado )
+         $logs[] = $entry;
+      $this->cache->set('logs', $logs);
+   }
+   
    public function in_history($url)
    {
       return in_array($url, $this->history);
@@ -131,7 +183,7 @@ class visitor extends fs_model
       $stories = array();
       while(count($stories) != count($all) AND count($stories) < FS_MAX_STORIES)
       {
-         $selected = FALSE;
+         $selected = -1;
          $i = 0;
          while($i < count($all))
          {
@@ -139,7 +191,7 @@ class visitor extends fs_model
             {
                if( !$this->in_history($all[$i]->link) )
                {
-                  if( !$selected  )
+                  if($selected < 0)
                      $selected = $i;
                   else if( $all[$i]->date > $all[$selected]->date )
                      $selected = $i;

@@ -32,8 +32,28 @@ class go_to extends fs_controller
       
       if( isset($_GET['url']) )
       {
+         $encontrada = FALSE;
          $url = urldecode( $_GET['url'] );
          $this->visitor->url2history($url);
+         
+         if( isset($_GET['feed']) )
+         {
+            $feed = new feed();
+            $feed0 = $feed->get($_GET['feed']);
+            if( $feed0 )
+            {
+               $story = $feed0->get_story_by_url($url);
+               if( $story )
+               {
+                  $this->visitor->add2log($story->title);
+                  $encontrada = TRUE;
+               }
+            }
+         }
+         
+         if( !$encontrada )
+            $this->visitor->add2log('Redireccionando a '.$url);
+         
          header("location: ".$url);
       }
       else

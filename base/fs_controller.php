@@ -88,35 +88,6 @@ class fs_controller
    {
       return 'index.php?page='.$this->page;
    }
-   
-   public function get_columns()
-   {
-      if($this->visitor->mobile() OR count($this->stories) < 10)
-         $columns = array( $this->stories );
-      else
-      {
-         $columns = array(
-             array(),
-             array()
-         );
-         $size0 = 0;
-         $size1 = 0;
-         foreach($this->stories as $s)
-         {
-            if( $size0 <= $size1 )
-            {
-               $columns[0][] = $s;
-               $size0 += $s->size();
-            }
-            else
-            {
-               $columns[1][] = $s;
-               $size1 += $s->size();
-            }
-         }
-      }
-      return $columns;
-   }
 }
 
 ?>

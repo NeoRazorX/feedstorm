@@ -1,6 +1,6 @@
 {include="header"}
 
-<div class="story">
+<div class="box">
    <h1>Fuentes:</h1>
    <form action="{$fsc->url()}" method="post">
       <ul class="horizontal">
@@ -21,5 +21,29 @@
       </div>
    </form>
 </div>
+
+{if condition="!$fsc->visitor->mobile()"}
+<div class="box">
+   <h1>Fisgona:</h1>
+   <table width="100%">
+      <tr>
+         <th align="left">Info.</th>
+         <th>Veces</th>
+         <th>IP</th>
+         <th>Agente</th>
+         <th align="right">Fecha</th>
+      </tr>
+      {loop="$fsc->visitor->get_logs()"}
+      <tr>
+         <td><a href="{$value.url}">{$value.info}</a></td>
+         <td align="center">{$value.count}</td>
+         <td align="center">{$value.ip}</td>
+         <td>{$value.user_agent}</td>
+         <td align="right">{$value.date}</td>
+      </tr>
+      {/loop}
+   </table>
+</div>
+{/if}
 
 {include="footer"}

@@ -1,38 +1,47 @@
 {include="header"}
 
-<table class="stories">
-   <tr>
-      {loop="$fsc->get_columns()"}
-      <td valign="top" {if condition="$counter1==1"}style="width: 50%;"{/if}>
-            {loop="$value"}
-            <div class="story">
-               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value2->title}</a></h1>
-               {if condition="$value2->youtube"}
-               <div class="youtube">
-                  {if condition="$fsc->visitor->mobile()"}
-                     <a href="http://www.youtube.com/watch?v={$value2->youtube}">
-                        <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value2->youtube}/0.jpg" />
-                        youtube
-                     </a>
-                  {else}
-                     <iframe width="420" height="236" src="http://www.youtube.com/embed/{$value2->youtube}" frameborder="0" allowfullscreen>
-                     </iframe>
-                  {/if}
-               </div>
+{if condition="!$fsc->visitor->mobile()"}
+<script src="{$path}/view/js/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#stories").masonry({
+         itemSelector: '.story',
+         isFitWidth: true
+      });
+   });
+</script>
+{/if}
+
+<div id="stories">
+   {loop="$fsc->stories"}
+      <div class="story">
+         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+         {if condition="$value->youtube"}
+            <div class="youtube">
+               {if condition="$fsc->visitor->mobile()"}
+                  <a href="http://www.youtube.com/watch?v={$value->youtube}">
+                     <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
+                     youtube
+                  </a>
                {else}
-                  {if condition="$value2->image"}
-                  <div class="image">
-                     <a href="{$value2->image}"><img src="{$value2->image}" alt="{$value2->title}"/></a>
-                  </div>
-                  {/if}
+                  <iframe width="420" height="236" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
+                  </iframe>
                {/if}
-               {$value2->description}
-               <div class="date">{$value2->feedname} @ {$value2->show_date()}</div>
             </div>
-            {/loop}
-      </td>
-      {/loop}
-   </tr>
-</table>
+         {else}
+            {if condition="$value->image_width > 0"}
+            <div class="image">
+               <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+            </div>
+            {/if}
+         {/if}
+         {$value->description}
+         <div class="date">
+            <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
+            @ {$value->show_date()}
+         </div>
+      </div>
+   {/loop}
+</div>
 
 {include="footer"}

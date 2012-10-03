@@ -27,6 +27,7 @@ class not_found extends fs_controller
    protected function process()
    {
       $this->new_error_msg('¡Página no encontrada!');
+      $this->visitor->add2log('Página no encontrada');
       
       $feed = new feed();
       $all_feeds = $feed->defaults();

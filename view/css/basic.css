@@ -1,8 +1,8 @@
 @import url('http://fonts.googleapis.com/css?family=Chau+Philomene+One');
 
 body {
-   background-color: #4C769E;
-   color: white;
+   background-color: #F3F1F2;
+   color: black;
    margin: 0px;
    padding: 0px;
    font-family: Verdana, sans-serif;
@@ -11,8 +11,12 @@ body {
    font-weight: normal;
 }
 
+a {
+   color: #222222;
+}
+
 a:visited {
-   color: black;
+   color: #4C769E;
 }
 
 input[type='submit'], input[type='button'] {
@@ -34,48 +38,79 @@ input[type='submit'], input[type='button'] {
    color: white;
 }
 
-table#top_menu {
+table#header {
    width: 100%;
    margin: 0px;
+   border-collapse: collapse;
    font-size: 16px;
 }
 
-table#top_menu td {
-   padding-left: 10px;
-   padding-right: 10px;
+table#header td {
+   margin: 0px;
+   padding: 0px;
 }
 
 a#fs_logo {
    display: inline-block;
+   margin-left: 10px;
    margin-right: 10px;
    font-family: 'Chau Philomene One', sans-serif;
    font-size: 40px;
    text-decoration: none;
-   color: white;
+   color: black;
 }
 
-a#fs_b_feeds {
+a#fs_b_menu {
    display: inline-block;
-   padding: 2px;
-   padding-right: 5px;
+   padding: 5px;
+   padding-left: 8px;
    background-color: #333333;
-   border-top-left-radius: 2px 2px;
-   border-top-right-radius: 2px 2px;
-   border-bottom-left-radius: 2px 2px;
-   border-bottom-right-radius: 2px 2px;
+   border-bottom-left-radius: 5px 5px;
    color: white;
    text-decoration: none;
 }
 
-a#fs_b_feeds img {
+a#fs_b_menu img {
    vertical-align: bottom;
+}
+
+div#fs_menu {
+   display: none;
+   position: absolute;
+   top: 0px;
+   right: 0px;
+   z-index: 2;
+   padding: 5px;
+   background-color: #333333;
+   border-bottom-left-radius: 5px 5px;
+   color: white;
+   font-size: 15px;
+}
+
+div#fs_menu a {
+   display: block;
+   margin: 5px;
+   padding: 5px;
+   text-transform: capitalize;
+   color: white;
+}
+
+div#fs_menu a#fs_b_close_menu {
+   margin-top: 0px;
+   text-align: right;
+   text-decoration: none;
+   font-weight: bold;
 }
 
 div.error, div.message {
    display: block;
-   border: 1px solid #333333;
-   padding: 10px;
    margin: 5px;
+   padding: 10px;
+   border: 1px solid #777777;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
 }
 
 div.error {
@@ -94,26 +129,24 @@ div.error ul, div.message ul {
    padding-left: 25px;
 }
 
-table.stories {
-   width: 100%;
-   margin: 0px;
-   padding: 0px;
+div#stories {
+   margin: 0 auto;
 }
 
 div.story {
+   display: inline-block;
+   width: 440px;
    margin: 5px;
    padding: 5px;
    background-color: #f1f1f1;
-   border: 1px solid #333333;
+   border-top: 2px solid #333333;
    color: black;
-   text-align: left;
 }
 
 div.story h1 {
    margin: 0px;
    margin-bottom: 5px;
    padding: 5px;
-   background-color: #e1e1e1;
    font-size: 18px;
 }
 
@@ -123,15 +156,29 @@ div.story div.youtube {
    margin-bottom: 5px;
 }
 
-div.story div.image img {
-   max-width: 420px;
-   max-height: 236px;
-}
-
 div.story div.date {
    margin-top: 5px;
+   border-top: 1px dashed #333333;
    font-size: 11px;
    text-align: right;
+}
+
+div.box {
+   margin: 5px;
+   padding: 5px;
+   background: white;
+   border: 1px solid #333333;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+}
+
+div.box h1 {
+   margin: 0px;
+   padding: 5px;
+   border-bottom: 1px dashed #333333;
+   font-size: 18px;
 }
 
 ul.horizontal {
@@ -155,6 +202,5 @@ table.footer td {
 }
 
 table.footer a {
-   color: white;
    font-weight: bold;
 }

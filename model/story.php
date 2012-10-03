@@ -24,14 +24,19 @@ class story extends fs_model
    public $title;
    public $description;
    public $link;
-   public $image;
-   public $youtube;
    public $date;
-   public $feedname;
+   public $youtube;
+   
+   public $image;
+   public $image_width;
+   public $image_height;
+   
+   public $feed_name;
+   public $feed_url;
    
    public $selected;
    
-   public function __construct($item=FALSE, $fn=FALSE)
+   public function __construct($item=FALSE, $f=FALSE)
    {
       parent::__construct();
       if( $item )
@@ -66,8 +71,8 @@ class story extends fs_model
          }
          
          $this->description = $this->set_description($description);
-         $this->image = $this->find_image($description);
          $this->youtube = $this->find_youtube($description);
+         $this->image = $this->find_image($description);
       }
       else
       {
@@ -75,11 +80,30 @@ class story extends fs_model
          $this->link = '/';
          $this->date = strtotime( Date('Y-m-d H:m') );
          $this->description = 'No description';
-         $this->image = NULL;
          $this->youtube = NULL;
+         $this->image = NULL;
       }
-      $this->feedname = $fn;
+      
+      $this->image_width = 0;
+      $this->image_height = 0;
+      
+      if($f)
+      {
+         $this->feed_name = $f->name;
+         $this->feed_url = $f->url();
+      }
+      
       $this->selected = FALSE;
+   }
+   
+   public function show_date()
+   {
+      return Date('Y-m-d H:m', $this->date);
+   }
+   
+   public function go_to_url()
+   {
+      return 'index.php?page=go_to&url='.urlencode($this->link).'&feed='.urlencode($this->feed_name);
    }
    
    private function set_description($desc)
@@ -90,20 +114,22 @@ class story extends fs_model
       return preg_replace("/(\n)+/", "<br/>", trim($desc));
    }
    
-   private function find_image($text)
+   private function find_urls($text)
    {
-      $img = NULL;
-      $extensions = array('.png', '.PNG', '.jpg', '.JPG', 'jpeg', 'JPEG', '.gif', '.GIF');
-      $urls = $this->find_urls($text);
-      foreach($urls as $url)
+      $text = html_entity_decode($text);
+      $found = array();
+      if( preg_match_all("#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#", $text, $urls) )
       {
-         if( substr($url, 0, 4) == 'http' AND in_array(substr($url, -4, 4), $extensions) )
+         foreach($urls as $url)
          {
-            $img = $url;
-            break;
+            foreach($url as $u)
+            {
+               if( substr($u, 0, 4) == 'http' )
+                  $found[] = $u;
+            }
          }
       }
-      return $img;
+      return $found;
    }
    
    private function find_youtube($text)
@@ -131,53 +157,64 @@ class story extends fs_model
       return $youtube;
    }
    
-   private function find_urls($text)
+   private function find_image($text)
    {
-      $text = html_entity_decode($text);
-      $found = array();
-      if( preg_match_all("#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#", $text, $urls) )
+      $img = NULL;
+      $extensions = array('.png', '.PNG', '.jpg', '.JPG', 'jpeg', 'JPEG', '.gif', '.GIF');
+      $urls = $this->find_urls($text);
+      foreach($urls as $url)
       {
-         foreach($urls as $url)
+         if( substr($url, 0, 4) == 'http' AND in_array(substr($url, -4, 4), $extensions) )
          {
-            foreach($url as $u)
+            $img = $url;
+            break;
+         }
+      }
+      return $img;
+   }
+   
+   public function process_image()
+   {
+      if(substr($this->image, 0, 4) == 'http')
+      {
+         $aux = explode('/', $this->image);
+         $filename = $aux[ count($aux) - 1 ];
+         if( !file_exists('tmp/images/'.$filename) )
+         {
+            if( !file_exists('tmp/images') )
+               mkdir('tmp/images');
+            
+            $ch = curl_init($this->image);
+            $fp = fopen('tmp/images/'.$filename, 'wb');
+            curl_setopt($ch, CURLOPT_FILE, $fp);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_exec($ch);
+            curl_close($ch);
+            fclose($fp);
+         }
+         
+         $size = getimagesize('tmp/images/'.$filename);
+         if($size[0] > 100 AND $size[1] > 50)
+         {
+            $this->image = FS_PATH.'/tmp/images/'.$filename;
+            if($size[0] > 420)
             {
-               if( substr($u, 0, 4) == 'http' )
-                  $found[] = $u;
+               $this->image_width = 420;
+               $this->image_height = intval($size[1] * 420 / $size[0]);
+            }
+            else
+            {
+               $this->image_width = $size[0];
+               $this->image_height = $size[1];
             }
          }
-      }
-      return $found;
-   }
-   
-   public function show_date()
-   {
-      return Date('Y-m-d H:m', $this->date);
-   }
-   
-   public function go_to_url()
-   {
-      return 'index.php?page=go_to&url=' . urlencode($this->link);
-   }
-   
-   /// returns the aproximated story size in the screen
-   public function size()
-   {
-      $size = 2;
-      if( $this->youtube )
-         $size += 15;
-      else if( $this->image )
-         $size += 10;
-      if( strlen($this->description) > 0 )
-      {
-         $size += strlen($this->description) / 60;
-         $brs = array();
-         if( preg_match_all("/(<br\ ?\/?>)+/", $this->description, $brs) )
+         else
          {
-            foreach($brs as $br)
-               $size++;
+            $this->image = NULL;
+            $this->image_width = 0;
+            $this->image_height = 0;
          }
       }
-      return $size;
    }
 }
 

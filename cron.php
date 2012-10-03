@@ -22,6 +22,6 @@ require_once 'model/feed.php';
 
 $feed = new feed();
 foreach($feed->all() as $f)
-   $f->read();
+   $f->read(TRUE);
 
 ?>

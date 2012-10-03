@@ -9,6 +9,8 @@ class explore_feed extends fs_controller
    
    protected function process()
    {
+      $encontrado = FALSE;
+      
       if( isset($_GET['feed']) )
       {
          $feed = new feed();
@@ -17,10 +19,16 @@ class explore_feed extends fs_controller
          {
             $this->new_message("Historias de ".$feed0->name.'.');
             $this->stories = $feed0->get_stories();
+            $this->visitor->add2log('Explorando fuente '.$feed0->name);
+            $encontrado = TRUE;
          }
       }
-      else
+      
+      if( !$encontrado )
+      {
          $this->new_error_msg('Fuente no encontrada.');
+         $this->visitor->add2log('Explorando fuente '.$feed0->name.'. Fuente no encontrada.');
+      }
    }
 }
 

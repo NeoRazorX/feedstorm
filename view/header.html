@@ -26,9 +26,19 @@
 {/if}
    <script type="text/javascript">
       $(document).ready(function() {
+         $("#fs_b_social").click(function(event) {
+            event.preventDefault();
+            $("#fs_social_widget").show();
+            $("#fs_menu").hide();
+         });
+         $("#fs_b_close_social").click(function(event) {
+            event.preventDefault();
+            $("#fs_social_widget").hide();
+         });
          $("#fs_b_menu").click(function(event) {
             event.preventDefault();
             $("#fs_menu").show();
+            $("#fs_social_widget").hide();
          });
          $("#fs_b_close_menu").click(function(event) {
             event.preventDefault();
@@ -43,6 +53,9 @@
          <td>
             <a id="fs_logo" href="{$path}/index.php">{$name}</a>
             {$description}
+            {if condition="$social_widget AND !$fsc->visitor->mobile()"}
+            <a id="fs_b_social" href="#"><img src="{$path}/view/img/twitter2.png" alt="twitter" title="twitter"/></a>
+            {/if}
          </td>
          <td valign="top" align="right">
             <a id="fs_b_menu" href="#">
@@ -52,14 +65,24 @@
       </tr>
    </table>
    <div id="fs_menu">
-      <a id="fs_b_close_menu" href="#">X</a>
+      <a id="fs_b_close_menu" href="#"><img src="{$path}/view/img/close.png" alt="x"/></a>
       <a href="{$path}/index.php">portada</a>
       <a href="{$path}/index.php?page=select_feeds">preferencias</a>
       {if condition="!$fsc->visitor->mobile()"}
       <a href="{$path}/index.php?page=select_feeds#fisgona">fisgona</a>
       {/if}
    </div>
-{if condition="$fsc->errors"}
+   {if condition="$social_widget AND !$fsc->visitor->mobile()"}
+      <div id="fs_social_widget">
+         <a id="fs_b_close_social" href="#">
+            Cerrar widget
+            <img src="{$path}/view/img/close.png" alt="x"/>
+         </a>
+         <br/>
+         {$social_widget}
+      </div>
+   {/if}
+   {if condition="$fsc->errors"}
    <div class="error">
       <ul>
       {loop="$fsc->errors"}
@@ -67,8 +90,8 @@
       {/loop}
       </ul>
    </div>
-{/if}
-{if condition="$fsc->messages"}
+   {/if}
+   {if condition="$fsc->messages"}
    <div class="message">
       <ul>
       {loop="$fsc->messages"}
@@ -76,4 +99,4 @@
       {/loop}
       </ul>
    </div>
-{/if}
+   {/if}

@@ -6,7 +6,7 @@ body {
    margin: 0px;
    padding: 0px;
    font-family: Verdana, sans-serif;
-   font-size: 13px;
+   font-size: 12px;
    font-style: normal;
    font-weight: normal;
 }
@@ -64,6 +64,10 @@ a#fs_logo {
    color: black;
 }
 
+a#fs_b_social {
+   margin-left: 10px;
+}
+
 a#fs_b_menu {
    display: inline-block;
    padding: 5px;
@@ -73,6 +77,7 @@ a#fs_b_menu {
    color: white;
    font-family: 'Chau Philomene One', sans-serif;
    text-decoration: none;
+   font-size: 16px;
 }
 
 a#fs_b_menu img {
@@ -95,7 +100,7 @@ div#fs_menu {
 div#fs_menu a {
    display: block;
    margin: 5px;
-   padding: 5px;
+   padding: 0px;
    text-transform: capitalize;
    font-family: 'Chau Philomene One', sans-serif;
    font-size: 18px;
@@ -106,6 +111,39 @@ div#fs_menu a#fs_b_close_menu {
    margin-top: 0px;
    text-align: right;
    text-decoration: none;
+}
+
+div#fs_social_widget {
+   display: none;
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   bottom: 0px;
+   z-index: 2;
+   margin: 0px;
+   padding: 5px;
+   text-align: right;
+}
+
+a#fs_b_close_social {
+   display: inline-block;
+   margin: 3px;
+   padding: 3px;
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #333333;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   color: white;
+   font-family: 'Chau Philomene One', sans-serif;
+   font-size: 15px;
+   text-decoration: none;
+}
+
+a#fs_b_close_social img {
+   vertical-align: bottom;
 }
 
 div.error, div.message {
@@ -141,7 +179,7 @@ div#stories {
 
 div.story {
    display: inline-block;
-   width: 440px;
+   width: 340px;
    margin: 5px;
    padding: 5px;
    background-color: #f1f1f1;
@@ -154,9 +192,18 @@ div.story h1 {
    margin-bottom: 5px;
    padding: 5px;
    font-family: 'Chau Philomene One', sans-serif;
-   font-size: 22px;
+   font-size: 20px;
    font-weight: normal;
    text-align: center;
+}
+
+div.story h2 {
+   margin: 0px;
+   margin-bottom: 5px;
+   padding: 5px;
+   font-family: 'Chau Philomene One', sans-serif;
+   font-size: 18px;
+   font-weight: normal;
 }
 
 div.story div.image,

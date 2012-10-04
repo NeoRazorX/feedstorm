@@ -15,27 +15,44 @@
 <div id="stories">
    {loop="$fsc->stories"}
       <div class="story">
-         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
          {if condition="$value->youtube"}
+            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
             <div class="youtube">
                {if condition="$fsc->visitor->mobile()"}
                   <a href="http://www.youtube.com/watch?v={$value->youtube}">
                      <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
-                     youtube
+                     <br/>youtube
                   </a>
                {else}
-                  <iframe width="420" height="236" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
+                  <iframe width="320" height="180" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
                   </iframe>
                {/if}
             </div>
          {else}
             {if condition="$value->image_width > 0"}
-            <div class="image">
-               <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
-            </div>
+               {if condition="$value->image_width < 80"}
+               <table>
+                  <tr>
+                     <td>
+                        <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+                     </td>
+                     <td valign="top">
+                        <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+                     </td>
+                  </tr>
+               </table>
+               {else}
+               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+               <div class="image">
+                  <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+               </div>
+               {/if}
+               {$value->description}
+            {else}
+               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+               {$value->description}
             {/if}
          {/if}
-         {$value->description}
          <div class="date">
             <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
             @ {$value->show_date()}

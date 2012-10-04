@@ -150,6 +150,15 @@ div.story h1 {
    text-align: center;
 }
 
+div.story h2 {
+   margin: 0px;
+   margin-bottom: 5px;
+   padding: 5px;
+   font-family: 'Chau Philomene One', sans-serif;
+   font-size: 18px;
+   font-weight: normal;
+}
+
 div.story div.image,
 div.story div.youtube {
    text-align: center;

@@ -43,22 +43,34 @@ class story extends fs_model
       {
          $this->title = (string)$item->title;
          
-         $this->link = $f->url();
-         if( $item->link )
+         /// intentamos obtener el enlace original de meneame
+         foreach($item->children('meneame', TRUE) as $element)
          {
-            if( substr((string)$item->link, 0, 4) == 'http' )
-               $this->link = (string)$item->link;
-            else
+            if($element->getName() == 'url')
             {
-               foreach($item->children('feedburner', TRUE) as $element)
+               $this->link = (string)$element;
+               break;
+            }
+         }
+         if( !isset($this->link) )
+         {
+            /// intentamos obtener el enlace original de feedburner
+            foreach($item->children('feedburner', TRUE) as $element)
+            {
+               if($element->getName() == 'origLink')
                {
-                  if($element->getName() == 'origLink')
-                  {
-                     $this->link = (string)$element;
-                     break;
-                  }
+                  $this->link = (string)$element;
+                  break;
                }
             }
+            if( !isset($this->link) AND $item->link )
+            {
+               if( substr((string)$item->link, 0, 4) == 'http' )
+                  $this->link = (string)$item->link;
+            }
+            /// si aun así no hemos encontrado un link
+            if( !isset($this->link) )
+               $this->link = $f->url();
          }
          
          if( $item->pubDate )
@@ -126,9 +138,14 @@ class story extends fs_model
    private function set_description($desc)
    {
       $desc = strip_tags( preg_replace("/(<br\ ?\/?>)+/", "\n", $desc) );
-      if( strlen($desc) > 500 )
-         $desc = substr($desc, 0, 500) . '...';
-      return preg_replace("/(\n)+/", "<br/>", trim($desc));
+      if( strlen($desc) > 300 )
+         $desc = substr($desc, 0, 300) . '...';
+      return $this->true_word_break( preg_replace("/(\n)+/", "<br/>", trim($desc)) );
+   }
+   
+   private function true_word_break($str, $width=40)
+   {
+      return preg_replace('#(\S{'.$width.',})#e', "chunk_split('$1', ".$width.", '&#8203;')", $str);
    }
    
    private function find_urls($text)
@@ -201,23 +218,23 @@ class story extends fs_model
             if( !file_exists('tmp/images') )
                mkdir('tmp/images');
             
-            $ch = curl_init($this->image);
+            $ch1 = curl_init($this->image);
             $fp = fopen('tmp/images/'.$filename, 'wb');
-            curl_setopt($ch, CURLOPT_FILE, $fp);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_exec($ch);
-            curl_close($ch);
+            curl_setopt($ch1, CURLOPT_FILE, $fp);
+            curl_setopt($ch1, CURLOPT_HEADER, 0);
+            curl_exec($ch1);
+            curl_close($ch1);
             fclose($fp);
          }
          
          $size = getimagesize('tmp/images/'.$filename);
-         if($size[0] > 100 AND $size[1] > 50)
+         if($size[0] > 50 AND $size[1] > 30)
          {
             $this->image = FS_PATH.'/tmp/images/'.$filename;
-            if($size[0] > 420)
+            if($size[0] > 320)
             {
-               $this->image_width = 420;
-               $this->image_height = intval($size[1] * 420 / $size[0]);
+               $this->image_width = 320;
+               $this->image_height = intval($size[1] * 320 / $size[0]);
             }
             else
             {

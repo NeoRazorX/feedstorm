@@ -27,7 +27,6 @@ class main_page extends fs_controller
    protected function process()
    {
       $this->stories = $this->visitor->get_new_stories();
-      $this->visitor->add2log('Portada');
    }
 }
 

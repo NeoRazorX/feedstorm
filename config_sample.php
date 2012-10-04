@@ -11,4 +11,6 @@ define('FS_CACHE_PREFIX', '');
 
 define('FS_MAX_STORIES', 50);
 
+define('FS_SOCIAL_WIDGET', '');
+
 ?>

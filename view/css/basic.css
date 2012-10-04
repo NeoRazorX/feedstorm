@@ -118,32 +118,39 @@ div#fs_social_widget {
    position: absolute;
    top: 0px;
    left: 0px;
-   bottom: 0px;
    z-index: 2;
+   width: 400px;
    margin: 0px;
    padding: 5px;
-   text-align: right;
+   background-color: #333333;
+   border-bottom-right-radius: 5px 5px;
+   color: whitesmoke;
+}
+
+div#fs_social_widget a {
+   color: white;
+   font-weight: bold;
 }
 
 a#fs_b_close_social {
-   display: inline-block;
+   display: block;
    margin: 3px;
    padding: 3px;
-   padding-left: 5px;
-   padding-right: 5px;
-   background-color: #333333;
-   border-top-left-radius: 2px 2px;
-   border-top-right-radius: 2px 2px;
-   border-bottom-left-radius: 2px 2px;
-   border-bottom-right-radius: 2px 2px;
-   color: white;
    font-family: 'Chau Philomene One', sans-serif;
    font-size: 15px;
+   font-weight: normal;
    text-decoration: none;
+   text-align: right;
 }
 
 a#fs_b_close_social img {
    vertical-align: bottom;
+}
+
+div#fs_social_widget div.tweet {
+   margin: 5px;
+   padding: 5px;
+   border: 1px dashed #999999;
 }
 
 div.error, div.message {
@@ -185,6 +192,7 @@ div.story {
    background-color: #f1f1f1;
    border-top: 2px solid #333333;
    color: black;
+   text-align: justify;
 }
 
 div.story h1 {

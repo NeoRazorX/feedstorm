@@ -53,7 +53,7 @@
          <td>
             <a id="fs_logo" href="{$path}/index.php">{$name}</a>
             {$description}
-            {if condition="$social_widget AND !$fsc->visitor->mobile()"}
+            {if condition="!$fsc->visitor->mobile()"}
             <a id="fs_b_social" href="#"><img src="{$path}/view/img/twitter2.png" alt="twitter" title="twitter"/></a>
             {/if}
          </td>
@@ -72,29 +72,44 @@
       <a href="{$path}/index.php?page=select_feeds#fisgona">fisgona</a>
       {/if}
    </div>
-   {if condition="$social_widget AND !$fsc->visitor->mobile()"}
+   {if condition="!$fsc->visitor->mobile()"}
       <div id="fs_social_widget">
          <a id="fs_b_close_social" href="#">
             Cerrar widget
             <img src="{$path}/view/img/close.png" alt="x"/>
          </a>
-         <br/>
-         {$social_widget}
+         {loop="$fsc->tweet->all()"}
+         <div class="tweet">
+            <table>
+               <tr>
+                  <td>
+                     <a href="{$value->author_url}">
+                        <img src="{$value->author_img}" alt="{$value->author}" title="{$value->author}"/>
+                     </a>
+                  </td>
+                  <td><b>{$value->author}</b><br/>{$value->content}</td>
+               </tr>
+            </table>
+         </div>
+         {/loop}
+         <div class="tweet" style="text-align: center;">
+            Envía tus tweets con el hashtag <a target="_blank" href="http://search.twitter.com/search?q=%23{$name}">#{$name}</a>
+         </div>
       </div>
    {/if}
-   {if condition="$fsc->errors"}
+   {if condition="$fsc->get_errors()"}
    <div class="error">
       <ul>
-      {loop="$fsc->errors"}
+      {loop="$fsc->get_errors()"}
          <li>{$value}</li>
       {/loop}
       </ul>
    </div>
    {/if}
-   {if condition="$fsc->messages"}
+   {if condition="$fsc->get_messages()"}
    <div class="message">
       <ul>
-      {loop="$fsc->messages"}
+      {loop="$fsc->get_messages()"}
          <li>{$value}</li>
       {/loop}
       </ul>

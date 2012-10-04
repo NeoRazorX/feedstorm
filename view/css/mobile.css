@@ -138,6 +138,7 @@ div.story {
    background-color: #f1f1f1;
    border-top: 2px solid #333333;
    color: black;
+   text-align: justify;
 }
 
 div.story h1 {

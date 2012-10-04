@@ -20,16 +20,18 @@
 require_once 'model/feed.php';
 require_once 'model/story.php';
 require_once 'model/visitor.php';
+require_once 'model/tweet.php';
 
 class fs_controller
 {
    private $uptime;
-   public $errors;
-   public $messages;
+   private $errors;
+   private $messages;
    public $page;
    public $title;
    public $template;
    public $visitor;
+   public $tweet;
    
    public $stories;
    
@@ -55,10 +57,9 @@ class fs_controller
          setcookie('key', $this->visitor->key, time()+31536000);
       }
       
-      $this->process();
+      $this->tweet = new tweet();
       
-      $this->errors = array_merge($this->errors, $this->visitor->get_errors());
-      $this->messages = array_merge($this->messages, $this->visitor->get_messages());
+      $this->process();
    }
    
    public function new_error_msg($msg)
@@ -67,10 +68,20 @@ class fs_controller
          $this->errors[] = (string)$msg;
    }
    
+   public function get_errors()
+   {
+      return array_merge($this->errors, $this->visitor->get_errors());;
+   }
+   
    public function new_message($msg)
    {
       if( $msg )
          $this->messages[] = (string)$msg;
+   }
+   
+   public function get_messages()
+   {
+      return array_merge($this->messages, $this->visitor->get_messages());
    }
    
    public function duration()

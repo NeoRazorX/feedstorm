@@ -24,7 +24,6 @@ require_once 'model/story.php';
 class visitor extends fs_model
 {
    public $key;
-   public $history;
    private $feeds;
    
    public function __construct($k=FALSE)
@@ -33,12 +32,10 @@ class visitor extends fs_model
       if( $k )
       {
          $this->key = $k;
-         $this->history = $this->cache->get_array('urls_from_'.$k);
       }
       else
       {
          $this->key = sha1( strval(rand()) );
-         $this->history = array();
       }
    }
    
@@ -106,20 +103,6 @@ class visitor extends fs_model
       if( !$encontrado )
          $logs[] = $entry;
       $this->cache->set('logs', $logs);
-   }
-   
-   public function in_history($url)
-   {
-      return in_array($url, $this->history);
-   }
-   
-   public function url2history($url)
-   {
-      if( !$this->in_history($url) )
-      {
-         $this->history[] = $url;
-         $this->cache->set('urls_from_'.$this->key, $this->history, time()+31536000);
-      }
    }
    
    public function get_feeds()
@@ -198,13 +181,10 @@ class visitor extends fs_model
          {
             if( !$all[$i]->selected )
             {
-               if( !$this->in_history($all[$i]->link) )
-               {
-                  if($selected < 0)
-                     $selected = $i;
-                  else if( $all[$i]->date > $all[$selected]->date )
-                     $selected = $i;
-               }
+               if($selected < 0)
+                  $selected = $i;
+               else if( $all[$i]->date > $all[$selected]->date )
+                  $selected = $i;
             }
          }
          $selections++;

@@ -77,7 +77,38 @@ class tweet extends fs_model
                   $tweets[] = new tweet($entry);
                
                if( $tweets )
-                  $this->cache->set('tweets', $tweets);
+                  $this->cache->set('tweets', $tweets, 600);
+            }
+            else
+               $this->new_error('Estructura del feed de twitter irreconocible.');
+         }
+         else
+            $this->new_error('No se encuentra el feed de twitter.');
+      }
+      return $tweets;
+   }
+   
+   public function all_from_url($url)
+   {
+      $tweets = $this->cache->get_array('tweets_from_'.$url);
+      if( !$tweets )
+      {
+         $ch = curl_init('http://search.twitter.com/search.atom?lang=es&result_type=recent&q='.$url);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         $html = curl_exec($ch);
+         curl_close($ch);
+         $xml = simplexml_load_string( $html );
+         if( $xml )
+         {
+            if( $xml->entry )
+            {
+               foreach($xml->entry as $entry)
+                  $tweets[] = new tweet($entry);
+               
+               if( $tweets )
+                  $this->cache->set('tweets_from_'.$url, $tweets, 1200);
             }
             else
                $this->new_error('Estructura del feed de twitter irreconocible.');

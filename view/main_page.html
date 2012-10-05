@@ -6,7 +6,8 @@
    $(document).ready(function() {
       $("#stories").masonry({
          itemSelector: '.story',
-         isFitWidth: true
+         isFitWidth: true,
+         isAnimated: true
       });
    });
 </script>
@@ -53,10 +54,14 @@
                {$value->description}
             {/if}
          {/if}
+         {if condition="$fsc->visitor->mobile()"}
          <div class="date">
             <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
             @ {$value->show_date()}
          </div>
+         {else}
+         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->url()}')">leer más...</a>
+         {/if}
       </div>
    {/loop}
 </div>

@@ -17,46 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_controller.php';
-
-class go_to extends fs_controller
+class tweets_from_url extends fs_controller
 {
+   public $story;
+   public $tweets;
+   
    public function __construct()
    {
-      parent::__construct('go_to', 'Redireccionando...');
+      parent::__construct('tweets_from_url', 'Tweets...', 'tweets_from_url');
    }
    
    protected function process()
    {
-      $this->template = FALSE;
+      $this->story = FALSE;
+      $this->tweets = array();
       
       if( isset($_GET['url']) )
       {
-         $encontrada = FALSE;
-         $url = urldecode( $_GET['url'] );
-         
+         $url = urldecode($_GET['url']);
          if( isset($_GET['feed']) )
          {
             $feed = new feed();
-            $feed0 = $feed->get( urldecode($_GET['feed']) );
-            if( $feed0 )
-            {
-               $story = $feed0->get_story_by_url($url);
-               if( $story )
-               {
-                  $this->visitor->add2log($story->title);
-                  $encontrada = TRUE;
-               }
-            }
+            $feed = $feed->get( urldecode($_GET['feed']) );
+            if( $feed )
+               $this->story = $feed->get_story_by_url($url);
          }
          
-         if( !$encontrada )
-            $this->visitor->add2log('Redireccionando a '.$url);
-         
-         header("location: ".$url);
+         $this->tweets = $this->tweet->all_from_url($url);
       }
-      else
-         header("location: index.php");
    }
 }
 

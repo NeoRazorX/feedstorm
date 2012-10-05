@@ -3,6 +3,7 @@
 <head>
    <title>{$fsc->title}</title>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+   <meta name="description" content="{$description} Exploramos la web para mostrarte los temas de actualidad." />
    <meta name="Robots" content="all" />
 {if condition="$fsc->visitor->mobile()"}
    <meta name="HandheldFriendly" content="true" />
@@ -25,6 +26,16 @@
    </script>
 {/if}
    <script type="text/javascript">
+      function fs_show_popup_to(url)
+      {
+         $("#popup2tweets").html("<iframe src='"+url+"' width='730' height='650' frameborder='0'></iframe>");
+         $("#shadow_box").show();
+         $("#popup2tweets").css({
+            left: ($(window).width() - $("#popup2tweets").outerWidth())/2,
+            top: ($(window).height() - $("#popup2tweets").outerHeight())/2
+         });
+         $("#popup2tweets").show();
+      }
       $(document).ready(function() {
          $("#fs_b_social").click(function(event) {
             event.preventDefault();
@@ -43,6 +54,12 @@
          $("#fs_b_close_menu").click(function(event) {
             event.preventDefault();
             $("#fs_menu").hide();
+         });
+         $("#shadow_box").click(function() {
+            $('div.popup').each(function() {
+               $(this).hide();
+            });
+            $("#shadow_box").hide();
          });
       });
    </script>
@@ -78,23 +95,36 @@
             Cerrar widget
             <img src="{$path}/view/img/close.png" alt="x"/>
          </a>
+         <div class="tweet">
+            <table>
+               <tr>
+                  <td>
+                     <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-hashtags="{$name}" data-related="neorazorx">Tweet</a>
+                     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+                  </td>
+                  <td class="content">
+                     Tweets en orden descendente, los últimos primero. Se actualizan cada 10 minutos.
+                     Envía tus tweets con el hashtag <a target="_blank" href="http://search.twitter.com/search?q=%23{$name}">#{$name}</a>
+                     <br/>
+                     Si quieres dirigirte a mi, usa <a target="_blank" href="http://twitter.com/neorazorx">@neorazorx</a>
+                  </td>
+               </tr>
+            </table>
+         </div>
          {loop="$fsc->tweet->all()"}
          <div class="tweet">
             <table>
                <tr>
                   <td>
-                     <a href="{$value->author_url}">
+                     <a target="_blank" href="{$value->author_url}">
                         <img src="{$value->author_img}" alt="{$value->author}" title="{$value->author}"/>
                      </a>
                   </td>
-                  <td><b>{$value->author}</b><br/>{$value->content}</td>
+                  <td class="content"><b>{$value->author}</b><br/>{$value->content}</td>
                </tr>
             </table>
          </div>
          {/loop}
-         <div class="tweet" style="text-align: center;">
-            Envía tus tweets con el hashtag <a target="_blank" href="http://search.twitter.com/search?q=%23{$name}">#{$name}</a>
-         </div>
       </div>
    {/if}
    {if condition="$fsc->get_errors()"}
@@ -115,3 +145,7 @@
       </ul>
    </div>
    {/if}
+   <div id="shadow_box">
+      <div id="popup_message">Pulsa el fondo ensombrecido para cerrar el diálogo.</div>
+   </div>
+   <div id="popup2tweets" class="popup"></div>

@@ -52,7 +52,7 @@ class feed extends fs_model
    
    public function url()
    {
-      return 'index.php?page=explore_feed&feed='.$this->name;
+      return 'index.php?page=explore_feed&feed='.urlencode($this->name);
    }
    
    public function get($fn)

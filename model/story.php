@@ -130,6 +130,11 @@ class story extends fs_model
       return Date('Y-m-d H:m', $this->date);
    }
    
+   public function url()
+   {
+      return 'index.php?page=tweets_from_url&url='.urlencode($this->link).'&feed='.urlencode($this->feed_name);
+   }
+   
    public function go_to_url()
    {
       return 'index.php?page=go_to&url='.urlencode($this->link).'&feed='.urlencode($this->feed_name);
@@ -141,11 +146,6 @@ class story extends fs_model
       if( strlen($desc) > 300 )
          $desc = substr($desc, 0, 300) . '...';
       return $this->true_word_break( preg_replace("/(\n)+/", "<br/>", trim($desc)) );
-   }
-   
-   private function true_word_break($str, $width=40)
-   {
-      return preg_replace('#(\S{'.$width.',})#e', "chunk_split('$1', ".$width.", '&#8203;')", $str);
    }
    
    private function find_urls($text)

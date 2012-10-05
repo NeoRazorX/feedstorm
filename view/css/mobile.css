@@ -209,6 +209,10 @@ ul.horizontal {
    list-style-type: none;
 }
 
+div#shadow_box {
+   display: none;
+}
+
 table.footer {
    width: 100%;
    font-size: 11px;

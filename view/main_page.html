@@ -3,7 +3,56 @@
 {if condition="!$fsc->visitor->mobile()"}
 <script src="{$path}/view/js/jquery.masonry.min.js"></script>
 <script type="text/javascript">
+   var currentMousePos = { x: -1, y: -1 };
+   function Arrow_Points()
+   {
+      var s = $('#tweets_from_story').find('.tweet2');
+      $.each(s, function(i, obj) {
+         var posLeft = $(obj).css("left");
+         $(obj).addClass('borderclass');
+         if(posLeft == "0px") {
+            html = "<span class='rightCorner'></span>";
+         }
+         else {
+            html = "<span class='leftCorner'></span>";
+         }
+         $(obj).prepend(html);
+      });
+   }
+   function fs_show_popup_to(url)
+   {
+      $.ajax({
+         type: 'POST',
+         url: url,
+         dataType: 'html',
+         data: '',
+         success: function(datos) {
+            $("#shadow_box").show();
+            $("#popup_message").show();
+            $("#popup2tweets").html(datos);
+            $("#popup2tweets").show();
+            $("#tweets_from_story").masonry({
+               itemSelector: '.tweet2'
+            });
+            Arrow_Points();
+            $("#popup2tweets").css({
+               position: 'absolute',
+               top: currentMousePos.y,
+               left: ($(window).width() - $("#popup2tweets").outerWidth())/2
+            });
+            $("table.footer").css({
+               'margin-top': $("#popup2tweets").outerHeight()
+            });
+         }
+      });
+   }
    $(document).ready(function() {
+      $(document).mousemove(function(event) {
+         currentMousePos = {
+            x: event.pageX,
+            y: event.pageY
+         };
+      });
       $("#stories").masonry({
          itemSelector: '.story',
          isFitWidth: true,
@@ -14,56 +63,82 @@
 {/if}
 
 <div id="stories">
+{if condition="$fsc->visitor->mobile()"}
    {loop="$fsc->stories"}
-      <div class="story">
-         {if condition="$value->youtube"}
-            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
-            <div class="youtube">
-               {if condition="$fsc->visitor->mobile()"}
-                  <a href="http://www.youtube.com/watch?v={$value->youtube}">
-                     <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
-                     <br/>youtube
-                  </a>
-               {else}
-                  <iframe width="320" height="180" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
-                  </iframe>
-               {/if}
-            </div>
+   <div class="story">
+      {if condition="$value->youtube"}
+         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+         <div class="youtube">
+            <a href="http://www.youtube.com/watch?v={$value->youtube}">
+               <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
+               <br/>youtube
+            </a>
+         </div>
+      {else}
+         {if condition="$value->image_width > 0"}
+            {if condition="$value->image_width < 80"}
+               <table>
+               <tr>
+                  <td><img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/></td>
+                  <td valign="top">
+                     <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+                  </td>
+               </tr>
+               </table>
+            {else}
+               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+               <div class="image">
+                  <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+               </div>
+            {/if}
+            {$value->description}
          {else}
-            {if condition="$value->image_width > 0"}
-               {if condition="$value->image_width < 80"}
+            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+            {$value->description}
+         {/if}
+      {/if}
+      <div class="date">
+         <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
+         @ {$value->show_date()}
+      </div>
+   </div>
+   {/loop}
+{else}
+   {loop="$fsc->stories"}
+   <div class="story">
+      {if condition="$value->youtube"}
+         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+         <div class="youtube">
+            <iframe width="320" height="180" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
+            </iframe>
+         </div>
+      {else}
+         {if condition="$value->image_width > 0"}
+            {if condition="$value->image_width < 80"}
                <table>
                   <tr>
-                     <td>
-                        <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
-                     </td>
+                     <td><img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/></td>
                      <td valign="top">
                         <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
                      </td>
                   </tr>
                </table>
-               {else}
+            {else}
                <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
                <div class="image">
                   <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
                </div>
-               {/if}
-               {$value->description}
-            {else}
-               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
-               {$value->description}
             {/if}
-         {/if}
-         {if condition="$fsc->visitor->mobile()"}
-         <div class="date">
-            <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
-            @ {$value->show_date()}
-         </div>
+            {$value->description}
          {else}
-         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->url()}')">leer más...</a>
+            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+            {$value->description}
          {/if}
-      </div>
+      {/if}
+      <a href="#story_{$counter}" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">leer más...</a>
+   </div>
    {/loop}
+{/if}
 </div>
 
 {include="footer"}

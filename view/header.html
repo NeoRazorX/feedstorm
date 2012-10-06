@@ -26,16 +26,6 @@
    </script>
 {/if}
    <script type="text/javascript">
-      function fs_show_popup_to(url)
-      {
-         $("#popup2tweets").html("<iframe src='"+url+"' width='730' height='650' frameborder='0'></iframe>");
-         $("#shadow_box").show();
-         $("#popup2tweets").css({
-            left: ($(window).width() - $("#popup2tweets").outerWidth())/2,
-            top: ($(window).height() - $("#popup2tweets").outerHeight())/2
-         });
-         $("#popup2tweets").show();
-      }
       $(document).ready(function() {
          $("#fs_b_social").click(function(event) {
             event.preventDefault();
@@ -59,7 +49,11 @@
             $('div.popup').each(function() {
                $(this).hide();
             });
+            $("#popup_message").hide();
             $("#shadow_box").hide();
+            $("table.footer").css({
+               'margin-top': 10
+            });
          });
       });
    </script>
@@ -145,7 +139,3 @@
       </ul>
    </div>
    {/if}
-   <div id="shadow_box">
-      <div id="popup_message">Pulsa el fondo ensombrecido para cerrar el diálogo.</div>
-   </div>
-   <div id="popup2tweets" class="popup"></div>

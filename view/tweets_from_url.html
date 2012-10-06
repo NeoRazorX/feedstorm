@@ -1,62 +1,39 @@
-<!DOCTYPE html>
-<html>
-   <head>
-      <title>Tweets</title>
-      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <link href="{$path}/view/css/basic.css" rel="stylesheet" type="text/css" />
-      <script type="text/javascript" src="{$path}/view/js/jquery.js"></script>
-      <script src="{$path}/view/js/jquery.masonry.min.js"></script>
-      <script type="text/javascript">
-         $(document).ready(function() {
-            $("#tweets_from_story").masonry({
-               itemSelector: '.tweet2',
-               isFitWidth: true,
-               isAnimated: true
-            });
-         });
-      </script>
-   </head>
-   <body>
-      {if condition="$fsc->story"}
-      <table width="100%">
-         <tr>
-            <td width="80">
-               <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-url="{$fsc->story->link}" data-related="neorazorx">Tweet</a>
-               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-            </td>
-            <td valign="top">
-               <div class="full_story">
-                  <h1>
-                     <a target="_blank" href="{$fsc->story->link}">{$fsc->story->title}</a>
-                  </h1>
-                  <a target="_blank" href="{$path}/{$fsc->story->feed_url}">{$fsc->story->feed_name}</a>
-                  @ {$fsc->story->show_date()}
-               </div>
-            </td>
-         </tr>
-      </table>
-      {/if}
-      <div id="tweets_from_story">
-      {loop="$fsc->tweets"}
-         <div class="tweet2">
-            <table>
-               <tr>
-                  <td>
-                     <a target="_blank" href="{$value->author_url}">
-                        <img src="{$value->author_img}" alt="{$value->author}" title="{$value->author}" width="60" height="60"/>
-                     </a>
-                  </td>
-                  <td class="content"><b>{$value->author}</b><br/>{$value->content}</td>
-               </tr>
-            </table>
+{if condition="$fsc->story"}
+<table width="100%">
+   <tr>
+      <td valign="top">
+         <div class="full_story">
+            <h1><a target="_blank" href="{$fsc->story->link}">{$fsc->story->title}</a></h1>
+            <a target="_blank" href="{$path}/{$fsc->story->feed_url}">{$fsc->story->feed_name}</a>
+            @ {$fsc->story->show_date()}
          </div>
-      {else}
-         <div class="tweet2">
-            <table>
-               <tr><td class="content">Todavía no hay tweets :-(</td></tr>
-            </table>
-         </div>
-      {/loop}
+      </td>
+      <td align="right">
+         <iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?lang=es&count=vertical&url={$fsc->story_link_urlized}&related=neorazorx" width="80" height="80"></iframe>
+      </td>
+   </tr>
+</table>
+{/if}
+<div id="tweets_from_story">
+   <div class="timeline_container">
+      <div class="timeline"></div>
+   </div>
+   {loop="$fsc->tweets"}
+      <div class="tweet2">
+         <table>
+            <tr>
+               <td>
+                  <a target="_blank" href="{$value->author_url}">
+                     <img src="{$value->author_img}" alt="{$value->author}" title="{$value->author}" width="60" height="60"/>
+                  </a>
+               </td>
+               <td class="content"><b>{$value->author}</b><br/>{$value->content}</td>
+            </tr>
+         </table>
       </div>
-   </body>
-</html>
+   {else}
+      <div class="tweet2">
+         <table><tr><td class="content">Todavía no hay tweets :-(</td></tr></table>
+      </div>
+   {/loop}
+</div>

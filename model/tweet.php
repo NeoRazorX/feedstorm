@@ -62,7 +62,7 @@ class tweet extends fs_model
       $tweets = $this->cache->get_array('tweets');
       if( !$tweets )
       {
-         $ch = curl_init('http://search.twitter.com/search.atom?lang=es&result_type=recent&q=%23'.FS_NAME);
+         $ch = curl_init('http://search.twitter.com/search.atom?result_type=recent&rpp=50&q=%23'.FS_NAME);
          curl_setopt($ch, CURLOPT_TIMEOUT, 30);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -93,7 +93,7 @@ class tweet extends fs_model
       $tweets = $this->cache->get_array('tweets_from_'.$url);
       if( !$tweets )
       {
-         $ch = curl_init('http://search.twitter.com/search.atom?lang=es&result_type=recent&q='.$url);
+         $ch = curl_init('http://search.twitter.com/search.atom?rpp=50&q='.$url);
          curl_setopt($ch, CURLOPT_TIMEOUT, 30);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);

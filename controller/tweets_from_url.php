@@ -20,6 +20,7 @@
 class tweets_from_url extends fs_controller
 {
    public $story;
+   public $story_link_urlized;
    public $tweets;
    
    public function __construct()
@@ -40,7 +41,11 @@ class tweets_from_url extends fs_controller
             $feed = new feed();
             $feed = $feed->get( urldecode($_GET['feed']) );
             if( $feed )
+            {
                $this->story = $feed->get_story_by_url($url);
+               if( $this->story )
+                  $this->story_link_urlized = urlencode($this->story->link);
+            }
          }
          
          $this->tweets = $this->tweet->all_from_url($url);

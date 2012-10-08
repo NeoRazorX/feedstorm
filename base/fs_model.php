@@ -42,11 +42,11 @@ class fs_model
    }
    
    /// functión auxiliar para facilitar el uso de fechas
-   public function var2timesince($v)
+   public function time2timesince($v)
    {
       if( isset($v) )
       {
-         $time = time() - strtotime($v);
+         $time = time() - $v;
          
          if($time <= 60)
             return 'hace '.$time.' segundos';

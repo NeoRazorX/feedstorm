@@ -36,6 +36,8 @@ class visitor extends fs_model
       else
       {
          $this->key = sha1( strval(rand()) );
+         $this->new_message('¡Bienvenido a '.FS_NAME.'! Esta web recopila las últimas noticias de una serie de fuentes.
+            Puedes seleccionar tus fuentes desde <b>menu &gt; preferencias</b>.');
       }
    }
    

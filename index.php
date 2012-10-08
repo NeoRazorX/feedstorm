@@ -53,6 +53,7 @@ if( $fsc->template )
    $tpl->assign('description', FS_DESCRIPTION);
    $tpl->assign('path', FS_PATH);
    $tpl->assign('analytics', FS_ANALYTICS);
+   $tpl->assign('hashtag', FS_TWITTER_HASHTAG);
    $tpl->assign('fsc', $fsc);
    $tpl->draw( $fsc->template );
 }

@@ -1,7 +1,7 @@
 {include="header"}
 
 <div class="box">
-   <h1>Fuentes:</h1>
+   <h1>Selecciona tus fuentes:</h1>
    <form action="{$fsc->url()}" method="post">
       <ul class="horizontal">
       {loop="$fsc->feeds"}
@@ -15,32 +15,76 @@
             {if condition="$value->default"}(recomendado){/if}
          </li>
       {/loop}
-   </ul>
-      <div style="text-align: right;">
-         <input type="submit" value="guardar"/>
-      </div>
+      </ul>
+      <table width="100%">
+         <tr>
+            <td>
+               <b>¿No está la fuente que buscas?</b>
+               Pide que la añadan. Usa el botón de twitter de arriba.
+            </td>
+            <td align="right" valign="bottom"><input type="submit" value="guardar"/></td>
+         </tr>
+      </table>
    </form>
 </div>
 
 {if condition="!$fsc->visitor->mobile()"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("div.comment_left").each(function() {
+            var top = $(this).offset().top + 15;
+            var left = $("table.twitter_timeline td.timeline").offset().left - 9;
+            $("#timeline_arrows").html($("#timeline_arrows").html() +
+               "<img src='{$path}/view/img/timeline_point_left.png' alt='&gt;' style='top: "+
+               top+"px; left: "+left+"px;'/>");
+      });
+      $("div.comment_right").each(function() {
+            var top = $(this).offset().top + 30;
+            var left = $("table.twitter_timeline td.timeline").offset().left;
+            $("#timeline_arrows").html($("#timeline_arrows").html() +
+               "<img src='{$path}/view/img/timeline_point_right.png' alt='&gt;' style='top: "+
+               top+"px; left: "+left+"px;'/>");
+      });
+   });
+</script>
 <a name="fisgona"></a>
 <div class="box">
    <h1>Fisgona:</h1>
-   <table width="100%">
-      <tr>
-         <th align="left">IP</th>
-         <th>Veces</th>
-         <th align="left">Info.</th>
-         <th align="right">Fecha</th>
-      </tr>
-      {loop="$fsc->visitor->get_logs()"}
-      <tr>
-         <td align="left"><span title="{$value.user_agent}">{$value.ip}</span></td>
-         <td align="center">{$value.count}</td>
-         <td><a target="_blank" href="{$value.url}">{$value.info}</a></td>
-         <td align="right">{$value.date}</td>
-      </tr>
-      {/loop}
+   <div id="timeline_arrows"></div>
+   <table class="twitter_timeline">
+   <tr>
+      <td>
+         {loop="$fsc->visitor->get_logs()"}
+            {if condition="$counter%2==0"}
+            <div class="comment_left">
+               <h1><a target="_blank" href="{$value.url}">{$value.info}</a></h1>
+               <table width="100%">
+                  <tr>
+                     <td>{$value.count} x <span title="{$value.user_agent}">{$value.ip}</span></td>
+                     <td align="right">{$value.date}</td>
+                  </tr>
+               </table>
+            </div>
+            {/if}
+         {/loop}
+      </td>
+      <td class="timeline"></td>
+      <td>
+         {loop="$fsc->visitor->get_logs()"}
+            {if condition="$counter%2"}
+            <div class="comment_right">
+               <h1><a target="_blank" href="{$value.url}">{$value.info}</a></h1>
+               <table width="100%">
+                  <tr>
+                     <td>{$value.count} x <span title="{$value.user_agent}">{$value.ip}</span></td>
+                     <td align="right">{$value.date}</td>
+                  </tr>
+               </table>
+            </div>
+            {/if}
+         {/loop}
+      </td>
+   </tr>
    </table>
 </div>
 {/if}

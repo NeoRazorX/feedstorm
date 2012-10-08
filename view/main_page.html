@@ -3,56 +3,54 @@
 {if condition="!$fsc->visitor->mobile()"}
 <script src="{$path}/view/js/jquery.masonry.min.js"></script>
 <script type="text/javascript">
-   var currentMousePos = { x: -1, y: -1 };
-   function Arrow_Points()
-   {
-      var s = $('#tweets_from_story').find('.tweet2');
-      $.each(s, function(i, obj) {
-         var posLeft = $(obj).css("left");
-         $(obj).addClass('borderclass');
-         if(posLeft == "0px") {
-            html = "<span class='rightCorner'></span>";
-         }
-         else {
-            html = "<span class='leftCorner'></span>";
-         }
-         $(obj).prepend(html);
-      });
-   }
    function fs_show_popup_to(url)
    {
+      $("#fs_menu").hide();
+      $("#fs_social_widget").hide();
+      $("#shadow_box").show();
+      $("#popup_message").show();
+      $("#popups").html("<div id='popup_cargando' class='popup'>Cargando...</div>");
+      $("#popup_cargando").css({
+         top: $(window).scrollTop()+10,
+         left: ($(window).width() - $("#popup_cargando").outerWidth())/2
+      });
+      $("#popup_cargando").show();
       $.ajax({
          type: 'POST',
          url: url,
          dataType: 'html',
-         data: '',
+         data: 'no_full_page=TRUE',
          success: function(datos) {
+            $("#popup_cargando").hide();
             $("#shadow_box").show();
             $("#popup_message").show();
-            $("#popup2tweets").html(datos);
-            $("#popup2tweets").show();
-            $("#tweets_from_story").masonry({
-               itemSelector: '.tweet2'
+            $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");
+            $("#popup2url").css({
+               top: $(window).scrollTop()+10,
+               left: ($(window).width() - $("#popup2url").outerWidth())/2
             });
-            Arrow_Points();
-            $("#popup2tweets").css({
-               position: 'absolute',
-               top: currentMousePos.y,
-               left: ($(window).width() - $("#popup2tweets").outerWidth())/2
+            $("#popup2url").show();
+            $("div.comment_left").each(function() {
+               var top = $(this).offset().top + 10 - $("#popup2url").position().top;
+               var left = $("table.twitter_timeline td.timeline").offset().left - $("#popup2url").offset().left - 14;
+               $("#timeline_arrows").html($("#timeline_arrows").html() +
+                  "<img src='{$path}/view/img/timeline_point_left.png' alt='&gt;' style='top: "+
+                  top+"px; left: "+left+"px;'/>");
+            });
+            $("div.comment_right").each(function() {
+               var top = $(this).offset().top + 20 - $("#popup2url").position().top;
+               var left = $("table.twitter_timeline td.timeline").offset().left - $("#popup2url").offset().left - 5;
+               $("#timeline_arrows").html($("#timeline_arrows").html() +
+                  "<img src='{$path}/view/img/timeline_point_right.png' alt='&gt;' style='top: "+
+                  top+"px; left: "+left+"px;'/>");
             });
             $("table.footer").css({
-               'margin-top': $("#popup2tweets").outerHeight()
+               'margin-top': $("#popup2url").outerHeight()
             });
          }
       });
    }
    $(document).ready(function() {
-      $(document).mousemove(function(event) {
-         currentMousePos = {
-            x: event.pageX,
-            y: event.pageY
-         };
-      });
       $("#stories").masonry({
          itemSelector: '.story',
          isFitWidth: true,
@@ -65,77 +63,67 @@
 <div id="stories">
 {if condition="$fsc->visitor->mobile()"}
    {loop="$fsc->stories"}
-   <div class="story">
       {if condition="$value->youtube"}
+      <div class="story video">
          <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
          <div class="youtube">
             <a href="http://www.youtube.com/watch?v={$value->youtube}">
                <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
-               <br/>youtube
             </a>
          </div>
       {else}
+      <div class="story">
          {if condition="$value->image_width > 0"}
             {if condition="$value->image_width < 80"}
-               <table>
-               <tr>
-                  <td><img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/></td>
-                  <td valign="top">
-                     <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
-                  </td>
-               </tr>
-               </table>
+               <img class="mini" src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+               <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+               {$value->description}<br/>
             {else}
                <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
                <div class="image">
-                  <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+                  <img src="{$value->image}" alt="{$value->title}"/>
                </div>
             {/if}
-            {$value->description}
          {else}
             <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
             {$value->description}
          {/if}
       {/if}
-      <div class="date">
-         <a target="_blank" href="{$path}/{$value->feed_url}">{$value->feed_name}</a>
-         @ {$value->show_date()}
+      <div class="more">
+         <a href="{$path}/{$value->url()}">+</a>
       </div>
    </div>
    {/loop}
 {else}
    {loop="$fsc->stories"}
-   <div class="story">
       {if condition="$value->youtube"}
+      <div class="story video">
          <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
          <div class="youtube">
             <iframe width="320" height="180" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
             </iframe>
          </div>
       {else}
+      <div class="story">
          {if condition="$value->image_width > 0"}
             {if condition="$value->image_width < 80"}
-               <table>
-                  <tr>
-                     <td><img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/></td>
-                     <td valign="top">
-                        <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
-                     </td>
-                  </tr>
-               </table>
+               <img class="mini" src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+               <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+               {$value->description}<br/>
             {else}
                <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
                <div class="image">
                   <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
                </div>
             {/if}
-            {$value->description}
          {else}
             <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
-            {$value->description}
+            {$value->description}<br/>
          {/if}
       {/if}
-      <a href="#story_{$counter}" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">leer más...</a>
+      <div class="more">
+         <a href="{$path}/{$value->url()}" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">+</a>
+      </div>
    </div>
    {/loop}
 {/if}

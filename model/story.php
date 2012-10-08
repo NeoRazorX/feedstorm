@@ -24,6 +24,7 @@ class story extends fs_model
    public $title;
    public $description;
    public $link;
+   public $link2;
    public $date;
    public $youtube;
    
@@ -43,12 +44,14 @@ class story extends fs_model
       {
          $this->title = (string)$item->title;
          
+         $this->link2 = '/';
          /// intentamos obtener el enlace original de meneame
          foreach($item->children('meneame', TRUE) as $element)
          {
             if($element->getName() == 'url')
             {
                $this->link = (string)$element;
+               $this->link2 = (string)$item->link;
                break;
             }
          }
@@ -78,7 +81,7 @@ class story extends fs_model
          else if( $item->published )
             $this->date = strtotime( (string)$item->published );
          else
-            $this->date = strtotime( Date('Y-m-d') );
+            $this->date = strtotime( Date('Y-m-d H:m:i') );
          
          if( $item->description )
             $description = (string)$item->description;
@@ -107,8 +110,9 @@ class story extends fs_model
       {
          $this->title = 'None';
          $this->link = '/';
-         $this->date = strtotime( Date('Y-m-d H:m') );
-         $this->description = 'No description';
+         $this->link2 = '/';
+         $this->date = strtotime( Date('Y-m-d H:m:i') );
+         $this->description = 'Sin descripción';
          $this->youtube = NULL;
          $this->image = NULL;
       }
@@ -128,6 +132,11 @@ class story extends fs_model
    public function show_date()
    {
       return Date('Y-m-d H:m', $this->date);
+   }
+   
+   public function timesince()
+   {
+      return $this->time2timesince($this->date);
    }
    
    public function url()

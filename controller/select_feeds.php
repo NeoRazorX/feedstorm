@@ -6,7 +6,7 @@ class select_feeds extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('select_feeds', 'Seleccionar fuentes', 'select_feeds');
+      parent::__construct('select_feeds', 'Seleccionar fuentes de '.FS_NAME, 'select_feeds');
    }
    
    protected function process()

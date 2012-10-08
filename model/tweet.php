@@ -45,7 +45,7 @@ class tweet extends fs_model
          }
          
          $this->content = html_entity_decode( (string)$entry->content );
-         $this->date = (string)$entry->published;
+         $this->date = strtotime( (string)$entry->published );
       }
       else
       {
@@ -53,8 +53,13 @@ class tweet extends fs_model
          $this->author_url = 'http://www.twitter.com';
          $this->author_img = 'https://si0.twimg.com/sticky/default_profile_images/default_profile_2_normal.png';
          $this->content = ':-(';
-         $this->date = Date('Y-m-d H:m:i');
+         $this->date = strtotime( Date('Y-m-d H:m:i') );
       }
+   }
+   
+   public function timesince()
+   {
+      return $this->time2timesince($this->date);
    }
    
    public function all()
@@ -62,7 +67,7 @@ class tweet extends fs_model
       $tweets = $this->cache->get_array('tweets');
       if( !$tweets )
       {
-         $ch = curl_init('http://search.twitter.com/search.atom?result_type=recent&rpp=50&q=%23'.FS_NAME);
+         $ch = curl_init('http://search.twitter.com/search.atom?result_type=recent&rpp=50&q=%23'.FS_TWITTER_HASHTAG);
          curl_setopt($ch, CURLOPT_TIMEOUT, 30);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -79,8 +84,6 @@ class tweet extends fs_model
                if( $tweets )
                   $this->cache->set('tweets', $tweets, 600);
             }
-            else
-               $this->new_error('Estructura del feed de twitter irreconocible.');
          }
          else
             $this->new_error('No se encuentra el feed de twitter.');
@@ -110,8 +113,6 @@ class tweet extends fs_model
                if( $tweets )
                   $this->cache->set('tweets_from_'.$url, $tweets, 1200);
             }
-            else
-               $this->new_error('Estructura del feed de twitter irreconocible.');
          }
          else
             $this->new_error('No se encuentra el feed de twitter.');

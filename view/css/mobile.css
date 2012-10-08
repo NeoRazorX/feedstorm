@@ -1,22 +1,25 @@
-@import url('http://fonts.googleapis.com/css?family=Chau+Philomene+One');
-
 body {
-   background-color: #F3F1F2;
-   color: black;
    margin: 0px;
    padding: 0px;
-   font-family: Verdana, sans-serif;
+   background-color: white;
+   color: black;
+   font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
    font-size: 13px;
    font-style: normal;
    font-weight: normal;
 }
 
 a {
-   color: #222222;
+   color: #0E385F;
+   font-weight: bold;
 }
 
 a:visited {
    color: #4C769E;
+}
+
+img {
+   border-width: 0px;
 }
 
 input[type='submit'], input[type='button'] {
@@ -25,7 +28,7 @@ input[type='submit'], input[type='button'] {
    padding: 1px;
    padding-left: 5px;
    padding-right: 5px;
-   background-color: #55BA42;
+   background-color: #4C769E;
    border: 1px solid #333333;
    border-top-left-radius: 2px 2px;
    border-top-right-radius: 2px 2px;
@@ -41,37 +44,39 @@ input[type='submit'], input[type='button'] {
 table#header {
    width: 100%;
    margin: 0px;
+   margin-bottom: 10px;
+   background-color: #3B5998;
    border-collapse: collapse;
-   font-size: 13px;
+   color: white;
+   font-size: 14px;
 }
 
 table#header td {
    margin: 0px;
-   padding: 0px;
+   padding: 5px;
 }
 
 a#fs_logo {
    display: inline-block;
-   margin-right: 5px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 30px;
+   margin-right: 10px;
+   color: white;
+   font-size: 22px;
+   font-variant: small-caps;
    text-decoration: none;
-   color: black;
 }
 
 a#fs_b_menu {
    display: inline-block;
    padding: 5px;
-   padding-left: 8px;
    background-color: #333333;
-   border-bottom-left-radius: 5px 5px;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
    color: white;
-   font-family: 'Chau Philomene One', sans-serif;
    text-decoration: none;
-}
-
-a#fs_b_menu img {
-   vertical-align: bottom;
+   text-transform: capitalize;
+   font-variant: small-caps;
 }
 
 div#fs_menu {
@@ -82,47 +87,53 @@ div#fs_menu {
    z-index: 2;
    padding: 5px;
    background-color: #333333;
+   border-left: 2px solid #999999;
+   border-bottom: 2px solid #999999;
    border-bottom-left-radius: 5px 5px;
    color: white;
-   font-size: 15px;
+   font-size: 16px;
 }
 
 div#fs_menu a {
    display: block;
    margin: 5px;
-   padding: 5px;
+   margin-top: 10px;
+   padding: 0px;
+   text-decoration: none;
    text-transform: capitalize;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 16px;
+   text-align: center;
    color: white;
+   font-variant: small-caps;
 }
 
 div#fs_menu a#fs_b_close_menu {
    margin-top: 0px;
    text-align: right;
-   text-decoration: none;
-   font-weight: bold;
+}
+
+div#fs_menu a.page {
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #3B5998;
 }
 
 div.error, div.message {
    display: block;
    margin: 5px;
+   margin-left: 10px;
+   margin-right: 10px;
    padding: 10px;
-   border: 1px solid #777777;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   border-top: 1px solid #cccccc;
+   border-bottom: 1px solid #cccccc;
+   color: black;
 }
 
 div.error {
    background-color: #EC6655;
-   color: black;
 }
 
 div.message {
    background-color: #F4F596;
-   color: black;
 }
 
 div.error ul, div.message ul {
@@ -135,8 +146,10 @@ div.story {
    display: block;
    margin: 5px;
    padding: 5px;
-   background-color: #f1f1f1;
+   padding-top: 8px;
+   background-color: white;
    border-top: 2px solid #333333;
+   border-bottom: 1px dashed #333333;
    color: black;
    text-align: justify;
 }
@@ -144,20 +157,29 @@ div.story {
 div.story h1 {
    margin: 0px;
    margin-bottom: 5px;
-   padding: 5px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 20px;
-   font-weight: normal;
+   padding: 0px;
+   padding-bottom: 2px;
+   font-size: 16px;
    text-align: center;
+}
+
+div.story img.mini {
+   float: left;
+   clear: both;
+   padding-right: 5px;
+   padding-bottom: 5px;
 }
 
 div.story h2 {
    margin: 0px;
-   margin-bottom: 5px;
-   padding: 5px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 18px;
-   font-weight: normal;
+   padding: 0px;
+   padding-bottom: 8px;
+   font-size: 14px;
+}
+
+div.story h1 a, div.story h2 a {
+   text-decoration: none;
+   color: #222222;
 }
 
 div.story div.image,
@@ -166,41 +188,65 @@ div.story div.youtube {
    margin-bottom: 5px;
 }
 
-div.story div.youtube {
-   text-align: center;
-}
-
-div.story div.youtube iframe,
-div.story div.youtube img,
-div.story div.image img {
+div.story div.image img,
+div.story div.youtube img {
    max-width: 90%;
 }
 
-div.story div.date {
-   margin-top: 5px;
-   border-top: 1px dashed #333333;
-   font-size: 11px;
+div.story div.more {
    text-align: right;
+}
+
+div.story div.more a {
+   display: inline-block;
+   margin-top: 2px;
+   padding-top: 0px;
+   padding-left: 3px;
+   padding-right: 3px;
+   padding-bottom: 1px;
+   background-color: #4C769E;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   color: white;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+div.video {
+   background-color: #424242;
+   border-bottom: 2px solid #333333;
+   color: white;
+}
+
+div.video h1 a, div.video h2 a {
+   color: white;
+}
+
+div.video div.more a {
+   background-color: white;
+   color: black;
 }
 
 div.box {
    margin: 5px;
+   margin-bottom: 10px;
    padding: 5px;
-   background: white;
-   border: 1px solid #333333;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   background-color: #f1f1f1;
+   border: 1px solid #999999;
+   border-top: 2px solid #555555;
 }
 
 div.box h1 {
    margin: 0px;
-   padding: 5px;
-   border-bottom: 1px dashed #333333;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 22px;
-   font-weight: normal;
+   margin-bottom: 5px;
+   padding-top: 0px;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-bottom: 2px;
+   color: black;
+   font-size: 20px;
 }
 
 ul.horizontal {
@@ -219,10 +265,87 @@ table.footer {
 }
 
 table.footer td {
-   padding-left: 10px;
-   padding-right: 10px;
+   padding: 5px;
 }
 
-table.footer a {
-   font-weight: bold;
+div.inside_popup {
+   margin: 1px;
+   padding: 2px;
+   background-color: #F3F1F2;
+   border: 2px solid #aaaaaa;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+   font-size: 11px;
+}
+
+div.full_story {
+   text-align: justify;
+   margin-bottom: 10px;
+}
+
+div.full_story h1 {
+   margin: 0px;
+   padding: 5px;
+   padding-left: 0px;
+   font-size: 13px;
+}
+
+div.full_story h1 a {
+   color: #222222;
+}
+
+div#timeline_arrows img {
+   position: absolute;
+   z-index: 4;
+}
+
+table.twitter_timeline {
+   margin: 0 auto;
+   width: 100%;
+   background-color: #cccccc;
+   border: 1px solid #999999;
+   border-collapse: collapse;
+}
+
+table.twitter_timeline td {
+   vertical-align: top;
+}
+
+table.twitter_timeline td.timeline {
+   width: 2px;
+   background-color: #4C769E;
+}
+
+div.comment_left, div.comment_right {
+   margin: 1px;
+   margin-bottom: 5px;
+   padding: 2px;
+   background-color: white;
+   border: 1px solid #4C769E;
+   font-size: 11px;
+}
+
+div.comment_left {
+   margin-right: 7px;
+}
+
+div.comment_right {
+   margin-left: 7px;
+}
+
+div.comment_left img.mini, div.comment_right img.mini {
+   float: left;
+   clear: both;
+   padding-right: 5px;
+   padding-bottom: 5px;
+}
+
+div.comment_left div.content, div.comment_right div.content {
+   text-align: justify;
+}
+
+div.comment_left h1, div.comment_right h1 {
+   font-size: 14px;
 }

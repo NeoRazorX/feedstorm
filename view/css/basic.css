@@ -1,18 +1,17 @@
-@import url('http://fonts.googleapis.com/css?family=Chau+Philomene+One');
-
 body {
-   background-color: #F3F1F2;
-   color: black;
    margin: 0px;
    padding: 0px;
-   font-family: Verdana, sans-serif;
-   font-size: 12px;
+   background-color: white;
+   color: black;
+   font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+   font-size: 13px;
    font-style: normal;
    font-weight: normal;
 }
 
 a {
-   color: #222222;
+   color: #0E385F;
+   font-weight: bold;
 }
 
 a:visited {
@@ -29,7 +28,7 @@ input[type='submit'], input[type='button'] {
    padding: 1px;
    padding-left: 5px;
    padding-right: 5px;
-   background-color: #55BA42;
+   background-color: #4C769E;
    border: 1px solid #333333;
    border-top-left-radius: 2px 2px;
    border-top-right-radius: 2px 2px;
@@ -45,23 +44,25 @@ input[type='submit'], input[type='button'] {
 table#header {
    width: 100%;
    margin: 0px;
+   margin-bottom: 10px;
+   background-color: #3B5998;
    border-collapse: collapse;
+   color: white;
    font-size: 16px;
 }
 
 table#header td {
    margin: 0px;
-   padding: 0px;
+   padding: 5px;
 }
 
 a#fs_logo {
    display: inline-block;
-   margin-left: 10px;
    margin-right: 10px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 40px;
+   color: white;
+   font-size: 30px;
+   font-variant: small-caps;
    text-decoration: none;
-   color: black;
 }
 
 a#fs_b_social {
@@ -71,17 +72,15 @@ a#fs_b_social {
 a#fs_b_menu {
    display: inline-block;
    padding: 5px;
-   padding-left: 8px;
    background-color: #333333;
-   border-bottom-left-radius: 5px 5px;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
    color: white;
-   font-family: 'Chau Philomene One', sans-serif;
    text-decoration: none;
-   font-size: 16px;
-}
-
-a#fs_b_menu img {
-   vertical-align: bottom;
+   text-transform: capitalize;
+   font-variant: small-caps;
 }
 
 div#fs_menu {
@@ -92,25 +91,33 @@ div#fs_menu {
    z-index: 2;
    padding: 5px;
    background-color: #333333;
+   border-left: 2px solid #999999;
+   border-bottom: 2px solid #999999;
    border-bottom-left-radius: 5px 5px;
    color: white;
-   font-size: 15px;
+   font-size: 16px;
 }
 
 div#fs_menu a {
    display: block;
    margin: 5px;
    padding: 0px;
+   text-decoration: none;
    text-transform: capitalize;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 18px;
+   text-align: center;
    color: white;
+   font-variant: small-caps;
 }
 
 div#fs_menu a#fs_b_close_menu {
    margin-top: 0px;
    text-align: right;
-   text-decoration: none;
+}
+
+div#fs_menu a.page {
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #3B5998;
 }
 
 div#fs_social_widget {
@@ -123,22 +130,22 @@ div#fs_social_widget {
    margin: 0px;
    padding: 5px;
    background-color: #333333;
+   border-right: 2px solid #999999;
+   border-bottom: 2px solid #999999;
    border-bottom-right-radius: 5px 5px;
-   color: whitesmoke;
+   color: white;
 }
 
 div#fs_social_widget a {
    color: white;
-   font-weight: bold;
+   font-variant: small-caps;
 }
 
 a#fs_b_close_social {
    display: block;
    margin: 3px;
    padding: 3px;
-   font-family: 'Chau Philomene One', sans-serif;
    font-size: 15px;
-   font-weight: normal;
    text-decoration: none;
    text-align: right;
 }
@@ -161,22 +168,20 @@ div#fs_social_widget div.tweet table td.content {
 div.error, div.message {
    display: block;
    margin: 5px;
+   margin-left: 10px;
+   margin-right: 10px;
    padding: 10px;
-   border: 1px solid #777777;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   border-top: 1px solid #cccccc;
+   border-bottom: 1px solid #cccccc;
+   color: black;
 }
 
 div.error {
    background-color: #EC6655;
-   color: black;
 }
 
 div.message {
    background-color: #F4F596;
-   color: black;
 }
 
 div.error ul, div.message ul {
@@ -193,30 +198,41 @@ div.story {
    display: inline-block;
    width: 340px;
    margin: 5px;
-   margin-bottom: 10px;
    padding: 5px;
-   background-color: #f1f1f1;
+   padding-top: 8px;
+   background-color: white;
    border-top: 2px solid #333333;
+   border-bottom: 1px dashed #333333;
    color: black;
    text-align: justify;
 }
 
 div.story h1 {
    margin: 0px;
-   padding: 5px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 20px;
-   font-weight: normal;
+   margin-bottom: 5px;
+   padding: 0px;
+   padding-bottom: 2px;
+   font-size: 16px;
    text-align: center;
+}
+
+div.story img.mini {
+   float: left;
+   clear: both;
+   padding-right: 5px;
+   padding-bottom: 5px;
 }
 
 div.story h2 {
    margin: 0px;
-   margin-bottom: 5px;
-   padding: 5px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 18px;
-   font-weight: normal;
+   padding: 0px;
+   padding-bottom: 8px;
+   font-size: 14px;
+}
+
+div.story h1 a, div.story h2 a {
+   text-decoration: none;
+   color: #222222;
 }
 
 div.story div.image,
@@ -225,31 +241,60 @@ div.story div.youtube {
    margin-bottom: 5px;
 }
 
-div.story div.date {
-   margin-top: 5px;
-   border-top: 1px dashed #333333;
-   font-size: 11px;
+div.story div.more {
    text-align: right;
+}
+
+div.story div.more a {
+   display: inline-block;
+   margin-top: 2px;
+   padding-top: 0px;
+   padding-left: 3px;
+   padding-right: 3px;
+   padding-bottom: 1px;
+   background-color: #4C769E;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   color: white;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+div.video {
+   background-color: #424242;
+   border-bottom: 2px solid #333333;
+   color: white;
+}
+
+div.video h1 a, div.video h2 a {
+   color: white;
+}
+
+div.video div.more a {
+   background-color: white;
+   color: black;
 }
 
 div.box {
    margin: 5px;
+   margin-bottom: 10px;
    padding: 5px;
-   background: white;
-   border: 1px solid #333333;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   background-color: #f1f1f1;
+   border: 1px solid #999999;
+   border-top: 2px solid #555555;
 }
 
 div.box h1 {
    margin: 0px;
-   padding: 5px;
-   border-bottom: 1px dashed #333333;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 22px;
-   font-weight: normal;
+   margin-bottom: 5px;
+   padding-top: 0px;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-bottom: 2px;
+   color: black;
+   font-size: 20px;
 }
 
 ul.horizontal {
@@ -260,20 +305,18 @@ ul.horizontal {
 
 ul.horizontal li {
    display: inline-block;
-   min-width: 225px;
+   min-width: 250px;
 }
 
 table.footer {
+   margin-top: 10px;
+   padding: 5px;
    width: 100%;
 }
 
 table.footer td {
    padding-left: 10px;
    padding-right: 10px;
-}
-
-table.footer a {
-   font-weight: bold;
 }
 
 div#shadow_box {
@@ -284,32 +327,51 @@ div#shadow_box {
    width: 100%;
    height: 100%;
    background: #000;
-   opacity: 0.7;
+   opacity: 0.8;
    display: none;
 }
 
 div#popup_message {
    display: none;
    position: fixed;
-   left: 0px;
+   top: 0px;
    right: 0px;
-   bottom: 0px;
    z-index: 4;
    padding: 5px;
-   opacity: 1;
-   background-color: #333333;
+   background-color: black;
+   border-bottom-left-radius: 5px 5px;
    color: white;
    font-size: 15px;
-   text-align: center;
+   font-variant: small-caps;
+   cursor: pointer;
+}
+
+div#popup_message img {
+   vertical-align: bottom;
 }
 
 div.popup {
    display: none;
+   position: absolute;
+   top: 10px;
+   left: 10px;
    z-index: 3;
-   width: 720px;
+   max-width: 750px;
    padding: 5px;
    background-color: #F3F1F2;
    border: 5px solid #CCCCCC;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+}
+
+div.inside_popup {
+   margin: 10px;
+   margin-top: 0px;
+   padding: 5px;
+   background-color: #F3F1F2;
+   border: 5px solid #aaaaaa;
    border-top-left-radius: 5px 5px;
    border-top-right-radius: 5px 5px;
    border-bottom-left-radius: 5px 5px;
@@ -325,70 +387,53 @@ div.full_story h1 {
    margin: 0px;
    padding: 5px;
    padding-left: 0px;
-   font-family: 'Chau Philomene One', sans-serif;
-   font-size: 22px;
-   font-weight: normal;
+   font-size: 18px;
 }
 
-div#tweets_from_story {
-   width: 700px;
+div.full_story h1 a {
+   color: #222222;
+}
+
+div#timeline_arrows img {
+   position: absolute;
+   z-index: 4;
+}
+
+table.twitter_timeline {
    margin: 0 auto;
-   margin-top: 10px;
+   width: 100%;
    background-color: #cccccc;
-   border: 1px solid #bbbbbb;
+   border: 1px solid #999999;
+   border-collapse: collapse;
 }
 
-div.tweet2 {
-   width: 320px;
-   margin: 10px;
+table.twitter_timeline td {
+   vertical-align: top;
+}
+
+table.twitter_timeline td.timeline {
+   width: 2px;
+   background-color: #4C769E;
+}
+
+div.comment_left, div.comment_right {
+   margin: 7px;
    padding: 3px;
    background-color: white;
-   border: 1px solid #B4BBCD;
+   border: 1px solid #4C769E;
 }
 
-div.tweet2 table td.content {
-   padding-left: 5px;
+div.comment_left img.mini, div.comment_right img.mini {
+   float: left;
+   clear: both;
+   padding-right: 5px;
+   padding-bottom: 5px;
+}
+
+div.comment_left div.content, div.comment_right div.content {
    text-align: justify;
 }
 
-.timeline_container{
-   width: 16px;
-   text-align: center;
-   margin: 0 auto;
-   display: block;
-}
-
-.timeline{
-   margin: 0 auto;
-   background-color: #4C769E;
-   display: block;
-   float: left;
-   height: 100%;
-   left: 346px;
-   position: absolute;
-   width: 4px;
-}
-
-.rightCorner { 
-   background-image: url("../img/timeline_point_left.png");
-   display: block;
-   height: 15px;
-   margin-left: 323px;
-   margin-top: 8px;
-   padding: 0;
-   vertical-align: top;
-   width: 13px;
-   z-index:2;
-   position: absolute;
-}
-
-.leftCorner{
-   background-image: url("../img/timeline_point_right.png");
-   display: block;
-   height: 15px;
-   width: 13px;
-   margin-left: -16px;
-   margin-top: 28px;
-   position: absolute;
-   z-index:2;
+div.comment_left h1, div.comment_right h1 {
+   font-size: 14px;
 }

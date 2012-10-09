@@ -20,8 +20,14 @@
 require_once 'config.php';
 require_once 'model/feed.php';
 
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+echo "+ -> PreProcesar, * -> Procesar, - -> Imágen, D -> Descargar, R -> Redimensionar.\n";
+
 $feed = new feed();
 foreach($feed->all() as $f)
+{
+   echo "\nProcesando ".$f->name."...\n";
    $f->read(TRUE);
+}
 
 ?>

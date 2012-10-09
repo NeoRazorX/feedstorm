@@ -78,16 +78,16 @@
                <a id="fs_b_social" href="#"><img src="{$path}/view/img/twitter2.png" alt="twitter" title="twitter"/></a>
             {/if}
          </td>
-         <td align="right"><a id="fs_b_menu" href="#">menú</a></td>
+         <td align="right">
+            <a id="fs_b_menu" href="#"><img src="{$path}/view/img/tools.png" alt="Menu" title="Seleccionar fuentes" width="20" height="22"/></a>
+         </td>
       </tr>
    </table>
    <div id="fs_menu">
       <a id="fs_b_close_menu" href="#"><img src="{$path}/view/img/close.png" alt="x"/></a>
       <a class="page" href="{$path}/index.php">portada</a>
       <a class="page" href="{$path}/index.php?page=select_feeds">preferencias</a>
-      {if condition="!$fsc->visitor->mobile()"}
-      <a class="page" href="{$path}/index.php?page=select_feeds#fisgona">fisgona</a>
-      {/if}
+      <a class="page" href="{$path}/index.php?page=fisgona">fisgona</a>
    </div>
    {if condition="!$fsc->visitor->mobile()"}
       <div id="fs_social_widget">
@@ -99,7 +99,7 @@
             <table>
                <tr>
                   <td>
-                     <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-hashtags="#{$hashtag}" data-related="neorazorx">Tweet</a>
+                     <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-hashtags="{$hashtag}" data-related="neorazorx">Tweet</a>
                      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
                   </td>
                   <td class="content">

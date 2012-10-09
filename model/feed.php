@@ -162,8 +162,16 @@ class feed extends fs_model
          {
             if( $images )
             {
+               /// pre-procesamos, hasta el final
+               $work_array = array();
+               $discarded = array();
                foreach($stories as $s)
-                  $s->process_image();
+                  $s->pre_process_images($work_array, $discarded);
+               
+               /// después procesamos
+               $selected = array();
+               foreach($stories as $s)
+                  $s->process_images($discarded, $selected);
             }
             $this->cache->set('stories_from_'.$this->name, $stories, 28800);
          }

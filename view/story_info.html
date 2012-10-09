@@ -1,0 +1,59 @@
+{if condition="$fsc->full_page"}
+   {include="header"}
+   
+   <div class="inside_popup">
+{/if}
+
+{if condition="$fsc->story"}
+   <div class="full_story">
+      <h1><a target="_blank" href="{$fsc->story->link}">{$fsc->story->title}</a></h1>
+      {$fsc->story->description}
+      <div class="info">
+         <a target="_blank" href="{$path}/{$fsc->story->feed_url}">{$fsc->story->feed_name}</a>
+         @ {$fsc->story->timesince()}
+         {if condition="$fsc->story->link2!='/'"}
+            &nbsp; <a target="_blank" href="{$fsc->story->link2}">ver en {$fsc->story->feed_name}</a>
+         {/if}
+      </div>
+      
+      {if condition="$fsc->story->youtube"}
+      <div class="media">
+         <h2>Vídeo seleccionado:</h2>
+         <iframe width="320" height="180" src="http://www.youtube.com/embed/{$fsc->story->youtube}" frameborder="0" allowfullscreen>
+         </iframe>
+      </div>
+      {/if}
+      
+      {if condition="$fsc->story->image"}
+      <div class="media">
+         <h2>Imágen seleccionada:</h2>
+         <img src="{$fsc->story->image}" alt="{$fsc->story->title}" width="{$fsc->story->image_width}" height="{$fsc->story->image_height}"/>
+      </div>
+      {/if}
+      
+      {if condition="$fsc->story->images"}
+      <div class="media">
+         <h2>Imágenes encontradas en la fuente:</h2>
+         {loop="$fsc->story->get_local_images()"}
+            <img src="{$value}" alt="{$value}" title="{$value}"/>
+         {/loop}
+      </div>
+      {/if}
+      
+      {if condition="$fsc->story->more_images"}
+      <div class="media">
+         <h2>Imágenes encontradas en el link:</h2>
+         {loop="$fsc->story->get_local_more_images()"}
+            <img src="{$value}" alt="{$value}" title="{$value}"/>
+         {/loop}
+      </div>
+      {/if}
+   </div>
+{else}
+   <div class="message">Historia no encontrada :-(</div>
+{/if}
+
+{if condition="$fsc->full_page"}
+   </div>
+   {include="footer"}
+{/if}

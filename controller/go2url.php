@@ -19,11 +19,11 @@
 
 require_once 'base/fs_controller.php';
 
-class go_to extends fs_controller
+class go2url extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('go_to', 'Redireccionando...');
+      parent::__construct('go2url', 'Redireccionando...');
    }
    
    protected function process()
@@ -32,9 +32,9 @@ class go_to extends fs_controller
       
       if( isset($_GET['url']) )
       {
-         $encontrada = FALSE;
          $url = urldecode( $_GET['url'] );
          
+         $encontrada = FALSE;
          if( isset($_GET['feed']) )
          {
             $feed = new feed();
@@ -49,7 +49,6 @@ class go_to extends fs_controller
                }
             }
          }
-         
          if( !$encontrada )
             $this->visitor->add2log('Redireccionando a '.$url);
          

@@ -1,7 +1,7 @@
 body {
    margin: 0px;
    padding: 0px;
-   background-color: white;
+   background-color: #E7EBF2;
    color: black;
    font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
    font-size: 13px;
@@ -45,10 +45,10 @@ table#header {
    width: 100%;
    margin: 0px;
    margin-bottom: 10px;
-   background-color: #3B5998;
+   background-color: #424242;
    border-collapse: collapse;
    color: white;
-   font-size: 14px;
+   font-size: 12px;
 }
 
 table#header td {
@@ -60,15 +60,20 @@ a#fs_logo {
    display: inline-block;
    margin-right: 10px;
    color: white;
-   font-size: 22px;
+   font-size: 20px;
    font-variant: small-caps;
    text-decoration: none;
 }
 
+a#fs_b_social {
+   margin-left: 10px;
+}
+
 a#fs_b_menu {
    display: inline-block;
-   padding: 5px;
-   background-color: #333333;
+   padding: 4px;
+   background-color: #3B5998;
+   border: 1px outset #3B5998;
    border-top-left-radius: 2px 2px;
    border-top-right-radius: 2px 2px;
    border-bottom-left-radius: 2px 2px;
@@ -77,6 +82,10 @@ a#fs_b_menu {
    text-decoration: none;
    text-transform: capitalize;
    font-variant: small-caps;
+}
+
+a#fs_b_menu img {
+   vertical-align: middle;
 }
 
 div#fs_menu {
@@ -97,7 +106,7 @@ div#fs_menu {
 div#fs_menu a {
    display: block;
    margin: 5px;
-   margin-top: 10px;
+   margin-bottom: 10px;
    padding: 0px;
    text-decoration: none;
    text-transform: capitalize;
@@ -115,6 +124,7 @@ div#fs_menu a.page {
    padding-left: 5px;
    padding-right: 5px;
    background-color: #3B5998;
+   border: 1px outset #3B5998;
 }
 
 div.error, div.message {
@@ -148,8 +158,7 @@ div.story {
    padding: 5px;
    padding-top: 8px;
    background-color: white;
-   border-top: 2px solid #333333;
-   border-bottom: 1px dashed #333333;
+   border: 1px solid #cccccc;
    color: black;
    text-align: justify;
 }
@@ -179,7 +188,7 @@ div.story h2 {
 
 div.story h1 a, div.story h2 a {
    text-decoration: none;
-   color: #222222;
+   color: black;
 }
 
 div.story div.image,
@@ -216,7 +225,7 @@ div.story div.more a {
 
 div.video {
    background-color: #424242;
-   border-bottom: 2px solid #333333;
+   border: 1px solid #333333;
    color: white;
 }
 
@@ -233,9 +242,12 @@ div.box {
    margin: 5px;
    margin-bottom: 10px;
    padding: 5px;
-   background-color: #f1f1f1;
-   border: 1px solid #999999;
-   border-top: 2px solid #555555;
+   background-color: white;
+   border: 2px solid #cccccc;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
 }
 
 div.box h1 {
@@ -255,21 +267,20 @@ ul.horizontal {
    list-style-type: none;
 }
 
-div#shadow_box {
-   display: none;
-}
-
 table.footer {
+   margin-top: 10px;
+   padding: 5px;
    width: 100%;
-   font-size: 11px;
 }
 
 table.footer td {
-   padding: 5px;
+   padding-left: 10px;
+   padding-right: 10px;
 }
 
 div.inside_popup {
-   margin: 1px;
+   margin: 2px;
+   margin-top: 0px;
    padding: 2px;
    background-color: #F3F1F2;
    border: 2px solid #aaaaaa;
@@ -277,7 +288,6 @@ div.inside_popup {
    border-top-right-radius: 5px 5px;
    border-bottom-left-radius: 5px 5px;
    border-bottom-right-radius: 5px 5px;
-   font-size: 11px;
 }
 
 div.full_story {
@@ -286,66 +296,37 @@ div.full_story {
 }
 
 div.full_story h1 {
-   margin: 0px;
+   margin: 5px;
+   margin-bottom: 5px;
    padding: 5px;
-   padding-left: 0px;
-   font-size: 13px;
+   font-size: 18px;
+   text-align: center;
 }
 
 div.full_story h1 a {
-   color: #222222;
+   color: black;
 }
 
-div#timeline_arrows img {
-   position: absolute;
-   z-index: 4;
+div.full_story div.info {
+   margin-top: 5px;
+   margin-bottom: 20px;
+   padding: 5px;
+   border-top: 1px solid #999999;
 }
 
-table.twitter_timeline {
-   margin: 0 auto;
-   width: 100%;
-   background-color: #cccccc;
-   border: 1px solid #999999;
-   border-collapse: collapse;
-}
-
-table.twitter_timeline td {
-   vertical-align: top;
-}
-
-table.twitter_timeline td.timeline {
-   width: 2px;
-   background-color: #4C769E;
-}
-
-div.comment_left, div.comment_right {
-   margin: 1px;
-   margin-bottom: 5px;
-   padding: 2px;
-   background-color: white;
-   border: 1px solid #4C769E;
-   font-size: 11px;
-}
-
-div.comment_left {
-   margin-right: 7px;
-}
-
-div.comment_right {
-   margin-left: 7px;
-}
-
-div.comment_left img.mini, div.comment_right img.mini {
-   float: left;
-   clear: both;
-   padding-right: 5px;
-   padding-bottom: 5px;
-}
-
-div.comment_left div.content, div.comment_right div.content {
-   text-align: justify;
-}
-
-div.comment_left h1, div.comment_right h1 {
+div.full_story h2 {
+   margin: 0px;
+   margin-bottom: 10px;
    font-size: 14px;
+}
+
+div.full_story div.media {
+   margin: 5px;
+   border: 1px inset #999999;
+   background-color: #999999;
+   text-align: center;
+}
+
+div.full_story div.media img {
+   max-width: 80%;
 }

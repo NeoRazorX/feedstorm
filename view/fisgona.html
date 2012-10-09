@@ -1,0 +1,21 @@
+{include="header"}
+
+<div class="box">
+   <h1>Fisgona:</h1>
+   <table width="100%">
+      <tr>
+         <th align="left">IP (veces)</th>
+         <th align="left">Info.</th>
+         <th align="right">Fecha</th>
+      </tr>
+      {loop="$fsc->logs"}
+         <tr>
+            <td><span title="{$value.user_agent}">{$value.ip}</span> ({$value.count})</td>
+            <td><a target="_blank" href="{$value.url}">{$value.info}</a></td>
+            <td align="right">{$value.date}</td>
+         </tr>
+      {/loop}
+   </table>
+</div>
+
+{include="footer"}

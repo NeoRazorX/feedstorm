@@ -30,20 +30,6 @@
                left: ($(window).width() - $("#popup2url").outerWidth())/2
             });
             $("#popup2url").show();
-            $("div.comment_left").each(function() {
-               var top = $(this).offset().top + 10 - $("#popup2url").position().top;
-               var left = $("table.twitter_timeline td.timeline").offset().left - $("#popup2url").offset().left - 14;
-               $("#timeline_arrows").html($("#timeline_arrows").html() +
-                  "<img src='{$path}/view/img/timeline_point_left.png' alt='&gt;' style='top: "+
-                  top+"px; left: "+left+"px;'/>");
-            });
-            $("div.comment_right").each(function() {
-               var top = $(this).offset().top + 20 - $("#popup2url").position().top;
-               var left = $("table.twitter_timeline td.timeline").offset().left - $("#popup2url").offset().left - 5;
-               $("#timeline_arrows").html($("#timeline_arrows").html() +
-                  "<img src='{$path}/view/img/timeline_point_right.png' alt='&gt;' style='top: "+
-                  top+"px; left: "+left+"px;'/>");
-            });
             $("table.footer").css({
                'margin-top': $("#popup2url").outerHeight()
             });
@@ -65,7 +51,7 @@
    {loop="$fsc->stories"}
       {if condition="$value->youtube"}
       <div class="story video">
-         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+         <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
          <div class="youtube">
             <a href="http://www.youtube.com/watch?v={$value->youtube}">
                <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
@@ -76,16 +62,16 @@
          {if condition="$value->image_width > 0"}
             {if condition="$value->image_width < 80"}
                <img class="mini" src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
-               <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+               <h2><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h2>
                {$value->description}<br/>
             {else}
-               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+               <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
                <div class="image">
                   <img src="{$value->image}" alt="{$value->title}"/>
                </div>
             {/if}
          {else}
-            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+            <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
             {$value->description}
          {/if}
       {/if}
@@ -98,7 +84,7 @@
    {loop="$fsc->stories"}
       {if condition="$value->youtube"}
       <div class="story video">
-         <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+         <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
          <div class="youtube">
             <iframe width="320" height="180" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
             </iframe>
@@ -108,16 +94,16 @@
          {if condition="$value->image_width > 0"}
             {if condition="$value->image_width < 80"}
                <img class="mini" src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
-               <h2><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h2>
+               <h2><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h2>
                {$value->description}<br/>
             {else}
-               <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+               <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
                <div class="image">
                   <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
                </div>
             {/if}
          {else}
-            <h1><a target="_blank" href="{$path}/{$value->go_to_url()}">{$value->title}</a></h1>
+            <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
             {$value->description}<br/>
          {/if}
       {/if}

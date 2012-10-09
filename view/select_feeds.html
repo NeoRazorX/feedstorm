@@ -28,65 +28,16 @@
    </form>
 </div>
 
-{if condition="!$fsc->visitor->mobile()"}
-<script type="text/javascript">
-   $(document).ready(function() {
-      $("div.comment_left").each(function() {
-            var top = $(this).offset().top + 15;
-            var left = $("table.twitter_timeline td.timeline").offset().left - 9;
-            $("#timeline_arrows").html($("#timeline_arrows").html() +
-               "<img src='{$path}/view/img/timeline_point_left.png' alt='&gt;' style='top: "+
-               top+"px; left: "+left+"px;'/>");
-      });
-      $("div.comment_right").each(function() {
-            var top = $(this).offset().top + 30;
-            var left = $("table.twitter_timeline td.timeline").offset().left;
-            $("#timeline_arrows").html($("#timeline_arrows").html() +
-               "<img src='{$path}/view/img/timeline_point_right.png' alt='&gt;' style='top: "+
-               top+"px; left: "+left+"px;'/>");
-      });
-   });
-</script>
-<a name="fisgona"></a>
 <div class="box">
-   <h1>Fisgona:</h1>
-   <div id="timeline_arrows"></div>
-   <table class="twitter_timeline">
-   <tr>
-      <td>
-         {loop="$fsc->visitor->get_logs()"}
-            {if condition="$counter%2==0"}
-            <div class="comment_left">
-               <h1><a target="_blank" href="{$value.url}">{$value.info}</a></h1>
-               <table width="100%">
-                  <tr>
-                     <td>{$value.count} x <span title="{$value.user_agent}">{$value.ip}</span></td>
-                     <td align="right">{$value.date}</td>
-                  </tr>
-               </table>
-            </div>
-            {/if}
-         {/loop}
-      </td>
-      <td class="timeline"></td>
-      <td>
-         {loop="$fsc->visitor->get_logs()"}
-            {if condition="$counter%2"}
-            <div class="comment_right">
-               <h1><a target="_blank" href="{$value.url}">{$value.info}</a></h1>
-               <table width="100%">
-                  <tr>
-                     <td>{$value.count} x <span title="{$value.user_agent}">{$value.ip}</span></td>
-                     <td align="right">{$value.date}</td>
-                  </tr>
-               </table>
-            </div>
-            {/if}
-         {/loop}
-      </td>
-   </tr>
-   </table>
+   <h1>Imágenes:</h1>
+   <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+   siempre intenta que cada noticia venga acompañada de su correspondiente imágen,
+   una imágen vale más que mil palabras, pero a veces la imágen encontrada procede
+   de un anuncio de la página, o es la imágen de fondo del blog ... es decir, basura.
+   <b>¿Qué podemos hacer?</b> ... pues tenía pensado mostrarte un formulario para
+   poder banear imágenes, pero se me acaba de ocurrir una idea para descartar esa
+   basura de forma automática ... aunque es posible que este nuevo método no funcione
+   y tenga que mostrarte el formulario del que hablaba. Ya veremos.
 </div>
-{/if}
 
 {include="footer"}

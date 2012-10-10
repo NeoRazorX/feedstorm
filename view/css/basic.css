@@ -240,6 +240,10 @@ div.story h1 a, div.story h2 a {
    color: black;
 }
 
+div.story h1 a:hover, div.story h2 a:hover {
+   text-decoration: underline;
+}
+
 div.story div.image,
 div.story div.youtube {
    text-align: center;
@@ -365,7 +369,7 @@ div.popup {
    left: 10px;
    z-index: 3;
    max-width: 750px;
-   padding: 5px;
+   padding: 0px;
    background-color: #F3F1F2;
    border: 5px solid #CCCCCC;
    border-top-left-radius: 5px 5px;
@@ -377,7 +381,7 @@ div.popup {
 div.inside_popup {
    margin: 10px;
    margin-top: 0px;
-   padding: 5px;
+   padding: 0px;
    background-color: #F3F1F2;
    border: 5px solid #aaaaaa;
    border-top-left-radius: 5px 5px;
@@ -389,12 +393,13 @@ div.inside_popup {
 div.full_story {
    text-align: justify;
    margin-bottom: 10px;
+   padding: 10px;
 }
 
 div.full_story h1 {
-   margin: 5px;
+   margin: 0px;
    margin-bottom: 5px;
-   padding: 5px;
+   padding: 0px;
    font-size: 18px;
    text-align: center;
 }
@@ -407,22 +412,36 @@ div.full_story div.info {
    margin-top: 5px;
    margin-bottom: 20px;
    padding: 5px;
-   border-top: 1px solid #999999;
 }
 
-div.full_story h2 {
+div.popup table.share, div.inside_popup table.share {
+   width: 100%;
+   background-color: white;
+   border-collapse: collapse;
+   border-top: 1px solid #aaaaaa;
+   border-bottom: 1px solid #aaaaaa;
+}
+
+div.popup table.share td, div.inside_popup table.share td {
+   padding-top: 20px;
+   text-align: center;
+   vertical-align: top;
+}
+
+div.popup h2, div.inside_popup h2 {
    margin: 0px;
    margin-bottom: 10px;
    font-size: 14px;
 }
 
-div.full_story div.media {
-   margin: 5px;
-   border: 1px inset #999999;
+div.popup div.media, div.inside_popup div.media {
+   margin: 0px;
+   padding: 5px;
    background-color: #999999;
+   border: 1px solid #666666;
    text-align: center;
 }
 
-div.full_story div.media img {
+div.popup div.media img, div.inside_popup div.media img {
    max-width: 400px;
 }

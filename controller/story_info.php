@@ -21,6 +21,7 @@ class story_info extends fs_controller
 {
    public $full_page;
    public $story;
+   public $story_link_urlenc;
    
    public function __construct()
    {
@@ -43,7 +44,10 @@ class story_info extends fs_controller
             {
                $this->story = $feed->get_story_by_url($url);
                if( $this->story )
+               {
+                  $this->story_link_urlenc = urlencode( $this->story->link );
                   $this->visitor->add2log($this->story->title);
+               }
             }
          }
       }

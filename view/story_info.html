@@ -15,40 +15,59 @@
             &nbsp; <a target="_blank" href="{$fsc->story->link2}">ver en {$fsc->story->feed_name}</a>
          {/if}
       </div>
-      
-      {if condition="$fsc->story->youtube"}
+   </div>
+   
+   <table class="share">
+      <tr>
+         <td>
+            <iframe allowtransparency="true" frameborder="0" scrolling="no" src="https://platform.twitter.com/widgets/tweet_button.html?lang=es&count=vertical&url={$fsc->story_link_urlenc}&related=neorazorx" width="80" height="80">
+            </iframe>
+         </td>
+         <td>
+            <iframe src="//www.facebook.com/plugins/like.php?href={$fsc->story_link_urlenc}&amp;send=false&amp;layout=box_count&amp;width=80&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font=arial&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:80px; height:80px;" allowTransparency="true">
+            </iframe>
+         </td>
+      </tr>
+   </table>
+   
+   {if condition="$fsc->story->youtube"}
       <div class="media">
          <h2>Vídeo seleccionado:</h2>
-         <iframe width="320" height="180" src="http://www.youtube.com/embed/{$fsc->story->youtube}" frameborder="0" allowfullscreen>
-         </iframe>
+         {if condition="$fsc->visitor->mobile()"}
+            <a href="http://www.youtube.com/watch?v={$fsc->story->youtube}">
+               <img title="See video" alt="See video" src="http://img.youtube.com/vi/{$fsc->story->youtube}/0.jpg" />
+            </a>
+         {else}
+            <iframe width="320" height="180" src="http://www.youtube.com/embed/{$fsc->story->youtube}" frameborder="0" allowfullscreen>
+            </iframe>
+         {/if}
       </div>
-      {/if}
-      
-      {if condition="$fsc->story->image"}
+   {/if}
+   
+   {if condition="$fsc->story->image"}
       <div class="media">
          <h2>Imágen seleccionada:</h2>
          <img src="{$fsc->story->image}" alt="{$fsc->story->title}" width="{$fsc->story->image_width}" height="{$fsc->story->image_height}"/>
       </div>
-      {/if}
-      
-      {if condition="$fsc->story->images"}
+   {/if}
+   
+   {if condition="$fsc->story->images"}
       <div class="media">
          <h2>Imágenes encontradas en la fuente:</h2>
          {loop="$fsc->story->get_local_images()"}
             <img src="{$value}" alt="{$value}" title="{$value}"/>
          {/loop}
       </div>
-      {/if}
-      
-      {if condition="$fsc->story->more_images"}
+   {/if}
+   
+   {if condition="$fsc->story->more_images"}
       <div class="media">
          <h2>Imágenes encontradas en el link:</h2>
          {loop="$fsc->story->get_local_more_images()"}
             <img src="{$value}" alt="{$value}" title="{$value}"/>
          {/loop}
       </div>
-      {/if}
-   </div>
+   {/if}
 {else}
    <div class="message">Historia no encontrada :-(</div>
 {/if}

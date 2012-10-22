@@ -45,6 +45,7 @@ class select_feeds extends fs_controller
          if( in_array($f, $this->visitor->get_feeds()) )
             $f->selected = TRUE;
       }
+      unset($f);
    }
 }
 

@@ -17,15 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class story_info extends fs_controller
+class wrong_image extends fs_controller
 {
    public $full_page;
    public $story;
-   public $story_link_urlenc;
    
    public function __construct()
    {
-      parent::__construct('story_info', 'Información de la noticia', 'story_info');
+      parent::__construct('wrong_image', 'Seleccionar otra imágen', 'wrong_image');
    }
    
    protected function process()
@@ -39,8 +38,17 @@ class story_info extends fs_controller
          $this->story = $story->get($_GET['story_id']);
          if( $this->story )
          {
-            $this->story_link_urlenc = urlencode( $this->story->link );
-            $this->visitor->add2log('+ '.$this->story->title);
+            $this->visitor->add2log('Imágen erronea: '.$this->story->title);
+            if( isset($_POST['image']) )
+            {
+               if( $this->visitor->human() )
+               {
+                  $this->visitor->add2log('Imágen seleccionada: '.$_POST['image']);
+                  $this->story->select_new_image($_POST['image']);
+               }
+               else
+                  $this->new_error_msg("No eres humano.");
+            }
          }
       }
    }

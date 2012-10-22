@@ -18,28 +18,29 @@
  */
 
 require_once 'base/fs_model.php';
+require_once 'model/feed.php';
 
 class story extends fs_model
 {
+   private $id;
    public $title;
    public $description;
    public $link;
    public $link2;
    public $date;
    public $youtube;
-   
    public $image;
    public $image_width;
    public $image_height;
-   
-   public $images; /// no se pueden/deben descartar
-   public $more_images; /// estas son las descartables
-   private static $filenames; /// un array con las correspondencia entre url y filename
-
+   private $images; /// no se pueden/deben descartar
+   private $more_images; /// estas son las descartables
    public $feed_name;
    public $feed_url;
-   
    public $selected;
+   
+   private static $story_ids; /// un array con las correspondencias entre url e id
+   private static $filenames; /// un array con las correspondencia entre url y filename
+   private static $image_votes; /// un array con los votos de imágenes para cada noticia
    
    public function __construct($item=FALSE, $f=FALSE)
    {
@@ -99,7 +100,7 @@ class story extends fs_model
          else if( $item->published )
             $this->date = strtotime( (string)$item->published );
          else
-            $this->date = strtotime( Date('Y-m-d H:m:i') );
+            $this->date = time();
          
          if( $item->description )
             $description = (string)$item->description;
@@ -133,7 +134,10 @@ class story extends fs_model
          $this->youtube = $this->find_youtube($description);
          
          $this->image = NULL;
-         $this->images = $this->find_images($description, $item);
+         if( is_null($this->youtube) )
+            $this->images = $this->find_images($description, $item);
+         else
+            $this->images = array();
          $this->more_images = array();
       }
       else
@@ -158,7 +162,65 @@ class story extends fs_model
          $this->feed_url = $f->url();
       }
       
+      $this->new_id();
       $this->selected = FALSE;
+   }
+   
+   private function load_story_ids()
+   {
+      if( !isset(self::$story_ids) )
+         self::$story_ids = $this->cache->get_array('story_ids');
+   }
+   
+   private function save_story_ids()
+   {
+      $this->load_story_ids();
+      /// limpiamos registros caducados
+      foreach(self::$story_ids as $i => $value)
+      {
+         if( $value['expires'] < time() )
+            unset(self::$story_ids[$i]);
+      }
+      /// guardamos
+      $this->cache->set('story_ids', self::$story_ids, 86400);
+   }
+   
+   private function new_id()
+   {
+      if( $this->link != '/' )
+      {
+         $maxid = 0;
+         $encontrado = FALSE;
+         $this->load_story_ids();
+         foreach(self::$story_ids as $i => $value)
+         {
+            if( $value['id'] > $maxid )
+               $maxid = $value['id'];
+            
+            if($this->link == $value['link'])
+            {
+               $this->id = $value['id'];
+               self::$story_ids[$i]['expires'] = time()+86400;
+               $encontrado = TRUE;
+            }
+         }
+         if( !$encontrado )
+         {
+            $this->id = $maxid+1;
+            self::$story_ids[] = array(
+                'id' => $this->id,
+                'link' => $this->link,
+                'feed_name' => $this->feed_name,
+                'expires' => time()+86400
+            );
+         }
+         $this->save_story_ids();
+      }
+   }
+   
+   public function get_id()
+   {
+      return $this->id;
    }
    
    public function show_date()
@@ -173,12 +235,17 @@ class story extends fs_model
    
    public function url()
    {
-      return 'index.php?page=story_info&feed='.urlencode($this->feed_name).'&url='.urlencode($this->link);
+      return 'index.php?page=story_info&story_id='.$this->id;
    }
    
    public function go2url()
    {
-      return 'index.php?page=go2url&feed='.urlencode($this->feed_name).'&url='.urlencode($this->link);
+      return 'index.php?page=go2url&story_id='.$this->id;
+   }
+   
+   public function wrong_image_url()
+   {
+      return 'index.php?page=wrong_image&story_id='.$this->id;
    }
    
    private function set_description($desc)
@@ -189,10 +256,36 @@ class story extends fs_model
       return $this->true_word_break( preg_replace("/(\n)+/", "<br/>", trim($desc)) );
    }
    
+   public function get($sid)
+   {
+      $story = FALSE;
+      $feed = new feed();
+      $this->load_story_ids();
+      foreach(self::$story_ids as $id)
+      {
+         if($id['id'] == $sid)
+         {
+            $feed0 = $feed->get($id['feed_name']);
+            if( $feed0 )
+               $story = $feed0->get_story($sid);
+            break;
+         }
+      }
+      return $story;
+   }
+   
+   public function save()
+   {
+      $feed = new feed();
+      $feed0 = $feed->get( $this->feed_name );
+      if( $feed0 )
+         $feed0->save_story( $this );
+   }
+   
    private function find_urls($text)
    {
       $text = html_entity_decode($text);
-      $found = array();
+      $found = array( $this->link );
       if( preg_match_all("#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#", $text, $urls) )
       {
          foreach($urls as $url)
@@ -219,7 +312,7 @@ class story extends fs_model
             $youtube = $parts[4];
             break;
          }
-         else if( substr($url, 0, 23) == 'http://www.youtube.com/' )
+         else if( substr($url, 0, 23) == 'http://www.youtube.com/' OR substr($url, 0, 24) == 'https://www.youtube.com/' )
          {
             parse_str( parse_url($url, PHP_URL_QUERY), $my_array_of_vars);
             if( isset($my_array_of_vars['v']) )
@@ -239,7 +332,7 @@ class story extends fs_model
       $urls = $this->find_urls($text);
       foreach($urls as $url)
       {
-         if( substr($url, 0, 4) == 'http' AND in_array(substr($url, -4, 4), $extensions) )
+         if( $this->is_valid_image_url($url) AND in_array(substr($url, -4), $extensions) )
             $imgs[] = $url;
       }
       if( preg_match_all("/<img .*?(?=src)src=\"([^\"]+)\"/si", $text, $urls2) )
@@ -248,7 +341,7 @@ class story extends fs_model
          {
             foreach($url as $u)
             {
-               if( substr($u, 0, 4) == 'http' AND !in_array($u, $imgs) )
+               if( $this->is_valid_image_url($u) AND !in_array($u, $imgs) )
                   $imgs[] = $u;
             }
          }
@@ -261,7 +354,7 @@ class story extends fs_model
             if($element->getName() == 'thumbnail')
             {
                $aux = (string)$element->attributes()->url;
-               if( substr($aux, 0, 4) == 'http' AND !in_array($aux, $imgs) )
+               if( $this->is_valid_image_url($aux) AND !in_array($aux, $imgs) )
                   $imgs[] = $aux;
             }
          }
@@ -269,47 +362,80 @@ class story extends fs_model
       return $imgs;
    }
    
+   private function is_valid_image_url($url)
+   {
+      $status = TRUE;
+      
+      if( substr($url, 0, 4) != 'http' )
+         $status = FALSE;
+      else if( strlen($url) > 200 )
+         $status = FALSE;
+      else if( strstr($url, '/favicon.') )
+         $status = FALSE;
+      else if( strstr($url, 'doubleclick.net') )
+         $status = FALSE;
+      else if( substr($url, 0, 10) == 'http://ad.' )
+         $status = FALSE;
+      else if( strstr($url, '/avatar') )
+         $status = FALSE;
+      else if( substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
+         $status = FALSE;
+      else if( substr($url, 0, 26) == 'http://publicidadinternet.' )
+         $status = FALSE;
+      else if( substr($url, -3) == '.js' )
+         $status = FALSE;
+      
+      return $status;
+   }
+   
    public function pre_process_images(&$work, &$discarded)
    {
       echo '+';
       
-      /// buscamos más imágenes en el link, después descartamos
-      $ch0 = curl_init( $this->link );
-      curl_setopt($ch0, CURLOPT_TIMEOUT, 30);
-      curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
-      $html = curl_exec($ch0);
-      curl_close($ch0);
-      $this->more_images = $this->find_images($html);
-      /*
-       * $work lo rellenamos con arrays con la siguiente estructura:
-       * array(
-       *    0 => imágen,
-       *    1 => número de repeticiones
-       * )
-       */
-      foreach($this->more_images as $img)
+      if( is_null($this->youtube) )
       {
-         $encontrada = FALSE;
-         foreach($work as &$di)
+         /// buscamos más imágenes en el link, después descartamos
+         $ch0 = curl_init( $this->link );
+         curl_setopt($ch0, CURLOPT_TIMEOUT, 30);
+         curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
+         $html = curl_exec($ch0);
+         curl_close($ch0);
+         foreach($this->find_images($html) as $img)
          {
-            if( $img == $di[0] )
-            {
-               $encontrada = TRUE;
-               $di[1]++;
-               break;
-            }
+            if( !in_array($img, $this->images) )
+               $this->more_images[] = $img;
          }
-         if( !$encontrada )
-            $work[] = array($img, 1);
-      }
-      /// ahora rellenamos las descartadas
-      foreach($work as $di)
-      {
-         if( $di[1] > 1 )
+         /*
+          * $work lo rellenamos con arrays con la siguiente estructura:
+          * array(
+          *    0 => imágen,
+          *    1 => número de repeticiones
+          * )
+          */
+         foreach($this->more_images as $img)
          {
-            if( !in_array($di[0], $discarded) )
-               $discarded[] = $di[0];
+            $encontrada = FALSE;
+            foreach($work as $i => $wi)
+            {
+               if( $img == $wi[0] )
+               {
+                  $encontrada = TRUE;
+                  $work[$i][1]++;
+                  break;
+               }
+            }
+            if( !$encontrada )
+               $work[] = array($img, 1);
+         }
+         /// ahora rellenamos las descartadas
+         foreach($work as $wi)
+         {
+            if( $wi[1] > 1 )
+            {
+               if( !in_array($wi[0], $discarded) )
+                  $discarded[] = $wi[0];
+            }
          }
       }
    }
@@ -318,38 +444,62 @@ class story extends fs_model
    {
       echo '*';
       
-      $url = FALSE;
-      $url2 = FALSE;
-      
-      foreach($this->images as $img)
+      if( is_null($this->youtube) )
       {
-         if( $this->process_image($img, $selected) )
+         $num = 20;
+         $url = FALSE;
+         $url2 = FALSE;
+         $preselected = array();
+         
+         foreach($this->images as $img)
          {
-            $url = $img;
-            $url2 = $this->image;
-         }
-      }
-      
-      if( $this->image_width < 250 OR $this->image_height < 50 )
-      {
-         foreach($this->more_images as $img)
-         {
-            if( !in_array($img, $discarded) )
+            if( $num > 0 )
             {
                if( $this->process_image($img, $selected) )
                {
                   $url = $img;
                   $url2 = $this->image;
+                  $preselected[] = $this->image;
                }
             }
+            $num--;
          }
-      }
-      
-      if( $url )
-      {
-         /// nos guardamos como seleccionadas tanto la url original como la nueva ruta
-         $selected[] = $url;
-         $selected[] = $url2;
+         
+         /// si no hemos encontrado alguna imágen grande, buscamos en more_images
+         if( $this->image_width < 200 OR $this->image_height < 50 )
+         {
+            foreach($this->more_images as $img)
+            {
+               if( $num > 0 )
+               {
+                  if( !in_array($img, $discarded) )
+                  {
+                     if( $this->process_image($img, $selected) )
+                     {
+                        $url = $img;
+                        $url2 = $this->image;
+                        $preselected[] = $this->image;
+                     }
+                  }
+               }
+               $num--;
+            }
+         }
+         
+         if( $url )
+         {
+            /// nos guardamos como seleccionadas tanto la url original como la nueva ruta
+            $selected[] = $url;
+            $selected[] = $url2;
+         }
+         
+         /// limpiamos
+         unset($this->images);
+         unset($this->more_images);
+         $this->images = $preselected;
+         $this->more_images = array();
+         
+         $this->process_image_votes();
       }
    }
    
@@ -360,35 +510,48 @@ class story extends fs_model
       $selected = FALSE;
       $filename = $this->get_filename($url);
       
-      if( substr($url, 0, 4) == 'http' AND !in_array($url, $selections) AND !in_array(FS_PATH.'/tmp/images/'.$filename, $selections) )
+      if( !in_array($url, $selections) )
       {
+         $continuar = TRUE;
+         
          if( !file_exists('tmp/images/'.$filename) )
          {
             echo 'D';
             
-            if( !file_exists('tmp/images') )
-               mkdir('tmp/images');
-            
-            $ch1 = curl_init($url);
-            $fp = fopen('tmp/images/'.$filename, 'wb');
-            curl_setopt($ch1, CURLOPT_FILE, $fp);
-            curl_setopt($ch1, CURLOPT_HEADER, 0);
-            curl_exec($ch1);
-            curl_close($ch1);
-            fclose($fp);
+            try
+            {
+               $ch1 = curl_init($url);
+               $fp = fopen('tmp/images/'.$filename, 'wb');
+               curl_setopt($ch1, CURLOPT_FILE, $fp);
+               curl_setopt($ch1, CURLOPT_HEADER, 0);
+               curl_setopt($ch1, CURLOPT_TIMEOUT, 30);
+               curl_exec($ch1);
+               curl_close($ch1);
+               fclose($fp);
+            }
+            catch(Exception $e)
+            {
+               $continuar = FALSE;
+               
+               /*
+                * añadimos la url de la imágen que ha fallado para descartarla
+                * en las siguientes noticias
+                */
+               $selections[] = $url;
+            }
          }
          
-         if( file_exists('tmp/images/'.$filename) )
+         if( file_exists('tmp/images/'.$filename) AND $continuar )
          {
             $image = new my_image();
             $image->load('tmp/images/'.$filename);
             if( $image->getWidth() > max(array(50, $this->image_width)) AND $image->getHeight() > max(array(30, $this->image_height)) )
             {
                $this->image = FS_PATH.'/'.$image->path;
-               if($image->getWidth() > 320)
+               if($image->getWidth() > 290)
                {
                   echo 'R';
-                  $image->resizeToWidth(320);
+                  $image->resizeToWidth(290);
                   $image->save();
                }
                $this->image_height = $image->getHeight();
@@ -411,34 +574,60 @@ class story extends fs_model
    private function get_filename($url)
    {
       if( !isset(self::$filenames) )
-         self::$filenames = $this->cache->get_array('filenames');
-      
-      $aux = explode('/', $url);
-      $filename = $aux[ count($aux) - 1 ];
-      
-      /// es un nombre válido
-      if( !preg_match("/^[A-Z0-9_\+\.\*\/\-]{1,18}$/i", $filename) )
       {
-         $encontrada = FALSE;
-         foreach(self::$filenames as $fn)
+         self::$filenames = $this->cache->get_array('filenames');
+         if( file_exists('tmp/images') )
          {
-            if( $url == $fn[0] )
+            if( !self::$filenames )
             {
-               $filename = $fn[1];
-               $encontrada = TRUE;
-               break;
+               $files = glob('tmp/images/*');
+               foreach($files as $file)
+               {
+                  if( is_file($file) )
+                     unlink($file);
+               }
             }
          }
-         if( !$encontrada )
+         else
+            mkdir('tmp/images');
+      }
+      
+      $filename = strval(rand());
+      $encontrada = FALSE;
+      foreach(self::$filenames as $i => $fn)
+      {
+         if($url == $fn['url'])
          {
-            $filename = strval(rand());
-            while( file_exists('tmp/images/'.$filename) )
-               $filename = strval(rand());
-            
-            self::$filenames[] = array($url, $filename);
-            $this->cache->set('filenames', self::$filenames, 6000);
+            $filename = $fn['filename'];
+            self::$filenames[$i]['expires'] = time()+86400;
+            $encontrada = TRUE;
+            break;
          }
       }
+      if( !$encontrada )
+      {
+         while( file_exists('tmp/images/'.$filename) )
+            $filename = strval(rand());
+         
+         /// lo añadimos a la lista
+         self::$filenames[] = array(
+             'url' => $url,
+             'filename' => $filename,
+             'expires' => time()+86400
+         );
+         
+         /// eliminamos los elementos caducados
+         foreach(self::$filenames as $i => $fn)
+         {
+            if( $fn['expires'] < time() )
+            {
+               if( file_exists('tmp/images/'.$fn['filename']) )
+                  unlink('tmp/images/'.$fn['filename']);
+               unset(self::$filenames[$i]);
+            }
+         }
+      }
+      $this->cache->set('filenames', self::$filenames, 86400);
       
       return $filename;
    }
@@ -446,29 +635,116 @@ class story extends fs_model
    public function get_local_images()
    {
       $images = array();
-      foreach($this->images as $url)
+      foreach($this->images as $img)
       {
-         $filename = $this->get_filename($url);
-         if( strlen($filename) > 0 )
-            $images[] = 'tmp/images/'.$this->get_filename($url);
-         else
-            $images[] = $url;
+         $aux = explode('/', $img);
+         $images[] = array(
+             'image' => $img,
+             'filename' => $aux[ count($aux) - 1 ]
+         );
       }
       return $images;
    }
    
-   public function get_local_more_images()
+   public function load_story_image_votes()
    {
-      $images = array();
-      foreach($this->more_images as $url)
+      if( !isset(self::$image_votes) )
+         self::$image_votes = $this->cache->get_array('story_image_votes');
+   }
+   
+   private function save_image_votes()
+   {
+      /// eliminamos elementos caducados
+      $this->load_story_image_votes();
+      foreach(self::$image_votes as $i => $value)
       {
-         $filename = $this->get_filename($url);
-         if( strlen($filename) > 0 )
-            $images[] = 'tmp/images/'.$this->get_filename($url);
-         else
-            $images[] = $url;
+         if( $value['expires'] < time() )
+            unset(self::$image_votes[$i]);
       }
-      return $images;
+      $this->cache->set('story_image_votes', self::$image_votes, 86400);
+   }
+   
+   public function select_new_image($filename)
+   {
+      if( $filename == '-none-' AND is_null($this->image) )
+         return FALSE;
+      else if( $this->image == FS_PATH.'/tmp/images/'.$filename )
+         return FALSE;
+      else
+      {
+         $encontrado = FALSE;
+         $this->load_story_image_votes();
+         foreach(self::$image_votes as $i => $value)
+         {
+            if($value['story_id'] == $this->id AND $value['filename'] == $filename)
+            {
+               $encontrado = TRUE;
+               if( !in_array($_SERVER['REMOTE_ADDR'], $value['ips']) )
+               {
+                  self::$image_votes[$i]['votes']++;
+                  self::$image_votes[$i]['ips'][] = $_SERVER['REMOTE_ADDR'];
+                  self::$image_votes[$i]['expires'] = time()+86400;
+                  $this->process_image_votes();
+               }
+               break;
+            }
+         }
+         if( !$encontrado )
+         {
+            self::$image_votes[] = array(
+                'story_id' => $this->id,
+                'filename' => $filename,
+                'votes' => 1,
+                'ips' => array($_SERVER['REMOTE_ADDR']),
+                'expires' => time()+86400
+            );
+         }
+         $this->save_image_votes();
+      }
+   }
+   
+   /*
+    * Procesa los votos y cambia la imágen si es oportuno.
+    * Devuelve TRUE si se produce el cambio
+    */
+   private function process_image_votes()
+   {
+      $changed = FALSE;
+      $max = 0;
+      $new_image = FALSE;
+      $this->load_story_image_votes();
+      foreach(self::$image_votes as $v)
+      {
+         if($v['story_id'] == $this->id AND $v['votes'] > $max)
+         {
+            $max = $v['votes'];
+            
+            if($v['filename'] == '-none-')
+               $new_image = $v['filename'];
+            else
+               $new_image = 'tmp/images/'.$v['filename'];
+         }
+      }
+      if( $max > 5 )
+      {
+         if($new_image == '-none-')
+         {
+            $this->clean_image();
+            $this->save();
+            $changed = TRUE;
+         }
+         else if( file_exists($new_image) )
+         {
+            $image = new my_image();
+            $image->load( $new_image );
+            $this->image = FS_PATH.'/'.$image->path;
+            $this->image_height = $image->getHeight();
+            $this->image_width = $image->getWidth();
+            $this->save();
+            $changed = TRUE;
+         }
+      }
+      return $changed;
    }
 }
 

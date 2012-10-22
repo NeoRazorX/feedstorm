@@ -17,11 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class main_page extends fs_controller
+class random_stories extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('main_page', FS_NAME, 'main_page');
+      parent::__construct('random_stories', 'Ración aleatoria de '.FS_NAME);
    }
    
    protected function process()
@@ -31,7 +31,16 @@ class main_page extends fs_controller
       else
          $this->template = 'main_page';
       
-      $this->stories = $this->visitor->get_new_stories();
+      $this->new_message('Aquí tienes una ración aleatoria de noticias.');
+      
+      $feed = new feed();
+      $all_feeds = $feed->all();
+      if( $all_feeds )
+      {
+         $random_feed = $all_feeds[ rand(0, count($all_feeds)-1) ];
+         $this->stories = $random_feed->get_stories();
+         $this->new_message('La fuente seleccionada es <b>'.$random_feed->name.'</b>.');
+      }
    }
 }
 

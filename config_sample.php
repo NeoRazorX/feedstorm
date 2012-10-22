@@ -29,9 +29,4 @@ define('FS_CACHE_PREFIX', '');
 /// Número de historias máximo para cada feed y para la portada.
 define('FS_MAX_STORIES', 50);
 
-/* Hashtag que quieres usar para la web.
- * Si quieres usar #kelinux debes poner 'kelinux'.
- */
-define('FS_TWITTER_HASHTAG', '');
-
 ?>

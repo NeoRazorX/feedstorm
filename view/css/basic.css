@@ -41,11 +41,22 @@ input[type='submit'], input[type='button'] {
    color: white;
 }
 
+textarea {
+   display: block;
+   width: 100%;
+   box-sizing: border-box;
+   -webkit-box-sizing:border-box;
+   -moz-box-sizing: border-box;
+   -ms-box-sizing: border-box;
+}
+
 table#header {
    width: 100%;
    margin: 0px;
    margin-bottom: 10px;
    background-color: #424242;
+   border-top: 3px solid black;
+   border-bottom: 3px solid #aaaaaa;
    border-collapse: collapse;
    color: white;
    font-size: 16px;
@@ -65,27 +76,19 @@ a#fs_logo {
    text-decoration: none;
 }
 
-a#fs_b_social {
-   margin-left: 10px;
-}
-
 a#fs_b_menu {
    display: inline-block;
    padding: 4px;
    background-color: #3B5998;
-   border: 1px outset #3B5998;
-   border-top-left-radius: 2px 2px;
-   border-top-right-radius: 2px 2px;
-   border-bottom-left-radius: 2px 2px;
-   border-bottom-right-radius: 2px 2px;
+   border: 1px solid black;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
    color: white;
    text-decoration: none;
    text-transform: capitalize;
    font-variant: small-caps;
-}
-
-a#fs_b_menu img {
-   vertical-align: middle;
 }
 
 div#fs_menu {
@@ -94,10 +97,9 @@ div#fs_menu {
    top: 0px;
    right: 0px;
    z-index: 2;
-   padding: 5px;
-   background-color: #333333;
-   border-left: 2px solid #999999;
-   border-bottom: 2px solid #999999;
+   padding: 0px;
+   background-color: #666666;
+   border: 2px solid #333333;
    border-bottom-left-radius: 5px 5px;
    color: white;
    font-size: 16px;
@@ -105,8 +107,8 @@ div#fs_menu {
 
 div#fs_menu a {
    display: block;
-   margin: 5px;
-   padding: 0px;
+   margin: 0px;
+   padding: 5px;
    text-decoration: none;
    text-transform: capitalize;
    text-align: center;
@@ -122,53 +124,12 @@ div#fs_menu a#fs_b_close_menu {
 div#fs_menu a.page {
    padding-left: 5px;
    padding-right: 5px;
+   background-color: #aaaaaa;
+   border-top: 1px dashed #333333;
+}
+
+div#fs_menu a.page:hover {
    background-color: #3B5998;
-   border: 1px outset #3B5998;
-}
-
-div#fs_social_widget {
-   display: none;
-   position: absolute;
-   top: 0px;
-   left: 0px;
-   z-index: 2;
-   width: 400px;
-   margin: 0px;
-   padding: 5px;
-   background-color: #333333;
-   border-right: 2px solid #999999;
-   border-bottom: 2px solid #999999;
-   border-bottom-right-radius: 5px 5px;
-   color: white;
-}
-
-div#fs_social_widget a {
-   color: white;
-   font-variant: small-caps;
-}
-
-a#fs_b_close_social {
-   display: block;
-   margin: 3px;
-   padding: 3px;
-   font-size: 15px;
-   text-decoration: none;
-   text-align: right;
-}
-
-a#fs_b_close_social img {
-   vertical-align: bottom;
-}
-
-div#fs_social_widget div.tweet {
-   margin: 5px;
-   padding: 5px;
-   border: 1px dashed #999999;
-}
-
-div#fs_social_widget div.tweet table td.content {
-   padding-left: 5px;
-   text-align: justify;
 }
 
 div.error, div.message {
@@ -177,17 +138,19 @@ div.error, div.message {
    margin-left: 10px;
    margin-right: 10px;
    padding: 10px;
-   border-top: 1px solid #cccccc;
-   border-bottom: 1px solid #cccccc;
    color: black;
 }
 
 div.error {
-   background-color: #EC6655;
+   background-color: #EE7574;
+   border: 1px solid #888888;
+   box-shadow: 2px 2px 2px #555;
 }
 
 div.message {
    background-color: #F4F596;
+   border-top: 1px solid #aaaaaa;
+   border-bottom: 1px solid #aaaaaa;
 }
 
 div.error ul, div.message ul {
@@ -202,12 +165,19 @@ div#stories {
 
 div.story {
    display: inline-block;
-   width: 340px;
-   margin: 5px;
-   padding: 5px;
-   padding-top: 8px;
+   width: 300px;
+   margin: 4px;
+   padding: 4px;
+   padding-top: 7px;
    background-color: white;
-   border: 1px solid #cccccc;
+   border-top: 1px solid #dddddd;
+   border-left: 1px solid #bbbbbb;
+   border-right: 1px solid #bbbbbb;
+   border-bottom: 1px solid #999999;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
    color: black;
    text-align: justify;
 }
@@ -217,7 +187,7 @@ div.story h1 {
    margin-bottom: 5px;
    padding: 0px;
    padding-bottom: 2px;
-   font-size: 16px;
+   font-size: 15px;
    text-align: center;
 }
 
@@ -247,10 +217,10 @@ div.story h1 a:hover, div.story h2 a:hover {
 div.story div.image,
 div.story div.youtube {
    text-align: center;
-   margin-bottom: 5px;
 }
 
 div.story div.more {
+   margin-top: 2px;
    text-align: right;
 }
 
@@ -258,17 +228,23 @@ div.story div.more a {
    display: inline-block;
    margin-top: 2px;
    padding-top: 0px;
-   padding-left: 3px;
-   padding-right: 3px;
+   padding-left: 5px;
+   padding-right: 5px;
    padding-bottom: 1px;
-   background-color: #4C769E;
+   background-color: #e1e1e1;
+   border: 1px solid #888888;
    border-top-left-radius: 2px 2px;
    border-top-right-radius: 2px 2px;
    border-bottom-left-radius: 2px 2px;
    border-bottom-right-radius: 2px 2px;
-   color: white;
+   color: #222222;
    font-weight: bold;
    text-decoration: none;
+}
+
+div.story div.more a:hover {
+   background-color: #3B5998;
+   color: white;
 }
 
 div.video {
@@ -287,15 +263,15 @@ div.video div.more a {
 }
 
 div.box {
-   margin: 5px;
-   margin-bottom: 10px;
+   margin: 10px;
    padding: 5px;
-   background-color: white;
-   border: 2px solid #cccccc;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   background-color: #FFFBC6;
+   border: 2px solid #bbbbbb;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   box-shadow: 5px 5px 5px #555;
 }
 
 div.box h1 {
@@ -409,8 +385,6 @@ div.full_story h1 a {
 }
 
 div.full_story div.info {
-   margin-top: 5px;
-   margin-bottom: 20px;
    padding: 5px;
 }
 
@@ -444,4 +418,28 @@ div.popup div.media, div.inside_popup div.media {
 
 div.popup div.media img, div.inside_popup div.media img {
    max-width: 400px;
+}
+
+div.chat_msg {
+   margin: 2px;
+   margin-top: 10px;
+   padding: 5px;
+   background-color: white;
+   border: 1px dashed #777777;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+   text-align: justify;
+}
+
+div.chat_msg h1 {
+   font-size: 14px;
+   text-align: left;
+}
+
+div.chat_msg h1 span {
+   float: right;
+   font-size: 12px;
+   font-weight: normal;
 }

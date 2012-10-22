@@ -26,44 +26,76 @@
    </script>
 {/if}
    <script type="text/javascript">
+      function fs_close_popups()
+      {
+         $('div.popup').each(function() {
+            $(this).hide();
+         });
+         $("#popup_message").hide();
+         $("#shadow_box").hide();
+         $("table.footer").css({
+            'margin-top': 10
+         });
+      }
+      function fs_show_popup_to(url)
+      {
+         $("#fs_menu").hide();
+         $("#shadow_box").show();
+         $("#popup_message").show();
+         $("#popups").html("<div id='popup_cargando' class='popup'>Cargando...</div>");
+         $("#popup_cargando").css({
+            top: $(window).scrollTop()+10,
+            left: ($(window).width() - $("#popup_cargando").outerWidth())/2
+         });
+         $("#popup_cargando").show();
+         $.ajax({
+            type: 'POST',
+            url: url,
+            dataType: 'html',
+            data: 'no_full_page=TRUE',
+            success: function(datos) {
+               $("#popup_cargando").hide();
+               $("#shadow_box").show();
+               $("#popup_message").show();
+               $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");
+               $("#popup2url").css({
+                  top: $(window).scrollTop()+10,
+                  left: ($(window).width() - $("#popup2url").outerWidth())/2
+               });
+               $("#popup2url").show();
+               $("table.footer").css({
+                  'margin-top': $("#popup2url").outerHeight()
+               });
+            }
+         });
+      }
+      function fs_select_image(story_id, image)
+      {
+         $.ajax({
+            type: 'POST',
+            url: '{$path}/index.php?page=wrong_image&story_id='+story_id,
+            dataType: 'html',
+            data: 'no_full_page=TRUE&image='+image,
+            success: function(datos) {
+               alert('¡Gracias!');
+               fs_close_popups();
+            }
+         });
+      }
       $(document).ready(function() {
-         $("#fs_b_social").click(function(event) {
-            event.preventDefault();
-            $("#fs_social_widget").show();
-            $("#fs_menu").hide();
-         });
-         $("#fs_b_close_social").click(function(event) {
-            event.preventDefault();
-            $("#fs_social_widget").hide();
-         });
          $("#fs_b_menu").click(function(event) {
             event.preventDefault();
             $("#fs_menu").show();
-            $("#fs_social_widget").hide();
          });
          $("#fs_b_close_menu").click(function(event) {
             event.preventDefault();
             $("#fs_menu").hide();
          });
          $("#shadow_box").click(function() {
-            $('div.popup').each(function() {
-               $(this).hide();
-            });
-            $("#popup_message").hide();
-            $("#shadow_box").hide();
-            $("table.footer").css({
-               'margin-top': 10
-            });
+            fs_close_popups();
          });
          $("#popup_message").click(function() {
-            $('div.popup').each(function() {
-               $(this).hide();
-            });
-            $("#popup_message").hide();
-            $("#shadow_box").hide();
-            $("table.footer").css({
-               'margin-top': 10
-            });
+            fs_close_popups();
          });
       });
    </script>
@@ -71,66 +103,20 @@
 <body>
    <table id="header">
       <tr>
-         <td>
-            <a id="fs_logo" href="{$path}/index.php">{$name}</a>
-            {$description}
-            {if condition="!$fsc->visitor->mobile()"}
-               <a id="fs_b_social" href="#"><img src="{$path}/view/img/twitter2.png" alt="twitter" title="twitter"/></a>
-            {/if}
-         </td>
+         <td><a id="fs_logo" href="{$path}/index.php">{$name}</a> {$description}</td>
          <td align="right">
-            <a id="fs_b_menu" href="#"><img src="{$path}/view/img/tools.png" alt="Menu" title="Menú" width="20" height="22"/></a>
+            <a id="fs_b_menu" href="#">menú</a>
          </td>
       </tr>
    </table>
    <div id="fs_menu">
       <a id="fs_b_close_menu" href="#"><img src="{$path}/view/img/close.png" alt="x"/></a>
       <a class="page" href="{$path}/index.php">portada</a>
+      <a class="page" href="{$path}/index.php?page=random_stories">ración aleatoria</a>
       <a class="page" href="{$path}/index.php?page=select_feeds">preferencias</a>
       <a class="page" href="{$path}/index.php?page=fisgona">fisgona</a>
+      <a class="page" href="{$path}/index.php?page=chat_room">foro</a>
    </div>
-   {if condition="!$fsc->visitor->mobile()"}
-      <div id="fs_social_widget">
-         <a id="fs_b_close_social" href="#">
-            Cerrar widget
-            <img src="{$path}/view/img/close.png" alt="x"/>
-         </a>
-         <div class="tweet">
-            <table>
-               <tr>
-                  <td>
-                     <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-hashtags="{$hashtag}" data-related="neorazorx">Tweet</a>
-                     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-                  </td>
-                  <td class="content">
-                     Tweets en orden descendente, los últimos primero. Se actualizan cada 10 minutos.
-                     Envía tus tweets con el hashtag <a target="_blank" href="http://search.twitter.com/search?q=%23{$hashtag}">#{$hashtag}</a>
-                     <br/>
-                     Si quieres dirigirte a mi, usa <a target="_blank" href="http://twitter.com/neorazorx">@neorazorx</a>
-                  </td>
-               </tr>
-            </table>
-         </div>
-         {loop="$fsc->tweet->all()"}
-         <div class="tweet">
-            <table>
-               <tr>
-                  <td>
-                     <a target="_blank" href="{$value->author_url}">
-                        <img src="{$value->author_img}" alt="{$value->author}" title="{$value->author}"/>
-                     </a>
-                  </td>
-                  <td class="content">
-                     <b>{$value->author}</b><br/>
-                     {$value->timesince()}<br/>
-                     {$value->content}
-                  </td>
-               </tr>
-            </table>
-         </div>
-         {/loop}
-      </div>
-   {/if}
    {if condition="$fsc->get_errors()"}
    <div class="error">
       <ul>

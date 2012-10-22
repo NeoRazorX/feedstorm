@@ -25,8 +25,9 @@ class feed extends fs_model
    public $name;
    public $url;
    public $default;
-   
    public $selected;
+   
+   private $stories;
    
    public function __construct($f=FALSE)
    {
@@ -69,116 +70,10 @@ class feed extends fs_model
       return $feed;
    }
    
-   public function get_stories()
+   public function save($expiration=86400)
    {
-      $stories = $this->cache->get_array('stories_from_'.$this->name);
-      if( $stories )
-         return $stories;
-      else
-         return $this->read();
-   }
-   
-   public function get_story_by_url($url)
-   {
-      $story = FALSE;
-      $stories = $this->cache->get_array('stories_from_'.$this->name);
-      if( !$stories )
-         $stories = $this->read();
-      foreach($stories as $s)
-      {
-         if($s->link == $url)
-         {
-            $story = $s;
-            break;
-         }
-      }
-      return $story;
-   }
-   
-   public function read($images=FALSE)
-   {
-      $stories = array();
-      $ch = curl_init( $this->url );
-      curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-      $html = curl_exec($ch);
-      curl_close($ch);
-      $xml = simplexml_load_string( $html );
-      if( $xml )
-      {
-         if( $xml->channel )
-         {
-            $i = 0;
-            foreach($xml->channel->item as $item)
-            {
-               if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this);
-               else
-                  break;
-               $i++;
-            }
-         }
-         else if( $xml->item )
-         {
-            $i = 0;
-            foreach($xml->item as $item)
-            {
-               if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this);
-               else
-                  break;
-               $i++;
-            }
-         }
-         else if( $xml->feed )
-         {
-            $i = 0;
-            foreach($xml->feed->entry as $item)
-            {
-               if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this);
-               else
-                  break;
-               $i++;
-            }
-         }
-         else if( $xml->entry )
-         {
-            $i = 0;
-            foreach($xml->entry as $item)
-            {
-               if( $i < FS_MAX_STORIES )
-                  $stories[] = new story($item, $this);
-               else
-                  break;
-               $i++;
-            }
-         }
-         else
-            $this->new_error("Estructura irreconocible en el feed: ".$this->name);
-         
-         if( $stories )
-         {
-            if( $images )
-            {
-               /// pre-procesamos, hasta el final
-               $work_array = array();
-               $discarded = array();
-               foreach($stories as $s)
-                  $s->pre_process_images($work_array, $discarded);
-               
-               /// después procesamos
-               $selected = array();
-               foreach($stories as $s)
-                  $s->process_images($discarded, $selected);
-            }
-            $this->cache->set('stories_from_'.$this->name, $stories, 28800);
-         }
-      }
-      else
-         $this->new_error("Imposible leer el feed: ".$this->name);
-      return $stories;
+      if( isset($this->stories) )
+         $this->cache->set('stories_from_'.$this->name, $this->stories, $expiration);
    }
    
    public function all()
@@ -214,6 +109,150 @@ class feed extends fs_model
             $defaults[] = $f;
       }
       return $defaults;
+   }
+   
+   public function get_stories()
+   {
+      if( isset($this->stories) )
+         return $this->stories;
+      else
+      {
+         $error = FALSE;
+         $this->stories = $this->cache->get_array2('stories_from_'.$this->name, $error);
+         if( !$error )
+            return $this->stories;
+         else
+            return $this->read();
+      }
+   }
+   
+   public function read($images=FALSE)
+   {
+      $this->stories = array();
+      
+      try
+      {
+         $ch = curl_init( $this->url );
+         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         $html = curl_exec($ch);
+         curl_close($ch);
+         
+         libxml_use_internal_errors(true);
+         $xml = simplexml_load_string( $html );
+         if( $xml )
+         {
+            if( $xml->channel )
+            {
+               $i = 0;
+               foreach($xml->channel->item as $item)
+               {
+                  if( $i < FS_MAX_STORIES )
+                     $this->stories[] = new story($item, $this);
+                  else
+                     break;
+                  $i++;
+               }
+            }
+            else if( $xml->item )
+            {
+               $i = 0;
+               foreach($xml->item as $item)
+               {
+                  if( $i < FS_MAX_STORIES )
+                     $this->stories[] = new story($item, $this);
+                  else
+                     break;
+                  $i++;
+               }
+            }
+            else if( $xml->feed )
+            {
+               $i = 0;
+               foreach($xml->feed->entry as $item)
+               {
+                  if( $i < FS_MAX_STORIES )
+                     $this->stories[] = new story($item, $this);
+                  else
+                     break;
+                  $i++;
+               }
+            }
+            else if( $xml->entry )
+            {
+               $i = 0;
+               foreach($xml->entry as $item)
+               {
+                  if( $i < FS_MAX_STORIES )
+                     $this->stories[] = new story($item, $this);
+                  else
+                     break;
+                  $i++;
+               }
+            }
+            else
+               $this->new_error("Estructura irreconocible en el feed: ".$this->name);
+            
+            if( $images )
+            {
+               /// pre-procesamos, hasta el final
+               $work_array = array();
+               $discarded = array();
+               foreach($this->stories as $s)
+                  $s->pre_process_images($work_array, $discarded);
+               
+               /// después procesamos en orden inverso
+               $selected = array();
+               for($k=count($this->stories)-1; $k>0; $k--)
+                  $this->stories[$k]->process_images($discarded, $selected);
+            }
+            $this->save();
+         }
+         else
+         {
+            $this->new_error("Imposible leer el feed: ".$this->name);
+            $this->save(600);
+         }
+      }
+      catch(Exception $e)
+      {
+         $this->new_error("Error al leer el feed: ".$this->name);
+         $this->save(600);
+      }
+      
+      return $this->stories;
+   }
+   
+   public function get_story($id)
+   {
+      $story = FALSE;
+      foreach($this->get_stories() as $s)
+      {
+         if($s->get_id() == $id)
+         {
+            $story = $s;
+            break;
+         }
+      }
+      return $story;
+   }
+   
+   public function save_story($story)
+   {
+      /// forzamos la lectura de la lista de historias
+      $this->get_stories();
+      
+      foreach($this->stories as $i => $value)
+      {
+         if( $value->get_id() == $story->get_id() )
+         {
+            $this->stories[$i] = $story;
+            break;
+         }
+      }
+      
+      $this->save();
    }
 }
 

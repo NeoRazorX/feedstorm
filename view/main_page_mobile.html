@@ -1,24 +1,14 @@
 {include="header"}
 
-<script src="{$path}/view/js/jquery.masonry.min.js"></script>
-<script type="text/javascript">
-   $(document).ready(function() {
-      $("#stories").masonry({
-         itemSelector: '.story',
-         isFitWidth: true,
-         isAnimated: true
-      });
-   });
-</script>
-
 <div id="stories">
    {loop="$fsc->stories"}
       {if condition="$value->youtube"}
       <div class="story video">
          <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
          <div class="youtube">
-            <iframe width="290" height="163" src="http://www.youtube.com/embed/{$value->youtube}" frameborder="0" allowfullscreen>
-            </iframe>
+            <a href="http://www.youtube.com/watch?v={$value->youtube}">
+               <img title="ver vídeo" alt="ver vídeo" src="http://img.youtube.com/vi/{$value->youtube}/0.jpg" />
+            </a>
          </div>
       {else}
       <div class="story">
@@ -33,12 +23,9 @@
                <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
                <div class="image">
                   <a target="_blank" href="{$path}/{$value->go2url()}">
-                     <img src="{$value->image}" alt="{$value->title}" width="{$value->image_width}" height="{$value->image_height}"/>
+                     <img src="{$value->image}" alt="{$value->title}"/>
                   </a>
                </div>
-               {if condition="$value->image_height < 200"}
-                  {$value->description}
-               {/if}
             {/if}
          {else}
             <h1><a target="_blank" href="{$path}/{$value->go2url()}">{$value->title}</a></h1>
@@ -47,10 +34,9 @@
       {/if}
       <div class="more">
          {if condition="!$value->youtube AND $value->image"}
-         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->wrong_image_url()}'); return false;">
-            imágen erronea</a>
+         <a href="{$path}/{$value->wrong_image_url()}">imágen erronea</a> &nbsp;
          {/if}
-         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">+</a>
+         <a href="{$path}/{$value->url()}">+</a>
       </div>
    </div>
    {/loop}

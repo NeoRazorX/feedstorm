@@ -4,7 +4,7 @@ body {
    background-color: #E7EBF2;
    color: black;
    font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
-   font-size: 13px;
+   font-size: 12px;
    font-style: normal;
    font-weight: normal;
 }
@@ -41,14 +41,25 @@ input[type='submit'], input[type='button'] {
    color: white;
 }
 
+textarea {
+   display: block;
+   width: 100%;
+   box-sizing: border-box;
+   -webkit-box-sizing:border-box;
+   -moz-box-sizing: border-box;
+   -ms-box-sizing: border-box;
+}
+
 table#header {
    width: 100%;
    margin: 0px;
    margin-bottom: 10px;
    background-color: #424242;
+   border-top: 3px solid black;
+   border-bottom: 3px solid #aaaaaa;
    border-collapse: collapse;
    color: white;
-   font-size: 12px;
+   font-size: 13px;
 }
 
 table#header td {
@@ -65,27 +76,19 @@ a#fs_logo {
    text-decoration: none;
 }
 
-a#fs_b_social {
-   margin-left: 10px;
-}
-
 a#fs_b_menu {
    display: inline-block;
    padding: 4px;
    background-color: #3B5998;
-   border: 1px outset #3B5998;
-   border-top-left-radius: 2px 2px;
-   border-top-right-radius: 2px 2px;
-   border-bottom-left-radius: 2px 2px;
-   border-bottom-right-radius: 2px 2px;
+   border: 1px solid black;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
    color: white;
    text-decoration: none;
    text-transform: capitalize;
    font-variant: small-caps;
-}
-
-a#fs_b_menu img {
-   vertical-align: middle;
 }
 
 div#fs_menu {
@@ -94,10 +97,9 @@ div#fs_menu {
    top: 0px;
    right: 0px;
    z-index: 2;
-   padding: 5px;
-   background-color: #333333;
-   border-left: 2px solid #999999;
-   border-bottom: 2px solid #999999;
+   padding: 0px;
+   background-color: #666666;
+   border: 2px solid #333333;
    border-bottom-left-radius: 5px 5px;
    color: white;
    font-size: 16px;
@@ -105,9 +107,8 @@ div#fs_menu {
 
 div#fs_menu a {
    display: block;
-   margin: 5px;
-   margin-bottom: 10px;
-   padding: 0px;
+   margin: 0px;
+   padding: 5px;
    text-decoration: none;
    text-transform: capitalize;
    text-align: center;
@@ -123,8 +124,12 @@ div#fs_menu a#fs_b_close_menu {
 div#fs_menu a.page {
    padding-left: 5px;
    padding-right: 5px;
+   background-color: #aaaaaa;
+   border-top: 1px dashed #333333;
+}
+
+div#fs_menu a.page:hover {
    background-color: #3B5998;
-   border: 1px outset #3B5998;
 }
 
 div.error, div.message {
@@ -133,17 +138,19 @@ div.error, div.message {
    margin-left: 10px;
    margin-right: 10px;
    padding: 10px;
-   border-top: 1px solid #cccccc;
-   border-bottom: 1px solid #cccccc;
    color: black;
 }
 
 div.error {
-   background-color: #EC6655;
+   background-color: #EE7574;
+   border: 1px solid #888888;
+   box-shadow: 2px 2px 2px #555;
 }
 
 div.message {
    background-color: #F4F596;
+   border-top: 1px solid #aaaaaa;
+   border-bottom: 1px solid #aaaaaa;
 }
 
 div.error ul, div.message ul {
@@ -152,13 +159,25 @@ div.error ul, div.message ul {
    padding-left: 25px;
 }
 
+div#stories {
+   margin: 0 auto;
+}
+
 div.story {
-   display: block;
-   margin: 5px;
-   padding: 5px;
-   padding-top: 8px;
+   display: inline-block;
+   width: 300px;
+   margin: 4px;
+   padding: 4px;
+   padding-top: 7px;
    background-color: white;
-   border: 1px solid #cccccc;
+   border-top: 1px solid #dddddd;
+   border-left: 1px solid #bbbbbb;
+   border-right: 1px solid #bbbbbb;
+   border-bottom: 1px solid #999999;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
    color: black;
    text-align: justify;
 }
@@ -168,7 +187,7 @@ div.story h1 {
    margin-bottom: 5px;
    padding: 0px;
    padding-bottom: 2px;
-   font-size: 16px;
+   font-size: 14px;
    text-align: center;
 }
 
@@ -183,7 +202,7 @@ div.story h2 {
    margin: 0px;
    padding: 0px;
    padding-bottom: 8px;
-   font-size: 14px;
+   font-size: 13px;
 }
 
 div.story h1 a, div.story h2 a {
@@ -191,18 +210,22 @@ div.story h1 a, div.story h2 a {
    color: black;
 }
 
+div.story h1 a:hover, div.story h2 a:hover {
+   text-decoration: underline;
+}
+
 div.story div.image,
 div.story div.youtube {
    text-align: center;
-   margin-bottom: 5px;
 }
 
 div.story div.image img,
 div.story div.youtube img {
-   max-width: 90%;
+   max-width: 95%;
 }
 
 div.story div.more {
+   margin-top: 2px;
    text-align: right;
 }
 
@@ -210,17 +233,23 @@ div.story div.more a {
    display: inline-block;
    margin-top: 2px;
    padding-top: 0px;
-   padding-left: 3px;
-   padding-right: 3px;
+   padding-left: 5px;
+   padding-right: 5px;
    padding-bottom: 1px;
-   background-color: #4C769E;
+   background-color: #e1e1e1;
+   border: 1px solid #888888;
    border-top-left-radius: 2px 2px;
    border-top-right-radius: 2px 2px;
    border-bottom-left-radius: 2px 2px;
    border-bottom-right-radius: 2px 2px;
-   color: white;
+   color: #222222;
    font-weight: bold;
    text-decoration: none;
+}
+
+div.story div.more a:hover {
+   background-color: #3B5998;
+   color: white;
 }
 
 div.video {
@@ -239,15 +268,15 @@ div.video div.more a {
 }
 
 div.box {
-   margin: 5px;
-   margin-bottom: 10px;
+   margin: 10px;
    padding: 5px;
-   background-color: white;
-   border: 2px solid #cccccc;
-   border-top-left-radius: 5px 5px;
-   border-top-right-radius: 5px 5px;
-   border-bottom-left-radius: 5px 5px;
-   border-bottom-right-radius: 5px 5px;
+   background-color: #FFFBC6;
+   border: 2px solid #bbbbbb;
+   border-top-left-radius: 2px 2px;
+   border-top-right-radius: 2px 2px;
+   border-bottom-left-radius: 2px 2px;
+   border-bottom-right-radius: 2px 2px;
+   box-shadow: 5px 5px 5px #555;
 }
 
 div.box h1 {
@@ -258,13 +287,18 @@ div.box h1 {
    padding-right: 5px;
    padding-bottom: 2px;
    color: black;
-   font-size: 20px;
+   font-size: 15px;
 }
 
 ul.horizontal {
    margin: 5px;
    padding: 5px;
    list-style-type: none;
+}
+
+ul.horizontal li {
+   display: inline-block;
+   min-width: 250px;
 }
 
 table.footer {
@@ -278,12 +312,59 @@ table.footer td {
    padding-right: 10px;
 }
 
+div#shadow_box {
+   position: fixed;
+   top: 0px;
+   left: 0px;
+   z-index: 2;
+   width: 100%;
+   height: 100%;
+   background: #000;
+   opacity: 0.8;
+   display: none;
+}
+
+div#popup_message {
+   display: none;
+   position: fixed;
+   top: 0px;
+   right: 0px;
+   z-index: 4;
+   padding: 5px;
+   background-color: black;
+   border-bottom-left-radius: 5px 5px;
+   color: white;
+   font-size: 15px;
+   font-variant: small-caps;
+   cursor: pointer;
+}
+
+div#popup_message img {
+   vertical-align: bottom;
+}
+
+div.popup {
+   display: none;
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   z-index: 3;
+   max-width: 750px;
+   padding: 0px;
+   background-color: #F3F1F2;
+   border: 5px solid #CCCCCC;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+}
+
 div.inside_popup {
-   margin: 2px;
+   margin: 10px;
    margin-top: 0px;
    padding: 0px;
    background-color: #F3F1F2;
-   border: 2px solid #aaaaaa;
+   border: 5px solid #aaaaaa;
    border-top-left-radius: 5px 5px;
    border-top-right-radius: 5px 5px;
    border-bottom-left-radius: 5px 5px;
@@ -300,7 +381,7 @@ div.full_story h1 {
    margin: 0px;
    margin-bottom: 5px;
    padding: 0px;
-   font-size: 18px;
+   font-size: 16px;
    text-align: center;
 }
 
@@ -309,8 +390,6 @@ div.full_story h1 a {
 }
 
 div.full_story div.info {
-   margin-top: 5px;
-   margin-bottom: 20px;
    padding: 5px;
 }
 
@@ -343,5 +422,28 @@ div.popup div.media, div.inside_popup div.media {
 }
 
 div.popup div.media img, div.inside_popup div.media img {
-   max-width: 80%;
+   max-width: 400px;
+}
+
+div.chat_msg {
+   margin: 2px;
+   margin-top: 10px;
+   padding: 5px;
+   background-color: white;
+   border: 1px dashed #777777;
+   border-top-left-radius: 5px 5px;
+   border-top-right-radius: 5px 5px;
+   border-bottom-left-radius: 5px 5px;
+   border-bottom-right-radius: 5px 5px;
+   text-align: justify;
+}
+
+div.chat_msg h1 {
+   font-size: 11px;
+   text-align: left;
+}
+
+div.chat_msg h1 span {
+   display: block;
+   font-weight: normal;
 }

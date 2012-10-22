@@ -30,29 +30,20 @@ class go2url extends fs_controller
    {
       $this->template = FALSE;
       
-      if( isset($_GET['url']) )
+      if( isset($_GET['story_id']) )
       {
-         $url = urldecode( $_GET['url'] );
-         
-         $encontrada = FALSE;
-         if( isset($_GET['feed']) )
+         $story = new story();
+         $story0 = $story->get($_GET['story_id']);
+         if( $story0 )
          {
-            $feed = new feed();
-            $feed0 = $feed->get( urldecode($_GET['feed']) );
-            if( $feed0 )
-            {
-               $story = $feed0->get_story_by_url($url);
-               if( $story )
-               {
-                  $this->visitor->add2log($story->title);
-                  $encontrada = TRUE;
-               }
-            }
+            $this->visitor->add2log($story0->title);
+            header("location: ".$story0->link);
          }
-         if( !$encontrada )
-            $this->visitor->add2log('Redireccionando a '.$url);
-         
-         header("location: ".$url);
+         else
+         {
+            $this->visitor->add2log('History no encontrada.');
+            header("location: index.php");
+         }
       }
       else
          header("location: index.php");

@@ -41,9 +41,19 @@ class visitor extends fs_model
       }
    }
    
+   public function get_key()
+   {
+      return $this->key;
+   }
+   
    public function mobile()
    {
       return (strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') || strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'android'));
+   }
+   
+   public function human()
+   {
+      return !(strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot'));
    }
    
    public function get_logs($reverse=TRUE)
@@ -60,6 +70,7 @@ class visitor extends fs_model
           'date' => Date('Y-m-d H:i:s'),
           'ip' => 'X.X.X.X',
           'user_agent' => 'unknown',
+          'bot' => !$this->human(),
           'url' => '/',
           'info' => $info,
           'count' => 1

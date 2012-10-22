@@ -21,13 +21,17 @@ class explore_feed extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('explore_feed', 'Explorar fuente');
+      parent::__construct('explore_feed', 'Explorar fuentes de '.FS_NAME);
    }
    
    protected function process()
    {
-      $encontrado = FALSE;
+      if( $this->visitor->mobile() )
+         $this->template = 'main_page_mobile';
+      else
+         $this->template = 'main_page';
       
+      $encontrado = FALSE;
       if( isset($_GET['feed']) )
       {
          $feed = new feed();
@@ -41,7 +45,6 @@ class explore_feed extends fs_controller
             $encontrado = TRUE;
          }
       }
-      
       if( !$encontrado )
       {
          $this->new_error_msg('Fuente no encontrada.');

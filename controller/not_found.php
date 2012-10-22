@@ -21,11 +21,16 @@ class not_found extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('not_found', '¡Página no encontrada!');
+      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!');
    }
    
    protected function process()
    {
+      if( $this->visitor->mobile() )
+         $this->template = 'main_page_mobile';
+      else
+         $this->template = 'main_page';
+      
       $this->new_error_msg('¡Página no encontrada!');
       $this->visitor->add2log('Página no encontrada');
       

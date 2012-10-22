@@ -20,7 +20,6 @@
 require_once 'model/feed.php';
 require_once 'model/story.php';
 require_once 'model/visitor.php';
-require_once 'model/tweet.php';
 
 class fs_controller
 {
@@ -56,8 +55,6 @@ class fs_controller
          $this->visitor = new visitor();
          setcookie('key', $this->visitor->key, time()+31536000);
       }
-      
-      $this->tweet = new tweet();
       
       $this->process();
    }

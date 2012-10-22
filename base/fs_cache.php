@@ -72,6 +72,22 @@ class fs_cache
       }
       return $aa;
    }
+   
+   public function get_array2($key, &$error)
+   {
+      $aa = array();
+      $error = TRUE;
+      if( self::$connected )
+      {
+         $a = self::$memcache->get(FS_CACHE_PREFIX.$key);
+         if( is_array($a) )
+         {
+            $aa = $a;
+            $error = FALSE;
+         }
+      }
+      return $aa;
+   }
 
    public function delete($key)
    {

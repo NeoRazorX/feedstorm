@@ -17,18 +17,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'base/fs_cache.php';
+
 class fisgona extends fs_controller
 {
+   private $cache;
    public $logs;
    
    public function __construct()
    {
-      parent::__construct('fisgona', 'Fisgona', 'fisgona');
+      parent::__construct('fisgona', 'Fisgona de '.FS_NAME, 'fisgona');
    }
    
    protected function process()
    {
+      $this->cache = new fs_cache();
       $this->logs = $this->visitor->get_logs();
+   }
+   
+   public function get_story_ids()
+   {
+      if($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+         return $this->cache->get_array('story_ids');
+      else
+         return FALSE;
+   }
+   
+   public function get_image_filenames()
+   {
+      if($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+         return $this->cache->get_array('filenames');
+      else
+         return FALSE;
+   }
+   
+   public function get_image_votes()
+   {
+      if($_SERVER['REMOTE_ADDR'] == '127.0.0.1')
+         return $this->cache->get_array('story_image_votes');
+      else
+         return FALSE;
    }
 }
 

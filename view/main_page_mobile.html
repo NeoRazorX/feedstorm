@@ -34,9 +34,13 @@
       {/if}
       <div class="more">
          {if condition="!$value->youtube AND $value->image"}
-         <a href="{$path}/{$value->wrong_image_url()}">imágen erronea</a> &nbsp;
+            <a href="{$path}/{$value->wrong_image_url()}">imágen erronea</a> &nbsp;
          {/if}
-         <a href="{$path}/{$value->url()}">+</a>
+         {if condition="$value->link2!='/'"}
+            <a target="_blank" href="{$value->link2}">+</a>
+         {else}
+            <a href="{$path}/{$value->url()}">+</a>
+         {/if}
       </div>
    </div>
    {/loop}

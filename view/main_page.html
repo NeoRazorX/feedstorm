@@ -47,10 +47,13 @@
       {/if}
       <div class="more">
          {if condition="!$value->youtube AND $value->image"}
-         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->wrong_image_url()}'); return false;">
-            imágen erronea</a>
+            <a href="#" onclick="fs_show_popup_to('{$path}/{$value->wrong_image_url()}'); return false;">imágen erronea</a>
          {/if}
-         <a href="#" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">+</a>
+         {if condition="$value->link2!='/'"}
+            <a target="_blank" href="{$value->link2}">+</a>
+         {else}
+            <a href="#" onclick="fs_show_popup_to('{$path}/{$value->url()}'); return false;">+</a>
+         {/if}
       </div>
    </div>
    {/loop}

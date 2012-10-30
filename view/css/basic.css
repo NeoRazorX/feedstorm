@@ -3,10 +3,12 @@ body {
    padding: 0px;
    background-color: #E7EBF2;
    color: black;
-   font-family: "HelveticaNeue-Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+   font-family: 'Din Pro', "Lucida Grande",'segoe UI','Trebuchet Ms', Arial, Tahoma, Calibri, Tahoma, Arial, Verdana, Helvetica, sans-serif;
    font-size: 13px;
    font-style: normal;
    font-weight: normal;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -45,7 +47,7 @@ textarea {
    display: block;
    width: 100%;
    box-sizing: border-box;
-   -webkit-box-sizing:border-box;
+   -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;
    -ms-box-sizing: border-box;
 }

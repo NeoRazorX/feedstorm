@@ -725,7 +725,7 @@ class story extends fs_model
                $new_image = 'tmp/images/'.$v['filename'];
          }
       }
-      if( $max > 5 )
+      if( $max > 0 )
       {
          if($new_image == '-none-')
          {

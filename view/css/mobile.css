@@ -422,7 +422,7 @@ div.popup div.media, div.inside_popup div.media {
 }
 
 div.popup div.media img, div.inside_popup div.media img {
-   max-width: 400px;
+   max-width: 90%;
 }
 
 div.chat_msg {

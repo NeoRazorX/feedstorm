@@ -17,10 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+date_default_timezone_set('Europe/Madrid');
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 require_once 'config.php';
 require_once 'model/feed.php';
 
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
 echo "+ -> PreProcesar, * -> Procesar, - -> Imágen, D -> Descargar, R -> Redimensionar.\n";
 
 $feed = new feed();

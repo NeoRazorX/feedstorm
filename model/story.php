@@ -248,6 +248,16 @@ class story extends fs_model
       return 'index.php?page=wrong_image&story_id='.$this->id;
    }
    
+   public function meneame()
+   {
+       $result = FALSE;
+       if( strlen($this->link2) > 4 )
+       {
+           $result = ( substr($this->link2, 0, 16) == 'http://menea.me/' );
+       }
+       return $result;
+   }
+   
    private function set_description($desc)
    {
       $desc = strip_tags( preg_replace("/(<br\ ?\/?>)+/", "\n", $desc) );
@@ -548,10 +558,10 @@ class story extends fs_model
             if( $image->getWidth() > max(array(50, $this->image_width)) AND $image->getHeight() > max(array(30, $this->image_height)) )
             {
                $this->image = FS_PATH.'/'.$image->path;
-               if($image->getWidth() > 290)
+               if($image->getWidth() > 225)
                {
                   echo 'R';
-                  $image->resizeToWidth(290);
+                  $image->resizeToWidth(225);
                   $image->save();
                }
                $this->image_height = $image->getHeight();
@@ -698,6 +708,7 @@ class story extends fs_model
                 'ips' => array($_SERVER['REMOTE_ADDR']),
                 'expires' => time()+86400
             );
+            $this->process_image_votes();
          }
          $this->save_image_votes();
       }

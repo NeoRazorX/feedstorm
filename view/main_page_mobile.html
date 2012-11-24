@@ -36,8 +36,8 @@
          {if condition="!$value->youtube AND $value->image"}
             <a href="{$path}/{$value->wrong_image_url()}">imágen erronea</a> &nbsp;
          {/if}
-         {if condition="$value->link2!='/'"}
-            <a target="_blank" href="{$value->link2}">+</a>
+         {if condition="$value->meneame()"}
+            <a target="_blank" href="{$value->link2}">meneame</a>
          {else}
             <a href="{$path}/{$value->url()}">+</a>
          {/if}

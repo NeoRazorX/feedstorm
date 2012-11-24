@@ -80,7 +80,10 @@ a#fs_logo {
 
 a#fs_b_menu {
    display: inline-block;
-   padding: 4px;
+   padding-top: 4px;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-bottom: 2px;
    background-color: #3B5998;
    border: 1px solid black;
    border-top-left-radius: 3px 3px;
@@ -167,9 +170,9 @@ div#stories {
 
 div.story {
    display: inline-block;
-   width: 300px;
-   margin: 4px;
-   padding: 4px;
+   width: 240px;
+   margin: 5px;
+   padding: 5px;
    padding-top: 7px;
    background-color: white;
    border-top: 1px solid #dddddd;

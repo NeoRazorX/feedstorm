@@ -53,7 +53,7 @@ class visitor extends fs_model
    
    public function human()
    {
-      return !(strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot'));
+      return !(strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot') OR strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'spider'));
    }
    
    public function get_logs($reverse=TRUE)

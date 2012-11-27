@@ -41,8 +41,8 @@ class go2url extends fs_controller
          }
          else
          {
-            $this->visitor->add2log('History no encontrada.');
-            header("location: index.php");
+            $this->visitor->add2log('Historia no encontrada.');
+            header("location: index.php?page=not_found");
          }
       }
       else

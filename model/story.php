@@ -409,8 +409,10 @@ class story extends fs_model
          curl_setopt($ch0, CURLOPT_TIMEOUT, 30);
          curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
          curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
          $html = curl_exec($ch0);
          curl_close($ch0);
+         
          foreach($this->find_images($html) as $img)
          {
             if( !in_array($img, $this->images) )

@@ -134,8 +134,9 @@ class feed extends fs_model
       {
          $ch = curl_init( $this->url );
          curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
          $html = curl_exec($ch);
          curl_close($ch);
          
@@ -143,6 +144,10 @@ class feed extends fs_model
          $xml = simplexml_load_string( $html );
          if( $xml )
          {
+            if( file_exists("tmp/".$this->name.".xml") )
+               unlink("tmp/".$this->name.".xml");
+            $xml->saveXML("tmp/".$this->name.".xml");
+            
             if( $xml->channel )
             {
                $i = 0;

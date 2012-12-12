@@ -17,33 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_controller.php';
-
-class go2url extends fs_controller
+class popular_stories extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('go2url', 'Redireccionando...');
+      parent::__construct('popular_stories', FS_NAME.' - Populares', 'main_page');
    }
    
    protected function process()
    {
-      $this->template = FALSE;
-      
-      if( isset($_GET['story_id']) )
-      {
-         $story = new story();
-         $story0 = $story->get($_GET['story_id']);
-         if( $story0 )
-         {
-            $this->visitor->add2log($story0);
-            header("location: ".$story0->link);
-         }
-         else
-            header("location: index.php?page=not_found");
-      }
-      else
-         header("location: index.php");
+      $this->stories = $this->visitor->get_popular_stories();
    }
 }
 

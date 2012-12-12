@@ -83,13 +83,21 @@
          });
       }
       $(document).ready(function() {
-         $("#fs_b_menu").click(function(event) {
-            event.preventDefault();
-            $("#fs_menu").show();
-         });
-         $("#fs_b_close_menu").click(function(event) {
-            event.preventDefault();
-            $("#fs_menu").hide();
+         $("#b_fuentes").click(function() {
+            if( $('#fuentes').is(":visible") )
+               $('#fuentes').hide();
+            else
+            {
+               var left2 = $("#b_fuentes").position().left+$("#b_fuentes").outerWidth()/2-$("#fuentes").outerWidth()/2;
+               $("#fuentes_img").css({
+                  'padding-left': $("#fuentes").outerWidth()/2 - 10
+               });
+               $("#fuentes").css({
+                  'display': 'block',
+                  'left': left2,
+                  'top': 45
+               });
+            }
          });
          $("#shadow_box").click(function() {
             fs_close_popups();
@@ -103,19 +111,71 @@
 <body>
    <table id="header">
       <tr>
-         <td><a id="fs_logo" href="{$path}/index.php">{$name}</a> {$description}</td>
+         <td><a id="fs_logo" href="{$path}/index.php">{$name}</a></td>
          <td align="right">
-            <a id="fs_b_menu" href="#">menú</a>
+            <div class="b_pages">
+               {if condition="$fsc->page=='main_page'"}
+                  <a class="b_page_s" href="{$path}/index.php">portada</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php">portada</a>
+               {/if}
+               {if condition="$fsc->page=='explore_feed'"}
+                  <a id="b_fuentes" class="b_page_s" href="#">fuentes</a>
+               {else}
+                  <a id="b_fuentes" class="b_page" href="#">fuentes</a>
+               {/if}
+               {if condition="$fsc->page=='popular_stories'"}
+                  <a class="b_page_s" href="{$path}/index.php?page=popular_stories">populares</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php?page=popular_stories">populares</a>
+               {/if}
+               {if condition="$fsc->page=='random_stories'"}
+                  <a class="b_page_s" href="{$path}/index.php?page=random_stories">aleatorio</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php?page=random_stories">aleatorio</a>
+               {/if}
+               {if condition="$fsc->page=='chat_room'"}
+                  <a class="b_page_s" href="{$path}/index.php?page=chat_room">foro</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php?page=chat_room">foro</a>
+               {/if}
+               {if condition="$fsc->page=='fisgona'"}
+                  <a class="b_page_s" href="{$path}/index.php?page=fisgona">fisgona</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php?page=fisgona">fisgona</a>
+               {/if}
+               {if condition="$fsc->page=='select_feeds'"}
+                  <a class="b_page_s" href="{$path}/index.php?page=select_feeds">preferencias</a>
+               {else}
+                  <a class="b_page" href="{$path}/index.php?page=select_feeds">preferencias</a>
+               {/if}
+            </div>
          </td>
       </tr>
    </table>
-   <div id="fs_menu">
-      <a id="fs_b_close_menu" href="#"><img src="{$path}/view/img/close.png" alt="x"/></a>
-      <a class="page" href="{$path}/index.php">portada</a>
-      <a class="page" href="{$path}/index.php?page=random_stories">ración aleatoria</a>
-      <a class="page" href="{$path}/index.php?page=select_feeds">preferencias</a>
-      <a class="page" href="{$path}/index.php?page=fisgona">fisgona</a>
-      <a class="page" href="{$path}/index.php?page=chat_room">foro</a>
+   <div id="fuentes" class="fuentes">
+      <img id="fuentes_img" src="{$path}/view/img/flecha_menu.png" alt="*"/>
+      <ul>
+         {loop="$fsc->visitor->get_feeds()"}
+            {if condition="$value->name==$fsc->feed_name"}
+            <li class="selected"><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
+            {else}
+            <li><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
+            {/if}
+         {else}
+            <li>Vacío</li>
+         {/loop}
+         <li>----</li>
+         {loop="$fsc->visitor->get_feeds_no()"}
+            {if condition="$value->name==$fsc->feed_name"}
+            <li class="selected"><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
+            {else}
+            <li><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
+            {/if}
+         {else}
+            <li>Vacío</li>
+         {/loop}
+      </ul>
    </div>
    {if condition="$fsc->get_errors()"}
    <div class="error">

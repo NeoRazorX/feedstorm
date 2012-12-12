@@ -21,16 +21,11 @@ class explore_feed extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('explore_feed', 'Explorar fuentes de '.FS_NAME);
+      parent::__construct('explore_feed', 'Explorar fuentes de '.FS_NAME, 'main_page');
    }
    
    protected function process()
    {
-      if( $this->visitor->mobile() )
-         $this->template = 'main_page_mobile';
-      else
-         $this->template = 'main_page';
-      
       $encontrado = FALSE;
       if( isset($_GET['feed']) )
       {
@@ -41,15 +36,12 @@ class explore_feed extends fs_controller
             $this->new_message("Historias de <b>".$feed0->name.'</b>. Puedes configurar tus fuentes de noticias desde
                <b>menu &gt; preferencias</b>.');
             $this->stories = $feed0->get_stories();
-            $this->visitor->add2log('Explorando fuente '.$feed0->name);
+            $this->feed_name = $feed0->name;
             $encontrado = TRUE;
          }
       }
       if( !$encontrado )
-      {
          $this->new_error_msg('Fuente no encontrada.');
-         $this->visitor->add2log('Explorando fuente '.$feed0->name.'. Fuente no encontrada.');
-      }
    }
 }
 

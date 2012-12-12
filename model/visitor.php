@@ -64,58 +64,64 @@ class visitor extends fs_model
          return $this->cache->get_array('logs');
    }
    
-   public function add2log($info='-')
+   public function add2log($story)
    {
-      $entry = array(
-          'date' => Date('Y-m-d H:i:s'),
-          'ip' => 'X.X.X.X',
-          'user_agent' => 'unknown',
-          'bot' => !$this->human(),
-          'url' => '/',
-          'info' => $info,
-          'count' => 1
-      );
-      
-      if( isset($_SERVER['REMOTE_ADDR']) )
+      if( $story AND $this->human() )
       {
-         $ip4 = explode('.', $_SERVER['REMOTE_ADDR']);
-         $ip6 = explode(':', $_SERVER['REMOTE_ADDR']);
-         if( count($ip4) == 4 )
-            $entry['ip'] = $ip4[0].'.'.$ip4[1].'.'.$ip4[2].'.X';
-         else if( count($ip6) == 8 )
-            $entry['ip'] = $ip6[0].':'.$ip6[1].':'.$ip6[2].':'.$ip6[3].':X:X:X:X';
-      }
-      
-      if( isset($_SERVER['HTTP_USER_AGENT']) )
-         $entry['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-      
-      if( isset($_SERVER['REQUEST_URI']) )
-         $entry['url'] = $_SERVER['REQUEST_URI'];
-      
-      $encontrado = FALSE;
-      $logs = $this->get_logs(FALSE);
-      if( count($logs) > 0 )
-      {
-         /// reducimos
-         if( count($logs) > 100 )
+         $entry = array(
+             'date' => Date('Y-m-d H:i:s'),
+             'ip' => 'X.X.X.X',
+             'user_agent' => 'unknown',
+             'idstory' => $story->get_id(),
+             'url' => $story->url(),
+             'title' => $story->title
+         );
+         
+         if( isset($_SERVER['REMOTE_ADDR']) )
          {
-            $new_logs = array();
-            for($j=50; $j<count($logs); $j++)
-               $new_logs[] = $logs[$j];
-            $logs = $new_logs;
+            $ip4 = explode('.', $_SERVER['REMOTE_ADDR']);
+            $ip6 = explode(':', $_SERVER['REMOTE_ADDR']);
+            if( count($ip4) == 4 )
+               $entry['ip'] = $ip4[0].'.'.$ip4[1].'.'.$ip4[2].'.X';
+            else if( count($ip6) == 8 )
+               $entry['ip'] = $ip6[0].':'.$ip6[1].':'.$ip6[2].':'.$ip6[3].':X:X:X:X';
          }
          
-         $i = count($logs) - 1;
-         if($logs[$i]['ip'] == $entry['ip'] AND $logs[$i]['url'] == $entry['url'] AND $logs[$i]['info'] == $entry['info'] AND $logs[$i]['user_agent'] == $entry['user_agent'])
+         if( isset($_SERVER['HTTP_USER_AGENT']) )
+            $entry['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+         
+         $encontrado = FALSE;
+         $logs = $this->get_logs(FALSE);
+         if( count($logs) > 0 )
          {
-            $logs[$i]['date'] = Date('Y-m-d H:i:s');
-            $logs[$i]['count']++;
-            $encontrado = TRUE;
+            /// reducimos
+            if( count($logs) > 200 )
+            {
+               $num = 1;
+               foreach($logs as $i => $value)
+               {
+                  if($num < 100)
+                     $num++;
+                  else
+                     unset( $logs[$i] );
+               }
+            }
+            /// buscamos duplicados
+            foreach($logs as $i => $value)
+            {
+               if($value['ip'] == $entry['ip'] AND $value['user_agent'] == $entry['user_agent'] AND $value['idstory'] == $entry['idstory'])
+               {
+                  $encontrado = TRUE;
+                  break;
+               }
+            }
+         }
+         if( !$encontrado )
+         {
+            $logs[] = $entry;
+            $this->cache->set('logs', $logs);
          }
       }
-      if( !$encontrado )
-         $logs[] = $entry;
-      $this->cache->set('logs', $logs);
    }
    
    public function get_feeds()
@@ -125,7 +131,7 @@ class visitor extends fs_model
          $feed = new feed();
          if( isset($_COOKIE['feeds']) )
          {
-            $cookie_feeds = split(';', urldecode($_COOKIE['feeds']));
+            $cookie_feeds = explode(';', urldecode($_COOKIE['feeds']));
             $this->feeds = array();
             foreach($feed->all() as $f)
             {
@@ -140,6 +146,27 @@ class visitor extends fs_model
          }
       }
       return $this->feeds;
+   }
+   
+   public function get_feeds_no()
+   {
+      $nofeeds = array();
+      $feed = new feed();
+      foreach($feed->all() as $f)
+      {
+         $encontrado = FALSE;
+         foreach($this->get_feeds() as $f2)
+         {
+            if($f->name == $f2->name)
+            {
+               $encontrado = TRUE;
+               break;
+            }
+         }
+         if( !$encontrado )
+            $nofeeds[] = $f;
+      }
+      return $nofeeds;
    }
    
    public function clean_feeds()
@@ -184,7 +211,7 @@ class visitor extends fs_model
       $all = array();
       foreach($this->get_feeds() as $f)
          $all = array_merge( $all, $f->get_stories() );
-      /// ordenamos por fecha, no visitados y limitamos a FS_MAX_STORIES
+      /// ordenamos por fecha y limitamos a FS_MAX_STORIES
       $stories = array();
       $selections = 0;
       while($selections < count($all) AND count($stories) < FS_MAX_STORIES)
@@ -206,6 +233,55 @@ class visitor extends fs_model
          {
             $all[$selected]->selected = TRUE;
             $stories[] = $all[$selected];
+         }
+      }
+      return $stories;
+   }
+   
+   public function get_popular_stories()
+   {
+      $logs = $this->get_logs(TRUE);
+      $stories = array();
+      if( count($logs) > 1 )
+      {
+         $alls = array();
+         $feed = new feed();
+         foreach($feed->all() as $f)
+         {
+            foreach($f->get_stories() as $s)
+            {
+               foreach($logs as $l)
+               {
+                  if($s->get_id() == $l['idstory'])
+                  {
+                     $alls[] = $s;
+                     break;
+                  }
+               }
+            }
+         }
+         /// ordenamos por fecha y limitamos a FS_MAX_STORIES
+         $selections = 0;
+         while($selections < count($alls) AND count($stories) < FS_MAX_STORIES)
+         {
+            $selected = -1;
+            for($i=0; $i < count($alls); $i++)
+            {
+               if( !$alls[$i]->selected )
+               {
+                  if($selected < 0)
+                     $selected = $i;
+                  else if( $alls[$i]->date > $alls[$selected]->date )
+                     $selected = $i;
+               }
+            }
+            $selections++;
+            
+            if($selected >= 0)
+            {
+               $alls[$selected]->selected = TRUE;
+               $stories[] = $alls[$selected];
+            }
          }
       }
       return $stories;

@@ -38,14 +38,11 @@ class wrong_image extends fs_controller
          $this->story = $story->get($_GET['story_id']);
          if( $this->story )
          {
-            $this->visitor->add2log('Imágen erronea: '.$this->story->title);
+            $this->visitor->add2log($this->story);
             if( isset($_POST['image']) )
             {
                if( $this->visitor->human() )
-               {
-                  $this->visitor->add2log('Imágen seleccionada: '.$_POST['image']);
                   $this->story->select_new_image($_POST['image']);
-               }
                else
                   $this->new_error_msg("No eres humano.");
             }

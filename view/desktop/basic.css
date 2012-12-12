@@ -13,11 +13,6 @@ body {
 
 a {
    color: #0E385F;
-   font-weight: bold;
-}
-
-a:visited {
-   color: #4C769E;
 }
 
 img {
@@ -52,89 +47,93 @@ textarea {
    -ms-box-sizing: border-box;
 }
 
-table#header {
+div#header {
+   display: table;
    width: 100%;
    margin: 0px;
    margin-bottom: 10px;
    background-color: #424242;
-   border-top: 3px solid black;
-   border-bottom: 3px solid #aaaaaa;
    border-collapse: collapse;
    color: white;
    font-size: 16px;
 }
 
-table#header td {
-   margin: 0px;
-   padding: 5px;
+div#header2 {
+   display: table-row;
 }
 
-a#fs_logo {
-   display: inline-block;
-   margin-right: 10px;
+div#header2 a {
+   display: table-cell;
+   vertical-align: middle;
+   border-top: 2px solid black;
+   border-left: 1px solid black;
+   border-right: 1px solid black;
+   border-bottom: 3px solid #999999;
    color: white;
+   text-align: center;
+   text-decoration: none;
+   text-transform: capitalize;
+}
+
+div#header2 a#fs_logo {
+   padding-left: 10px;
    font-size: 30px;
    font-variant: small-caps;
-   text-decoration: none;
+   text-align: left;
 }
 
-a#fs_b_menu {
-   display: inline-block;
-   padding-top: 4px;
-   padding-left: 5px;
-   padding-right: 5px;
-   padding-bottom: 2px;
+div#header2 a.selected {
    background-color: #3B5998;
-   border: 1px solid black;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
-   color: white;
-   text-decoration: none;
-   text-transform: capitalize;
-   font-variant: small-caps;
 }
 
-div#fs_menu {
+div#header2 a:hover {
+   background-color: #4C769E;
+}
+
+div#fuentes {
    display: none;
    position: absolute;
-   top: 0px;
-   right: 0px;
    z-index: 2;
-   padding: 0px;
-   background-color: #666666;
-   border: 2px solid #333333;
-   border-bottom-left-radius: 5px 5px;
-   color: white;
-   font-size: 16px;
+   font-size: 14px;
 }
 
-div#fs_menu a {
+div#fuentes img {
    display: block;
    margin: 0px;
+   padding: 0px;
+}
+
+div#fuentes ul {
+   list-style: none;
+   margin: 0px;
+   padding: 0px;
+   background-color: white;
+   border: 3px solid #333333;
+   box-shadow: 5px 5px rgba(0,0,0,0.5);
+}
+
+div#fuentes ul li.title {
+   padding-top: 5px;
+   padding-bottom: 2px;
+   background-color: #333333;
+   color: white;
+   text-align: center;
+}
+
+div#fuentes ul li.selected {
+   background-color: silver;
+}
+
+div#fuentes ul li a {
+   display: block;
    padding: 5px;
    text-decoration: none;
-   text-transform: capitalize;
-   text-align: center;
+   color: black;
+}
+
+div#fuentes ul li a:hover {
+   background-color: #4C769E;
    color: white;
-   font-variant: small-caps;
-}
-
-div#fs_menu a#fs_b_close_menu {
-   margin-top: 0px;
-   text-align: right;
-}
-
-div#fs_menu a.page {
-   padding-left: 5px;
-   padding-right: 5px;
-   background-color: #aaaaaa;
-   border-top: 1px dashed #333333;
-}
-
-div#fs_menu a.page:hover {
-   background-color: #3B5998;
 }
 
 div.error, div.message {
@@ -193,7 +192,7 @@ div.story h1 {
    padding: 0px;
    padding-bottom: 2px;
    font-size: 15px;
-   text-align: center;
+   text-align: left;
 }
 
 div.story img.mini {
@@ -357,6 +356,15 @@ div.popup {
    border-top-right-radius: 5px 5px;
    border-bottom-left-radius: 5px 5px;
    border-bottom-right-radius: 5px 5px;
+}
+
+div.popup h1 {
+   margin: 0px;
+   margin-bottom: 10px;
+   padding: 5px;
+   background-color: #4C769E;
+   color: white;
+   text-align: center;
 }
 
 div.inside_popup {

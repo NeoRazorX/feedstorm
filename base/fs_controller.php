@@ -30,9 +30,9 @@ class fs_controller
    public $title;
    public $template;
    public $visitor;
-   public $tweet;
    
    public $stories;
+   public $feed_name;
    
    public function __construct($name='not_found', $title='home', $template='main_page')
    {
@@ -40,11 +40,11 @@ class fs_controller
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
       $this->title = $title;
-      $this->template = $template;
       $this->errors = array();
       $this->messages = array();
       
       $this->stories = array();
+      $this->feed_name = '';
       
       if( isset($_COOKIE['key']) )
       {
@@ -56,7 +56,16 @@ class fs_controller
          setcookie('key', $this->visitor->key, time()+31536000);
       }
       
+      $this->set_template($template);
       $this->process();
+   }
+   
+   protected function set_template($tmpl='main_page')
+   {
+      if( $this->visitor->mobile() )
+         $this->template = 'mobile/'.$tmpl;
+      else
+         $this->template = 'desktop/'.$tmpl;
    }
    
    public function new_error_msg($msg)

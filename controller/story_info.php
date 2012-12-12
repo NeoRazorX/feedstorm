@@ -40,7 +40,7 @@ class story_info extends fs_controller
          if( $this->story )
          {
             $this->story_link_urlenc = urlencode( $this->story->link );
-            $this->visitor->add2log('+ '.$this->story->title);
+            $this->visitor->add2log($this->story);
          }
       }
    }

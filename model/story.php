@@ -260,10 +260,16 @@ class story extends fs_model
    
    private function set_description($desc)
    {
-      $desc = strip_tags( preg_replace("/(<br\ ?\/?>)+/", "\n", $desc) );
-      if( strlen($desc) > 300 )
-         $desc = substr($desc, 0, 300) . '...';
-      return $this->true_word_break( preg_replace("/(\n)+/", "<br/>", trim($desc)) );
+      $description = '';
+      $desc = preg_replace('/\s+/', ' ', strip_tags($desc) );
+      foreach(explode(' ', $desc) as $aux)
+      {
+         if( strlen($description.' '.$aux) < 300 )
+            $description .= ' ' . $aux;
+      }
+      if( strlen($description) < strlen($desc) )
+         $description .= '...';
+      return $this->true_word_break($description);
    }
    
    public function get($sid)
@@ -318,7 +324,7 @@ class story extends fs_model
       {
          if( substr($url, 0, 29) == 'http://www.youtube.com/embed/' )
          {
-            $parts = split('/', $url);
+            $parts = explode('/', $url);
             $youtube = $parts[4];
             break;
          }

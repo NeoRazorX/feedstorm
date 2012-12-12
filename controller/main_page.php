@@ -26,11 +26,6 @@ class main_page extends fs_controller
    
    protected function process()
    {
-      if( $this->visitor->mobile() )
-         $this->template = 'main_page_mobile';
-      else
-         $this->template = 'main_page';
-      
       $this->stories = $this->visitor->get_new_stories();
    }
 }

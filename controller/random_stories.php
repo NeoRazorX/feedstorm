@@ -21,16 +21,11 @@ class random_stories extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('random_stories', 'Ración aleatoria de '.FS_NAME);
+      parent::__construct('random_stories', 'Ración aleatoria de '.FS_NAME, 'main_page');
    }
    
    protected function process()
    {
-      if( $this->visitor->mobile() )
-         $this->template = 'main_page_mobile';
-      else
-         $this->template = 'main_page';
-      
       $this->new_message('Aquí tienes una ración aleatoria de noticias.');
       
       $feed = new feed();
@@ -39,6 +34,7 @@ class random_stories extends fs_controller
       {
          $random_feed = $all_feeds[ rand(0, count($all_feeds)-1) ];
          $this->stories = $random_feed->get_stories();
+         $this->feed_name = $random_feed->name;
          $this->new_message('La fuente seleccionada es <b>'.$random_feed->name.'</b>.');
       }
    }

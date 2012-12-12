@@ -4,16 +4,14 @@
    <h1>Fisgona:</h1>
    <table width="100%">
       <tr>
-         <th align="left">IP (veces)</th>
-         <th>Bot</th>
-         <th align="left">Info.</th>
+         <th align="left">IP</th>
+         <th align="left">Título</th>
          <th align="right">Fecha</th>
       </tr>
       {loop="$fsc->logs"}
          <tr>
-            <td><span title="{$value.user_agent}">{$value.ip}</span> ({$value.count})</td>
-            <td align="center">{if condition="$value.bot"}si{else}-{/if}</td>
-            <td><a target="_blank" href="{$value.url}">{$value.info}</a></td>
+            <td><span title="{$value.user_agent}">{$value.ip}</span></td>
+            <td><a target="_blank" href="{$value.url}">{$value.title}</a></td>
             <td align="right">{$value.date}</td>
          </tr>
       {/loop}

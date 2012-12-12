@@ -21,18 +21,12 @@ class not_found extends fs_controller
 {
    public function __construct()
    {
-      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!');
+      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!', 'main_page');
    }
    
    protected function process()
    {
-      if( $this->visitor->mobile() )
-         $this->template = 'main_page_mobile';
-      else
-         $this->template = 'main_page';
-      
       $this->new_error_msg('¡Página no encontrada!');
-      $this->visitor->add2log('Página no encontrada');
       
       $feed = new feed();
       $all_feeds = $feed->defaults();
@@ -40,6 +34,7 @@ class not_found extends fs_controller
       {
          $random_feed = $all_feeds[ rand(0, count($all_feeds)-1) ];
          $this->stories = $random_feed->get_stories();
+         $this->feed_name = $random_feed->name;
       }
    }
 }

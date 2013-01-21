@@ -26,6 +26,12 @@ define('FS_CACHE_HOST', 'localhost');
 define('FS_CACHE_PORT', 11211);
 define('FS_CACHE_PREFIX', '');
 
+/*
+ * Configuración de MongoDB
+ */
+define('FS_MONGO_HOST', 'localhost');
+define('FS_MONGO_DBNAME', '');
+
 /// Número de historias máximo para cada feed y para la portada.
 define('FS_MAX_STORIES', 50);
 

@@ -1,0 +1,49 @@
+{include="desktop/header"}
+
+{if condition="$fsc->editions"}
+   {if condition="$fsc->show_info"}
+   <div class="info">
+      <h1>¿Esto qué es?</h1>
+      <p>
+         Aquí aparecen las últimas noticias editadas.
+      </p>
+      <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
+   </div>
+   {/if}
+   
+   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
+   <script type="text/javascript">
+      $(document).ready(function() {
+         $("#stories").masonry({
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
+      });
+   </script>
+   
+   <div class="bloque">
+      <div id="stories">
+      {loop="$fsc->editions"}
+         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+            <p>{$value->description}</p>
+            {/if}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{else}
+   <div class="info">
+      <h1>No se han encontrado ediciones :(</h1>
+      <p>
+         Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
+         es una mierda.
+      </p>
+   </div>
+{/if}
+
+{include="desktop/footer"}

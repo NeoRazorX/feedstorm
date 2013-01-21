@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,8 @@ if( isset($_GET['page']) )
 }
 else
 {
-   require_once 'controller/main_page.php';
-   $fsc = new main_page();
+   require_once 'controller/home.php';
+   $fsc = new home();
 }
 
 if( $fsc->template )

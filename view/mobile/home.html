@@ -1,0 +1,118 @@
+{include="mobile/header"}
+
+{if condition="$fsc->stories"}
+
+{if condition="$fsc->show_info"}
+<div class="hero-unit">
+   <h2>¿Cómo funciona esto?</h2>
+   <br/>
+   <p>
+      Aquí aparecen las noticias de las fuentes a las que te has
+      <a href="{$path}/index.php?page=suscription">suscrito</a>.
+      Recuerda, desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+   </p>
+   <ul>
+      <li>Si quieres leer más sobre una noticia, haz clic sobre ella.</li>
+      <li>
+         Si alguna noticia está ilustrada con una imagen que no se corresponde, haz clic
+         en esa imágen, después en la pestaña <b>imágenes y vídeos</b> selecciona la más
+         apropiada.
+      </li>
+   </ul>
+   <p><a class="btn btn-primary btn-large" href="{$path}/{$fsc->url()}&show_info=FALSE">Ya lo he pillado</a></p>
+</div>
+{/if}
+
+<div id="stories">
+   {loop="$fsc->stories"}
+   <div class="story">
+      <h1><a href="{$path}/{$value->url()}">{$value->title}</a></h1>
+      {if condition="$value->media_item"}
+         <div class="image">{$value->media_item->show_image()}</div>
+      {else}
+         <p>{$value->description}</p>
+      {/if}
+   </div>
+   {/loop}
+</div>
+{else}
+
+{if condition="$fsc->visitor->noob"}
+<div class="hero-unit">
+   <h2>¡Hola noob!</h2>
+   <br/>
+   <ul>
+      <li><b>{$name}</b> es un agregador de noticias con pretensiones.</li>
+      <li>
+         Pretendo que te enteres aquí de las noticias de actualidad, en lugar
+         de visitar un montón de webs distintas.
+      </li>
+      <li>
+         Esto es tu portada. Está vacía porque no estás suscrito a ninguna fuente.
+         Tienes que hacer clic en la sección
+         <a href="{$path}/index.php?page=feed_list">fuentes</a> y elegir las que quieras.
+      </li>
+      <li>
+         <b>{$name}</b> tiene otras secciones como <b>populares</b> y
+         <b>descubrir</b>, las tienes en la parte de arriba.
+      </li>
+      <li>
+         Como probablemente no vuelvas nunca a visitar esta web, no te hace falta
+         ningún nombre de usuario, ni contraseña, ni nada.
+         <ul>
+            <li>
+               Se te ha asignado un identificador y se ha guardado en tu navegador.
+               ¡Y ya está! No hacen falta más historias para guardar tu configuración.
+            </li>
+            <li>De todas formas te he asignado un nombre: {$fsc->visitor->nick}.</li>
+            <li>A lo mejor te llamas Antonio, pero da igual, para mí eres {$fsc->visitor->nick}.</li>
+            <li>
+               Seguro que quieres cambiarte el nombre. Querrás poner tu nombre real,
+               o mejor aún, seguro que quieres ponerte algún nombre chulo en plan
+               Neo, o MegaZipote34 ... pero para eso hace falta que YO lo programe,
+               y si estoy aquí escribiendo chorradas es porque no tengo ganas de
+               programar esas <b>features</b>.
+            </li>
+            <li>
+               Bueno, la verdad es que me encanta programar. De echo he programado
+               un algoritmo que elige el nombre más apropiado para cada persona, y
+               el tuyo es {$fsc->visitor->nick}.
+            </li>
+            <li>
+               Créeme, tus padres deberían haberte llamado {$fsc->visitor->nick}.
+            </li>
+            <li>
+               Aún estás a tiempo, puedes cambiarte el nombre en cualquier juzgado.
+               Ya verás como todo el mundo se acuerda de tí. ¿Por qué? Porque
+               {$fsc->visitor->nick} es el nombre que más te pega.
+            </li>
+         </ul>
+      </li>
+      <li>
+         Si la web falla mucho, es normal, me ha pasado dos horas escribiendo estas
+         chorradas. No te preocupes, mañana seguiré escribiendo chorradas.
+      </li>
+      <li>
+         Si quieres denunciarme puedes hacerlo vía twitter:
+         <a target="_blank" href="https://twitter.com/neorazorx">@neorazorx</a>.
+         Si me denuncias en un juzgado, haz el favor de decirle al juez que me
+         lo notifique vía twitter. Yo estoy muy ocupado escribiendo chorradas.
+      </li>
+   </ul>
+</div>
+{else}
+<div class="hero-unit">
+   <h2>No se han encontrado noticias para tí :(</h2>
+   <br/>
+   <p>
+      Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
+      mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+      También puedes buscar noticias interesantes desde la sección
+      <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+   </p>
+</div>
+{/if}
+
+{/if}
+
+{include="mobile/footer"}

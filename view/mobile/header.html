@@ -2,18 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
 <head>
    <title>{$fsc->title}</title>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-      <meta name="description" content="{$fsc->get_description()}" />
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="description" content="{$fsc->get_description()}" />
    <meta name="Robots" content="all" />
-{if condition="$fsc->visitor->mobile()"}
-   <meta name="HandheldFriendly" content="true" />
-   <meta name="viewport" content="width=device-width, height=device-height, user-scalable=no" />
-   <link href="{$path}/view/css/mobile.css" rel="stylesheet" type="text/css" />
-{else}
-   <link href="{$path}/view/css/basic.css" rel="stylesheet" type="text/css" />
-{/if}
-   <script type="text/javascript" src="{$path}/view/js/jquery.js"></script>
-{if condition="$analytics"}
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link href="{$path}/view/css/bootstrap.min.css" rel="stylesheet" />
+   <link href="{$path}/view/css/bootstrap-responsive.min.css" rel="stylesheet" />
+   <link href="{$path}/view/css/mobile.css" rel="stylesheet" />
+   <script src="http://code.jquery.com/jquery-latest.js"></script>
+   <script src="{$path}/view/js/bootstrap.min.js"></script>
+   {if condition="$analytics"}
    <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '{$analytics}']);
@@ -24,174 +23,73 @@
          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
    </script>
-{/if}
+   {/if}
    <script type="text/javascript">
-      function fs_close_popups()
-      {
-         $('div.popup').each(function() {
-            $(this).hide();
-         });
-         $("#popup_message").hide();
-         $("#shadow_box").hide();
-         $("table.footer").css({
-            'margin-top': 10
-         });
-      }
-      function fs_show_popup_to(url)
-      {
-         $("#fs_menu").hide();
-         $("#shadow_box").show();
-         $("#popup_message").show();
-         $("#popups").html("<div id='popup_cargando' class='popup'>Cargando...</div>");
-         $("#popup_cargando").css({
-            top: $(window).scrollTop()+10,
-            left: ($(window).width() - $("#popup_cargando").outerWidth())/2
-         });
-         $("#popup_cargando").show();
-         $.ajax({
-            type: 'POST',
-            url: url,
-            dataType: 'html',
-            data: 'no_full_page=TRUE',
-            success: function(datos) {
-               $("#popup_cargando").hide();
-               $("#shadow_box").show();
-               $("#popup_message").show();
-               $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");
-               $("#popup2url").css({
-                  top: $(window).scrollTop()+10,
-                  left: ($(window).width() - $("#popup2url").outerWidth())/2
-               });
-               $("#popup2url").show();
-               $("table.footer").css({
-                  'margin-top': $("#popup2url").outerHeight()
-               });
-            }
-         });
-      }
-      function fs_select_image(story_id, image)
+      function fs_select_media_item(sid, mid)
       {
          $.ajax({
             type: 'POST',
-            url: '{$path}/index.php?page=wrong_image&story_id='+story_id,
+            url: '{$path}/index.php?page=show_story&id='+sid,
             dataType: 'html',
-            data: 'no_full_page=TRUE&image='+image,
+            data: '&select_media_item='+mid,
             success: function(datos) {
                alert('¡Gracias!');
-               fs_close_popups();
             }
          });
       }
-      $(document).ready(function() {
-         $("#b_fuentes").click(function() {
-            if( $('#fuentes').is(":visible") )
-               $('#fuentes').hide();
-            else
-            {
-               var left2 = $("#b_fuentes").position().left+$("#b_fuentes").outerWidth()/2-$("#fuentes").outerWidth()/2;
-               $("#fuentes_img").css({
-                  'padding-left': $("#fuentes").outerWidth()/2 - 10
-               });
-               $("#fuentes").css({
-                  'display': 'block',
-                  'left': left2,
-                  'top': 45
-               });
-            }
-         });
-         $("#shadow_box").click(function() {
-            fs_close_popups();
-         });
-         $("#popup_message").click(function() {
-            fs_close_popups();
-         });
-      });
    </script>
 </head>
 <body>
-   <table id="header">
-      <tr>
-         <td><a id="fs_logo" href="{$path}/index.php">{$name}</a></td>
-         <td align="right">
-            <div class="b_pages">
-               {if condition="$fsc->page=='main_page'"}
-                  <a class="b_page_s" href="{$path}/index.php">portada</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php">portada</a>
-               {/if}
-               {if condition="$fsc->page=='explore_feed'"}
-                  <a id="b_fuentes" class="b_page_s" href="#">fuentes</a>
-               {else}
-                  <a id="b_fuentes" class="b_page" href="#">fuentes</a>
-               {/if}
-               {if condition="$fsc->page=='popular_stories'"}
-                  <a class="b_page_s" href="{$path}/index.php?page=popular_stories">populares</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php?page=popular_stories">populares</a>
-               {/if}
-               {if condition="$fsc->page=='random_stories'"}
-                  <a class="b_page_s" href="{$path}/index.php?page=random_stories">aleatorio</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php?page=random_stories">aleatorio</a>
-               {/if}
-               {if condition="$fsc->page=='chat_room'"}
-                  <a class="b_page_s" href="{$path}/index.php?page=chat_room">foro</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php?page=chat_room">foro</a>
-               {/if}
-               {if condition="$fsc->page=='fisgona'"}
-                  <a class="b_page_s" href="{$path}/index.php?page=fisgona">fisgona</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php?page=fisgona">fisgona</a>
-               {/if}
-               {if condition="$fsc->page=='select_feeds'"}
-                  <a class="b_page_s" href="{$path}/index.php?page=select_feeds">preferencias</a>
-               {else}
-                  <a class="b_page" href="{$path}/index.php?page=select_feeds">preferencias</a>
-               {/if}
+   <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+         <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="{$path}/">{$name}</a>
+            <div class="nav-collapse collapse">
+               <ul class="nav">
+                  {if condition="$fsc->page=='home'"}
+                  <li class="active"><a href="{$path}/">Portada</a></li>
+                  {else}
+                  <li><a href="{$path}/">Portada</a></li>
+                  {/if}
+                  {if condition="$fsc->page=='popular_stories'"}
+                  <li class="active"><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                  {else}
+                  <li><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                  {/if}
+                  {if condition="$fsc->page=='discover_stories'"}
+                  <li class="active"><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
+                  {else}
+                  <li><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
+                  {/if}
+               </ul>
+               <ul class="nav pull-right">
+                  {if condition="$fsc->page=='feed_list'"}
+                  <li class="active"><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+                  {else}
+                  <li><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+                  {/if}
+                  {if condition="$fsc->page=='suscriptions'"}
+                  <li class="active"><a href="{$path}/index.php?page=suscriptions">Suscripciones</a></li>
+                  {else}
+                  <li><a href="{$path}/index.php?page=suscriptions">Suscripciones</a></li>
+                  {/if}
+               </ul>
             </div>
-         </td>
-      </tr>
-   </table>
-   <div id="fuentes" class="fuentes">
-      <img id="fuentes_img" src="{$path}/view/img/flecha_menu.png" alt="*"/>
-      <ul>
-         {loop="$fsc->visitor->get_feeds()"}
-            {if condition="$value->name==$fsc->feed_name"}
-            <li class="selected"><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
-            {else}
-            <li><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
-            {/if}
-         {else}
-            <li>Vacío</li>
-         {/loop}
-         <li>----</li>
-         {loop="$fsc->visitor->get_feeds_no()"}
-            {if condition="$value->name==$fsc->feed_name"}
-            <li class="selected"><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
-            {else}
-            <li><a href="{$path}/index.php?page=explore_feed&feed={$value->name}">{$value->name}</a></li>
-            {/if}
-         {else}
-            <li>Vacío</li>
-         {/loop}
-      </ul>
+         </div>
+      </div>
    </div>
    {if condition="$fsc->get_errors()"}
-   <div class="error">
-      <ul>
-      {loop="$fsc->get_errors()"}
-         <li>{$value}</li>
-      {/loop}
-      </ul>
+   <div class="alert alert-error">
+      <ul>{loop="$fsc->get_errors()"}<li>{$value}</li>{/loop}</ul>
    </div>
    {/if}
    {if condition="$fsc->get_messages()"}
-   <div class="message">
-      <ul>
-      {loop="$fsc->get_messages()"}
-         <li>{$value}</li>
-      {/loop}
-      </ul>
+   <div class="alert alert-info">
+      <ul>{loop="$fsc->get_messages()"}<li>{$value}</li>{/loop}</ul>
    </div>
    {/if}

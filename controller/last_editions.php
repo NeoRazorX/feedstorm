@@ -17,39 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-date_default_timezone_set('Europe/Madrid');
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+require_once 'model/story_edition.php';
 
-require_once 'config.php';
-require_once 'base/fs_mongo.php';
-require_once 'model/feed.php';
-require_once 'model/story.php';
-
-$mongo = new fs_mongo();
-
-echo "\nProcesamos las fuentes:";
-$feed = new feed();
-foreach($feed->all() as $f)
+class last_editions extends fs_controller
 {
-   echo "\n * Procesando ".$f->name."...\n";
-   $f->read();
+   public $show_info;
+   public $editions;
    
-   foreach($f->get_errors() as $e)
-      echo $e."\n";
-   $f->clean_errors();
+   public function __construct()
+   {
+      parent::__construct('last_editions', FS_NAME, 'last_editions');
+   }
    
-   foreach($f->get_messages() as $m)
-      echo $m."\n";
-   $f->clean_messages();
+   protected function process()
+   {
+      if( isset($_GET['show_info']) )
+      {
+         $this->show_info = FALSE;
+         setcookie('editions_info', 'FALSE', time()+315360000);
+      }
+      else
+         $this->show_info = !isset($_COOKIE['editions_info']);
+      
+      $se = new story_edition();
+      $this->editions = $se->last_editions();
+   }
 }
-
-echo "\nActualizamos las noticias populares...\n";
-$story = new story();
-{
-   foreach($story->popular_stories() as $s)
-      $s->save();
-}
-
-$mongo->close();
 
 ?>

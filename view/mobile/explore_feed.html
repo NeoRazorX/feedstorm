@@ -1,0 +1,53 @@
+{include="mobile/header"}
+
+{if condition="$fsc->feed"}
+<div class="well">
+   <table width="100%">
+      <tr>
+         <td valign="top">
+            <h1>{$fsc->feed->name}</h1>
+         </td>
+         <td valign="top" align="right">
+            {if condition="$fsc->unsuscribe"}
+            <a class="btn btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            {else}
+            <a class="btn btn-primary" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            {/if}
+         </td>
+      </tr>
+   </table>
+   <table class="table">
+      <tr>
+         <th>Descripción</th>
+         <th>URL</th>
+         <th>Última actualización</th>
+         <th>Última comprobación</th>
+         <th>Suscriptores</th>
+         <th>Errores</th>
+      </tr>
+      <tr>
+         <td>{$fsc->feed->description}.</td>
+         <td>{$fsc->feed->url}</td>
+         <td>{$fsc->feed->last_update_timesince()}</td>
+         <td>{$fsc->feed->last_check_timesince()}</td>
+         <td>{$fsc->feed->suscriptors}</td>
+         <td>{$fsc->feed->strikes}</td>
+      </tr>
+   </table>
+</div>
+
+<div id="stories">
+   {loop="$fsc->stories"}
+   <div class="story" onclick="fs_show_popup_to('{$path}/{$value->url()}')">
+      <h1>{$value->title}</h1>
+      {if condition="$value->media_item"}
+         <div class="image">{$value->media_item->show_image()}</div>
+      {else}
+         <p>{$value->description}</p>
+      {/if}
+   </div>
+   {/loop}
+</div>
+{/if}
+
+{include="mobile/footer"}

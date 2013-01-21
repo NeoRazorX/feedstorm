@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,16 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/story.php';
+
 class popular_stories extends fs_controller
 {
+   public $show_info;
+   public $stories;
+   
    public function __construct()
    {
-      parent::__construct('popular_stories', FS_NAME.' - Populares', 'main_page');
+      parent::__construct('popular_stories', FS_NAME, 'popular');
    }
    
    protected function process()
    {
-      $this->stories = $this->visitor->get_popular_stories();
+      if( isset($_GET['show_info']) )
+      {
+         $this->show_info = FALSE;
+         setcookie('popular_info', 'FALSE', time()+315360000);
+      }
+      else
+         $this->show_info = !isset($_COOKIE['popular_info']);
+      
+      $story = new story();
+      $this->stories = $story->popular_stories();
    }
 }
 

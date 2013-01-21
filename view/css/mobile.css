@@ -1,0 +1,125 @@
+/* 
+    Document   : mobile
+    Created on : 11-ene-2013, 18:36:44
+    Author     : carlos
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+   margin: 0px;
+   padding: 0px;
+}
+
+div.navbar {
+   
+}
+
+div.alert {
+   margin: 5px;
+}
+
+div.alert ul {
+   margin: 0px;
+   margin-left: 10px;
+}
+
+div.well {
+   margin-left: 5px;
+   margin-right: 5px;
+}
+
+div.hero-unit {
+   margin-left: 2px;
+   margin-right: 2px;
+   padding: 10px;
+   border: 1px solid #aaaaaa;
+}
+
+div.story {
+   
+}
+
+div.story p {
+   text-align: justify;
+}
+
+div.story div.image {
+   text-align: center;
+}
+
+div.story_info {
+   padding: 5px;
+}
+
+div.story_info h1 {
+   margin: 0px;
+   padding: 0px;
+   padding-bottom: 5px;
+   text-align: center;
+   font-size: 25px;
+}
+
+div.story_info div.media_item {
+   padding: 5px;
+   text-align: center;
+}
+
+div.story_info p {
+   text-align: justify;
+}
+
+ul.pestanyas {
+   margin: 0px;
+   margin-top: 10px;
+   padding: 0px;
+   padding-left: 10px;
+   list-style-type: none;
+   border-bottom: 1px solid #cccccc;
+}
+
+ul.pestanyas li {
+   display: inline-block;
+   padding: 5px;
+   padding-right: 10px;
+   border-bottom: 3px solid transparent;
+}
+
+ul.pestanyas li:hover {
+   cursor: pointer;
+   background-color: white;
+}
+
+ul.pestanyas li.activa {
+   border-bottom: 3px solid #0077b3;
+   color: #0077b3;
+}
+
+div.pestanya_content {
+   padding: 5px;
+   background-color: white;
+}
+
+div.pestanya_content table {
+   width: 100%;
+}
+
+div.pestanya_content table th {
+   text-align: left;
+}
+
+div#story_media_items {
+   text-align: center;
+}
+
+div#story_media_items a.media_item {
+   display: inline-block;
+   padding: 2px;
+   background-color: #dddddd;
+   border: 1px outset #CCCCCC;
+}
+
+div#story_media_items a.media_item img,
+div#story_media_items a.media_item iframe {
+   display: block;
+}

@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,23 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'base/fs_cache.php';
+require_once 'base/fs_mongo.php';
 
-class fs_model
+abstract class fs_model
 {
-   protected $cache;
+   private static $mongo;
    private static $errors;
    private static $messages;
    
-   public function __construct()
+   protected $collection_name;
+   protected $collection;
+   
+   protected $id;
+   
+   public function __construct($cname='test')
    {
-      $this->cache = new fs_cache();
+      if( !isset(self::$mongo) )
+         self::$mongo = new fs_mongo();
       
       if( !isset(self::$errors) )
          self::$errors = array();
       
       if( !isset(self::$messages) )
          self::$messages = array();
+      
+      $this->collection_name = $cname;
+      $this->collection = self::$mongo->select_collection($cname);
+   }
+   
+   public function get_id()
+   {
+      return $this->id;
    }
    
    protected function new_error($msg=FALSE)
@@ -56,6 +70,16 @@ class fs_model
    public function get_messages()
    {
       return self::$messages;
+   }
+   
+   public function clean_errors()
+   {
+      self::$errors = array();
+   }
+   
+   public function clean_messages()
+   {
+      self::$messages = array();
    }
    
    /// functión auxiliar para facilitar el uso de fechas
@@ -84,10 +108,48 @@ class fs_model
          return 'fecha desconocida';
    }
    
-   public function true_word_break($str, $width=40)
+   public function true_word_break($str, $width=30)
    {
       return preg_replace('#(\S{'.$width.',})#e', "chunk_split('$1', ".$width.", '&#8203;')", $str);
    }
+   
+   public function random_string($length = 10)
+   {
+      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+   }
+   
+   public function var2str($var)
+   {
+      if( is_null($var) )
+         return NULL;
+      else
+         return (string)$var;
+   }
+   
+   /*
+    * Esta función convierte:
+    * < en &lt;
+    * > en &gt;
+    * " en &quot;
+    * ' en &#39;
+    * 
+    * No tengas la tentación de sustiturla por htmlentities o htmlspecialshars
+    * porque te encontrarás con muchas sorpresas desagradables.
+    */
+   public function no_html($t)
+   {
+      $newt  = preg_replace('/</', '&lt;', $t);
+      $newt  = preg_replace('/>/', '&gt;', $newt);
+      $newt  = preg_replace('/"/', '&quot;', $newt);
+      $newt  = preg_replace("/'/", '&#39;', $newt);
+      return trim($newt);
+   }
+   
+   abstract public function get($id);
+   abstract public function exists();
+   abstract public function save();
+   abstract public function delete();
+   abstract public function all();
 }
 
 ?>

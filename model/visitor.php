@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,273 +18,144 @@
  */
 
 require_once 'base/fs_model.php';
-require_once 'model/feed.php';
-require_once 'model/story.php';
+require_once 'model/suscription.php';
+require_once 'model/feed_story.php';
 
 class visitor extends fs_model
 {
-   public $key;
-   private $feeds;
+   public $nick;
+   public $user_agent;
+   public $last_login_date;
+   
+   public $noob;
+   private $suscriptions;
    
    public function __construct($k=FALSE)
    {
-      parent::__construct();
+      parent::__construct('visitors');
       if( $k )
       {
-         $this->key = $k;
+         $this->id = $k['_id'];
+         $this->nick = $k['nick'];
+         $this->user_agent = $k['user_agent'];
+         $this->last_login_date = $k['last_login_date'];
+         $this->noob = FALSE;
       }
       else
       {
-         $this->key = sha1( strval(rand()) );
-         $this->new_message('¡Bienvenido a '.FS_NAME.'! Esta web recopila las últimas noticias de una serie de fuentes.
-            Puedes seleccionar tus fuentes desde <b>menu &gt; preferencias</b>.');
+         $this->id = NULL;
+         $this->nick = $this->random_string(15);
+         $this->login();
+         $this->noob = TRUE;
       }
    }
    
-   public function get_key()
+   public function login_date()
    {
-      return $this->key;
+      return Date('Y-m-d H:m', $this->last_login_date);
+   }
+   
+   public function login_timesince()
+   {
+      return $this->time2timesince($this->last_login_date);
    }
    
    public function mobile()
    {
-      return (strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'mobile') || strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'android'));
+      return (strstr(strtolower($this->user_agent), 'mobile') || strstr(strtolower($this->user_agent), 'android'));
    }
    
    public function human()
    {
-      return !(strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'bot') OR strstr(strtolower($_SERVER['HTTP_USER_AGENT']), 'spider'));
+      return !(strstr(strtolower($this->user_agent), 'bot') OR strstr(strtolower($this->user_agent), 'spider'));
    }
    
-   public function get_logs($reverse=TRUE)
+   public function login()
    {
-      if( $reverse )
-         return array_reverse( $this->cache->get_array('logs') );
+      if( isset($_SERVER['HTTP_USER_AGENT']) )
+         $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
       else
-         return $this->cache->get_array('logs');
+         $this->user_agent = 'unknown';
+      
+      $this->last_login_date = time();
    }
    
-   public function add2log($story)
+   public function suscriptions()
    {
-      if( $story AND $this->human() )
+      if( !isset($this->suscriptions) )
       {
-         $entry = array(
-             'date' => Date('Y-m-d H:i:s'),
-             'ip' => 'X.X.X.X',
-             'user_agent' => 'unknown',
-             'idstory' => $story->get_id(),
-             'url' => $story->url(),
-             'title' => $story->title
-         );
-         
-         if( isset($_SERVER['REMOTE_ADDR']) )
-         {
-            $ip4 = explode('.', $_SERVER['REMOTE_ADDR']);
-            $ip6 = explode(':', $_SERVER['REMOTE_ADDR']);
-            if( count($ip4) == 4 )
-               $entry['ip'] = $ip4[0].'.'.$ip4[1].'.'.$ip4[2].'.X';
-            else if( count($ip6) == 8 )
-               $entry['ip'] = $ip6[0].':'.$ip6[1].':'.$ip6[2].':'.$ip6[3].':X:X:X:X';
-         }
-         
-         if( isset($_SERVER['HTTP_USER_AGENT']) )
-            $entry['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-         
-         $encontrado = FALSE;
-         $logs = $this->get_logs(FALSE);
-         if( count($logs) > 0 )
-         {
-            /// reducimos
-            if( count($logs) > 200 )
-            {
-               $num = 1;
-               foreach($logs as $i => $value)
-               {
-                  if($num < 100)
-                     $num++;
-                  else
-                     unset( $logs[$i] );
-               }
-            }
-            /// buscamos duplicados
-            foreach($logs as $i => $value)
-            {
-               if($value['ip'] == $entry['ip'] AND $value['user_agent'] == $entry['user_agent'] AND $value['idstory'] == $entry['idstory'])
-               {
-                  $encontrado = TRUE;
-                  break;
-               }
-            }
-         }
-         if( !$encontrado )
-         {
-            $logs[] = $entry;
-            $this->cache->set('logs', $logs);
-         }
+         $suscription = new suscription();
+         $this->suscriptions = $suscription->all4visitor($this->id);
       }
+      return $this->suscriptions;
    }
    
-   public function get_feeds()
+   public function last_stories()
    {
-      if( !isset($this->feeds) )
+      $fids = array();
+      foreach($this->suscriptions() as $sus)
+         $fids[] = $sus->feed_id;
+      $feed_story = new feed_story();
+      $stories = array();
+      foreach($feed_story->last4feeds($fids) as $fs)
+         $stories[] = $fs->story();
+      return $stories;
+   }
+   
+   public function get($id)
+   {
+      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+      if($data)
+         return new visitor($data);
+      else
+         return FALSE;
+   }
+   
+   public function exists()
+   {
+      if( is_null($this->id) )
+         return FALSE;
+      else
       {
-         $feed = new feed();
-         if( isset($_COOKIE['feeds']) )
-         {
-            $cookie_feeds = explode(';', urldecode($_COOKIE['feeds']));
-            $this->feeds = array();
-            foreach($feed->all() as $f)
-            {
-               if( in_array($f->name, $cookie_feeds) )
-                  $this->feeds[] = $f;
-            }
-         }
+         $data = $this->collection->findone( array('_id' => $this->id) );
+         if($data)
+            return TRUE;
          else
-         {
-            $this->feeds = $feed->defaults();
-            $this->save_feeds();
-         }
+            return FALSE;
       }
-      return $this->feeds;
    }
    
-   public function get_feeds_no()
+   public function save()
    {
-      $nofeeds = array();
-      $feed = new feed();
-      foreach($feed->all() as $f)
-      {
-         $encontrado = FALSE;
-         foreach($this->get_feeds() as $f2)
-         {
-            if($f->name == $f2->name)
-            {
-               $encontrado = TRUE;
-               break;
-            }
-         }
-         if( !$encontrado )
-            $nofeeds[] = $f;
-      }
-      return $nofeeds;
-   }
-   
-   public function clean_feeds()
-   {
-      $this->feeds = array();
-   }
-   
-   public function add_feed($fn)
-   {
-      $this->get_feeds();
+      $data = array(
+          'nick' => $this->nick,
+          'user_agent' => $this->user_agent,
+          'last_login_date' => $this->last_login_date
+      );
       
-      $feed = new feed();
-      $feed0 = $feed->get($fn);
-      if($feed0)
-         $this->feeds[] = $feed0;
-   }
-   
-   public function delete_feed($fn)
-   {
-      $this->get_feeds();
-      
-      $i = 0;
-      while($i < count($this->feeds))
+      if( $this->exists() )
       {
-         if( $this->feeds[$i]->name == $fn )
-            unset($this->feeds[$i]);
-         $i++;
+         $filter = array('_id' => $this->id);
+         $this->collection->update($filter, $data);
+      }
+      else
+      {
+         $this->collection->insert($data);
+         $this->id = $data['_id'];
       }
    }
    
-   public function save_feeds()
+   public function delete()
    {
-      $fns = array();
-      foreach($this->get_feeds() as $f)
-         $fns[] = $f->name;
-      setcookie('feeds', implode(';', $fns), time()+31536000);
+      $this->collection->remove( array('_id' => $this->id) );
    }
    
-   public function get_new_stories()
+   public function all()
    {
-      /// leemos todas las historias de los feeds
-      $all = array();
-      foreach($this->get_feeds() as $f)
-         $all = array_merge( $all, $f->get_stories() );
-      /// ordenamos por fecha y limitamos a FS_MAX_STORIES
-      $stories = array();
-      $selections = 0;
-      while($selections < count($all) AND count($stories) < FS_MAX_STORIES)
-      {
-         $selected = -1;
-         for($i=0; $i < count($all); $i++)
-         {
-            if( !$all[$i]->selected )
-            {
-               if($selected < 0)
-                  $selected = $i;
-               else if( $all[$i]->date > $all[$selected]->date )
-                  $selected = $i;
-            }
-         }
-         $selections++;
-         
-         if($selected >= 0)
-         {
-            $all[$selected]->selected = TRUE;
-            $stories[] = $all[$selected];
-         }
-      }
-      return $stories;
-   }
-   
-   public function get_popular_stories()
-   {
-      $logs = $this->get_logs(TRUE);
-      $stories = array();
-      if( count($logs) > 1 )
-      {
-         $alls = array();
-         $feed = new feed();
-         foreach($feed->all() as $f)
-         {
-            foreach($f->get_stories() as $s)
-            {
-               foreach($logs as $l)
-               {
-                  if($s->get_id() == $l['idstory'])
-                  {
-                     $alls[] = $s;
-                     break;
-                  }
-               }
-            }
-         }
-         /// ordenamos por fecha y limitamos a FS_MAX_STORIES
-         $selections = 0;
-         while($selections < count($alls) AND count($stories) < FS_MAX_STORIES)
-         {
-            $selected = -1;
-            for($i=0; $i < count($alls); $i++)
-            {
-               if( !$alls[$i]->selected )
-               {
-                  if($selected < 0)
-                     $selected = $i;
-                  else if( $alls[$i]->date > $alls[$selected]->date )
-                     $selected = $i;
-               }
-            }
-            $selections++;
-            
-            if($selected >= 0)
-            {
-               $alls[$selected]->selected = TRUE;
-               $stories[] = $alls[$selected];
-            }
-         }
-      }
-      return $stories;
+      $vlist = array();
+      foreach($this->collection->find() as $v)
+         $vlist[] = new visitor($v);
+      return $vlist;
    }
 }
 

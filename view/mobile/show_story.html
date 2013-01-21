@@ -1,0 +1,65 @@
+{include="mobile/header"}
+
+{if condition="$fsc->story"}
+<div class="story_info">
+   <h1>{$fsc->story->title}</h1>
+   {if condition="$fsc->story->media_item"}
+   <div class="media_item">
+      {$fsc->story->media_item->show()}
+   </div>
+   {/if}
+   <p>{$fsc->story->description}</p>
+   <table width="100%">
+      <tr>
+         <td>
+            <span class="label">{$fsc->story->clics} clics</span>
+            <span class="label label-info">Popularidad: {$fsc->story->popularity()}</span>
+         </td>
+         <td align="right">
+            <a target="_blank" href="{$fsc->story->link()}" class="btn btn-primary">Abrir enlace</a>
+         </td>
+      </tr>
+   </table>
+</div>
+<ul class="pestanyas">
+   <li id="b_show_feeds" class="activa">Fuentes</li>
+   <li id="b_show_media_items">Imágenes y vídeos</li>
+</ul>
+<div class="pestanya_content" id="story_feeds">
+   <table>
+      <tr>
+         <th>Fecha</th>
+         <th>Enlace</th>
+         <th>Fuente</th>
+      </tr>
+      {loop="$fsc->story->feed_links()"}
+      <tr>
+         <td>{$value->timesince()}</td>
+         <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+         <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+      </tr>
+      {/loop}
+   </table>
+</div>
+<div class="pestanya_content" id="story_media_items">
+   <h4>
+      Selecciona la imágen más apropiada para esa noticia, o
+      <a href="#" onclick="fs_select_media_item('{$fsc->story->get_id()}','-'); return false;">ninguna</a>:
+   </h4>
+   {loop="$fsc->story->media_items()"}
+   <a class="media_item" href="#" onclick="fs_select_media_item('{$fsc->story->get_id()}','{$value->get_id()}'); return false;">
+      {$value->show()}
+      Seleccionar
+   </a>
+   {else}
+      Nada que mostrar.
+   {/loop}
+</div>
+{else}
+<div class="hero-unit">
+   <h1>Noticia no encontrada</h1>
+   <p>Vete tu a saber qué coño ha pasado.</p>
+</div>
+{/if}
+
+{include="mobile/footer"}

@@ -1,0 +1,90 @@
+{include="desktop/header"}
+
+{if condition="$fsc->stories"}
+   {if condition="$fsc->show_info"}
+   <div class="info">
+      <h1>¿Cómo funciona esto?</h1>
+      <p>
+         Aquí aparecen las noticias de las fuentes a las que te has
+         <a href="{$path}/index.php?page=suscription">suscrito</a>.
+         Recuerda, desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+      </p>
+      <ul>
+         <li>Si quieres leer más sobre una noticia, haz clic sobre ella.</li>
+         <li>
+            Si alguna noticia está ilustrada con una imagen que no se corresponde, haz clic
+            en esa imágen, después en la pestaña <b>imágenes y vídeos</b> selecciona la más
+            apropiada.
+         </li>
+      </ul>
+      <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Ya lo he pillado</a></p>
+   </div>
+   {/if}
+   
+   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
+   <script type="text/javascript">
+   $(document).ready(function() {
+      $("#stories").masonry({
+         itemSelector: '.story',
+         isFitWidth: true,
+         isAnimated: true
+      });
+   });
+   </script>
+   
+   <div class="bloque">
+      <div id="stories">
+      {loop="$fsc->stories"}
+         <div class="story" onclick="fs_popup_story('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+               <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+               <p>{$value->description}</p>
+            {/if}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{else}
+   <div class="info">
+      <h1>No se han encontrado noticias para tí :(</h1>
+      <p>
+         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
+         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+         También puedes buscar noticias interesantes desde la sección
+         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+      </p>
+   </div>
+   
+   {if condition="$fsc->popular"}
+   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
+   <script type="text/javascript">
+      $(document).ready(function() {
+         $("#stories").masonry({
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
+      });
+   </script>
+   
+   <div class="bloque">
+      <div class="title">Las noticias más populares:</div>
+      <div id="stories">
+      {loop="$fsc->popular"}
+         <div class="story" onclick="fs_popup_story('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+               <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+               <p>{$value->description}</p>
+            {/if}
+         </div>
+      {/loop}
+      </div>
+   </div>
+   {/if}
+{/if}
+
+{include="desktop/footer"}

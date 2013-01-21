@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,118 +18,105 @@
  */
 
 require_once 'base/fs_model.php';
+require_once 'model/feed_story.php';
 require_once 'model/story.php';
+require_once 'model/story_media.php';
+require_once 'model/media_item.php';
 
 class feed extends fs_model
 {
-   public $name;
    public $url;
-   public $default;
-   public $selected;
-   
-   private $stories;
+   public $name;
+   public $description;
+   public $last_check_date;
+   public $last_update;
+   public $suscriptors;
+   public $strikes;
    
    public function __construct($f=FALSE)
    {
-      parent::__construct();
+      parent::__construct('feeds');
       if( $f )
       {
-         $this->name = (string)$f->name;
-         $this->url = (string)$f->url;
-         if( $f->default )
-            $this->default = TRUE;
-         else
-            $this->default = FALSE;
+         $this->id = $f['_id'];
+         $this->url = $f['url'];
+         $this->name = $f['name'];
+         $this->description = $f['description'];
+         $this->last_check_date = $f['last_check_date'];
+         $this->last_update = $f['last_update'];
+         $this->suscriptors = $f['suscriptors'];
+         
+         if( $this->suscriptors < 0 )
+            $this->suscriptors = 0;
+         
+         $this->strikes = $f['strikes'];
       }
       else
       {
-         $this->name = NULL;
+         $this->id = NULL;
          $this->url = NULL;
-         $this->default = FALSE;
+         $this->name = $this->random_string(15);
+         $this->description = 'Sin descriptión';
+         $this->last_check_date = 0;
+         $this->last_update = 0;
+         $this->suscriptors = 0;
+         $this->strikes = 0;
       }
-      
-      $this->selected = FALSE;
    }
    
    public function url()
    {
-      return 'index.php?page=explore_feed&feed='.urlencode($this->name);
+      return 'index.php?page=explore_feed&id='.$this->id;
    }
    
-   public function get($fn)
+   public function last_check_date()
    {
-      $feed = FALSE;
-      foreach($this->all() as $f)
-      {
-         if($f->name == $fn)
-         {
-            $feed = $f;
-            break;
-         }
-      }
-      return $feed;
-   }
-   
-   public function save($expiration=86400)
-   {
-      if( isset($this->stories) )
-         $this->cache->set('stories_from_'.$this->name, $this->stories, $expiration);
-   }
-   
-   public function all()
-   {
-      $feeds = array();
-      if( file_exists('feeds.xml') )
-      {
-         $xml = simplexml_load_file('feeds.xml');
-         if( $xml )
-         {
-            if( $xml->feed )
-            {
-               foreach($xml->feed as $item)
-                  $feeds[] = new feed($item);
-            }
-            else
-               $this->new_error("Error al leer el archivo feeds.xml");
-         }
-         else
-            $this->new_error("Imposible leer el archivo feeds.xml");
-      }
+      if( is_null($this->last_check_date) )
+         return '-';
       else
-         $this->new_error("No se encuentra el archivo feeds.xml");
-      return $feeds;
+         return Date('Y-m-d H:m', $this->last_check_date);
    }
    
-   public function defaults()
+   public function last_check_timesince()
    {
-      $defaults = array();
-      foreach($this->all() as $f)
-      {
-         if( $f->default )
-            $defaults[] = $f;
-      }
-      return $defaults;
-   }
-   
-   public function get_stories()
-   {
-      if( isset($this->stories) )
-         return $this->stories;
+      if( is_null($this->last_check_date) )
+         return '-';
       else
-      {
-         $error = FALSE;
-         $this->stories = $this->cache->get_array2('stories_from_'.$this->name, $error);
-         if( !$error )
-            return $this->stories;
-         else
-            return $this->read();
-      }
+         return $this->time2timesince($this->last_check_date);
    }
    
-   public function read($images=FALSE)
+   public function last_update()
    {
-      $this->stories = array();
-      
+      if( is_null($this->last_update) )
+         return '-';
+      else
+         return Date('Y-m-d H:m', $this->last_update);
+   }
+   
+   public function last_update_timesince()
+   {
+      if( is_null($this->last_update) )
+         return '-';
+      else
+         return $this->time2timesince($this->last_update);
+   }
+   
+   public function meneame()
+   {
+      return ( substr($this->url, 0, 23) == 'http://www.meneame.net/' );
+   }
+   
+   public function stories()
+   {
+      $feed_story = new feed_story();
+      $stories = array();
+      foreach($feed_story->last4feed($this->id) as $fs)
+         $stories[] = $fs->story();
+      return $stories;
+   }
+   
+   public function read()
+   {
       try
       {
          $ch = curl_init( $this->url );
@@ -140,124 +127,337 @@ class feed extends fs_model
          $html = curl_exec($ch);
          curl_close($ch);
          
-         libxml_use_internal_errors(true);
-         $xml = simplexml_load_string( $html );
+         libxml_use_internal_errors(TRUE);
+         $xml = simplexml_load_string( iconv('', 'UTF-8//IGNORE//TRANSLIT', $html) );
          if( $xml )
          {
-            if( file_exists("tmp/".$this->name.".xml") )
-               unlink("tmp/".$this->name.".xml");
-            $xml->saveXML("tmp/".$this->name.".xml");
+            /// nos guardamos una copia del feed
+            if( file_exists("tmp/".$this->get_id().".xml") )
+               unlink("tmp/".$this->get_id().".xml");
+            $xml->saveXML("tmp/".$this->get_id().".xml");
             
-            if( $xml->channel )
+            /// intentamos leer las noticias
+            if( $xml->channel->item )
             {
-               $i = 0;
                foreach($xml->channel->item as $item)
-               {
-                  if( $i < FS_MAX_STORIES )
-                     $this->stories[] = new story($item, $this);
-                  else
-                     break;
-                  $i++;
-               }
+                  $this->new_story($item);
             }
             else if( $xml->item )
             {
-               $i = 0;
                foreach($xml->item as $item)
-               {
-                  if( $i < FS_MAX_STORIES )
-                     $this->stories[] = new story($item, $this);
-                  else
-                     break;
-                  $i++;
-               }
+                  $this->new_story($item);
             }
-            else if( $xml->feed )
+            else if( $xml->feed->entry )
             {
-               $i = 0;
                foreach($xml->feed->entry as $item)
-               {
-                  if( $i < FS_MAX_STORIES )
-                     $this->stories[] = new story($item, $this);
-                  else
-                     break;
-                  $i++;
-               }
+                  $this->new_story($item);
             }
             else if( $xml->entry )
             {
-               $i = 0;
                foreach($xml->entry as $item)
-               {
-                  if( $i < FS_MAX_STORIES )
-                     $this->stories[] = new story($item, $this);
-                  else
-                     break;
-                  $i++;
-               }
+                  $this->new_story($item);
             }
             else
                $this->new_error("Estructura irreconocible en el feed: ".$this->name);
             
-            if( $images )
+            /// leemos el titulo del feed
+            if( $xml->channel->title )
+               $this->name = (string)$xml->channel->title;
+            else if( $xml->title )
             {
-               /// pre-procesamos, hasta el final
-               $work_array = array();
-               $discarded = array();
-               foreach($this->stories as $s)
-                  $s->pre_process_images($work_array, $discarded);
-               
-               /// después procesamos en orden inverso
-               $selected = array();
-               for($k=count($this->stories)-1; $k>0; $k--)
-                  $this->stories[$k]->process_images($discarded, $selected);
+               foreach($xml->title as $item)
+               {
+                  $this->name = (string)$item;
+                  break;
+               }
             }
+            /// leemos la descripción
+            if( $xml->channel->description )
+               $this->description = (string)$xml->channel->description;
+            else if( $xml->description )
+            {
+               foreach($xml->description as $item)
+               {
+                  $this->description = (string)$item;
+                  break;
+               }
+            }
+            /// guardamos los cambios en el feed
+            $this->last_check_date = time();
             $this->save();
          }
          else
          {
             $this->new_error("Imposible leer el feed: ".$this->name);
-            $this->save(600);
+            $this->strikes++;
+            $this->save();
          }
       }
       catch(Exception $e)
       {
          $this->new_error("Error al leer el feed: ".$this->name);
-         $this->save(600);
+         $this->strikes++;
+         $this->save();
       }
-      
-      return $this->stories;
    }
    
-   public function get_story($id)
+   private function new_story($item)
    {
-      $story = FALSE;
-      foreach($this->get_stories() as $s)
-      {
-         if($s->get_id() == $id)
-         {
-            $story = $s;
-            break;
-         }
-      }
-      return $story;
-   }
-   
-   public function save_story($story)
-   {
-      /// forzamos la lectura de la lista de historias
-      $this->get_stories();
+      $feed_story = new feed_story();
+      $feed_story->feed_id = $this->id;
+      $feed_story->title = (string)$item->title;
       
-      foreach($this->stories as $i => $value)
+      $story = new story();
+      $story->title = (string)$item->title;
+      
+      /// intentamos obtener el enlace original de meneame
+      foreach($item->children('meneame', TRUE) as $element)
       {
-         if( $value->get_id() == $story->get_id() )
+         if($element->getName() == 'url')
          {
-            $this->stories[$i] = $story;
+            $story->link = (string)$element;
+            $feed_story->link = (string)$item->link;
             break;
          }
       }
       
-      $this->save();
+      if( is_null($story->link) )
+      {
+         /// intentamos obtener el enlace original de feedburner
+         foreach($item->children('feedburner', TRUE) as $element)
+         {
+            if($element->getName() == 'origLink')
+            {
+               $story->link = (string)$element;
+               break;
+            }
+         }
+         
+         /// intentamos leer el/los links
+         if( is_null($story->link) AND $item->link)
+         {
+            foreach($item->link as $l)
+            {
+               if( substr((string)$l, 0, 4) == 'http' )
+                  $story->link = (string)$l;
+               else
+               {
+                  if( $l->attributes()->rel == 'alternate' AND $l->attributes()->type == 'text/html' )
+                     $story->link = (string)$l->attributes()->href;
+                  else if( $l->attributes()->type == 'text/html' )
+                     $story->link = (string)$l->attributes()->href;
+               }
+            }
+         }
+      }
+      
+      if( $item->pubDate )
+         $story->date = strtotime( (string)$item->pubDate );
+      else if( $item->published )
+         $story->date = strtotime( (string)$item->published );
+      
+      $feed_story->date = $story->date;
+      
+      if($feed_story->date > $this->last_update)
+         $this->last_update = $feed_story->date;
+      
+      /// ¿story ya existe?
+      $story2 = $story->get_by_link($story->link);
+      if($story2)
+      {
+         /// ¿la noticia ya está enlazada con esta fuente?
+         $encontrada = FALSE;
+         foreach($feed_story->all4story($story2->get_id()) as $fs)
+         {
+            if($fs->feed_id == $this->id)
+            {
+               $encontrada = TRUE;
+               break;
+            }
+         }
+         
+         if( !$encontrada )
+         {
+            $feed_story->story_id = $story2->get_id();
+            $feed_story->save();
+         }
+      }
+      else
+      {
+         if( $item->description )
+            $description = (string)$item->description;
+         else if( $item->content )
+            $description = (string)$item->content;
+         else if( $item->summary )
+            $description = (string)$item->summary;
+         else
+         {
+            $description = '';
+            /// intentamos leer el espacio de nombres atom
+            foreach($item->children('atom', TRUE) as $element)
+            {
+               if($element->getName() == 'summary')
+               {
+                  $description = (string)$element;
+                  break;
+               }
+            }
+            foreach($item->children('content', TRUE) as $element)
+            {
+               if($element->getName() == 'encoded')
+               {
+                  $description = (string)$element;
+                  break;
+               }
+            }
+         }
+         $story->set_description($description, $this->meneame());
+         
+         $story->save();
+         $feed_story->story_id = $story->get_id();
+         $feed_story->save();
+         
+         $width = 0;
+         $height = 0;
+         $media_item = new media_item();
+         foreach($media_item->find_media($item, $story->link) as $mi)
+         {
+            $story_media = new story_media();
+            $story_media->story_id = $story->get_id();
+            
+            if( !$media_item->get_by_url($mi->url) )
+            {
+               if( $mi->download() )
+               {
+                  $mi->save();
+                  $story_media->media_id = $mi->get_id();
+                  $story_media->save();
+                  
+                  if($mi->width > 0 AND $mi->height > 0)
+                     $ratio = $mi->width / $mi->height;
+                  else
+                     $ratio = 0;
+                  
+                  if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
+                  {
+                     $story->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                     $story->save();
+                  }
+               }
+            }
+         }
+      }
+   }
+   
+   public function get($id)
+   {
+      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+      if($data)
+         return new feed($data);
+      else
+         return FALSE;
+   }
+   
+   public function get_by_url($url)
+   {
+      $data = $this->collection->findone( array('url' => $this->var2str($url) ) );
+      if($data)
+         return new feed($data);
+      else
+         return FALSE;
+   }
+   
+   public function exists()
+   {
+      if( is_null($this->id) )
+         return FALSE;
+      else
+      {
+         $data = $this->collection->findone( array('_id' => $this->id) );
+         if($data)
+            return TRUE;
+         else
+            return FALSE;
+      }
+   }
+   
+   public function test()
+   {
+      if( $this->suscriptors < 0 )
+         $this->suscriptors = 0;
+      
+      if( filter_var($this->url, FILTER_VALIDATE_URL) )
+         return TRUE;
+      else
+      {
+         $this->new_error('URL no válida.');
+         return FALSE;
+      }
+   }
+   
+   public function save()
+   {
+      if( $this->test() )
+      {
+         $data = array(
+             'url' => $this->url,
+             'name' => $this->no_html($this->name),
+             'description' => $this->no_html($this->description),
+             'last_check_date' => $this->last_check_date,
+             'last_update' => $this->last_update,
+             'suscriptors' => $this->suscriptors,
+             'strikes' => $this->strikes
+         );
+         if( $this->exists() )
+         {
+            $filter = array('_id' => $this->id);
+            $this->collection->update($filter, $data);
+         }
+         else
+         {
+            $this->collection->insert($data);
+            $this->id = $data['_id'];
+         }
+         return TRUE;
+      }
+      else
+         return FALSE;
+   }
+   
+   public function delete()
+   {
+      $this->collection->remove( array('_id' => $this->id) );
+   }
+   
+   public function all()
+   {
+      $feeds = array();
+      foreach($this->collection->find() as $f)
+         $feeds[] = new feed($f);
+      return $feeds;
+   }
+   
+   public function random()
+   {
+      $feed = FALSE;
+      $all_feeds = $this->all();
+      if( count($all_feeds) > 1 )
+      {
+         $selection = rand(0, count($all_feeds));
+         $i = 0;
+         foreach($all_feeds as $f)
+         {
+            if($i == $selection)
+            {
+               $feed = $f;
+               break;
+            }
+            $i++;
+         }
+      }
+      return $feed;
    }
 }
 

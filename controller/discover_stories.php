@@ -17,22 +17,46 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-class not_found extends fs_controller
+require_once 'model/feed.php';
+require_once 'model/story.php';
+
+class discover_stories extends fs_controller
 {
-   public $popular;
+   public $show_info;
    public $stories;
    
    public function __construct()
    {
-      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!', 'home');
+      parent::__construct('discover_stories', FS_NAME, 'discover');
    }
    
    protected function process()
    {
-      $this->new_error_msg('¡Página no encontrada!');
+      if( isset($_GET['show_info']) )
+      {
+         $this->show_info = FALSE;
+         setcookie('discover_info', 'FALSE', time()+315360000);
+      }
+      else
+         $this->show_info = !isset($_COOKIE['discover_info']);
       
-      $this->popular = array();
-      $this->stories = $story->random_stories();
+      if( rand(0, 1) == 0 )
+      {
+         $feed = new feed();
+         $rfeed = $feed->random();
+         if($rfeed)
+            $this->stories = $rfeed->stories();
+         else
+         {
+            $story = new story();
+            $this->stories = $story->random_stories();
+         }
+      }
+      else
+      {
+         $story = new story();
+         $this->stories = $story->random_stories();
+      }
    }
 }
 

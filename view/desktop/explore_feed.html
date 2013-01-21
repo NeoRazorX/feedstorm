@@ -1,0 +1,66 @@
+{include="desktop/header"}
+
+{if condition="$fsc->feed"}
+<script src="{$path}/view/js/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#stories").masonry({
+         itemSelector: '.story',
+         isFitWidth: true,
+         isAnimated: true
+      });
+   });
+</script>
+
+<div class="info">
+   <table width="100%">
+      <tr>
+         <td>
+            <h1>{$fsc->feed->name}</h1>
+         </td>
+         <td align="right">
+            {if condition="$fsc->unsuscribe"}
+            <a class="button_remove" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            {else}
+            <a class="button" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            {/if}
+         </td>
+      </tr>
+   </table>
+   <table class="lista">
+      <tr>
+         <th>Descripción</th>
+         <th>URL</th>
+         <th>Última actualización</th>
+         <th>Última comprobación</th>
+         <th>Suscriptores</th>
+         <th>Errores</th>
+      </tr>
+      <tr>
+         <td>{$fsc->feed->description}.</td>
+         <td>{$fsc->feed->url}</td>
+         <td>{$fsc->feed->last_update_timesince()}</td>
+         <td>{$fsc->feed->last_check_timesince()}</td>
+         <td>{$fsc->feed->suscriptors}</td>
+         <td>{$fsc->feed->strikes}</td>
+      </tr>
+   </table>
+</div>
+
+<div class="bloque">
+   <div id="stories">
+   {loop="$fsc->stories"}
+      <div class="story" onclick="fs_popup_story('{$path}/{$value->url()}')">
+         <h1>{$value->title}</h1>
+         {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+         {else}
+            <p>{$value->description}</p>
+         {/if}
+      </div>
+   {/loop}
+   </div>
+</div>
+{/if}
+
+{include="desktop/footer"}

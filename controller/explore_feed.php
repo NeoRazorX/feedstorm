@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,30 +17,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/feed.php';
+require_once 'model/suscription.php';
+
 class explore_feed extends fs_controller
 {
+   public $feed;
+   public $stories;
+   public $suscribe_url;
+   public $suscribe_text;
+   public $unsuscribe;
+   
    public function __construct()
    {
-      parent::__construct('explore_feed', 'Explorar fuentes de '.FS_NAME, 'main_page');
+      parent::__construct('explore_feed', FS_NAME, 'explore_feed');
    }
    
    protected function process()
    {
-      $encontrado = FALSE;
-      if( isset($_GET['feed']) )
+      $feed = new feed();
+      $this->stories = array();
+      
+      if( isset($_GET['id']) )
+         $this->feed = $feed->get($_GET['id']);
+      else
+         $this->feed = FALSE;
+      
+      if( $this->feed )
       {
-         $feed = new feed();
-         $feed0 = $feed->get($_GET['feed']);
-         if( $feed0 )
+         $this->title = $this->feed->name;
+         $this->stories = $this->feed->stories();
+         
+         $suscription = new suscription();
+         $suscription->visitor_id = $this->visitor->get_id();
+         $suscription->feed_id = $this->feed->get_id();
+         if( $suscription->exists() )
          {
-            $this->new_message("Historias de <b>".$feed0->name.'</b>. Puedes configurar tus fuentes de noticias desde
-               <b>menu &gt; preferencias</b>.');
-            $this->stories = $feed0->get_stories();
-            $this->feed_name = $feed0->name;
-            $encontrado = TRUE;
+            $this->suscribe_url = 'index.php?page=suscriptions&unsuscribe='.$suscription->get_id();
+            $this->suscribe_text = 'Anular suscripción';
+            $this->unsuscribe = TRUE;
+         }
+         else
+         {
+            $this->suscribe_url = 'index.php?page=suscriptions&suscribe='.$this->feed->get_id();
+            $this->suscribe_text = 'Suscribirse';
+            $this->unsuscribe = FALSE;
          }
       }
-      if( !$encontrado )
+      else
          $this->new_error_msg('Fuente no encontrada.');
    }
 }

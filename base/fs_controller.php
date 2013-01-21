@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2012  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -17,24 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/feed.php';
-require_once 'model/story.php';
+require_once 'base/fs_mongo.php';
 require_once 'model/visitor.php';
 
-class fs_controller
+abstract class fs_controller
 {
    private $uptime;
    private $errors;
    private $messages;
+   private $mongo;
    public $page;
    public $title;
    public $template;
    public $visitor;
    
-   public $stories;
-   public $feed_name;
-   
-   public function __construct($name='not_found', $title='home', $template='main_page')
+   public function __construct($name, $title, $template)
    {
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
@@ -42,30 +39,38 @@ class fs_controller
       $this->title = $title;
       $this->errors = array();
       $this->messages = array();
+      $this->mongo = new fs_mongo();
       
-      $this->stories = array();
-      $this->feed_name = '';
-      
+      $this->visitor = new visitor();
       if( isset($_COOKIE['key']) )
       {
-         $this->visitor = new visitor($_COOKIE['key']);
+         $visitor = $this->visitor->get($_COOKIE['key']);
+         if($visitor)
+         {
+            $this->visitor = $visitor;
+            $this->visitor->login();
+         }
+         else
+            $this->new_error_msg('No se encuentra el usuario.');
       }
-      else
-      {
-         $this->visitor = new visitor();
-         setcookie('key', $this->visitor->key, time()+31536000);
-      }
+      $this->visitor->save();
+      setcookie('key', $this->visitor->get_id(), time()+31536000);
       
       $this->set_template($template);
       $this->process();
    }
    
-   protected function set_template($tmpl='main_page')
+   public function __destruct()
+   {
+      $this->mongo->close();
+   }
+   
+   private function set_template($tpl='main')
    {
       if( $this->visitor->mobile() )
-         $this->template = 'mobile/'.$tmpl;
+         $this->template = 'mobile/'.$tpl;
       else
-         $this->template = 'desktop/'.$tmpl;
+         $this->template = 'desktop/'.$tpl;
    }
    
    public function new_error_msg($msg)
@@ -101,10 +106,7 @@ class fs_controller
       return (number_format($tiempo[1] + $tiempo[0] - $this->uptime, 3) . ' s');
    }
    
-   protected function process()
-   {
-      
-   }
+   abstract protected function process();
    
    public function url()
    {

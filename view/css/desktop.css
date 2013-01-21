@@ -1,0 +1,356 @@
+/* 
+    Document   : basic
+    Created on : 13-dic-2012, 17:19:37
+    Author     : carlos
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+@import url('http://fonts.googleapis.com/css?family=Grand+Hotel');
+
+body {
+   margin: 0px;
+   padding: 0px;
+   background-color: #6A6D76;
+   background-image: url('../img/preview_large.jpg');
+   color: #333333;
+   font-family: Verdana, sans-serif;
+   text-rendering: optimizeLegibility;
+   -webkit-font-smoothing: antialiased;
+   font-size: 13px;
+   font-style: normal;
+   font-weight: normal;
+}
+
+div.header {
+   padding: 5px;
+}
+
+div.header div.logo {
+   text-align: center;
+}
+
+div.header div.logo a {
+   color: #333333;
+   font-family: 'Grand Hotel', cursive;
+   font-size: 60px;
+   text-decoration: none;
+}
+
+div.header table.buttons {
+   width: 100%;
+}
+
+div.header table.buttons a {
+   display: inline-block;
+   padding-left: 5px;
+   padding-right: 5px;
+   padding-top: 2px;
+   padding-bottom: 2px;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
+   color: white;
+   font-size: 15px;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+div.header table.buttons a:hover {
+   background-color: #424242;
+}
+
+div.header table.buttons a.selected {
+   background-color: #333333;
+}
+
+div.messages, div.errors {
+   margin: 0px;
+   padding: 10px;
+   box-shadow: inset 0px 5px 5px #666;
+   font-size: 16px;
+}
+
+div.messages {
+   background-color: #D9EDF7;
+}
+
+div.errors {
+   background-color: #F2DEDE;
+}
+
+div.messages ul, div.errors ul {
+   margin-top: 10px;
+   margin-bottom: 5px;
+}
+
+div.info {
+   margin: 0px;
+   padding: 10px;
+   background-color: #D2D9DF;
+   box-shadow: inset 0px 5px 5px #666;
+   color: #334455;
+}
+
+div.bloque {
+   margin: 0px;
+   padding-top: 10px;
+   padding-bottom: 10px;
+   background-color: white;
+   box-shadow: inset 0px 4px 4px #999;
+}
+
+div.bloque div.title {
+   margin-bottom: 20px;
+   padding: 5px;
+   padding-bottom: 10px;
+   border-bottom: 1px dashed #999;
+   color: #424242;
+   font-size: 30px;
+   font-weight: bolder;
+   text-align: center;
+}
+
+div#stories {
+   margin: 0 auto;
+}
+
+div.story {
+   display: inline-block;
+   width: 240px;
+   padding: 5px;
+   border: 1px dashed white;
+}
+
+div.story:hover {
+   background-color: #EEEEEE;
+   border-color: #666;
+   cursor: pointer;
+}
+
+div.story h1 {
+   margin-top: 0px;
+   padding-top: 0px;
+   font-size: 18px;
+   line-height: normal;
+}
+
+div.story h1 a {
+   color: #333333;
+}
+
+div.story p {
+   text-align: justify;
+}
+
+div.story div.image {
+   text-align: center;
+}
+
+div.story div.image img {
+   box-shadow: 3px 3px 3px #666;
+}
+
+table.lista {
+   width: 100%;
+}
+
+table.lista tr:hover {
+   background-color: #d9edf7;
+}
+
+table.lista th {
+   border-bottom: 1px solid #CCCCCC;
+}
+
+table.lista th, table.lista td {
+   padding: 5px;
+}
+
+div#shadow_box {
+   display: none;
+   position: fixed;
+   top: 0px;
+   left: 0px;
+   z-index: 2;
+   width: 100%;
+   height: 100%;
+   background: #000;
+   opacity: 0.8;
+}
+
+div.popup {
+   display: none;
+   position: absolute;
+   top: 10px;
+   left: 10px;
+   z-index: 3;
+   min-width: 600px;
+   max-width: 980px;
+   padding: 0px;
+   background-color: #EEEEEE;
+   border: 3px solid #CCCCCC;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
+}
+
+div.story_info {
+   padding: 5px;
+}
+
+div.story_info h1 {
+   margin: 0px;
+   padding: 0px;
+   padding-bottom: 5px;
+   text-align: center;
+   font-size: 25px;
+}
+
+div.story_info div.media_item {
+   padding: 5px;
+   text-align: center;
+}
+
+div.story_info div.media_item img {
+   box-shadow: 3px 3px 3px #666;
+}
+
+div.story_info p {
+   text-align: justify;
+}
+
+ul.pestanyas {
+   margin: 0px;
+   margin-top: 10px;
+   padding: 0px;
+   padding-left: 10px;
+   list-style-type: none;
+   border-bottom: 1px solid #cccccc;
+}
+
+ul.pestanyas li {
+   display: inline-block;
+   padding: 5px;
+   padding-right: 10px;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom: 3px solid transparent;
+}
+
+ul.pestanyas li:hover {
+   cursor: pointer;
+   background-color: #a0ccfe;
+}
+
+ul.pestanyas li.activa {
+   border-bottom: 3px solid #0077b3;
+   color: #0077b3;
+}
+
+div.pestanya_content {
+   padding: 5px;
+   background-color: white;
+}
+
+div#media_items {
+   margin: 0 auto;
+}
+
+div.media_item2 {
+   display: inline-block;
+   min-width: 240px;
+   min-height: 50px;
+   margin: 5px;
+   padding: 5px;
+   border: 1px solid #666;
+   box-shadow: 3px 3px 3px #666;
+}
+
+div.media_item2 div.media_item_show {
+   min-width: 80px;
+   min-height: 80px;
+   margin-top: 5px;
+   padding: 3px;
+   text-align: center;
+}
+
+div.footer {
+   padding: 10px;
+   border-top: 2px solid #424242;
+   font-size: 16px;
+}
+
+div.footer a {
+   color: white;
+}
+
+a.button, a.button_edit, a.button_remove {
+   display: inline-block;
+   padding: 5px;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
+   border: 1px solid #424242;
+   box-shadow: 2px 2px 2px #666;
+   color: white;
+   font-size: 14px;
+   font-weight: bold;
+   text-decoration: none;
+}
+
+a.button {
+   background-color: #0070CC;
+}
+
+a.button:hover {
+   background-color: #0060BC;
+}
+
+a.button_edit {
+   background-color: #59B359;
+}
+
+a.button_edit:hover {
+   background-color: #49A349;
+}
+
+a.button_remove {
+   background-color: #E1544F;
+}
+
+a.button_remove:hover {
+   background-color: #D1443F;
+}
+
+span.label, span.label-info {
+   display: inline-block;
+   padding: 3px;
+   padding-left: 5px;
+   padding-right: 5px;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
+   color: white;
+}
+
+span.label {
+   background-color: #999999;
+}
+
+span.label-info {
+   background-color: #3A87AD;
+}
+
+input.full, textarea {
+   display: block;
+   width: 100%;
+   box-sizing: border-box;
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   -ms-box-sizing: border-box;
+}

@@ -17,39 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-date_default_timezone_set('Europe/Madrid');
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
-
-require_once 'config.php';
-require_once 'base/fs_mongo.php';
-require_once 'model/feed.php';
-require_once 'model/story.php';
-
-$mongo = new fs_mongo();
-
-echo "\nProcesamos las fuentes:";
-$feed = new feed();
-foreach($feed->all() as $f)
+class fs_mongo
 {
-   echo "\n * Procesando ".$f->name."...\n";
-   $f->read();
+   private static $link;
+   private static $db;
    
-   foreach($f->get_errors() as $e)
-      echo $e."\n";
-   $f->clean_errors();
+   public function __construct()
+   {
+      if( !isset(self::$link) )
+      {
+         self::$link = new Mongo( FS_MONGO_HOST );
+         self::$db = self::$link->selectDB( FS_MONGO_DBNAME );
+      }
+   }
    
-   foreach($f->get_messages() as $m)
-      echo $m."\n";
-   $f->clean_messages();
+   public function close()
+   {
+      if( isset(self::$link) )
+      {
+         self::$link->close();
+      }
+   }
+   
+   public function select_collection($cname)
+   {
+      if( isset(self::$link) )
+         return self::$db->selectCollection($cname);
+      else
+         return FALSE;
+   }
 }
-
-echo "\nActualizamos las noticias populares...\n";
-$story = new story();
-{
-   foreach($story->popular_stories() as $s)
-      $s->save();
-}
-
-$mongo->close();
 
 ?>

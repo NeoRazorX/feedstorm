@@ -94,6 +94,7 @@ class story_visit extends fs_model
    public function save()
    {
       $this->story_id = $this->var2str($this->story_id);
+      $this->edition_id = $this->var2str($this->edition_id);
       
       $data = array(
           'story_id' => $this->story_id,

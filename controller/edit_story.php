@@ -78,16 +78,20 @@ class edit_story extends fs_controller
                $this->story_edition->save();
                $this->new_message('Noticia editada correctamente.');
             }
+            
+            $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
+            if( $sv0 )
+            {
+               $sv0->edition_id = $this->story_edition->get_id();
+               $sv0->save();
+            }
             else
             {
-               $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
-               if( !$sv0 )
-               {
-                  $this->story_visit->story_id = $this->story->get_id();
-                  $this->story_visit->save();
-                  $this->story->clics++;
-                  $this->story->save();
-               }
+               $this->story_visit->story_id = $this->story->get_id();
+               $this->story_visit->edition_id = $this->story_edition->get_id();
+               $this->story_visit->save();
+               $this->story->clics++;
+               $this->story->save();
             }
          }
       }
@@ -106,7 +110,7 @@ class edit_story extends fs_controller
    public function get_description()
    {
       if( $this->story )
-         return $this->story->description;
+         return $this->story->description();
       else
          return parent::get_description();
    }

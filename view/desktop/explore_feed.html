@@ -29,20 +29,20 @@
    </table>
    <table class="lista">
       <tr>
-         <th>Descripción</th>
-         <th>URL</th>
-         <th>Última actualización</th>
-         <th>Última comprobación</th>
-         <th>Suscriptores</th>
-         <th>Errores</th>
+         <th align="left">Descripción</th>
+         <th align="left">URL</th>
+         <th align="left">Última actualización</th>
+         <th align="left">Última comprobación</th>
+         <th align="right">Suscriptores</th>
+         <th align="right">Errores</th>
       </tr>
       <tr>
          <td>{$fsc->feed->description}.</td>
          <td>{$fsc->feed->url}</td>
          <td>{$fsc->feed->last_update_timesince()}</td>
          <td>{$fsc->feed->last_check_timesince()}</td>
-         <td>{$fsc->feed->suscriptors}</td>
-         <td>{$fsc->feed->strikes}</td>
+         <td align="right">{$fsc->feed->suscriptors}</td>
+         <td align="right">{$fsc->feed->strikes}</td>
       </tr>
    </table>
 </div>
@@ -50,12 +50,12 @@
 <div class="bloque">
    <div id="stories">
    {loop="$fsc->stories"}
-      <div class="story" onclick="fs_popup_story('{$path}/{$value->url()}')">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
          <h1>{$value->title}</h1>
          {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
          {else}
-            <p>{$value->description}</p>
+            <p>{$value->description()}</p>
          {/if}
       </div>
    {/loop}

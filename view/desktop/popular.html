@@ -29,12 +29,12 @@
    <div class="bloque">
       <div id="stories">
          {loop="$fsc->stories"}
-         <div class="story" onclick="fs_popup_story('{$path}/{$value->url()}')">
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
             <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
             {else}
-            <p>{$value->description}</p>
+            <p>{$value->description()}</p>
             {/if}
          </div>
          {/loop}

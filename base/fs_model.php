@@ -108,9 +108,83 @@ abstract class fs_model
          return 'fecha desconocida';
    }
    
-   public function true_word_break($str, $width=30)
+   /*
+    * Esta función devuelve una copia del string $str al que se le ha
+    * añadido un caracter de espacio vacío &#8203; cada $max_width
+    * caracteres a cada palabra de más de $max_width caracteres.
+    * Las caracteres escapados de HTML se cuentan como uno solo.
+    */
+   public function true_word_break($str, $max_width=30)
    {
-      return preg_replace('#(\S{'.$width.',})#e', "chunk_split('$1', ".$width.", '&#8203;')", $str);
+      /// Eliminamos cualquier rastro de &#8203;
+      $str = str_replace('&#8203;', '', $str);
+      
+      $pos0 = 0;
+      $width = 0;
+      $special_char = FALSE;
+      while( $pos0 < strlen($str) )
+      {
+         $char = substr($str, $pos0, 1);
+         
+         if($special_char)
+         {
+            if($char == ';')
+            {
+               $special_char = FALSE;
+               $width++;
+            }
+         }
+         else
+         {
+            if($char == ' ')
+               $width = 0;
+            else if($width >= $max_width)
+            {
+               $str = substr($str, 0, $pos0).'&#8203;'.substr($str, $pos0, strlen($str) - $pos0 );
+               $pos0 += 6;
+               $width = 0;
+            }
+            else if($char == '&')
+               $special_char = TRUE;
+            else
+               $width++;
+         }
+         
+         $pos0++;
+      }
+      return $str;
+   }
+   
+   /*
+    * Esta función devuelve una copia de $str con una longitud máxima de
+    * $max_t_width caracteres, pero sin cortar la última palabra.
+    * 
+    * Además añade un caracter de espacio vacío cada $max_w_width
+    * caracteres usando la functión fs_model::true_word_break().
+    * 
+    * Las elementos HTML son escapados mediante fs_model::no_html().
+    */
+   public function true_text_break($str, $max_t_width=500, $max_w_width=30)
+   {
+      $description = '';
+      $desc = $this->true_word_break( $this->no_html($str), $max_w_width );
+      
+      foreach(explode(' ', $desc) as $aux)
+      {
+         if( strlen($description.' '.$aux) < $max_t_width-3 )
+         {
+            if($description == '')
+               $description = $aux;
+            else
+               $description .= ' ' . $aux;
+         }
+         else
+            break;
+      }
+      if( strlen($description) < strlen($desc) )
+         $description .= '...';
+      
+      return $description;
    }
    
    public function random_string($length = 10)
@@ -133,16 +207,19 @@ abstract class fs_model
     * " en &quot;
     * ' en &#39;
     * 
+    * Además elimina los espacios extra.
+    * 
     * No tengas la tentación de sustiturla por htmlentities o htmlspecialshars
     * porque te encontrarás con muchas sorpresas desagradables.
     */
    public function no_html($t)
    {
-      $newt  = preg_replace('/</', '&lt;', $t);
-      $newt  = preg_replace('/>/', '&gt;', $newt);
-      $newt  = preg_replace('/"/', '&quot;', $newt);
-      $newt  = preg_replace("/'/", '&#39;', $newt);
-      return trim($newt);
+      $newt = trim( preg_replace('/\s+/', ' ', $t) );
+      $newt = preg_replace('/</', '&lt;', $newt);
+      $newt = preg_replace('/>/', '&gt;', $newt);
+      $newt = preg_replace('/"/', '&quot;', $newt);
+      $newt = preg_replace("/'/", '&#39;', $newt);
+      return $newt;
    }
    
    abstract public function get($id);

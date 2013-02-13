@@ -43,17 +43,22 @@ class show_edition extends fs_controller
       
       if($this->edition)
       {
-         if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) AND isset($_GET['vote']) )
+         if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
-            $sv0 = $story_visit->get_by_params($this->edition->story_id, $_SERVER['REMOTE_ADDR']);
-            if( $sv0 )
+            $this->edition->story->read();
+            
+            if( isset($_GET['vote']) )
             {
-               if( is_null($sv0->edition_id) )
+               $sv0 = $story_visit->get_by_params($this->edition->story_id, $_SERVER['REMOTE_ADDR']);
+               if( $sv0 )
                {
-                  $sv0->edition_id = $this->edition->get_id();
-                  $sv0->save();
-                  $this->edition->votes++;
-                  $this->edition->save();
+                  if( is_null($sv0->edition_id) )
+                  {
+                     $sv0->edition_id = $this->edition->get_id();
+                     $sv0->save();
+                     $this->edition->votes++;
+                     $this->edition->save();
+                  }
                }
             }
          }

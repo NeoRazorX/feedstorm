@@ -45,6 +45,8 @@ class show_story extends fs_controller
       {
          if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
+            $this->story->read();
+            
             $sv0 = $story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
             if( !$sv0 )
             {

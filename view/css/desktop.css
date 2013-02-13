@@ -11,8 +11,7 @@
 body {
    margin: 0px;
    padding: 0px;
-   background-color: #6A6D76;
-   background-image: url('../img/preview_large.jpg');
+   background-color: #E7EBF2;
    color: #333333;
    font-family: Verdana, sans-serif;
    text-rendering: optimizeLegibility;
@@ -24,6 +23,7 @@ body {
 
 div.header {
    padding: 5px;
+   background-image: url('../img/preview_large.jpg');
 }
 
 div.header div.logo {
@@ -69,6 +69,7 @@ div.messages, div.errors {
    margin: 0px;
    padding: 10px;
    box-shadow: inset 0px 5px 5px #666;
+   color: #333333;
    font-size: 16px;
 }
 
@@ -99,6 +100,7 @@ div.bloque {
    padding-bottom: 10px;
    background-color: white;
    box-shadow: inset 0px 4px 4px #999;
+   color: #333333;
 }
 
 div.bloque div.title {
@@ -150,6 +152,10 @@ div.story div.image {
 
 div.story div.image img {
    box-shadow: 3px 3px 3px #666;
+}
+
+div.story_readed {
+   background-color: #DDDDDD;
 }
 
 table.lista {
@@ -279,12 +285,12 @@ div.media_item2 div.media_item_show {
 
 div.footer {
    padding: 10px;
-   border-top: 2px solid #424242;
-   font-size: 16px;
+   border-top: 2px solid #bbbbbb;
+   font-size: 15px;
 }
 
 div.footer a {
-   color: white;
+   color: #424242;
 }
 
 a.button, a.button_edit, a.button_remove {

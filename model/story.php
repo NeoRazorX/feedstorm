@@ -133,6 +133,14 @@ class story extends fs_model
       return $edition->all4story( $this->id );
    }
    
+   public function description($width=300)
+   {
+      if( strlen($this->description) > $width )
+         return substr($this->description, 0, $width).'...';
+      else
+         return $this->description;
+   }
+   
    public function set_description($desc, $meneame=FALSE)
    {
       if( $meneame )
@@ -148,16 +156,7 @@ class story extends fs_model
          $desc = $aux;
       }
       
-      $description = '';
-      $desc = preg_replace('/\s+/', ' ', strip_tags($desc) );
-      foreach(explode(' ', $desc) as $aux)
-      {
-         if( strlen($description.' '.$aux) < 300 )
-            $description .= ' ' . $aux;
-      }
-      if( strlen($description) < strlen($desc) )
-         $description .= '...';
-      $this->description = trim( $this->true_word_break($description) );
+      $this->description = strip_tags($desc);
    }
    
    private function calculate_popularity()
@@ -167,6 +166,17 @@ class story extends fs_model
          $this->popularity = $this->clics / $difft;
       else
          $this->popularity = 0;
+   }
+   
+   public function readed()
+   {
+      return isset($_COOKIE['s_'.$this->id]);
+   }
+   
+   public function read()
+   {
+      if( !isset($_COOKIE['s_'.$this->id]) )
+         setcookie('s_'.$this->id, $this->id, time()+604800);
    }
    
    public function get($id)
@@ -203,8 +213,8 @@ class story extends fs_model
    
    public function save()
    {
-      $this->title = $this->no_html($this->title);
-      $this->description = $this->no_html($this->description);
+      $this->title = $this->true_text_break($this->title, 99, 15);
+      $this->description = $this->true_text_break($this->description, 499, 30);
       $this->media_id = $this->var2str($this->media_id);
       $this->calculate_popularity();
       

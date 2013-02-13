@@ -45,10 +45,6 @@ class feed extends fs_model
          $this->last_check_date = $f['last_check_date'];
          $this->last_update = $f['last_update'];
          $this->suscriptors = $f['suscriptors'];
-         
-         if( $this->suscriptors < 0 )
-            $this->suscriptors = 0;
-         
          $this->strikes = $f['strikes'];
       }
       else
@@ -184,6 +180,7 @@ class feed extends fs_model
             }
             /// guardamos los cambios en el feed
             $this->last_check_date = time();
+            $this->strikes = 0;
             $this->save();
          }
          else
@@ -385,6 +382,8 @@ class feed extends fs_model
    
    public function test()
    {
+      $this->name = $this->no_html($this->name);
+      $this->description = $this->no_html($this->description);
       if( $this->suscriptors < 0 )
          $this->suscriptors = 0;
       
@@ -403,13 +402,14 @@ class feed extends fs_model
       {
          $data = array(
              'url' => $this->url,
-             'name' => $this->no_html($this->name),
-             'description' => $this->no_html($this->description),
+             'name' => $this->name,
+             'description' => $this->description,
              'last_check_date' => $this->last_check_date,
              'last_update' => $this->last_update,
              'suscriptors' => $this->suscriptors,
              'strikes' => $this->strikes
          );
+         
          if( $this->exists() )
          {
             $filter = array('_id' => $this->id);
@@ -429,6 +429,14 @@ class feed extends fs_model
    public function delete()
    {
       $this->collection->remove( array('_id' => $this->id) );
+      
+      $suscription = new suscription();
+      foreach($suscription->all4feed($this->id) as $sus)
+         $sus->delete();
+      
+      $feed_story = new feed_story();
+      foreach($feed_story->all4feed($this->id) as $fs)
+         $fs->delete();
    }
    
    public function all()

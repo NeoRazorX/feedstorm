@@ -94,30 +94,33 @@ class media_item extends fs_model
    {
       $mlist = array();
       
-      $text = '';
-      if( $item->description )
-         $text .= (string)$item->description;
-      if( $item->content )
-         $text .= (string)$item->content;
-      else if( $item->summary )
-         $text .= (string)$item->summary;
-      else
+      if( $item )
       {
-         /// intentamos leer el espacio de nombres atom
-         foreach($item->children('atom', TRUE) as $element)
+         $text = '';
+         if( $item->description )
+            $text .= (string)$item->description;
+         if( $item->content )
+            $text .= (string)$item->content;
+         else if( $item->summary )
+            $text .= (string)$item->summary;
+         else
          {
-            if($element->getName() == 'summary')
+            /// intentamos leer el espacio de nombres atom
+            foreach($item->children('atom', TRUE) as $element)
             {
-               $text .= (string)$element;
-               break;
+               if($element->getName() == 'summary')
+               {
+                  $text .= (string)$element;
+                  break;
+               }
             }
-         }
-         foreach($item->children('content', TRUE) as $element)
-         {
-            if($element->getName() == 'encoded')
+            foreach($item->children('content', TRUE) as $element)
             {
-               $text .= (string)$element;
-               break;
+               if($element->getName() == 'encoded')
+               {
+                  $text .= (string)$element;
+                  break;
+               }
             }
          }
       }

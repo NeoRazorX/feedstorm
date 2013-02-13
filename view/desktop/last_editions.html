@@ -5,7 +5,9 @@
    <div class="info">
       <h1>¿Esto qué es?</h1>
       <p>
-         Aquí aparecen las últimas noticias editadas.
+         Aquí aparecen las últimas noticias editadas por los usuarios.
+         Para editar una noticia sólo tienes que hacer clic sobre ella
+         y a continuación pulsar el botón editar.
       </p>
       <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
    </div>
@@ -30,7 +32,7 @@
             {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
             {else}
-            <p>{$value->description}</p>
+            <p>{$value->description()}</p>
             {/if}
          </div>
       {/loop}

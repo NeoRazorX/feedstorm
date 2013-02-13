@@ -64,7 +64,7 @@ class story_edition extends fs_model
          $this->title = '';
          $this->description = '';
          $this->media_id = NULL;
-         $this->votes = 0;
+         $this->votes = 1;
       }
       
       if( is_null($this->story_id) )
@@ -118,6 +118,14 @@ class story_edition extends fs_model
          return 'index.php?page=show_edition&id='.$this->id.'&vote=TRUE';
    }
    
+   public function description($width=300)
+   {
+      if( strlen($this->description) > $width )
+         return substr($this->description, 0, $width).'...';
+      else
+         return $this->description;
+   }
+   
    public function editions()
    {
       return $this->all4story( $this->story_id );
@@ -161,8 +169,8 @@ class story_edition extends fs_model
    {
       $this->story_id = $this->var2str($this->story_id);
       $this->visitor_id = $this->var2str($this->visitor_id);
-      $this->title = $this->no_html( $this->true_word_break($this->title, 15) );
-      $this->description = $this->no_html( $this->true_word_break($this->description) );
+      $this->title = $this->true_text_break($this->title, 99, 15);
+      $this->description = $this->true_text_break($this->description, 999, 30);
       $this->media_id = $this->var2str($this->media_id);
       
       $data = array(

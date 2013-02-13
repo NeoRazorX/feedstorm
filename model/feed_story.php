@@ -135,6 +135,7 @@ class feed_story extends fs_model
    {
       $this->feed_id = $this->var2str($this->feed_id);
       $this->story_id = $this->var2str($this->story_id);
+      $this->title = $this->true_text_break($this->title, 99, 15);
       
       $data = array(
           'feed_id' => $this->feed_id,

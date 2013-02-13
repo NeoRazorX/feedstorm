@@ -68,7 +68,7 @@ abstract class fs_controller
    private function set_template($tpl='main')
    {
       if( $this->visitor->mobile() )
-         $this->template = 'mobile/'.$tpl;
+         $this->template = 'desktop/'.$tpl; /// hasta que termine la versión movil
       else
          $this->template = 'desktop/'.$tpl;
    }

@@ -60,6 +60,16 @@ class show_edition extends fs_controller
                      $this->edition->save();
                   }
                }
+               else
+               {
+                  $story_visit->story_id = $this->edition->story_id;
+                  $story_visit->edition_id = $this->edition->get_id();
+                  $story_visit->save();
+                  $this->edition->story->clics++;
+                  $this->edition->story->save();
+                  $this->edition->votes++;
+                  $this->edition->save();
+               }
             }
          }
          

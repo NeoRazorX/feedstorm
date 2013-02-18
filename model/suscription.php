@@ -57,31 +57,46 @@ class suscription extends fs_model
    public function name()
    {
       $f = $this->feed();
-      return $f->name;
+      if($f)
+         return $f->name;
+      else
+         return '-';
    }
    
    public function description()
    {
       $f = $this->feed();
-      return $f->description;
+      if($f)
+         return $f->description;
+      else
+         return '-';
    }
    
    public function url()
    {
       $f = $this->feed();
-      return $f->url();
+      if($f)
+         return $f->url();
+      else
+         return '#';
    }
    
    public function last_update_timesince()
    {
       $f = $this->feed();
-      return $f->last_update_timesince();
+      if($f)
+         return $f->last_update_timesince();
+      else
+         return '-';
    }
    
    public function suscriptors()
    {
       $f = $this->feed();
-      return $f->suscriptors;
+      if($f)
+         return $f->suscriptors;
+      else
+         return '-';
    }
    
    public function get($id)

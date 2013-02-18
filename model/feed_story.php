@@ -99,13 +99,19 @@ class feed_story extends fs_model
    public function feed_name()
    {
       $this->feed();
-      return $this->feed->name;
+      if($this->feed)
+         return $this->feed->name;
+      else
+         return '-';
    }
    
    public function feed_url()
    {
       $this->feed();
-      return $this->feed->url();
+      if($this->feed)
+         return $this->feed->url();
+      else
+         return '#';
    }
    
    public function get($id)
@@ -135,7 +141,7 @@ class feed_story extends fs_model
    {
       $this->feed_id = $this->var2str($this->feed_id);
       $this->story_id = $this->var2str($this->story_id);
-      $this->title = $this->true_text_break($this->title, 99, 15);
+      $this->title = $this->true_text_break($this->title, 149, 15);
       
       $data = array(
           'feed_id' => $this->feed_id,
@@ -208,7 +214,19 @@ class feed_story extends fs_model
                $filter['$or'][] = array('feed_id' => $this->var2str($fid) );
          }
          foreach($this->collection->find($filter)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $fs)
-            $fslist[] = new feed_story($fs);
+         {
+            $found = FALSE;
+            foreach($fslist as $fs2)
+            {
+               if($fs2->story_id == $fs['story_id'])
+               {
+                  $found = TRUE;
+                  break;
+               }
+            }
+            if( !$found )
+               $fslist[] = new feed_story($fs);
+         }
       }
       return $fslist;
    }

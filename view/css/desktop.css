@@ -23,6 +23,7 @@ body {
 
 div.header {
    padding: 5px;
+   background-color: #71747D;
    background-image: url('../img/preview_large.jpg');
 }
 
@@ -195,6 +196,24 @@ div.popup {
    min-width: 600px;
    max-width: 980px;
    padding: 0px;
+   background-color: #EEEEEE;
+   border: 3px solid #CCCCCC;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
+}
+
+div.popup_container {
+   padding: 20px;
+   background-color: #71747D;
+   background-image: url('../img/preview_large.jpg');
+}
+
+div.popup2 {
+   width: 980px;
+   margin-left: auto;
+   margin-right: auto;
    background-color: #EEEEEE;
    border: 3px solid #CCCCCC;
    border-top-left-radius: 3px 3px;

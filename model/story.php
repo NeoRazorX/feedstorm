@@ -70,10 +70,12 @@ class story extends fs_model
       $this->calculate_popularity();
    }
    
-   public function url()
+   public function url($sitemap=FALSE)
    {
       if( is_null($this->id) )
          return 'index.php';
+      else if($sitemap)
+         return 'index.php?page=show_story&amp;id='.$this->id;
       else
          return 'index.php?page=show_story&id='.$this->id;
    }
@@ -176,7 +178,7 @@ class story extends fs_model
    public function read()
    {
       if( !isset($_COOKIE['s_'.$this->id]) )
-         setcookie('s_'.$this->id, $this->id, time()+604800);
+         setcookie('s_'.$this->id, $this->id, time()+86400);
    }
    
    public function get($id)
@@ -273,7 +275,7 @@ class story extends fs_model
    {
       $stlist = array();
       $i = 0;
-      foreach($this->collection->find()->sort(array('date'=>-1)) as $s)
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit(3*FS_MAX_STORIES) as $s)
       {
          if($i < FS_MAX_STORIES)
          {

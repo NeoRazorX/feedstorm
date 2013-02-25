@@ -1,0 +1,87 @@
+{include="desktop/header"}
+
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#story_editions2").hide();
+      $('#b_show_feeds2').click(function () {
+         $("#b_show_editions2").removeClass('activa');
+         $("#story_editions2").hide();
+         $('#b_show_feeds2').addClass('activa');
+         $("#story_feeds2").show();
+      });
+      $('#b_show_editions2').click(function () {
+         $('#b_show_feeds2').removeClass('activa');
+         $("#story_feeds2").hide();
+         $("#b_show_editions2").addClass('activa');
+         $("#story_editions2").show();
+      });
+   });
+</script>
+
+<div class="popup_container">
+   <div class="popup2">
+      {if condition="$fsc->story"}
+      <div class="story_info">
+         <h1>{$fsc->story->title}</h1>
+         {if condition="$fsc->story->media_item"}
+         <div class="media_item">{$fsc->story->media_item->show()}</div>
+         {/if}
+         <p>{$fsc->story->description}</p>
+         <table width="100%">
+            <tr>
+               <td>
+                  <span class="label">{$fsc->story->clics} clics</span>
+                  <span class="label-info">Popularidad: {$fsc->story->popularity()}</span>
+               </td>
+               <td align="right">
+                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
+                  <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <ul class="pestanyas">
+         <li id="b_show_feeds2" class="activa">Fuentes</li>
+         <li id="b_show_editions2">Ediciones</li>
+      </ul>
+      <div class="pestanya_content" id="story_feeds2">
+         <table class="lista">
+            <tr>
+               <th align="left">Fecha</th>
+               <th align="left">Enlace</th>
+               <th align="left">Fuente</th>
+            </tr>
+            {loop="$fsc->story->feed_links()"}
+            <tr>
+               <td>{$value->timesince()}</td>
+               <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+               <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+            </tr>
+            {else}
+            <tr><td colspan="3">Sin resultados.</td></tr>
+            {/loop}
+         </table>
+      </div>
+      <div class="pestanya_content" id="story_editions2">
+         <table class="lista">
+            <tr>
+               <th align="left">Fecha</th>
+               <th align="left">Título</th>
+               <th align="right">Votos</th>
+            </tr>
+            {loop="$fsc->story->editions()"}
+            <tr>
+               <td>{$value->timesince()}</td>
+               <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
+               <td align="right">{$value->votes}</td>
+            </tr>
+            {else}
+            <tr><td colspan="3">Sin resultados.</td></tr>
+            {/loop}
+         </table>
+      </div>
+      {/if}
+   </div>
+</div>
+
+{include="desktop/footer"}

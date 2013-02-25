@@ -65,7 +65,7 @@ abstract class fs_controller
       $this->mongo->close();
    }
    
-   private function set_template($tpl='main')
+   protected function set_template($tpl='main')
    {
       if( $this->visitor->mobile() )
          $this->template = 'desktop/'.$tpl; /// hasta que termine la versión movil

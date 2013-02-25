@@ -43,6 +43,10 @@ class show_edition extends fs_controller
       
       if($this->edition)
       {
+         /// seleccionamos la plantilla adecuada
+         if( !isset($_POST['popup']) )
+            $this->set_template('show_edition_fp');
+         
          if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
             $this->edition->story->read();

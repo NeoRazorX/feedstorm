@@ -19,6 +19,7 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/media_item.php';
+require_once 'model/story.php';
 
 class story_edition extends fs_model
 {
@@ -94,10 +95,12 @@ class story_edition extends fs_model
       return $this->time2timesince($this->date);
    }
    
-   public function url()
+   public function url($sitemap=FALSE)
    {
       if( is_null($this->id) )
          return 'index.php';
+      else if($sitemap)
+         return 'index.php?page=show_edition&amp;id='.$this->id;
       else
          return 'index.php?page=show_edition&id='.$this->id;
    }

@@ -55,66 +55,60 @@ foreach($feed->all() as $f)
 
 echo "\nActualizamos las noticias populares...\n";
 $story = new story();
+foreach($story->popular_stories() as $s)
 {
-   foreach($story->popular_stories() as $s)
+   if( is_null($s->media_id) )
    {
-      if( is_null($s->media_id) )
+      if( count( $s->media_items() ) == 0 )
       {
-         if( count( $s->media_items() ) == 0 )
+         /// buscamos más fotos para la noticia
+         $width = 0;
+         $height = 0;
+         $media_item = new media_item();
+         foreach($media_item->find_media(FALSE, $s->link) as $mi)
          {
-            /*
-             * buscamos más fotos para la noticia
-             */
-            $width = 0;
-            $height = 0;
-            $media_item = new media_item();
-            foreach($media_item->find_media(FALSE, $s->link) as $mi)
+            $story_media = new story_media();
+            $story_media->story_id = $s->get_id();
+            
+            if( !$media_item->get_by_url($mi->url) )
             {
-               $story_media = new story_media();
-               $story_media->story_id = $s->get_id();
-               
-               if( !$media_item->get_by_url($mi->url) )
+               if( $mi->download() )
                {
-                  if( $mi->download() )
+                  $mi->save();
+                  $story_media->media_id = $mi->get_id();
+                  $story_media->save();
+                  
+                  if($mi->width > 0 AND $mi->height > 0)
+                     $ratio = $mi->width / $mi->height;
+                  else
+                     $ratio = 0;
+                  
+                  if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
                   {
-                     $mi->save();
-                     $story_media->media_id = $mi->get_id();
-                     $story_media->save();
-                     
-                     if($mi->width > 0 AND $mi->height > 0)
-                        $ratio = $mi->width / $mi->height;
-                     else
-                        $ratio = 0;
-                     
-                     if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
-                     {
-                        $s->media_id = $mi->get_id();
-                        $width = $mi->original_width;
-                        $height = $mi->original_height;
-                     }
+                     $s->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
                   }
                }
             }
          }
       }
-      else
+   }
+   else
+   {
+      /// Elegimos la foto de la edición más votada de la noticia
+      $maxvotes = 0;
+      foreach($s->editions() as $edi)
       {
-         /*
-          * Elegimos la foto de la edición más votada de la noticia
-          */
-         $maxvotes = 0;
-         foreach($s->editions() as $edi)
+         if($edi->votes > $maxvotes)
          {
-            if($edi->votes > $maxvotes)
-            {
-               $maxvotes = $edi->votes;
-               $s->media_id = $edi->media_id;
-            }
+            $maxvotes = $edi->votes;
+            $s->media_id = $edi->media_id;
          }
       }
-      
-      $s->save();
    }
+   
+   $s->save();
 }
 
 $mongo->close();

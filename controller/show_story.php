@@ -43,6 +43,10 @@ class show_story extends fs_controller
       
       if($this->story)
       {
+         /// seleccionamos la plantilla adecuada
+         if( !isset($_POST['popup']) )
+            $this->set_template('show_story_fp');
+         
          if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
             $this->story->read();

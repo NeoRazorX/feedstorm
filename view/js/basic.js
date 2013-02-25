@@ -12,7 +12,7 @@ function fs_popup_story(url)
       type: 'POST',
       url: url,
       dataType: 'html',
-      data: '',
+      data: 'popup=TRUE',
       success: function(datos) {
          $("#shadow_box").show();
          $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");
@@ -52,7 +52,7 @@ function fs_popup_edition(url)
       type: 'POST',
       url: url,
       dataType: 'html',
-      data: '',
+      data: 'popup=TRUE',
       success: function(datos) {
          $("#shadow_box").show();
          $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");

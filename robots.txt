@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
 Disallow: /base/
+Disallow: /community/
 Disallow: /controller/
 Disallow: /model/
+Disallow: /question/
 Disallow: /raintpl/
 Disallow: /tmp/
 Disallow: /view/

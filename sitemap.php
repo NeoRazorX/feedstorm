@@ -33,15 +33,15 @@ $mongo = new fs_mongo();
 $story = new story();
 foreach($story->popular_stories() as $s)
 {
-   echo '<url><loc>',FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',Date('d-m-Y', $s->date),
-           '</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
+           Date('d-m-Y', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
 }
 
 $edition = new story_edition();
 foreach($edition->last_editions() as $e)
 {
-   echo '<url><loc>',FS_PATH,'/',$e->url(TRUE),'</loc><lastmod>',Date('d-m-Y', $e->date),
-           '</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$e->url(TRUE),'</loc><lastmod>',
+           Date('d-m-Y', $e->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
 }
 
 $mongo->close();

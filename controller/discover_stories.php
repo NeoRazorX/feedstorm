@@ -27,7 +27,7 @@ class discover_stories extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('discover_stories', FS_NAME, 'discover');
+      parent::__construct('discover_stories', 'Descubrir', 'descubrir@'.FS_NAME, 'discover');
    }
    
    protected function process()

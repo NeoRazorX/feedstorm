@@ -27,7 +27,7 @@ class home extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('home', FS_NAME, 'home');
+      parent::__construct('home', 'Portada', 'portada@'.FS_NAME, 'home');
    }
    
    protected function process()

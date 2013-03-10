@@ -1,17 +1,6 @@
-{include="desktop/header"}
+{include="mobile/header"}
 
 {if condition="$fsc->feed"}
-<script src="{$path}/view/js/jquery.masonry.min.js"></script>
-<script type="text/javascript">
-   $(document).ready(function() {
-      $("#stories").masonry({
-         itemSelector: '.story',
-         isFitWidth: true,
-         isAnimated: true
-      });
-   });
-</script>
-
 <div class="info">
    <table width="100%">
       <tr>
@@ -29,20 +18,20 @@
    </table>
    <table class="lista">
       <tr>
-         <th align="left">Descripción</th>
-         <th align="left">URL</th>
-         <th align="left">Última actualización</th>
-         <th align="left">Última comprobación</th>
-         <th align="right">Suscriptores</th>
-         <th align="right">Errores</th>
+         <td align="right">Descripción:</td>
+         <td>{$fsc->feed->description}.</td>
       </tr>
       <tr>
-         <td>{$fsc->feed->description}.</td>
-         <td>{$fsc->feed->url}</td>
+         <td align="right">Última actualización:</td>
          <td>{$fsc->feed->last_update_timesince()}</td>
-         <td>{$fsc->feed->last_check_timesince()}</td>
-         <td align="right">{$fsc->feed->suscriptors}</td>
-         <td align="right">{$fsc->feed->strikes}</td>
+      </tr>
+      <tr>
+         <td align="right">Suscriptores:</td>
+         <td>{$fsc->feed->suscriptors}</td>
+      </tr>
+      <tr>
+         <td align="right">Errores:</td>
+         <td>{$fsc->feed->strikes}</td>
       </tr>
    </table>
 </div>
@@ -50,7 +39,7 @@
 <div class="bloque">
    <div id="stories">
    {loop="$fsc->stories"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
          <h1>{$value->title}</h1>
          {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
@@ -64,4 +53,4 @@
 </div>
 {/if}
 
-{include="desktop/footer"}
+{include="mobile/footer"}

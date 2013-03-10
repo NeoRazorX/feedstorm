@@ -16,6 +16,10 @@
             te gusta como está redactada, haz clic sobre la noticia y pulsa el botón
             <b>editar</b> para modificarla.
          </li>
+         <li>
+            Y si encuentras algún fallo,
+            <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
+         </li>
       </ul>
       <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Ya lo he pillado</a></p>
    </div>
@@ -81,6 +85,7 @@
                <p>{$value->description()}</p>
             {/if}
          </div>
+         <a href="{$path}/{$value->url()}"></a>
       {/loop}
       </div>
    </div>

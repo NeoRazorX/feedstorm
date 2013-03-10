@@ -21,6 +21,7 @@ date_default_timezone_set('Europe/Madrid');
 
 require_once 'config.php';
 require_once 'base/fs_mongo.php';
+require_once 'model/feed.php';
 require_once 'model/story.php';
 require_once 'model/story_edition.php';
 
@@ -29,6 +30,13 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
 $mongo = new fs_mongo();
+
+$feed = new feed();
+foreach($feed->all() as $f)
+{
+   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$f->url(TRUE),'</loc><lastmod>',
+           Date('Y-m-d', $f->last_update),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+}
 
 $story = new story();
 foreach($story->popular_stories() as $s)

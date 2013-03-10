@@ -29,11 +29,26 @@ require_once 'model/story_media.php';
 
 $mongo = new fs_mongo();
 
+$DIR = 'tmp/images/';
+if( file_exists($DIR) )
+{
+   echo "\nEliminamos imágenes antiguas:\n";
+   foreach(scandir($DIR) as $file)
+   {
+      if( filemtime($DIR.$file) <= time()-60*60*24*90 )
+      {
+         unlink($DIR.$file);
+         echo '-';
+      }
+   }
+}
+
+
 echo "\nProcesamos las fuentes:";
 $feed = new feed();
 foreach($feed->all() as $f)
 {
-   if($f->strikes > 48)
+   if($f->strikes > 72)
    {
       $f->delete();
       echo "\n * Eliminada la fuente ".$f->name.".\n";

@@ -29,7 +29,7 @@ class edit_story extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('edit_story', 'noticia...', 'edit_story');
+      parent::__construct('edit_story', 'Editar noticia', 'Editar noticia', 'edit_story');
    }
    
    protected function process()
@@ -47,8 +47,6 @@ class edit_story extends fs_controller
       
       if($this->story)
       {
-         $this->title = $this->story->title;
-         
          if( $this->visitor->human() AND isset($_SERVER['REMOTE_ADDR']) )
          {
             $se0 = $this->story_edition->get_by_params($this->story->get_id(), $this->visitor->get_id());

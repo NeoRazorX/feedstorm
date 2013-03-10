@@ -30,7 +30,7 @@ class explore_feed extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('explore_feed', FS_NAME, 'explore_feed');
+      parent::__construct('explore_feed', 'Fuente', FS_NAME, 'explore_feed');
    }
    
    protected function process()
@@ -66,6 +66,14 @@ class explore_feed extends fs_controller
       }
       else
          $this->new_error_msg('Fuente no encontrada.');
+   }
+   
+   public function get_description()
+   {
+      if( $this->feed )
+         return $this->feed->description;
+      else
+         parent::get_description();
    }
 }
 

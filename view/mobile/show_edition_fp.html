@@ -1,4 +1,4 @@
-{include="desktop/header"}
+{include="mobile/header"}
 
 <script type="text/javascript">
    $(document).ready(function() {
@@ -30,7 +30,7 @@
          <table width="100%">
             <tr>
                <td>
-                  <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
+                  <a class="button" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
                   <span class="label-info">{$fsc->edition->votes} votos</span>
                </td>
                <td align="right">
@@ -93,4 +93,4 @@
    </div>
 </div>
 
-{include="desktop/footer"}
+{include="mobile/footer"}

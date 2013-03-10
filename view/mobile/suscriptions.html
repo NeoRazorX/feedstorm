@@ -1,0 +1,30 @@
+{include="mobile/header"}
+
+{if condition="$fsc->suscriptions"}
+<div class="bloque">
+   <table class="lista">
+      <tr>
+         <th align="left">Nombre + descripción</th>
+         <th align="left">Última actualización</th>
+         <th align="right">Suscriptores</th>
+      </tr>
+      {loop="$fsc->suscriptions"}
+      <tr>
+         <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
+         <td>{$value->last_update_timesince()}</td>
+         <td align="right">{$value->suscriptors()}</td>
+      </tr>
+      {/loop}
+   </table>
+</div>
+{else}
+<div class="info">
+   <h1>No estás suscrito a ninguna fuente.</h1>
+   <p>
+      Puedes buscar fuentes interesantes desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>
+      y suscríbirte.
+   </p>
+</div>
+{/if}
+
+{include="mobile/footer"}

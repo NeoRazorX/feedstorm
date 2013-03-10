@@ -27,15 +27,17 @@ abstract class fs_controller
    private $messages;
    private $mongo;
    public $page;
+   public $page_title;
    public $title;
    public $template;
    public $visitor;
    
-   public function __construct($name, $title, $template)
+   public function __construct($name, $ptitle, $title, $template)
    {
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
+      $this->page_title = $ptitle;
       $this->title = $title;
       $this->errors = array();
       $this->messages = array();
@@ -68,7 +70,7 @@ abstract class fs_controller
    protected function set_template($tpl='main')
    {
       if( $this->visitor->mobile() )
-         $this->template = 'desktop/'.$tpl; /// hasta que termine la versión movil
+         $this->template = 'mobile/'.$tpl;
       else
          $this->template = 'desktop/'.$tpl;
    }

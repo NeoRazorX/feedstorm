@@ -7,7 +7,10 @@
       <p>
          Aquí aparecen las últimas noticias editadas por los usuarios.
          Para editar una noticia sólo tienes que hacer clic sobre ella
-         y a continuación pulsar el botón editar.
+         y a continuación pulsar el botón <b>editar</b>.
+         <br/>
+         Y si encuentras algún fallo,
+         <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
       </p>
       <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
    </div>
@@ -35,6 +38,7 @@
             <p>{$value->description()}</p>
             {/if}
          </div>
+         <a href="{$path}/{$value->url()}"></a>
       {/loop}
       </div>
    </div>

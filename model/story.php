@@ -163,7 +163,7 @@ class story extends fs_model
    
    private function calculate_popularity()
    {
-      $difft = 1 + intval( (time() - $this->date) / 43200 );
+      $difft = 1 + intval( (time() - $this->date) / 86400 );
       if($difft > 0 AND $this->clics > 0)
          $this->popularity = $this->clics / $difft;
       else

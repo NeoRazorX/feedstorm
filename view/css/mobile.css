@@ -34,7 +34,7 @@ div.header div.logo {
 div.header div.logo a {
    color: #333333;
    font-family: 'Grand Hotel', cursive;
-   font-size: 60px;
+   font-size: 45px;
    text-decoration: none;
 }
 
@@ -44,26 +44,58 @@ div.header table.buttons {
 
 div.header table.buttons a {
    display: inline-block;
-   padding-left: 5px;
-   padding-right: 5px;
-   padding-top: 2px;
-   padding-bottom: 2px;
+   color: white;
+   font-size: 16px;
+   text-decoration: none;
+}
+
+a#b_top_menu {
+   padding-left: 6px;
+   padding-right: 6px;
+   padding-top: 3px;
+   padding-bottom: 3px;
+   background-color: #333333;
    border-top-left-radius: 3px 3px;
    border-top-right-radius: 3px 3px;
    border-bottom-left-radius: 3px 3px;
    border-bottom-right-radius: 3px 3px;
-   color: white;
-   font-size: 15px;
-   font-weight: bold;
-   text-decoration: none;
 }
 
-div.header table.buttons a:hover {
+ul#top_menu {
+   display: none;
+   margin: 0px;
+   position: absolute;
+   top: 0px;
+   right: 0px;
    background-color: #424242;
+   border: 3px solid #333333;
+   font-size: 18px;
+   list-style: none;
+   padding: 0px;
 }
 
-div.header table.buttons a.selected {
-   background-color: #333333;
+ul#top_menu li {
+   
+}
+
+ul#top_menu li a {
+   display: block;
+   padding: 8px;
+   background-color: #aaaaaa;
+   border: 1px solid #424242;
+   text-decoration: none;
+   color: black;
+   text-align: center;
+}
+
+ul#top_menu li a.selected {
+   color: white;
+   background-color: #0070CC;
+}
+
+ul#top_menu li a.b_close_top_menu {
+   color: white;
+   background-color: #E1544F;
 }
 
 div.messages, div.errors {
@@ -95,6 +127,10 @@ div.info {
    color: #334455;
 }
 
+div.info h1 {
+   font-size: 20px;
+}
+
 div.bloque {
    margin: 0px;
    padding-top: 10px;
@@ -110,26 +146,20 @@ div.bloque div.title {
    padding-bottom: 10px;
    border-bottom: 1px dashed #999;
    color: #424242;
-   font-size: 30px;
+   font-size: 25px;
    font-weight: bolder;
    text-align: center;
 }
 
 div#stories {
-   margin: 0 auto;
+   
 }
 
 div.story {
-   display: inline-block;
-   width: 240px;
+   display: block;
+   margin: 3px;
    padding: 5px;
-   border: 1px dashed white;
-}
-
-div.story:hover {
-   background-color: #EEEEEE;
-   border-color: #666;
-   cursor: pointer;
+   border: 1px dashed #666;
 }
 
 div.story h1 {
@@ -175,35 +205,6 @@ table.lista th, table.lista td {
    padding: 5px;
 }
 
-div#shadow_box {
-   display: none;
-   position: fixed;
-   top: 0px;
-   left: 0px;
-   z-index: 2;
-   width: 100%;
-   height: 100%;
-   background: #000;
-   opacity: 0.8;
-}
-
-div.popup {
-   display: none;
-   position: absolute;
-   top: 10px;
-   left: 10px;
-   z-index: 3;
-   min-width: 600px;
-   max-width: 980px;
-   padding: 0px;
-   background-color: #EEEEEE;
-   border: 3px solid #CCCCCC;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
-}
-
 div.popup_container {
    padding: 20px;
    background-color: #424242;
@@ -211,7 +212,6 @@ div.popup_container {
 }
 
 div.popup2 {
-   width: 980px;
    margin-left: auto;
    margin-right: auto;
    background-color: #EEEEEE;
@@ -231,7 +231,7 @@ div.story_info h1 {
    padding: 0px;
    padding-bottom: 5px;
    text-align: center;
-   font-size: 25px;
+   font-size: 20px;
 }
 
 div.story_info div.media_item {

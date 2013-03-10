@@ -86,8 +86,19 @@ function fs_popup_edition(url)
    });
 }
 
+function fs_go2url(url)
+{
+   window.location.href = url;
+}
+
 $(document).ready(function() {
    $("#shadow_box").click(function() {
       fs_close_popups();
+   });
+   $("#b_top_menu").click(function() {
+      $("#top_menu").show();
+   });
+   $("#b_close_top_menu").click(function() {
+      $("#top_menu").hide();
    });
 });

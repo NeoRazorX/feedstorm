@@ -27,7 +27,7 @@ class feed_list extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('feed_list', FS_NAME, 'feed_list');
+      parent::__construct('feed_list', 'Fuentes', 'fuentes@'.FS_NAME, 'feed_list');
    }
    
    protected function process()

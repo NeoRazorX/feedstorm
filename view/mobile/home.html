@@ -1,0 +1,49 @@
+{include="mobile/header"}
+
+{if condition="$fsc->stories"}
+   <div class="bloque">
+      <div id="stories">
+      {loop="$fsc->stories"}
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+               <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+               <p>{$value->description()}</p>
+            {/if}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{else}
+   <div class="info">
+      <h1>No se han encontrado noticias para tí :(</h1>
+      <p>
+         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
+         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+         También puedes buscar noticias interesantes desde la sección
+         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+      </p>
+   </div>
+   
+   {if condition="$fsc->popular"}
+   <div class="bloque">
+      <div class="title">Las noticias más populares:</div>
+      <div id="stories">
+      {loop="$fsc->popular"}
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+               <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+               <p>{$value->description()}</p>
+            {/if}
+         </div>
+         <a href="{$path}/{$value->url()}"></a>
+      {/loop}
+      </div>
+   </div>
+   {/if}
+{/if}
+
+{include="mobile/footer"}

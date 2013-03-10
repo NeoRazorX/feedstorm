@@ -1,4 +1,4 @@
-{include="desktop/header"}
+{include="mobile/header"}
 
 <script type="text/javascript">
    $(document).ready(function() {
@@ -30,12 +30,16 @@
          <table width="100%">
             <tr>
                <td>
-                  <span class="label">{$fsc->story->clics} clics</span>
                   <span class="label-info">Popularidad: {$fsc->story->popularity()}</span>
                </td>
                <td align="right">
-                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
                   <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+               </td>
+            </tr>
+            <tr>
+               <td><span class="label">{$fsc->story->clics} clics</span></td>
+               <td align="right">
+                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a>
                </td>
             </tr>
          </table>
@@ -84,4 +88,4 @@
    </div>
 </div>
 
-{include="desktop/footer"}
+{include="mobile/footer"}

@@ -26,7 +26,7 @@ class suscriptions extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('suscriptions', FS_NAME, 'suscriptions');
+      parent::__construct('suscriptions', 'Suscripciones', 'suscripciones@'.FS_NAME, 'suscriptions');
    }
    
    protected function process()

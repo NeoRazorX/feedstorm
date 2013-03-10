@@ -63,8 +63,15 @@ class media_item extends fs_model
    public function show_image()
    {
       if($this->type == 'image')
-         return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
-              '" width="'.$this->width.'" height="'.$this->height.'"/>';
+      {
+         if( file_exists('tmp/images/'.$this->filename) )
+         {
+            return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
+                 '" width="'.$this->width.'" height="'.$this->height.'"/>';
+         }
+         else
+            return '';
+      }
       else if($this->type == 'youtube')
          return '<img src="'.$this->thumbnail_url.'" alt="'.$this->filename.
               '" width="225" height="127"/>';
@@ -75,17 +82,56 @@ class media_item extends fs_model
          return '';
    }
    
+   private function mobile()
+   {
+      if( isset($_SERVER['HTTP_USER_AGENT']) )
+         $user_agent = $_SERVER['HTTP_USER_AGENT'];
+      else
+         $user_agent = 'unknown';
+      
+      return (strstr(strtolower($user_agent), 'mobile') || strstr(strtolower($user_agent), 'android'));
+   }
+   
    public function show()
    {
       if($this->type == 'image')
-         return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
-              '" width="'.$this->width.'" height="'.$this->height.'"/>';
+      {
+         if( file_exists('tmp/images/'.$this->filename) )
+         {
+            return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
+                 '" width="'.$this->width.'" height="'.$this->height.'"/>';
+         }
+         else
+            return '';
+      }
       else if($this->type == 'youtube')
-         return '<iframe width="640" height="360" src="http://www.youtube.com/embed/'.$this->filename.'" frameborder="0" allowfullscreen>
-            </iframe>';
+      {
+         if( $this->mobile() )
+         {
+            return '<iframe width="250" height="141" src="http://www.youtube.com/embed/'.
+                    $this->filename.'" frameborder="0" allowfullscreen></iframe>';
+         }
+         else
+         {
+            return '<iframe width="640" height="360" src="http://www.youtube.com/embed/'.
+                    $this->filename.'" frameborder="0" allowfullscreen></iframe>';
+         }
+      }
       else if($this->type == 'vimeo')
-         return '<iframe src="http://player.vimeo.com/video/'.$this->filename.'" width="500" height="281" frameborder="0" '.
-            'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+      {
+         if( $this->mobile() )
+         {
+            return '<iframe src="http://player.vimeo.com/video/'.$this->filename.
+                    '" width="250" height="141" frameborder="0" '.
+               'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+         }
+         else
+         {
+            return '<iframe src="http://player.vimeo.com/video/'.$this->filename.
+                    '" width="500" height="281" frameborder="0" '.
+               'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
+         }
+      }
       else
          return '';
    }
@@ -307,6 +353,8 @@ class media_item extends fs_model
                   $this->width = $image->getWidth();
                   $status = TRUE;
                }
+               else if( file_exists('tmp/images/'.$this->filename) )
+                  unlink('tmp/images/'.$this->filename);
             }
             else
                $this->new_error('No se encuentra el archivo después de descargar '.$this->url);

@@ -60,9 +60,14 @@ class feed extends fs_model
       }
    }
    
-   public function url()
+   public function url($sitemap=FALSE)
    {
-      return 'index.php?page=explore_feed&id='.$this->id;
+      if( is_null($this->id) )
+         return 'index.php';
+      else if($sitemap)
+         return 'index.php?page=explore_feed&amp;id='.$this->id;
+      else
+         return 'index.php?page=explore_feed&id='.$this->id;
    }
    
    public function last_check_date()

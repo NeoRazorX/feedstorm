@@ -1,0 +1,53 @@
+{include="mobile/header"}
+
+<div class="info">
+   <h1>¿Qué hago yo aquí?</h1>
+   <p>
+      Aquí tienes la lista de fuentes de <b>{$name}</b>.
+      Si no encuentras lo que buscas, puedes añadir una fuente
+      desde este formulario:
+   </p>
+   <form class="form-inline" action="{$fsc->url()}" method="post">
+      <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="30"/>
+      <button type="submit" class="btn btn-primary">Añadir fuente</button>
+   </form>
+   <ul>
+      <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>
+      <li>
+         La mayoría de las fuentes dicen que cumplen los estandares RSS o ATOM,
+         pero es mentira.
+      </li>
+      <li>
+         No te preocupes, esta web saca noticias de cualquier
+         fuente, por muy mentirosa que sea.
+      </li>
+      <li>
+         Si no sabes de qué estoy hablando, simplemente elige una fuente de abajo,
+         haces clic y ves las noticias que tiene. Si te gusta, pulsas el botón
+         suscribir.
+      </li>
+   </ul>
+</div>
+
+<div class="bloque">
+   <table class="lista">
+      <tr>
+         <th align="left">Nombre</th>
+         <th align="left">Última actualización</th>
+         <th align="right">Suscriptores</th>
+         <th align="right">Errores</th>
+      </tr>
+      {loop="$fsc->feed_list"}
+      <tr>
+         <td><a href="{$value->url()}">{$value->name}</a></td>
+         <td>{$value->last_update_timesince()}</td>
+         <td align="right">{$value->suscriptors}</td>
+         <td align="right">{$value->strikes}</td>
+      </tr>
+      {else}
+      <tr><td colspan="6">Sin resultados.</td></tr>
+      {/loop}
+   </table>
+</div>
+
+{include="mobile/footer"}

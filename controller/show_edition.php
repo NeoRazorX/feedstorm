@@ -26,7 +26,7 @@ class show_edition extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('show_edition', 'noticia...', 'show_edition');
+      parent::__construct('show_edition', 'edición...', 'Edición...', 'show_edition');
    }
    
    protected function process()

@@ -26,7 +26,7 @@ class show_story extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('show_story', 'noticia...', 'show_story');
+      parent::__construct('show_story', 'noticia...', 'Noticia...', 'show_story');
    }
    
    protected function process()

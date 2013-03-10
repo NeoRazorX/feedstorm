@@ -1,0 +1,29 @@
+{include="mobile/header"}
+
+{if condition="$fsc->editions"}
+   <div class="bloque">
+      <div id="stories">
+      {loop="$fsc->editions"}
+         <div class="story" onclick="fs_go2url('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+            <p>{$value->description()}</p>
+            {/if}
+         </div>
+         <a href="{$path}/{$value->url()}"></a>
+      {/loop}
+      </div>
+   </div>
+{else}
+   <div class="info">
+      <h1>No se han encontrado ediciones :(</h1>
+      <p>
+         Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
+         es una mierda.
+      </p>
+   </div>
+{/if}
+
+{include="mobile/footer"}

@@ -50,6 +50,10 @@ class suscription extends fs_model
       {
          $feed = new feed();
          $this->feed = $feed->get($this->feed_id);
+         
+         /// si el feed ya no existe, mejor eliminar
+         if( !$this->feed )
+            $this->delete();
       }
       return $this->feed;
    }

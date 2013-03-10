@@ -24,7 +24,7 @@ class not_found extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!', 'home');
+      parent::__construct('not_found', '404', '¡Página no encontrada en '.FS_NAME.'!', 'home');
    }
    
    protected function process()

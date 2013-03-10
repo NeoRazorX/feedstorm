@@ -26,7 +26,7 @@ class last_editions extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('last_editions', FS_NAME, 'last_editions');
+      parent::__construct('last_editions', 'Ediciones', 'ediciones@'.FS_NAME, 'last_editions');
    }
    
    protected function process()

@@ -74,7 +74,9 @@ class edit_story extends fs_controller
                   $this->story_edition->media_id = $_POST['media_id'];
                
                $this->story_edition->save();
-               $this->new_message('Noticia editada correctamente.');
+               $this->new_message('Noticia editada correctamente. Hac clic <a href="'.
+                  $this->story_edition->url().'">aquí</a> para verla. Recuerda que
+                     aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
             }
             
             $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);

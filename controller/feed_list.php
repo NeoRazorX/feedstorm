@@ -57,7 +57,8 @@ class feed_list extends fs_controller
             $this->feed->url = $_POST['feed_url'];
             if( $this->feed->save() )
             {
-               $this->new_message('Se ha añadido '.$_POST['feed_url'].' como fuente.');
+               $this->new_message('Se ha añadido '.$_POST['feed_url'].' como fuente.
+                  Se examinará en los próximos minutos.');
                
                /// nos suscribimos
                $suscription = new suscription();

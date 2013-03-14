@@ -19,44 +19,57 @@
 
 date_default_timezone_set('Europe/Madrid');
 
-require_once 'config.php';
-require_once 'base/fs_controller.php';
-require_once 'raintpl/rain.tpl.class.php';
-
-/// ¿Qué controlador usar?
-if( isset($_GET['page']) )
+if( file_exists('config.php') )
 {
-   if( file_exists('controller/'.$_GET['page'].'.php') )
+   require_once 'config.php';
+   require_once 'base/fs_controller.php';
+   require_once 'raintpl/rain.tpl.class.php';
+   
+   /// ¿Qué controlador usar?
+   if( isset($_GET['page']) )
    {
-      require_once 'controller/'.$_GET['page'].'.php';
-      $fsc = new $_GET['page']();
+      if( file_exists('controller/'.$_GET['page'].'.php') )
+      {
+         require_once 'controller/'.$_GET['page'].'.php';
+         $fsc = new $_GET['page']();
+      }
+      else
+      {
+         require_once 'controller/not_found.php';
+         $fsc = new not_found();
+      }
    }
    else
    {
-      require_once 'controller/not_found.php';
-      $fsc = new not_found();
+      require_once 'controller/home.php';
+      $fsc = new home();
+   }
+   
+   if( $fsc->template )
+   {
+      /// configuramos rain.tpl
+      raintpl::configure("base_url", null );
+      raintpl::configure("tpl_dir", "view/" );
+      
+      /// ¿Se puede escribir sobre la carpeta temporal?
+      if( file_exists('tmp/test') )
+         raintpl::configure('cache_dir', 'tmp/');
+      else if( mkdir('tmp/test') )
+         raintpl::configure('cache_dir', 'tmp/');
+      else
+         die('No se puede escribir sobre la carpeta temporal (la carpeta tmp de FeedStorm).');
+      
+      raintpl::configure("path_replace", FALSE);
+      $tpl = new RainTPL();
+      $tpl->assign('name', FS_NAME);
+      $tpl->assign('description', FS_DESCRIPTION);
+      $tpl->assign('path', FS_PATH);
+      $tpl->assign('analytics', FS_ANALYTICS);
+      $tpl->assign('fsc', $fsc);
+      $tpl->draw( $fsc->template );
    }
 }
 else
-{
-   require_once 'controller/home.php';
-   $fsc = new home();
-}
-
-if( $fsc->template )
-{
-   /// configuramos rain.tpl
-   raintpl::configure("base_url", null );
-   raintpl::configure("tpl_dir", "view/" );
-   raintpl::configure("cache_dir", "tmp/" );
-   raintpl::configure("path_replace", FALSE);
-   $tpl = new RainTPL();
-   $tpl->assign('name', FS_NAME);
-   $tpl->assign('description', FS_DESCRIPTION);
-   $tpl->assign('path', FS_PATH);
-   $tpl->assign('analytics', FS_ANALYTICS);
-   $tpl->assign('fsc', $fsc);
-   $tpl->draw( $fsc->template );
-}
+   echo "Tienes que modificar el archivo config.php a partir del config-sample.php";
 
 ?>

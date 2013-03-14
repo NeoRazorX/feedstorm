@@ -18,15 +18,6 @@ define('FS_PATH', '');
 define('FS_ANALYTICS', '');
 
 /*
- * Configuración de Memcached.
- * El FS_CACHE_PREFIX es por si tienes varias webs usando el mismo servidor Memcached.
- * Asigna un prefijo distinto a cada una y evita problemas.
- */
-define('FS_CACHE_HOST', 'localhost');
-define('FS_CACHE_PORT', 11211);
-define('FS_CACHE_PREFIX', '');
-
-/*
  * Configuración de MongoDB
  */
 define('FS_MONGO_HOST', 'localhost');

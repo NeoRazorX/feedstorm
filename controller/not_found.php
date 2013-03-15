@@ -17,9 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/story.php';
+
 class not_found extends fs_controller
 {
    public $popular;
+   public $show_info;
    public $stories;
    
    public function __construct()
@@ -31,8 +34,15 @@ class not_found extends fs_controller
    {
       $this->new_error_msg('¡Página no encontrada!');
       
-      $this->popular = array();
-      $this->stories = $story->random_stories();
+      $this->show_info = FALSE;
+      $this->stories = $this->visitor->last_stories();
+      if( count($this->stories) == 0 )
+      {
+         $story = new story();
+         $this->popular = $story->popular_stories();
+      }
+      else
+         $this->popular = array();
    }
 }
 

@@ -70,6 +70,11 @@ class feed extends fs_model
          return 'index.php?page=explore_feed&id='.$this->id;
    }
    
+   public function show_url()
+   {
+      return $this->true_word_break($this->url);
+   }
+   
    public function last_check_date()
    {
       if( is_null($this->last_check_date) )

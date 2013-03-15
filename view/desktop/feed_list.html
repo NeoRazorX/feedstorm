@@ -42,7 +42,7 @@
       {loop="$fsc->feed_list"}
       <tr>
          <td><a href="{$value->url()}">{$value->name}</a></td>
-         <td>{$value->url}</td>
+         <td>{$value->show_url()}</td>
          <td>{$value->last_check_timesince()}</td>
          <td>{$value->last_update_timesince()}</td>
          <td align="right">{$value->suscriptors}</td>

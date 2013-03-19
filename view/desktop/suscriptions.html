@@ -1,7 +1,8 @@
 {include="desktop/header"}
 
 {if condition="$fsc->suscriptions"}
-<div class="bloque">
+<div class="info">
+   <h1>Estas son tus suscripciones:</h1>
    <table class="lista">
       <tr>
          <th align="left">Nombre + descripción</th>
@@ -26,5 +27,17 @@
    </p>
 </div>
 {/if}
+
+<div class="bloque">
+   <div class="title">Estadísticas:</div>
+   <ul class="horizontal">
+      <li>Usuarios: {$fsc->visitor->show_count()}</li>
+      <li>Fuentes: {$fsc->feed->show_count()}</li>
+      <li>Suscripciones: {$fsc->suscription->show_count()}</li>
+      <li>Historias: {$fsc->story->show_count()}</li>
+      <li>Ediciones: {$fsc->story_edition->show_count()}</li>
+      <li>Elementos multimedia: {$fsc->media_item->show_count()}</li>
+   </ul>
+</div>
 
 {include="desktop/footer"}

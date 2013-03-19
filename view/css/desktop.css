@@ -379,3 +379,15 @@ input.full, textarea {
    -moz-box-sizing: border-box;
    -ms-box-sizing: border-box;
 }
+
+ul.horizontal {
+   margin: 5px;
+   padding: 5px;
+   list-style-type: none;
+}
+
+ul.horizontal li {
+   display: inline-block;
+   padding: 2px;
+   min-width: 225px;
+}

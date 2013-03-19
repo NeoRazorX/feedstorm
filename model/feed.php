@@ -129,7 +129,7 @@ class feed extends fs_model
       try
       {
          $ch = curl_init( $this->url );
-         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
          curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
          curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
          curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');

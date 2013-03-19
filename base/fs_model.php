@@ -227,6 +227,16 @@ abstract class fs_model
    abstract public function save();
    abstract public function delete();
    abstract public function all();
+   
+   public function count()
+   {
+      return $this->collection->count();
+   }
+   
+   public function show_count()
+   {
+      return number_format($this->count(), 0, ',', '.');
+   }
 }
 
 ?>

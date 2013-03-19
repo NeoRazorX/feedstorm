@@ -1,5 +1,6 @@
 function fs_close_popups()
 {
+   $("#popup2url").html('');
    $('div.popup').each(function() {
       $(this).hide();
    });

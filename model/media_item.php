@@ -177,7 +177,7 @@ class media_item extends fs_model
       {
          /// buscamos más imágenes en el link, después descartamos
          $ch0 = curl_init( $link );
-         curl_setopt($ch0, CURLOPT_TIMEOUT, 30);
+         curl_setopt($ch0, CURLOPT_TIMEOUT, 15);
          curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
          curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
          curl_setopt($ch0, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
@@ -331,7 +331,59 @@ class media_item extends fs_model
             $fp = fopen('tmp/images/'.$this->filename, 'wb');
             curl_setopt($ch1, CURLOPT_FILE, $fp);
             curl_setopt($ch1, CURLOPT_HEADER, 0);
-            curl_setopt($ch1, CURLOPT_TIMEOUT, 30);
+            curl_setopt($ch1, CURLOPT_TIMEOUT, 15);
+            curl_exec($ch1);
+            curl_close($ch1);
+            fclose($fp);
+            
+            if( file_exists('tmp/images/'.$this->filename) )
+            {
+               $image = new my_image();
+               $image->load('tmp/images/'.$this->filename);
+               $this->original_width = $image->getWidth();
+               $this->original_height = $image->getHeight();
+               
+               if($image->getWidth() > 100 AND $image->getHeight() > 80)
+               {
+                  if($image->getWidth() > 225)
+                  {
+                     $image->resizeToWidth(225);
+                     $image->save();
+                  }
+                  $this->height = $image->getHeight();
+                  $this->width = $image->getWidth();
+                  $status = TRUE;
+               }
+               else
+                  unlink('tmp/images/'.$this->filename);
+            }
+            else
+               $this->new_error('No se encuentra el archivo después de descargar '.$this->url);
+         }
+         catch(Exception $e)
+         {
+            $this->new_error('Error al descargar '.$this->url.' : '.$e);
+         }
+      }
+      else
+         $this->new_error('Tipo desconocido.');
+      return $status;
+   }
+   
+   public function redownload()
+   {
+      if($this->type == 'image' AND !file_exists('tmp/images/'.$this->filename) )
+      {
+         try
+         {
+            if( !file_exists('tmp/images') )
+               mkdir('tmp/images');
+            
+            $ch1 = curl_init( $this->url );
+            $fp = fopen('tmp/images/'.$this->filename, 'wb');
+            curl_setopt($ch1, CURLOPT_FILE, $fp);
+            curl_setopt($ch1, CURLOPT_HEADER, 0);
+            curl_setopt($ch1, CURLOPT_TIMEOUT, 15);
             curl_exec($ch1);
             curl_close($ch1);
             fclose($fp);
@@ -351,22 +403,19 @@ class media_item extends fs_model
                   }
                   $this->height = $image->getHeight();
                   $this->width = $image->getWidth();
-                  $status = TRUE;
                }
-               else if( file_exists('tmp/images/'.$this->filename) )
-                  unlink('tmp/images/'.$this->filename);
+               else
+                  $this->delete();
             }
             else
-               $this->new_error('No se encuentra el archivo después de descargar '.$this->url);
+               $this->delete();
          }
          catch(Exception $e)
          {
             $this->new_error('Error al descargar '.$this->url.' : '.$e);
+            $this->delete();
          }
       }
-      else
-         $this->new_error('Tipo desconocido.');
-      return $status;
    }
    
    public function get($id)
@@ -428,6 +477,9 @@ class media_item extends fs_model
    
    public function delete()
    {
+      if( file_exists('tmp/images/'.$this->filename) )
+         unlink('tmp/images/'.$this->filename);
+      
       $this->collection->remove( array('_id' => $this->id) );
    }
    

@@ -60,6 +60,11 @@ class media_item extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex('url');
+   }
+   
    public function show_image()
    {
       if($this->type == 'image')

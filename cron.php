@@ -53,6 +53,8 @@ $story = new story();
 $story->install_indexes();
 $story_edition = new story_edition();
 $story_edition->install_indexes();
+$media_item = new media_item();
+$media_item->install_indexes();
 
 echo "\nProcesamos las fuentes:";
 $feed = new feed();
@@ -83,13 +85,11 @@ foreach($story->popular_stories() as $s)
 {
    if( is_null($s->media_id) )
    {
-      /*
-      if( count( $s->media_items() ) == 0 )
+      if( count( $s->media_items() ) == 0 AND rand(0, 3) == 0 )
       {
          /// buscamos más fotos para la noticia
          $width = 0;
          $height = 0;
-         $media_item = new media_item();
          foreach($media_item->find_media(FALSE, $s->link) as $mi)
          {
             $story_media = new story_media();
@@ -117,8 +117,6 @@ foreach($story->popular_stories() as $s)
             }
          }
       }
-       * 
-       */
    }
    else
    {

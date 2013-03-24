@@ -82,6 +82,11 @@ abstract class fs_model
       self::$messages = array();
    }
    
+   protected function add2history($comm)
+   {
+      self::$mongo->add2history($comm);
+   }
+   
    /// functión auxiliar para facilitar el uso de fechas
    public function time2timesince($v)
    {
@@ -230,6 +235,7 @@ abstract class fs_model
    
    public function count()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       return $this->collection->count();
    }
    

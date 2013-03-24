@@ -21,6 +21,7 @@ class fs_mongo
 {
    private static $link;
    private static $db;
+   private static $history;
    
    public function __construct()
    {
@@ -28,23 +29,36 @@ class fs_mongo
       {
          self::$link = new Mongo( FS_MONGO_HOST );
          self::$db = self::$link->selectDB( FS_MONGO_DBNAME );
+         self::$history = array();
       }
    }
    
    public function close()
    {
-      if( isset(self::$link) )
-      {
+      if(self::$link)
          self::$link->close();
-      }
    }
    
    public function select_collection($cname)
    {
-      if( isset(self::$link) )
+      if(self::$link)
          return self::$db->selectCollection($cname);
       else
          return FALSE;
+   }
+   
+   public function get_history()
+   {
+      if(self::$link)
+         return self::$history;
+      else
+         return array();
+   }
+   
+   public function add2history($comm)
+   {
+      if(self::$link)
+         self::$history[] = $comm;
    }
 }
 

@@ -23,11 +23,36 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 require_once 'config.php';
 require_once 'base/fs_mongo.php';
 require_once 'model/feed.php';
+require_once 'model/feed_story.php';
 require_once 'model/media_item.php';
 require_once 'model/story.php';
+require_once 'model/story_edition.php';
 require_once 'model/story_media.php';
+require_once 'model/visitor.php';
+
+$DIR = 'tmp/images/';
+if( file_exists($DIR) )
+{
+   echo "\nEliminamos imágenes antiguas...\n";
+   foreach(scandir($DIR) as $file)
+   {
+      if( filemtime($DIR.$file) <= time()-60*60*24*60 )
+      {
+         unlink($DIR.$file);
+         echo '-';
+      }
+   }
+}
 
 $mongo = new fs_mongo();
+
+echo "\nComprobamos los índices...";
+$feed_story = new feed_story();
+$feed_story->install_indexes();
+$story = new story();
+$story->install_indexes();
+$story_edition = new story_edition();
+$story_edition->install_indexes();
 
 echo "\nProcesamos las fuentes:";
 $feed = new feed();
@@ -38,7 +63,7 @@ foreach($feed->all() as $f)
       $f->delete();
       echo "\n * Eliminada la fuente ".$f->name.".\n";
    }
-   else
+   else if( $f->last_check_date < time() - 4000 )
    {
       echo "\n * Procesando ".$f->name."...\n";
       $f->read();
@@ -54,11 +79,11 @@ foreach($feed->all() as $f)
 }
 
 echo "\nActualizamos las noticias populares...\n";
-$story = new story();
 foreach($story->popular_stories() as $s)
 {
    if( is_null($s->media_id) )
    {
+      /*
       if( count( $s->media_items() ) == 0 )
       {
          /// buscamos más fotos para la noticia
@@ -78,10 +103,9 @@ foreach($story->popular_stories() as $s)
                   $story_media->media_id = $mi->get_id();
                   $story_media->save();
                   
+                  $ratio = 0;
                   if($mi->width > 0 AND $mi->height > 0)
                      $ratio = $mi->width / $mi->height;
-                  else
-                     $ratio = 0;
                   
                   if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
                   {
@@ -93,6 +117,8 @@ foreach($story->popular_stories() as $s)
             }
          }
       }
+       * 
+       */
    }
    else
    {
@@ -114,6 +140,11 @@ foreach($story->popular_stories() as $s)
    
    $s->save();
 }
+
+echo "\nEliminamos usuarios inactivos...\n";
+$visitor = new visitor();
+foreach($visitor->inactive_users() as $v)
+   $v->delete();
 
 $mongo->close();
 

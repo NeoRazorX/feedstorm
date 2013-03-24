@@ -40,22 +40,27 @@ class discover_stories extends fs_controller
       else
          $this->show_info = !isset($_COOKIE['discover_info']);
       
-      if( rand(0, 1) == 0 )
+      $this->stories = array();
+      
+      if( rand(0, 2) == 0 )
       {
          $feed = new feed();
          $rfeed = $feed->random();
          if($rfeed)
             $this->stories = $rfeed->stories();
-         else
-         {
-            $story = new story();
-            $this->stories = $story->random_stories();
-         }
       }
-      else
+      
+      if( count($this->stories) < FS_MAX_STORIES )
       {
          $story = new story();
-         $this->stories = $story->random_stories();
+         $more_stories = $story->random_stories();
+         
+         $i = 0;
+         while( $i < count($more_stories) AND count($this->stories) < FS_MAX_STORIES )
+         {
+            $this->stories[] = $more_stories[$i];
+            $i++;
+         }
       }
    }
 }

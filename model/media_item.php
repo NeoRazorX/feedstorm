@@ -84,10 +84,9 @@ class media_item extends fs_model
    
    private function mobile()
    {
+      $user_agent = 'unknown';
       if( isset($_SERVER['HTTP_USER_AGENT']) )
          $user_agent = $_SERVER['HTTP_USER_AGENT'];
-      else
-         $user_agent = 'unknown';
       
       return (strstr(strtolower($user_agent), 'mobile') || strstr(strtolower($user_agent), 'android'));
    }
@@ -420,6 +419,7 @@ class media_item extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new media_item($data);
@@ -429,6 +429,7 @@ class media_item extends fs_model
    
    public function get_by_url($url)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('url' => $url) );
       if($data)
          return new media_item($data);
@@ -442,6 +443,7 @@ class media_item extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => new MongoId($this->id)) );
          if($data)
             return TRUE;
@@ -465,11 +467,13 @@ class media_item extends fs_model
       
       if( $this->exists() )
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
          $filter = array('_id' => $this->id);
          $this->collection->update($filter, $data);
       }
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -480,11 +484,13 @@ class media_item extends fs_model
       if( file_exists('tmp/images/'.$this->filename) )
          unlink('tmp/images/'.$this->filename);
       
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $mlist = array();
       foreach($this->collection->find() as $i)
          $mlist[] = new media_item($i);

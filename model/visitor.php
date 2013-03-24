@@ -28,6 +28,7 @@ class visitor extends fs_model
    public $last_login_date;
    
    public $noob;
+   public $need_save;
    private $suscriptions;
    
    public function __construct($k=FALSE)
@@ -40,6 +41,7 @@ class visitor extends fs_model
          $this->user_agent = $k['user_agent'];
          $this->last_login_date = $k['last_login_date'];
          $this->noob = FALSE;
+         $this->need_save = FALSE;
       }
       else
       {
@@ -47,6 +49,7 @@ class visitor extends fs_model
          $this->nick = $this->random_string(15);
          $this->login();
          $this->noob = TRUE;
+         $this->need_save = TRUE;
       }
    }
    
@@ -67,7 +70,14 @@ class visitor extends fs_model
    
    public function human()
    {
-      return !(strstr(strtolower($this->user_agent), 'bot') OR strstr(strtolower($this->user_agent), 'spider'));
+      if( strstr(strtolower($this->user_agent), 'bot') )
+         return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'spider') )
+         return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'wget') )
+         return FALSE;
+      else
+         return TRUE;
    }
    
    public function login()
@@ -77,7 +87,11 @@ class visitor extends fs_model
       else
          $this->user_agent = 'unknown';
       
-      $this->last_login_date = time();
+      if( time() > $this->last_login_date + 300 )
+      {
+         $this->last_login_date = time();
+         $this->need_save = TRUE;
+      }
    }
    
    public function suscriptions()
@@ -104,6 +118,7 @@ class visitor extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new visitor($data);
@@ -117,6 +132,7 @@ class visitor extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => $this->id) );
          if($data)
             return TRUE;
@@ -127,33 +143,49 @@ class visitor extends fs_model
    
    public function save()
    {
-      $data = array(
-          'nick' => $this->nick,
-          'user_agent' => $this->user_agent,
-          'last_login_date' => $this->last_login_date
-      );
-      
-      if( $this->exists() )
+      if( $this->need_save AND $this->human() )
       {
-         $filter = array('_id' => $this->id);
-         $this->collection->update($filter, $data);
-      }
-      else
-      {
-         $this->collection->insert($data);
-         $this->id = $data['_id'];
+         $data = array(
+             'nick' => $this->nick,
+             'user_agent' => $this->user_agent,
+             'last_login_date' => $this->last_login_date
+         );
+         
+         if( $this->exists() )
+         {
+            $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
+            $filter = array('_id' => $this->id);
+            $this->collection->update($filter, $data);
+         }
+         else
+         {
+            $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
+            $this->collection->insert($data);
+            $this->id = $data['_id'];
+         }
       }
    }
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
       foreach($this->collection->find() as $v)
+         $vlist[] = new visitor($v);
+      return $vlist;
+   }
+   
+   public function inactive_users()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $vlist = array();
+      foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-2592000)))->limit(FS_MAX_STORIES) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
    }

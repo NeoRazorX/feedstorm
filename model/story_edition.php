@@ -85,6 +85,11 @@ class story_edition extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex( array('date' => -1) );
+   }
+   
    public function show_date()
    {
       return Date('Y-m-d H:m', $this->date);
@@ -136,6 +141,7 @@ class story_edition extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new story_edition($data);
@@ -145,6 +151,7 @@ class story_edition extends fs_model
    
    public function get_by_params($sid, $vid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone(
          array('story_id' => $this->var2str($sid), 'visitor_id' => $this->var2str($vid))
       );
@@ -160,6 +167,7 @@ class story_edition extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => $this->id) );
          if($data)
             return TRUE;
@@ -189,11 +197,13 @@ class story_edition extends fs_model
       
       if( $this->exists() )
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
          $filter = array('_id' => $this->id);
          $this->collection->update($filter, $data);
       }
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -201,11 +211,13 @@ class story_edition extends fs_model
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $selist = array();
       foreach($this->collection->find() as $se)
          $selist[] = new story_edition($se);
@@ -214,6 +226,7 @@ class story_edition extends fs_model
    
    public function all4story($sid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $selist = array();
       foreach($this->collection->find(array('story_id'=> $this->var2str($sid)))->sort(array('date'=>-1)) as $se)
          $selist[] = new story_edition($se);
@@ -222,6 +235,7 @@ class story_edition extends fs_model
    
    public function last_editions()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       $num = 0;
       foreach($this->collection->find()->sort(array('date'=>-1)) as $se)

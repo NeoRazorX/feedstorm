@@ -146,25 +146,58 @@ class feed extends fs_model
             $xml->saveXML("tmp/".$this->get_id().".xml");
             
             /// intentamos leer las noticias
+            $i = 0;
             if( $xml->channel->item )
             {
                foreach($xml->channel->item as $item)
-                  $this->new_story($item);
+               {
+                  if($i < FS_MAX_STORIES)
+                  {
+                     $this->new_story($item);
+                     $i++;
+                  }
+                  else
+                     break;
+               }
             }
             else if( $xml->item )
             {
                foreach($xml->item as $item)
-                  $this->new_story($item);
+               {
+                  if($i < FS_MAX_STORIES)
+                  {
+                     $this->new_story($item);
+                     $i++;
+                  }
+                  else
+                     break;
+               }
             }
             else if( $xml->feed->entry )
             {
                foreach($xml->feed->entry as $item)
-                  $this->new_story($item);
+               {
+                  if($i < FS_MAX_STORIES)
+                  {
+                     $this->new_story($item);
+                     $i++;
+                  }
+                  else
+                     break;
+               }
             }
             else if( $xml->entry )
             {
                foreach($xml->entry as $item)
-                  $this->new_story($item);
+               {
+                  if($i < FS_MAX_STORIES)
+                  {
+                     $this->new_story($item);
+                     $i++;
+                  }
+                  else
+                     break;
+               }
             }
             else
                $this->new_error("Estructura irreconocible en el feed: ".$this->name);
@@ -191,24 +224,23 @@ class feed extends fs_model
                   break;
                }
             }
-            /// guardamos los cambios en el feed
-            $this->last_check_date = time();
+            
             $this->strikes = 0;
-            $this->save();
          }
          else
          {
             $this->new_error("Imposible leer el feed: ".$this->name);
             $this->strikes++;
-            $this->save();
          }
       }
       catch(Exception $e)
       {
-         $this->new_error("Error al leer el feed: ".$this->name);
+         $this->new_error("Error al leer el feed: ".$this->name.'. '.$e);
          $this->strikes++;
-         $this->save();
       }
+      
+      $this->last_check_date = time();
+      $this->save();
    }
    
    private function new_story($item)
@@ -343,10 +375,9 @@ class feed extends fs_model
                   $story_media->media_id = $mi->get_id();
                   $story_media->save();
                   
+                  $ratio = 0;
                   if($mi->width > 0 AND $mi->height > 0)
                      $ratio = $mi->width / $mi->height;
-                  else
-                     $ratio = 0;
                   
                   if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
                   {
@@ -363,6 +394,7 @@ class feed extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new feed($data);
@@ -372,6 +404,7 @@ class feed extends fs_model
    
    public function get_by_url($url)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('url' => $this->var2str($url) ) );
       if($data)
          return new feed($data);
@@ -385,6 +418,7 @@ class feed extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => $this->id) );
          if($data)
             return TRUE;
@@ -425,11 +459,13 @@ class feed extends fs_model
          
          if( $this->exists() )
          {
+            $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
             $filter = array('_id' => $this->id);
             $this->collection->update($filter, $data);
          }
          else
          {
+            $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
             $this->collection->insert($data);
             $this->id = $data['_id'];
          }
@@ -441,6 +477,7 @@ class feed extends fs_model
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
       
       $suscription = new suscription();
@@ -454,6 +491,7 @@ class feed extends fs_model
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $feeds = array();
       foreach($this->collection->find() as $f)
          $feeds[] = new feed($f);

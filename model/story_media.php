@@ -50,6 +50,7 @@ class story_media extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new story_media($data);
@@ -63,6 +64,7 @@ class story_media extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => new MongoId($this->id)) );
          if($data)
             return TRUE;
@@ -83,11 +85,13 @@ class story_media extends fs_model
       
       if( $this->exists() )
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
          $filter = array('_id' => $this->id);
          $this->collection->update($filter, $data);
       }
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -95,11 +99,13 @@ class story_media extends fs_model
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $ilist = array();
       foreach($this->collection->find() as $i)
          $ilist[] = new story_media($i);
@@ -108,6 +114,7 @@ class story_media extends fs_model
    
    public function all4story($sid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $ilist = array();
       foreach($this->collection->find( array('story_id' => $this->var2str($sid)) ) as $i)
          $ilist[] = new story_media($i);
@@ -116,6 +123,7 @@ class story_media extends fs_model
    
    public function all4media($mid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $ilist = array();
       foreach($this->collection->find( array('media_id' => $this->var2str($mid)) ) as $i)
          $ilist[] = new story_media($i);

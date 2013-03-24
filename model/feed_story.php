@@ -55,6 +55,11 @@ class feed_story extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex( array('date' => -1) );
+   }
+   
    public function show_date()
    {
       return Date('Y-m-d H:m', $this->date);
@@ -80,18 +85,23 @@ class feed_story extends fs_model
    {
       if( !isset($this->story) )
       {
-         $this->story = new story();
-         $this->story = $this->story->get($this->story_id);
+         $story = new story();
+         $this->story = $story->get($this->story_id);
       }
       return $this->story;
+   }
+   
+   public function set_story($s)
+   {
+      $this->story = $s;
    }
    
    public function feed()
    {
       if( !isset($this->feed) )
       {
-         $this->feed = new feed();
-         $this->feed = $this->feed->get($this->feed_id);
+         $feed = new feed();
+         $this->feed = $feed->get($this->feed_id);
       }
       return $this->feed;
    }
@@ -116,6 +126,7 @@ class feed_story extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new feed($data);
@@ -129,6 +140,7 @@ class feed_story extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => $this->id) );
          if($data)
             return TRUE;
@@ -153,11 +165,13 @@ class feed_story extends fs_model
       
       if( $this->exists() )
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
          $filter = array('_id' => $this->id);
          $this->collection->update($filter, $data);
       }
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -165,11 +179,13 @@ class feed_story extends fs_model
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $fslist = array();
       foreach($this->collection->find()->sort(array('date'=>-1)) as $fs)
          $fslist[] = new feed_story($fs);
@@ -178,6 +194,7 @@ class feed_story extends fs_model
    
    public function all4feed($fid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $fslist = array();
       foreach($this->collection->find( array('feed_id' => $this->var2str($fid)) )->sort(array('date'=>-1)) as $fs)
          $fslist[] = new feed_story($fs);
@@ -186,6 +203,7 @@ class feed_story extends fs_model
    
    public function all4story($sid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $fslist = array();
       foreach($this->collection->find( array('story_id' => $this->var2str($sid)) )->sort(array('date'=>-1)) as $fs)
          $fslist[] = new feed_story($fs);
@@ -194,6 +212,7 @@ class feed_story extends fs_model
    
    public function last4feed($fid)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $fslist = array();
       foreach($this->collection->find( array('feed_id' => $this->var2str($fid)) )->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $fs)
          $fslist[] = new feed_story($fs);
@@ -202,17 +221,13 @@ class feed_story extends fs_model
    
    public function last4feeds($fids)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $fslist = array();
-      if( count($fids) > 0 )
+      $ssids = array();
+      if($fids)
       {
-         if( count($fids) == 1 )
-            $filter = array('feed_id' => $this->var2str($fids[0]) );
-         else
-         {
-            $filter = array('$or' => array());
-            foreach($fids as $fid)
-               $filter['$or'][] = array('feed_id' => $this->var2str($fid) );
-         }
+         /// obtenemos los feed_stories
+         $filter = array('feed_id' => array('$in' => $fids));
          foreach($this->collection->find($filter)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $fs)
          {
             $found = FALSE;
@@ -225,7 +240,23 @@ class feed_story extends fs_model
                }
             }
             if( !$found )
+            {
                $fslist[] = new feed_story($fs);
+               $ssids[] = new MongoId($fs['story_id']);
+            }
+         }
+         /// obtenemos las noticias
+         $story = new story();
+         foreach($story->all_from_array($ssids) as $s)
+         {
+            foreach($fslist as $i => $value)
+            {
+               if( $value->story_id == $this->var2str($s->get_id()) )
+               {
+                  $fslist[$i]->set_story($s);
+                  break;
+               }
+            }
          }
       }
       return $fslist;

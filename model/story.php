@@ -70,6 +70,12 @@ class story extends fs_model
       $this->calculate_popularity();
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex( array('popularity' => -1) );
+      $this->collection->ensureIndex( array('date' => -1) );
+   }
+   
    public function url($sitemap=FALSE)
    {
       if( is_null($this->id) )
@@ -183,6 +189,7 @@ class story extends fs_model
    
    public function get($id)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new story($data);
@@ -192,6 +199,7 @@ class story extends fs_model
    
    public function get_by_link($url)
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('link' => $url) );
       if($data)
          return new story($data);
@@ -205,6 +213,7 @@ class story extends fs_model
          return FALSE;
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
          $data = $this->collection->findone( array('_id' => $this->id) );
          if($data)
             return TRUE;
@@ -232,11 +241,13 @@ class story extends fs_model
       
       if( $this->exists() )
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
          $filter = array('_id' => $this->id);
          $this->collection->update($filter, $data);
       }
       else
       {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -244,19 +255,34 @@ class story extends fs_model
    
    public function delete()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
    }
    
    public function all()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       foreach($this->collection->find()->sort(array('date'=>-1)) as $s)
          $stlist[] = new story($s);
       return $stlist;
    }
    
+   public function all_from_array($selection)
+   {
+      $stories = array();
+      if($selection)
+      {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__);
+         foreach($this->collection->find(array('_id'=>array('$in'=>$selection))) as $s)
+            $stories[] = new story($s);
+      }
+      return $stories;
+   }
+   
    public function last_stories()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $s)
          $stlist[] = new story($s);
@@ -265,6 +291,7 @@ class story extends fs_model
    
    public function popular_stories()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       foreach($this->collection->find()->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
          $stlist[] = new story($s);
@@ -273,6 +300,7 @@ class story extends fs_model
    
    public function random_stories()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       $i = 0;
       foreach($this->collection->find()->sort(array('date'=>-1))->limit(3*FS_MAX_STORIES) as $s)

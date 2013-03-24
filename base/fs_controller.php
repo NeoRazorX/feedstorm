@@ -97,6 +97,11 @@ abstract class fs_controller
       return array_merge($this->messages, $this->visitor->get_messages());
    }
    
+   public function get_mongo_history()
+   {
+      return $this->mongo->get_history();
+   }
+   
    public function get_description()
    {
       return FS_DESCRIPTION.' Exploramos la web para mostrarte los temas de actualidad.';

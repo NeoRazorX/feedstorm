@@ -63,6 +63,7 @@ class feed extends fs_model
    public function install_indexes()
    {
       $this->collection->ensureIndex('url');
+      $this->collection->ensureIndex('name');
    }
    
    public function url($sitemap=FALSE)
@@ -498,7 +499,7 @@ class feed extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $feeds = array();
-      foreach($this->collection->find() as $f)
+      foreach($this->collection->find()->sort(array('name'=>1)) as $f)
          $feeds[] = new feed($f);
       return $feeds;
    }

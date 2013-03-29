@@ -53,8 +53,7 @@ else
             if( !$vis0 )
             {
                $vis0 = new visitor();
-               $vis0->set_id( (string)$item->user );
-               $vis0->save();
+               $vis0->force_insert( (string)$item->user );
             }
             
             $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );

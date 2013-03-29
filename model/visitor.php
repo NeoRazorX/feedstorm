@@ -175,6 +175,19 @@ class visitor extends fs_model
       }
    }
    
+   public function force_insert($id)
+   {
+      $this->set_id($id);
+      $data = array(
+          '_id' => $this->id,
+          'nick' => $this->nick,
+          'user_agent' => $this->user_agent,
+          'last_login_date' => $this->last_login_date
+      );
+      $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
+      $this->collection->insert($data);
+   }
+   
    public function delete()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);

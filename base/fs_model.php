@@ -50,7 +50,7 @@ abstract class fs_model
       return $this->id;
    }
    
-   public function set_id($id)
+   protected function set_id($id)
    {
       $this->id = new MongoId($id);
    }

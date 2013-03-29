@@ -59,6 +59,21 @@ class story_visit extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex( array('date' => -1) );
+   }
+   
+   public function timesince()
+   {
+      return $this->time2timesince($this->date);
+   }
+   
+   public function url()
+   {
+      return 'index.php?page=show_story&id='.$this->story_id;
+   }
+   
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
@@ -134,6 +149,25 @@ class story_visit extends fs_model
       foreach($this->collection->find() as $sv)
          $svlist[] = new story_visit($sv);
       return $svlist;
+   }
+   
+   public function last()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $svlist = array();
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $sv)
+         $svlist[] = new story_visit($sv);
+      return $svlist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos visitas antiguas...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
    }
 }
 

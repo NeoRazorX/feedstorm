@@ -57,7 +57,8 @@ class feed_story extends fs_model
    
    public function install_indexes()
    {
-      $this->collection->ensureIndex( array('date' => -1) );
+      $this->collection->ensureIndex( array('feed_id' => 1, 'date' => -1) );
+      $this->collection->ensureIndex( array('story_id' => 1, 'date' => -1) );
    }
    
    public function show_date()
@@ -260,6 +261,16 @@ class feed_story extends fs_model
          }
       }
       return $fslist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos feed_stories antiguos...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
    }
 }
 

@@ -388,6 +388,12 @@ ul.horizontal {
 
 ul.horizontal li {
    display: inline-block;
-   padding: 2px;
-   min-width: 225px;
+   padding: 5px;
+   padding-left: 15px;
+   padding-right: 15px;
+   background-color: #d9edf7;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
 }

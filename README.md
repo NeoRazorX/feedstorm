@@ -2,7 +2,8 @@ __FeedStorm__ es un hibrido entre Google Reader y Pinterest,
 pero anónimo y software libre.
 
 FeedStorm usa RainTPL, MongoDB, php-curl y php-gd.
-Para instalar MongoDB sigue este tutorial:
+Para instalar MongoDB sigue estos tutoriales:
+http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 http://www.php.net/manual/es/mongo.installation.php
 
 Una vez instalado y configurado MongoDB, copia FeedStorm a tu carpeta web,

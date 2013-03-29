@@ -60,6 +60,11 @@ class feed extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex('url');
+   }
+   
    public function url($sitemap=FALSE)
    {
       if( is_null($this->id) )
@@ -517,6 +522,32 @@ class feed extends fs_model
          }
       }
       return $feed;
+   }
+   
+   public function cron_job()
+   {
+      echo "\nProcesamos las fuentes...";
+      foreach($this->all() as $f)
+      {
+         if($f->strikes > 72)
+         {
+            $f->delete();
+            echo "\n * Eliminada la fuente ".$f->name.".\n";
+         }
+         else if( $f->last_check_date < time() - 4000 )
+         {
+            echo "\n * Procesando ".$f->name."...\n";
+            $f->read();
+            
+            foreach($f->get_errors() as $e)
+               echo $e."\n";
+            $f->clean_errors();
+            
+            foreach($f->get_messages() as $m)
+               echo $m."\n";
+            $f->clean_messages();
+         }
+      }
    }
 }
 

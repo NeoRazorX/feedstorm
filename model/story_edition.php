@@ -87,6 +87,7 @@ class story_edition extends fs_model
    
    public function install_indexes()
    {
+      $this->collection->ensureIndex('story_id');
       $this->collection->ensureIndex( array('date' => -1) );
    }
    
@@ -261,6 +262,16 @@ class story_edition extends fs_model
             break;
       }
       return $stlist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos ediciones antiguas...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
    }
 }
 

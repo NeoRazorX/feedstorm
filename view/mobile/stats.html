@@ -1,0 +1,18 @@
+{include="mobile/header"}
+
+<div class="bloque">
+   <div class="title">Estadísticas:</div>
+   <ul>
+      <li>Usuarios: {$fsc->visitor->show_count()}</li>
+      <li>Fuentes: {$fsc->feed->show_count()}</li>
+      <li>Suscripciones: {$fsc->suscription->show_count()}</li>
+      <li>Historias/fuente: {$fsc->feed_story->show_count()}</li>
+      <li>Historias: {$fsc->story->show_count()}</li>
+      <li>Ediciones: {$fsc->story_edition->show_count()}</li>
+      <li>Visitas: {$fsc->story_visit->show_count()}</li>
+      <li>Elementos multimedia/historia: {$fsc->story_media->show_count()}</li>
+      <li>Elementos multimedia: {$fsc->media_item->show_count()}</li>
+   </ul>
+</div>
+
+{include="mobile/footer"}

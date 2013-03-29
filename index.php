@@ -22,6 +22,10 @@ date_default_timezone_set('Europe/Madrid');
 if( file_exists('config.php') )
 {
    require_once 'config.php';
+   
+   if( !defined('FS_MAX_AGE') )
+      define('FS_MAX_AGE', 2592000);
+   
    require_once 'base/fs_controller.php';
    require_once 'raintpl/rain.tpl.class.php';
    

@@ -26,4 +26,14 @@ define('FS_MONGO_DBNAME', '');
 /// Número de historias máximo para cada feed y para la portada.
 define('FS_MAX_STORIES', 50);
 
+/*
+ * Caducidad de los elementos, en segundos.
+ * Se eliminarán:
+ *  - los usuarios que no hayan vuelto en un máximo de FS_MAX_AGE segundos.
+ *  - las historias con una edad superior a FS_MAX_AGE segundos.
+ *  - las ediciones con una edad superior a FS_MAX_AGE segundos.
+ *  - los elementos multimedia con una edad superior a FS_MAX_AGE segundos.
+ */
+define('FS_MAX_AGE', 2592000);
+
 ?>

@@ -17,19 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/feed.php';
-require_once 'model/media_item.php';
-require_once 'model/story.php';
-require_once 'model/story_edition.php';
 require_once 'model/suscription.php';
 
 class suscriptions extends fs_controller
 {
-   public $feed;
-   public $media_item;
-   public $story;
-   public $story_edition;
-   public $suscription;
    public $suscriptions;
    
    public function __construct()
@@ -39,12 +30,6 @@ class suscriptions extends fs_controller
    
    protected function process()
    {
-      $this->feed = new feed();
-      $this->media_item = new media_item();
-      $this->story = new story();
-      $this->story_edition = new story_edition();
-      $this->suscription = new suscription();
-      
       $suscription = new suscription();
       
       if( isset($_GET['suscribe']) AND $this->visitor->human() )

@@ -24,7 +24,7 @@
       <div class="story_info">
          <h1>{$fsc->story->title}</h1>
          {if condition="$fsc->story->media_item"}
-         <div class="media_item">{$fsc->story->media_item->show()}</div>
+         <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
          {/if}
          <p>{$fsc->story->description}</p>
          <table width="100%">

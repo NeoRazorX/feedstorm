@@ -53,6 +53,11 @@ class visitor extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex('last_login_date');
+   }
+   
    public function login_date()
    {
       return Date('Y-m-d H:m', $this->last_login_date);
@@ -170,6 +175,9 @@ class visitor extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
+      
+      foreach($this->suscriptions as $sus)
+         $sus->delete();
    }
    
    public function all()
@@ -181,13 +189,26 @@ class visitor extends fs_model
       return $vlist;
    }
    
-   public function inactive_users()
+   public function last()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
-      foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-2592000)))->limit(FS_MAX_STORIES) as $v)
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos usuarios inactivos...";
+         foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-FS_MAX_AGE)))->limit(FS_MAX_STORIES) as $v)
+         {
+            $visit0 = new visitor($v);
+            $visit0->delete();
+         }
+      }
    }
 }
 

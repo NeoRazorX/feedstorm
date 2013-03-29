@@ -77,6 +77,8 @@ class edit_story extends fs_controller
                $this->new_message('Noticia editada correctamente. Hac clic <a href="'.
                   $this->story_edition->url().'">aquí</a> para verla. Recuerda que
                      aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
+               
+               $this->select_best_image4story();
             }
             
             $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
@@ -113,6 +115,21 @@ class edit_story extends fs_controller
          return $this->story->description();
       else
          return parent::get_description();
+   }
+   
+   private function select_best_image4story()
+   {
+       /// Elegimos la foto de la edición más votada de la noticia
+      $maxvotes = 0;
+      foreach($this->story->editions() as $edi)
+      {
+         if($edi->votes > $maxvotes)
+         {
+            $maxvotes = $edi->votes;
+            $this->story->media_id = $edi->media_id;
+         }
+      }
+      $this->story->save();
    }
 }
 

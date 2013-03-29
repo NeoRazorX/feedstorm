@@ -19,6 +19,7 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/my_image.php';
+require_once 'model/story_media.php';
 
 class media_item extends fs_model
 {
@@ -30,6 +31,7 @@ class media_item extends fs_model
    public $height;
    public $original_height;
    public $thumbnail_url;
+   public $date;
    
    public function __construct($m = FALSE)
    {
@@ -45,6 +47,14 @@ class media_item extends fs_model
          $this->height = $m['height'];
          $this->original_height = $m['original_height'];
          $this->thumbnail_url = $m['thumbnail_url'];
+         
+         if( isset($m['date']) )
+            $this->date = $m['date'];
+         else
+         {
+            $this->date = time();
+            $this->save();
+         }
       }
       else
       {
@@ -57,6 +67,7 @@ class media_item extends fs_model
          $this->height = 0;
          $this->original_height = 0;
          $this->thumbnail_url = NULL;
+         $this->date = time();
       }
    }
    
@@ -96,14 +107,22 @@ class media_item extends fs_model
       return (strstr(strtolower($user_agent), 'mobile') || strstr(strtolower($user_agent), 'android'));
    }
    
-   public function show()
+   public function show($url=FALSE)
    {
       if($this->type == 'image')
       {
          if( file_exists('tmp/images/'.$this->filename) )
          {
-            return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
-                 '" width="'.$this->width.'" height="'.$this->height.'"/>';
+            if($url)
+            {
+               return '<a target="_blank" href="'.$url.'"><img src="'.FS_PATH.'/tmp/images/'.$this->filename.
+                       '" alt="'.$this->filename.'" width="'.$this->width.'" height="'.$this->height.'"/></a>';
+            }
+            else
+            {
+               return '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
+                       '" width="'.$this->width.'" height="'.$this->height.'"/>';
+            }
          }
          else
             return '';
@@ -467,7 +486,8 @@ class media_item extends fs_model
           'original_width' => $this->original_width,
           'height' => $this->height,
           'original_height' => $this->original_height,
-          'thumbnail_url' => $this->thumbnail_url
+          'thumbnail_url' => $this->thumbnail_url,
+          'date' => $this->date
       );
       
       if( $this->exists() )
@@ -491,6 +511,10 @@ class media_item extends fs_model
       
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
+      
+      $story_media = new story_media();
+      foreach($story_media->all4media($this->get_id()) as $sm)
+         $sm->delete();
    }
    
    public function all()
@@ -500,6 +524,30 @@ class media_item extends fs_model
       foreach($this->collection->find() as $i)
          $mlist[] = new media_item($i);
       return $mlist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         $DIR = 'tmp/images/';
+         if( file_exists($DIR) )
+         {
+            echo "\nEliminamos imágenes antiguas... ";
+            foreach(scandir($DIR) as $file)
+            {
+               if( filemtime($DIR.$file) <= time()-FS_MAX_AGE )
+               {
+                  unlink($DIR.$file);
+                  echo '-';
+               }
+            }
+         }
+         
+         echo "\nEliminamos media_items antiguos...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
    }
 }
 

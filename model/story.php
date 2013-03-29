@@ -74,6 +74,7 @@ class story extends fs_model
    {
       $this->collection->ensureIndex( array('popularity' => -1) );
       $this->collection->ensureIndex( array('date' => -1) );
+      $this->collection->ensureIndex('link');
    }
    
    public function url($sitemap=FALSE)
@@ -317,6 +318,28 @@ class story extends fs_model
             break;
       }
       return $stlist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos historias antiguas...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
+      else
+      {
+         echo "\nActualizamos las noticias populares...";
+         foreach($this->popular_stories() as $ps)
+         {
+            /// si la imagen seleccionada no está en tmp, la redescargamos
+            if( $ps->media_item )
+               $ps->media_item->redownload();
+            
+            $ps->save();
+         }
+      }
    }
 }
 

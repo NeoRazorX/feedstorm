@@ -44,6 +44,11 @@ class suscription extends fs_model
       }
    }
    
+   public function install_indexes()
+   {
+      
+   }
+   
    public function feed()
    {
       if( !isset($this->feed) )
@@ -81,6 +86,15 @@ class suscription extends fs_model
       $f = $this->feed();
       if($f)
          return $f->url();
+      else
+         return '#';
+   }
+   
+   public function feed_url()
+   {
+      $f = $this->feed();
+      if($f)
+         return $f->url;
       else
          return '#';
    }
@@ -191,6 +205,11 @@ class suscription extends fs_model
       foreach($this->collection->find( array('feed_id' => $this->var2str($fid)) ) as $s)
          $suslist[] = new suscription($s);
       return $suslist;
+   }
+   
+   public function cron_job()
+   {
+      
    }
 }
 

@@ -24,6 +24,7 @@ class story_media extends fs_model
 {
    public $story_id;
    public $media_id;
+   public $date;
    
    public function __construct($i = FALSE)
    {
@@ -33,13 +34,27 @@ class story_media extends fs_model
          $this->id = $i['_id'];
          $this->story_id = $i['story_id'];
          $this->media_id = $i['media_id'];
+         
+         if( isset($i['date']) )
+            $this->date = $i['date'];
+         else
+         {
+            $this->date = time();
+            $this->save();
+         }
       }
       else
       {
          $this->id = NULL;
          $this->story_id = NULL;
          $this->media_id = NULL;
+         $this->date = time();
       }
+   }
+   
+   public function install_indexes()
+   {
+      $this->collection->ensureIndex('story_id');
    }
    
    public function media_item()
@@ -80,7 +95,8 @@ class story_media extends fs_model
       
       $data = array(
           'story_id' => $this->story_id,
-          'media_id' => $this->media_id
+          'media_id' => $this->media_id,
+          'date' => $this->date
       );
       
       if( $this->exists() )
@@ -128,6 +144,16 @@ class story_media extends fs_model
       foreach($this->collection->find( array('media_id' => $this->var2str($mid)) ) as $i)
          $ilist[] = new story_media($i);
       return $ilist;
+   }
+   
+   public function cron_job()
+   {
+      if( rand(0, 9) == 0 )
+      {
+         echo "\nEliminamos stori_medias antiguas...";
+         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+      }
    }
 }
 

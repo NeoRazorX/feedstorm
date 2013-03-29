@@ -50,6 +50,11 @@ abstract class fs_model
       return $this->id;
    }
    
+   public function set_id($id)
+   {
+      $this->id = MongoId($id);
+   }
+   
    protected function new_error($msg=FALSE)
    {
       if($msg)
@@ -232,7 +237,9 @@ abstract class fs_model
    abstract public function save();
    abstract public function delete();
    abstract public function all();
-   
+   abstract public function install_indexes();
+   abstract public function cron_job();
+
    public function count()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);

@@ -81,6 +81,10 @@ class visitor extends fs_model
          return FALSE;
       else if( strstr(strtolower($this->user_agent), 'wget') )
          return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'curl') )
+         return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'sistrix') )
+         return FALSE;
       else
          return TRUE;
    }
@@ -193,7 +197,7 @@ class visitor extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $v)
+      foreach($this->collection->find()->sort(array('last_login_date'=>-1))->limit(FS_MAX_STORIES) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
    }

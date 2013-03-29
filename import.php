@@ -39,31 +39,47 @@ else
 {
    $mongo = new fs_mongo();
    
-   libxml_use_internal_errors(TRUE);
    $xml = simplexml_load_file($_SERVER["argv"][1]);
    if($xml)
    {
-      if( $xml->suscriptions )
+      if( $xml->item )
       {
-         foreach($xml->suscriptions as $sus)
+         $visitor = new visitor();
+         $feed = new feed();
+         
+         foreach($xml->item as $item)
          {
-            $visitor = new visitor();
-            $visitor->set_id( (string)$sus->user );
-            $visitor->save();
+            $vis0 = $visitor->get( (string)$item->user );
+            if( !$vis0 )
+            {
+               $vis0 = new visitor();
+               $vis0->set_id( (string)$item->user );
+               $vis0->save();
+            }
             
-            $feed = new feed();
-            $feed->url = base64_decode( (string)$sus->feed );
-            $feed->save();
+            $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
+            if( !$f0 )
+            {
+               $f0 = new feed();
+               $f0->url = base64_decode( (string)$item->feed );
+               $f0->save();
+            }
             
             $suscription = new suscription();
-            $suscription->visitor_id = $visitor->get_id();
-            $suscription->feed_id = $feed->get_id();
+            $suscription->visitor_id = $vis0->get_id();
+            $suscription->feed_id = $f0->get_id();
             $suscription->save();
          }
       }
+      else
+         echo "Estructura irreconocible.\n";
    }
+   else
+      echo "Error al leer el archivo.\n";
    
    $mongo->close();
+   
+   echo "Importación finalizada.\n";
 }
 
 ?>

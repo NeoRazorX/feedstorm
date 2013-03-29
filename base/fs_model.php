@@ -52,7 +52,7 @@ abstract class fs_model
    
    public function set_id($id)
    {
-      $this->id = MongoId($id);
+      $this->id = new MongoId($id);
    }
    
    protected function new_error($msg=FALSE)

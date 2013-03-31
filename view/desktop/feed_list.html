@@ -1,32 +1,42 @@
 {include="desktop/header"}
 
 <div class="info">
-   <h1>¿Qué hago yo aquí?</h1>
-   <p>
-      Aquí tienes la lista de fuentes de <b>{$name}</b>.
-      Si no encuentras lo que buscas, puedes añadir una fuente
-      desde este formulario:
-   </p>
-   <form class="form-inline" action="{$fsc->url()}" method="post">
-      <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="50"/>
-      <button type="submit" class="btn btn-primary">Añadir fuente</button>
-   </form>
-   <ul>
-      <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>
-      <li>
-         La mayoría de las fuentes dicen que cumplen los estandares RSS o ATOM,
-         pero es mentira.
-      </li>
-      <li>
-         No te preocupes, esta web saca noticias de cualquier
-         fuente, por muy mentirosa que sea.
-      </li>
-      <li>
-         Si no sabes de qué estoy hablando, simplemente elige una fuente de abajo,
-         haces clic y ves las noticias que tiene. Si te gusta, pulsas el botón
-         suscribir.
-      </li>
-   </ul>
+   <table width="100%">
+      <tr>
+         <td>
+            <h1>¿Qué hago yo aquí?</h1>
+            <p>
+               Aquí tienes la lista de fuentes de <b>{$name}</b>.
+               Si no encuentras lo que buscas, puedes añadir una fuente
+               desde este formulario:
+            </p>
+            <form action="{$fsc->url()}" method="post">
+               <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="50"/>
+               <input type="submit" value="Añadir fuente"/>
+            </form>
+            <ul>
+               <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>
+               <li>
+                  La mayoría de las fuentes dicen que cumplen los estandares RSS o ATOM,
+                  pero es mentira.
+               </li>
+               <li>
+                  No te preocupes, esta web saca noticias de cualquier
+                  fuente, por muy mentirosa que sea.
+               </li>
+               <li>
+                  Si no sabes de qué estoy hablando, simplemente elige una fuente de abajo,
+                  haces clic y ves las noticias que tiene. Si te gusta, pulsas el botón
+                  suscribir.
+               </li>
+            </ul>
+         </td>
+         <td valign="top" align="right">
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-related="neorazorx">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+         </td>
+      </tr>
+   </table>
 </div>
 
 <div class="bloque">

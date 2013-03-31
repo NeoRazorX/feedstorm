@@ -30,16 +30,10 @@
          <table width="100%">
             <tr>
                <td>
-                  <span class="label-info">Popularidad: {$fsc->story->popularity()}</span>
+                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a>
                </td>
                <td align="right">
                   <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-               </td>
-            </tr>
-            <tr>
-               <td><span class="label">{$fsc->story->clics} clics</span></td>
-               <td align="right">
-                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a>
                </td>
             </tr>
          </table>

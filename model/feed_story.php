@@ -59,6 +59,7 @@ class feed_story extends fs_model
    {
       $this->collection->ensureIndex( array('feed_id' => 1, 'date' => -1) );
       $this->collection->ensureIndex( array('story_id' => 1, 'date' => -1) );
+      $this->collection->ensureIndex('date');
    }
    
    public function show_date()

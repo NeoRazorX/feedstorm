@@ -92,7 +92,7 @@ class story extends fs_model
       if( is_null($this->id) )
          return 'index.php';
       else
-         return 'index.php?page=show_story&id='.$this->id.'&redir=TRUE';
+         return $this->link;
    }
    
    public function edit_url()

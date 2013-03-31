@@ -61,7 +61,7 @@
       </p>
    </div>
    
-   {if condition="$fsc->popular"}
+   {if condition="$fsc->popular OR $fsc->editions"}
    <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function() {
@@ -74,22 +74,57 @@
    </script>
    
    <div class="bloque">
-      <div class="title">Las noticias más populares:</div>
+      <div class="title">Noticias populares:</div>
       <div id="stories">
-      {loop="$fsc->popular"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+         {loop="$fsc->editions"}
+         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
             <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
+            <div class="image">{$value->media_item->show_image()}</div>
             {else}
-               <p>{$value->description()}</p>
+            <p>{$value->description()}</p>
             {/if}
          </div>
          <a href="{$path}/{$value->url()}"></a>
-      {/loop}
+         {/loop}
+         {loop="$fsc->popular"}
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+            <p>{$value->description()}</p>
+            {/if}
+         </div>
+         <a href="{$path}/{$value->url()}"></a>
+         {/loop}
       </div>
    </div>
    {/if}
 {/if}
+
+<div class="bloque2">
+   <div class="title">
+      Últimos cambios en {$name} v{$fsc->version()}:
+   </div>
+   <ul>
+      <li>
+         30/03/2013:
+         <ul>
+            <li>Mejorado el CSS.</li>
+            <li>El botón abrir enlace usa el enlace de la noticia, en lugar de redirigir.</li>
+            <li>Los popups ahora incluyen un botón cerrar.</li>
+            <li>La página de estadísticas ya informa de la versión de FeedStorm y MongoDB.</li>
+            <li>Mejorada la gestión de errores con noticias eliminadas.</li>
+            <li>Ya no se añaden noticias antiguas (con un tiempo de vida mayor que FS_MAX_AGE).</li>
+            <li>Solucionados los problemas con caracteres utf8 defectuosos en algunas fuentes.</li>
+            <li>
+               La página principal (cuando no tienes fuentes) y la not_found ahora muestran
+               una mezcla de ediciones y noticias populares.
+            </li>
+         </ul>
+      </li>
+   </ul>
+</div>
 
 {include="desktop/footer"}

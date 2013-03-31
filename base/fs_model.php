@@ -50,6 +50,11 @@ abstract class fs_model
       return $this->id;
    }
    
+   public function id2str()
+   {
+      return (string)$this->id;
+   }
+   
    protected function set_id($id)
    {
       $this->id = new MongoId($id);
@@ -230,6 +235,18 @@ abstract class fs_model
       $newt = preg_replace('/"/', '&quot;', $newt);
       $newt = preg_replace("/'/", '&#39;', $newt);
       return $newt;
+   }
+   
+   public function remove_bad_utf8($str)
+   {
+      /// Reemplazamos las putas comillas
+      $str = preg_replace('/“/', '"', $str);
+      $str = preg_replace('/”/', '"', $str);
+      $str = preg_replace('/&#8220;/', '"', $str);
+      $str = preg_replace('/&#8221;/', '"', $str);
+      
+      /// convertimos a utf8
+      return iconv('', 'UTF-8//IGNORE//TRANSLIT', $str);
    }
    
    abstract public function get($id);

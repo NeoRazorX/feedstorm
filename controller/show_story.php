@@ -62,10 +62,7 @@ class show_story extends fs_controller
          }
          
          if( isset($_GET['redir']) )
-         {
-            $this->template = FALSE;
-            header('location: '.$this->story->link);
-         }
+            $this->template = 'redir';
          else
             $this->title = $this->story->title;
       }

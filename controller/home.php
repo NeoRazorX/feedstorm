@@ -18,9 +18,11 @@
  */
 
 require_once 'model/story.php';
+require_once 'model/story_edition.php';
 
 class home extends fs_controller
 {
+   public $editions;
    public $popular;
    public $show_info;
    public $stories;
@@ -43,11 +45,35 @@ class home extends fs_controller
       $this->stories = $this->visitor->last_stories();
       if( count($this->stories) == 0 )
       {
-         $story = new story();
-         $this->popular = $story->popular_stories();
+         /// cargamos ediciones y noticias populares hasta llegar a FS_MAX_STORIES
+         $ssids = array();
+         $edition = new story_edition();
+         $this->editions = array();
+         foreach( $edition->last_editions() as $e )
+         {
+            $ssids[] = $e->story_id;
+            $this->editions[] = $e;
+         }
+         $this->popular = array();
+         if( count($this->editions) < FS_MAX_STORIES )
+         {
+            $i = count($this->editions);
+            $story = new story();
+            foreach( $story->popular_stories() as $s )
+            {
+               if($i < FS_MAX_STORIES AND !in_array($s->id2str(), $ssids) )
+               {
+                  $this->popular[] = $s;
+                  $i++;
+               }
+            }
+         }
       }
       else
+      {
+         $this->editions = array();
          $this->popular = array();
+      }
    }
 }
 

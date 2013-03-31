@@ -61,6 +61,14 @@ class fs_mongo
       if(self::$link)
          self::$history[] = $comm;
    }
+   
+   public function version()
+   {
+      if(self::$link)
+         return Mongo::VERSION;
+      else
+         return 'Desconocida';
+   }
 }
 
 ?>

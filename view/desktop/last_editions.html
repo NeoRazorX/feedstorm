@@ -3,16 +3,33 @@
 {if condition="$fsc->editions"}
    {if condition="$fsc->show_info"}
    <div class="info">
-      <h1>¿Esto qué es?</h1>
-      <p>
-         Aquí aparecen las últimas noticias editadas por los usuarios.
-         Para editar una noticia sólo tienes que hacer clic sobre ella
-         y a continuación pulsar el botón <b>editar</b>.
-         <br/>
-         Y si encuentras algún fallo,
-         <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
-      </p>
-      <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
+      <table width="100%">
+         <tr>
+            <td>
+               <h1>¿Esto qué es?</h1>
+               <p>
+                  Aquí aparecen las últimas noticias editadas por los usuarios.
+                  Para editar una noticia sólo tienes que hacer clic sobre ella
+                  y a continuación pulsar el botón <b>editar</b>.
+                  <br/>
+                  Y si encuentras algún fallo,
+                  <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
+               </p>
+               <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
+            </td>
+            <td valign="top" align="right">
+               <div class="g-plusone" data-size="tall"></div>
+               <script type="text/javascript">
+                    window.___gcfg = {lang: 'es'};
+                    (function() {
+                      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                      po.src = 'https://apis.google.com/js/plusone.js';
+                      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+                    })();
+               </script>
+            </td>
+         </tr>
+      </table>
    </div>
    {/if}
    

@@ -76,13 +76,22 @@
       <ul>{loop="$fsc->get_errors()"}<li>{$value}</li>{/loop}</ul>
    </div>
    {/if}
+   
    {if condition="$fsc->get_messages()"}
    <div class="messages">
       <ul>{loop="$fsc->get_messages()"}<li>{$value}</li>{/loop}</ul>
    </div>
    {/if}
+   
    {if condition="$fsc->visitor->noob"}
-   <div class="info">
-      {include="desktop/new_visitor_msg"}
+   <div id="popup_noob" class="popup">
+      <div class="story_info">{include="desktop/new_visitor_msg"}</div>
+      <a class="close_popup" href="#" onclick="fs_close_popups();return false;">Cerrar</a>
    </div>
+   <script type="text/javascript">
+      $(document).ready(function() {
+         $("#shadow_box").show();
+         $("#popup_noob").show();
+      });
+   </script>
    {/if}

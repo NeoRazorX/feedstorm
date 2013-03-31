@@ -121,7 +121,10 @@ class visitor extends fs_model
       $feed_story = new feed_story();
       $stories = array();
       foreach($feed_story->last4feeds($fids) as $fs)
-         $stories[] = $fs->story();
+      {
+         if( $fs->story() )
+            $stories[] = $fs->story();
+      }
       return $stories;
    }
    

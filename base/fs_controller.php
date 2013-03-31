@@ -67,6 +67,16 @@ abstract class fs_controller
       $this->mongo->close();
    }
    
+   public function version()
+   {
+      return '0.9';
+   }
+   
+   public function mongo_version()
+   {
+      return $this->mongo->version();
+   }
+   
    protected function set_template($tpl='main')
    {
       if( $this->visitor->mobile() )

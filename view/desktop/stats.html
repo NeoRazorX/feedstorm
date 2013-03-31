@@ -3,6 +3,8 @@
 <div class="bloque">
    <div class="title">Estadísticas:</div>
    <ul class="horizontal">
+      <li>FeedStorm: v{$fsc->version()}</li>
+      <li>MongoDB: v{$fsc->mongo_version()}</li>
       <li>Usuarios: {$fsc->visitor->show_count()}</li>
       <li>Fuentes: {$fsc->feed->show_count()}</li>
       <li>Suscripciones: {$fsc->suscription->show_count()}</li>
@@ -15,7 +17,7 @@
    </ul>
 </div>
 
-<div class="bloque">
+<div class="bloque2">
    <div class="title">Últimas visitas:</div>
    <table class="lista">
       <tr>

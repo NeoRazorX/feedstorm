@@ -126,7 +126,10 @@ class feed extends fs_model
       $feed_story = new feed_story();
       $stories = array();
       foreach($feed_story->last4feed($this->id) as $fs)
-         $stories[] = $fs->story();
+      {
+         if( $fs->story() )
+            $stories[] = $fs->story();
+      }
       return $stories;
    }
    
@@ -143,7 +146,7 @@ class feed extends fs_model
          curl_close($ch);
          
          libxml_use_internal_errors(TRUE);
-         $xml = simplexml_load_string( iconv('', 'UTF-8//IGNORE//TRANSLIT', $html) );
+         $xml = simplexml_load_string( $this->remove_bad_utf8($html) );
          if( $xml )
          {
             /// nos guardamos una copia del feed
@@ -330,7 +333,7 @@ class feed extends fs_model
             $feed_story->save();
          }
       }
-      else
+      else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
          if( $item->description )
             $description = (string)$item->description;

@@ -69,6 +69,7 @@ ul#top_menu {
    right: 0px;
    background-color: #424242;
    border: 3px solid #333333;
+   border-radius: 3px;
    font-size: 18px;
    list-style: none;
    padding: 0px;
@@ -83,6 +84,7 @@ ul#top_menu li a {
    padding: 8px;
    background-color: #aaaaaa;
    border: 1px solid #424242;
+   border-radius: 3px;
    text-decoration: none;
    color: black;
    text-align: center;
@@ -135,18 +137,20 @@ div.bloque {
    margin: 0px;
    padding-top: 10px;
    padding-bottom: 10px;
-   background-color: white;
+   background-color: #f1f1f1;
    box-shadow: inset 0px 4px 4px #999;
    color: #333333;
 }
 
 div.bloque div.title {
+   margin-left: 20px;
+   margin-right: 20px;
    margin-bottom: 20px;
    padding: 5px;
    padding-bottom: 10px;
    border-bottom: 1px dashed #999;
    color: #424242;
-   font-size: 25px;
+   font-size: 22px;
    font-weight: bolder;
    text-align: center;
 }
@@ -159,7 +163,12 @@ div.story {
    display: block;
    margin: 3px;
    padding: 5px;
-   border: 1px dashed #666;
+   background-color: white;
+   border: 1px outset #cccccc;
+   border-top-left-radius: 3px 3px;
+   border-top-right-radius: 3px 3px;
+   border-bottom-left-radius: 3px 3px;
+   border-bottom-right-radius: 3px 3px;
 }
 
 div.story h1 {
@@ -193,10 +202,6 @@ table.lista {
    width: 100%;
 }
 
-table.lista tr:hover {
-   background-color: #d9edf7;
-}
-
 table.lista th {
    border-bottom: 1px solid #CCCCCC;
 }
@@ -206,7 +211,7 @@ table.lista th, table.lista td {
 }
 
 div.popup_container {
-   padding: 20px;
+   padding: 15px;
    background-color: #424242;
    box-shadow: inset 0px 4px 4px #333;
 }
@@ -265,11 +270,6 @@ ul.pestanyas li {
    border-bottom: 3px solid transparent;
 }
 
-ul.pestanyas li:hover {
-   cursor: pointer;
-   background-color: #a0ccfe;
-}
-
 ul.pestanyas li.activa {
    border-bottom: 3px solid #0077b3;
    color: #0077b3;
@@ -320,7 +320,7 @@ input[type='submit'], a.button, a.button_edit, a.button_remove {
    border-bottom-left-radius: 3px 3px;
    border-bottom-right-radius: 3px 3px;
    border: 1px solid #424242;
-   box-shadow: 2px 2px 2px #666;
+   box-shadow: 1px 1px 1px #666;
    color: white;
    font-size: 14px;
    font-weight: bold;
@@ -328,27 +328,39 @@ input[type='submit'], a.button, a.button_edit, a.button_remove {
 }
 
 a.button {
-   background-color: #0070CC;
-}
-
-a.button:hover {
-   background-color: #0060BC;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   border-radius: 3px;
+   text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+   text-align: center;
+   background-color: #008CFF;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#008CFF), to(#005FAD));
+   background-image: -webkit-linear-gradient(top, #008CFF, #005FAD);
+   background-image: -moz-linear-gradient(top, #008CFF, #005FAD);
+   background-image: -ms-linear-gradient(top, #008CFF, #005FAD);
+   background-image: -o-linear-gradient(top, #008CFF, #005FAD);
+   background-image: linear-gradient(to bottom, #008CFF, #005FAD);
+   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#008CFF, endColorstr=#005FAD);
 }
 
 input[type='submit'], a.button_edit {
-   background-color: #59B359;
-}
-
-input[type='submit'], a.button_edit:hover {
-   background-color: #49A349;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   border-radius: 3px;
+   text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
+   text-align: center;
+   background-color: #66CC66;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#66CC66), to(#008c00));
+   background-image: -webkit-linear-gradient(top, #66CC66, #008c00);
+   background-image: -moz-linear-gradient(top, #66CC66, #008c00);
+   background-image: -ms-linear-gradient(top, #66CC66, #008c00);
+   background-image: -o-linear-gradient(top, #66CC66, #008c00);
+   background-image: linear-gradient(to bottom, #66CC66, #008c00);
+   filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#66CC66, endColorstr=#008c00);
 }
 
 a.button_remove {
    background-color: #E1544F;
-}
-
-a.button_remove:hover {
-   background-color: #D1443F;
 }
 
 span.label, span.label-info {

@@ -24,6 +24,9 @@
 <body>
    <div id="shadow_box"></div>
    <div id="popups"></div>
+   <a id="b_close_popup" class="close_popup" href="#" onclick="fs_close_popups(); return false;">
+      <img src="{$path}/view/img/close.png" alt="close"/>
+   </a>
    
    <div class="header">
       <div class="logo">
@@ -81,17 +84,4 @@
    <div class="messages">
       <ul>{loop="$fsc->get_messages()"}<li>{$value}</li>{/loop}</ul>
    </div>
-   {/if}
-   
-   {if condition="$fsc->visitor->noob"}
-   <div id="popup_noob" class="popup">
-      <div class="story_info">{include="desktop/new_visitor_msg"}</div>
-      <a class="close_popup" href="#" onclick="fs_close_popups();return false;">Cerrar</a>
-   </div>
-   <script type="text/javascript">
-      $(document).ready(function() {
-         $("#shadow_box").show();
-         $("#popup_noob").show();
-      });
-   </script>
    {/if}

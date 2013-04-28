@@ -51,16 +51,6 @@
       </div>
    </div>
 {else}
-   <div class="info">
-      <h1>No se han encontrado noticias para tí :(</h1>
-      <p>
-         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
-         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
-         También puedes buscar noticias interesantes desde la sección
-         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
-      </p>
-   </div>
-   
    {if condition="$fsc->popular OR $fsc->editions"}
    <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
@@ -105,7 +95,7 @@
 
 <div class="bloque2">
    <div class="title">
-      Últimos cambios en {$name} v{$fsc->version()}:
+      Últimos cambios en {$name} {$fsc->version()}:
    </div>
    <ul>
       <li>

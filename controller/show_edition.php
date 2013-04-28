@@ -23,6 +23,7 @@ require_once 'model/story_visit.php';
 class show_edition extends fs_controller
 {
    public $edition;
+   public $editions;
    
    public function __construct()
    {
@@ -78,6 +79,7 @@ class show_edition extends fs_controller
          }
          
          $this->title = $this->edition->title;
+         $this->editions = $this->edition->last_editions();
       }
       else
          $this->new_error_msg('Edición no encontrada.');

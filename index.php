@@ -17,9 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/// Si lees esto es que no tienes activado PHP!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 date_default_timezone_set('Europe/Madrid');
 
-if( file_exists('config.php') )
+if( !class_exists('Mongo') )
+   echo "No tienes MongoDB instalado. Consulta la web oficial: https://github.com/NeoRazorX/feedstorm";
+else if( !file_exists('config.php') )
+   echo "Tienes que modificar el archivo config.php a partir del config-sample.php";
+else
 {
    require_once 'config.php';
    
@@ -73,7 +79,5 @@ if( file_exists('config.php') )
       $tpl->draw( $fsc->template );
    }
 }
-else
-   echo "Tienes que modificar el archivo config.php a partir del config-sample.php";
 
 ?>

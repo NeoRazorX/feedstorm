@@ -240,10 +240,25 @@ abstract class fs_model
    public function remove_bad_utf8($str)
    {
       /// Reemplazamos las putas comillas
-      $str = preg_replace('/“/', '"', $str);
-      $str = preg_replace('/”/', '"', $str);
-      $str = preg_replace('/&#8220;/', '"', $str);
-      $str = preg_replace('/&#8221;/', '"', $str);
+      $str = str_replace('“', '"', $str);
+      $str = str_replace('”', '"', $str);
+      $str = str_replace('&#8220;', '"', $str);
+      $str = str_replace('&#8221;', '"', $str);
+      
+      /// Eliminamos los hijos de puta de los caracteres no válidos
+      $regex = <<<'END'
+/
+  (
+    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
+    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
+    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
+    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3 
+    ){1,100}                        # ...one or more times
+  )
+| .                                 # anything else
+/x
+END;
+      preg_replace($regex, '$1', $str);
       
       /// convertimos a utf8
       return iconv('', 'UTF-8//IGNORE//TRANSLIT', $str);

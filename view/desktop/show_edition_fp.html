@@ -93,4 +93,36 @@
    </div>
 </div>
 
+{if condition="$fsc->editions"}
+<script src="{$path}/view/js/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+      $(document).ready(function() {
+         $("#stories").masonry({
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
+      });
+</script>
+
+<div class="bloque">
+   <div class="title">Otras ediciones:</div>
+   <div id="stories">
+      {loop="$fsc->editions"}
+         {if condition="$value->get_id()!=$fsc->edition->get_id()"}
+         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+            <p>{$value->description()}</p>
+            {/if}
+         </div>
+         <a href="{$path}/{$value->url()}"></a>
+         {/if}
+      {/loop}
+   </div>
+</div>
+{/if}
+
 {include="desktop/footer"}

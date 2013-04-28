@@ -84,4 +84,36 @@
    </div>
 </div>
 
+{if condition="$fsc->popular OR $fsc->editions"}
+<script src="{$path}/view/js/jquery.masonry.min.js"></script>
+<script type="text/javascript">
+      $(document).ready(function() {
+         $("#stories").masonry({
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
+      });
+</script>
+
+<div class="bloque">
+   <div class="title">Noticias populares:</div>
+   <div id="stories">
+      {loop="$fsc->popular"}
+         {if condition="$value->get_id()!=$fsc->story->get_id()"}
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+            <h1>{$value->title}</h1>
+            {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            {else}
+            <p>{$value->description()}</p>
+            {/if}
+         </div>
+         <a href="{$path}/{$value->url()}"></a>
+         {/if}
+      {/loop}
+   </div>
+</div>
+{/if}
+
 {include="desktop/footer"}

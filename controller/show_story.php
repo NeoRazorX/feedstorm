@@ -23,6 +23,7 @@ require_once 'model/story_visit.php';
 class show_story extends fs_controller
 {
    public $story;
+   public $popular;
    
    public function __construct()
    {
@@ -64,7 +65,10 @@ class show_story extends fs_controller
          if( isset($_GET['redir']) )
             $this->template = 'redir';
          else
+         {
             $this->title = $this->story->title;
+            $this->popular = $this->story->popular_stories();
+         }
       }
       else
          $this->new_error_msg('Noticia no encontrada.');

@@ -5,7 +5,7 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="description" content="{$fsc->get_description()}" />
    <meta name="Robots" content="all" />
-   <link type="text/css" href="{$path}/view/css/desktop.css" rel="stylesheet" />
+   <link type="text/css" href="{$path}/view/desktop/desktop.css" rel="stylesheet" />
    <script src="{$path}/view/js/jquery.js"></script>
    {if condition="$analytics"}
    <script type="text/javascript">
@@ -13,9 +13,12 @@
       _gaq.push(['_setAccount', '{$analytics}']);
       _gaq.push(['_trackPageview']);
       (function() {
-         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         var ga = document.createElement('script');
+         ga.type = 'text/javascript';
+         ga.async = true;
          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         var s = document.getElementsByTagName('script')[0];
+         s.parentNode.insertBefore(ga, s);
       })();
    </script>
    {/if}
@@ -28,51 +31,46 @@
       <img src="{$path}/view/img/close.png" alt="close"/>
    </a>
    
-   <div class="header">
-      <div class="logo">
-         <a href="{$path}/">{$name}</a>
-      </div>
-      <table class="buttons">
-         <tr>
-            <td align="left">
-               {if condition="$fsc->page=='home'"}
-                  <a class="selected" href="{$path}/">Portada</a>
-               {else}
-                  <a href="{$path}/">Portada</a>
-               {/if}
-               {if condition="$fsc->page=='popular_stories'"}
-                  <a class="selected" href="{$path}/index.php?page=popular_stories">Populares</a>
-               {else}
-                  <a href="{$path}/index.php?page=popular_stories">Populares</a>
-               {/if}
-               {if condition="$fsc->page=='discover_stories'"}
-                  <a class="selected" href="{$path}/index.php?page=discover_stories">Descubrir</a>
-               {else}
-                  <a href="{$path}/index.php?page=discover_stories">Descubrir</a>
-               {/if}
-            </td>
-            <td>
-               {if condition="$fsc->page=='last_editions'"}
-                  <a class="selected" href="{$path}/index.php?page=last_editions">Ediciones</a>
-               {else}
-                  <a href="{$path}/index.php?page=last_editions">Ediciones</a>
-               {/if}
-            </td>
-            <td align="right">
-               {if condition="$fsc->page=='feed_list'"}
-                  <a class="selected" href="{$path}/index.php?page=feed_list">Fuentes</a>
-               {else}
-                  <a href="{$path}/index.php?page=feed_list">Fuentes</a>
-               {/if}
-               {if condition="$fsc->page=='suscriptions'"}
-                  <a class="selected" href="{$path}/index.php?page=suscriptions">Suscripciones</a>
-               {else}
-                  <a href="{$path}/index.php?page=suscriptions">Suscripciones</a>
-               {/if}
-            </td>
-         </tr>
-      </table>
-   </div>
+   <table class="header">
+      <tr>
+         <td align="right"><a class="logo" href="{$path}/">{$name}</a></td>
+         <td class="buttons">
+         {if condition="$fsc->page=='home'"}
+            <a class="selected" href="{$path}/">Portada</a>
+         {else}
+            <a href="{$path}/">Portada</a>
+         {/if}
+         {if condition="$fsc->page=='popular_stories'"}
+            <a class="selected" href="{$path}/index.php?page=popular_stories">Populares</a>
+         {else}
+            <a href="{$path}/index.php?page=popular_stories">Populares</a>
+         {/if}
+         {if condition="$fsc->page=='discover_stories'"}
+            <a class="selected" href="{$path}/index.php?page=discover_stories">Descubrir</a>
+         {else}
+            <a href="{$path}/index.php?page=discover_stories">Descubrir</a>
+         {/if}
+         {if condition="$fsc->page=='last_editions'"}
+            <a class="selected" href="{$path}/index.php?page=last_editions">Ediciones</a>
+         {else}
+            <a href="{$path}/index.php?page=last_editions">Ediciones</a>
+         {/if}
+         {if condition="$fsc->page=='feed_list'"}
+            <a class="selected" href="{$path}/index.php?page=feed_list">Fuentes</a>
+         {else}
+            <a href="{$path}/index.php?page=feed_list">Fuentes</a>
+         {/if}
+         {if condition="$fsc->page=='suscriptions'"}
+            <a class="selected" href="{$path}/index.php?page=suscriptions">Suscripciones</a>
+         {else}
+            <a href="{$path}/index.php?page=suscriptions">Suscripciones</a>
+         {/if}
+         </td>
+         <td align="right">
+            <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">¡Habla!</a>
+         </td>
+      </tr>
+   </table>
    
    {if condition="$fsc->get_errors()"}
    <div class="errors">

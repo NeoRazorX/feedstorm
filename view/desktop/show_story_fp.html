@@ -96,11 +96,9 @@
       });
 </script>
 
-<div class="bloque">
-   <div class="title">Noticias populares:</div>
-   <div id="stories">
-      {loop="$fsc->popular"}
-         {if condition="$value->get_id()!=$fsc->story->get_id()"}
+<div id="stories">
+   {loop="$fsc->popular"}
+      {if condition="$value->get_id()!=$fsc->story->get_id()"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
             <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
@@ -110,9 +108,8 @@
             {/if}
          </div>
          <a href="{$path}/{$value->url()}"></a>
-         {/if}
-      {/loop}
-   </div>
+      {/if}
+   {/loop}
 </div>
 {/if}
 

@@ -46,7 +46,7 @@ class visitor extends fs_model
       else
       {
          $this->id = NULL;
-         $this->nick = $this->random_string(15);
+         $this->nick = $this->random_string(12);
          $this->login();
          $this->noob = TRUE;
          $this->need_save = TRUE;

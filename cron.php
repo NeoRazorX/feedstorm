@@ -18,7 +18,7 @@
  */
 
 date_default_timezone_set('Europe/Madrid');
-error_reporting(E_ERROR | E_WARNING | E_PARSE);
+///error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if( !function_exists('curl_init') )
    echo "Necesitas instalar php5-curl\n";

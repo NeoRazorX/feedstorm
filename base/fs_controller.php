@@ -129,6 +129,11 @@ abstract class fs_controller
    {
       return 'index.php?page='.$this->page;
    }
+   
+   public function domain()
+   {
+      return 'http://'.$_SERVER["SERVER_NAME"].FS_PATH;
+   }
 }
 
 ?>

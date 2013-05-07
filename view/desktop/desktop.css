@@ -11,8 +11,8 @@
 body {
    margin: 0px;
    padding: 0px;
-   background-color: #3C3C3C;
-   color: white;
+   background-color: white;
+   color: #333333;
    font-family: Verdana, sans-serif;
    text-rendering: optimizeLegibility;
    -webkit-font-smoothing: antialiased;
@@ -21,68 +21,76 @@ body {
    font-weight: normal;
 }
 
-div.header {
-   padding: 5px;
-   background-color: #F5F4F5;
-   border: 1px solid #cccccc;
-   border-top: 2px solid #424242;
+a {
+   color: #0062DD;
 }
 
-div.header div.logo {
-   text-align: center;
+a:visited {
+   color: #0049A6;
 }
 
-div.header div.logo a {
-   color: #424242;
-   font-family: 'Grand Hotel', cursive;
-   font-size: 50px;
-   text-decoration: none;
-}
-
-div.header table.buttons {
+table.header {
    width: 100%;
+   background-color: #2AA4CF;
+   border-top: 2px solid #1A6580;
+   border-bottom: 1px solid #1A6580;
 }
 
-div.header table.buttons a {
+table.header a {
    display: inline-block;
-   padding-left: 5px;
-   padding-right: 5px;
-   padding-top: 2px;
-   padding-bottom: 2px;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
-   color: #424242;
-   font-size: 15px;
-   font-weight: bold;
    text-decoration: none;
 }
 
-div.header table.buttons a:hover {
-   background-color: #666666;
+table.header a.logo {
+   padding-left: 20px;
+   padding-right: 20px;
+   font-family: 'Grand Hotel', cursive;
+   font-size: 40px;
    color: white;
 }
 
-div.header table.buttons a.selected {
-   background-color: #424242;
+table.header td.buttons a {
+   padding: 10px;
+   border-radius: 5px;
+   font-size: 16px;
    color: white;
+}
+
+table.header td.buttons a.selected {
+   background-color: #1A6580;
+   box-shadow: inset 0px 1px 1px #444;
+}
+
+table.header td.buttons a:hover {
+   background-color: #1F7999;
+}
+
+table.header a#b_talk {
+   margin-right: 10px;
+   padding: 8px;
+   background-color: white;
+   border: 1px solid #777777;
+   border-radius: 5px;
+   color: black;
+   font-size: 16px;
 }
 
 div.messages, div.errors {
    margin: 0px;
    padding: 10px;
-   box-shadow: inset 0px 5px 5px #666;
+   box-shadow: inset 0px 2px 2px #bbb;
    color: #333333;
    font-size: 16px;
 }
 
 div.messages {
    background-color: #D9EDF7;
+   border-bottom: 1px solid #BFDAE8;
 }
 
 div.errors {
    background-color: #F2DEDE;
+   border-bottom: 1px solid #FFAEAE;
 }
 
 div.messages ul, div.errors ul {
@@ -93,43 +101,42 @@ div.messages ul, div.errors ul {
 div.info {
    margin: 0px;
    padding: 10px;
+   padding-bottom: 5px;
    background-color: #D2D9DF;
-   box-shadow: inset 0px 5px 5px #999;
+   border-bottom: 1px solid #B4BABF;
+   box-shadow: inset 0px 2px 2px #999;
    color: #334455;
 }
 
-div.bloque {
-   margin: 0px;
-   padding-top: 15px;
-   padding-bottom: 15px;
-   background-color: #e1e1e1;
-   box-shadow: inset 0px 4px 4px #aaa;
-   color: #333333;
+div.info h1 {
+   margin: 5px;
 }
 
-div.bloque2 {
-   padding: 20px;
-   background-color: white;
-   box-shadow: inset 0px 3px 3px #aaa;
+div.bloque {
+   padding: 10px;
+   background-color: #f1f1f1;
+   box-shadow: inset 0px 2px 2px #ddd;
    color: #424242;
 }
 
-div.bloque div.title, div.bloque2 div.title, div.bloque2 h1 {
+div.bloque div.title, div.bloque h1 {
    margin: 0px;
-   margin-left: 50px;
-   margin-right: 50px;
-   margin-bottom: 20px;
+   margin-left: 10px;
+   margin-bottom: 10px;
    padding: 5px;
    padding-bottom: 10px;
-   border-bottom: 1px dashed #999;
    color: #424242;
    font-size: 25px;
    font-weight: bolder;
-   text-align: center;
 }
 
 div#stories {
    margin: 0 auto;
+   padding-top: 10px;
+   padding-bottom: 10px;
+   background-color: #F0EEE9;
+   border-left: 1px solid silver;
+   border-right: 1px solid silver;
 }
 
 div.story {
@@ -138,20 +145,22 @@ div.story {
    margin: 5px;
    padding: 0px;
    background-color: white;
-   border: 1px solid #bbbbbb;
-   border-radius: 3px;
+   border: 1px solid #999999;
+   border-radius: 5px;
+   box-shadow: 1px 1px 1px #bbb;
 }
 
 div.story:hover {
    cursor: pointer;
-   border-color: #777777;
-   box-shadow: 1px 1px 1px #aaa;
+   border-color: #666666;
+   box-shadow: 1px 1px 1px #999;
 }
 
 div.story h1 {
    margin: 0px;
    padding: 5px;
-   font-size: 16px;
+   color: #424242;
+   font-size: 15px;
    line-height: normal;
 }
 
@@ -161,20 +170,32 @@ div.story h1 a {
 
 div.story p {
    margin: 0px;
-   padding: 4px;
-   text-align: justify;
+   padding: 5px;
 }
 
 div.story div.image img {
    display: block;
    margin-left: auto;
    margin-right: auto;
+   border-top-left-radius: 4px;
+   border-top-right-radius: 4px;
+}
+
+div.story div.timesince {
+   padding: 5px;
+   background-color: #F4F2F2;
+   border-top: 1px solid #bbbbbb;
+   border-bottom-left-radius: 5px;
+   border-bottom-right-radius: 5px;
+   font-size: 11px;
+}
+
+div.story div.timesince span {
+   float: right;
 }
 
 div.story_readed {
-   background-color: #f1f1f1;
-   border-radius: 0px;
-   border: 1px solid #bbbbbb;
+   border: 1px dashed #777777;
    box-shadow: 0px 0px 0px #aaa;
 }
 
@@ -250,8 +271,8 @@ div.popup a.close_popup:hover {
 
 div.popup_container {
    padding: 20px;
-   background-color: #D2D9DF;
-   box-shadow: inset 0px 4px 4px #999;
+   background-color: #A8AEB3;
+   box-shadow: inset 0px 2px 2px #888;
 }
 
 div.popup2 {
@@ -259,11 +280,9 @@ div.popup2 {
    margin-left: auto;
    margin-right: auto;
    background-color: #EEEEEE;
-   border: 3px solid #cccccc;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
+   border: 2px solid #cccccc;
+   border-radius: 5px;
+   box-shadow: 5px 5px 5px #888;
    color: #333333;
 }
 
@@ -285,7 +304,7 @@ div.story_info div.media_item {
 }
 
 div.story_info div.media_item img {
-   box-shadow: 3px 3px 3px #666;
+   box-shadow: 2px 2px 2px #666;
 }
 
 div.story_info p {
@@ -337,7 +356,7 @@ div.media_item2 {
    padding: 5px;
    background-color: white;
    border: 1px solid #666;
-   box-shadow: 3px 3px 3px #666;
+   box-shadow: 2px 2px 2px #666;
 }
 
 div.media_item2 div.media_item_show {
@@ -350,13 +369,12 @@ div.media_item2 div.media_item_show {
 
 div.footer {
    padding: 20px;
-   box-shadow: inset 0px 5px 5px #333;
+   box-shadow: inset 0px 2px 2px #ccc;
    font-size: 14px;
    text-align: center;
 }
 
 div.footer a {
-   color: white;
    font-weight: bold;
 }
 
@@ -378,7 +396,7 @@ input[type='submit'], a.button, a.button_edit, a.button_remove {
    border-bottom-left-radius: 3px 3px;
    border-bottom-right-radius: 3px 3px;
    border: 1px solid #424242;
-   box-shadow: 1px 1px 1px #666;
+   box-shadow: 1px 1px 1px #bbb;
    color: white;
    font-size: 14px;
    font-weight: bold;
@@ -452,10 +470,7 @@ span.label, span.label-info {
    padding: 3px;
    padding-left: 5px;
    padding-right: 5px;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
+   border-radius: 3px;
    color: white;
 }
 
@@ -488,9 +503,22 @@ ul.horizontal li {
    padding: 5px;
    padding-left: 15px;
    padding-right: 15px;
-   background-color: #d9edf7;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom-left-radius: 3px 3px;
-   border-bottom-right-radius: 3px 3px;
+   background-color: #FFE9AE;
+   border-radius: 3px;
+}
+
+img.face {
+   border: 1px solid #888888;
+   border-radius: 5px;
+}
+
+div.comments {
+   padding: 10px;
+}
+
+#HCB_comment_box blockquote, p#no_comments {
+   padding: 5px;
+   background-color: #a0ccfe;
+   border: 1px solid silver;
+   border-radius: 4px;
 }

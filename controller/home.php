@@ -24,7 +24,6 @@ class home extends fs_controller
 {
    public $editions;
    public $popular;
-   public $show_info;
    public $stories;
    
    public function __construct()
@@ -34,14 +33,6 @@ class home extends fs_controller
    
    protected function process()
    {
-      if( isset($_GET['show_info']) )
-      {
-         $this->show_info = FALSE;
-         setcookie('home_info', 'FALSE', time()+315360000);
-      }
-      else
-         $this->show_info = !isset($_COOKIE['home_info']);
-      
       $this->stories = $this->visitor->last_stories();
       if( count($this->stories) == 0 )
       {

@@ -61,24 +61,29 @@ class edit_story extends fs_controller
                $this->story_edition->visitor_id = $this->visitor->get_id();
             }
             
-            if( isset($_POST['title']) AND isset($_POST['description']) )
+            if( isset($_POST['title']) AND isset($_POST['description']) AND isset($_POST['human']) )
             {
-               $this->story_edition->title = $_POST['title'];
-               $this->story_edition->description = $_POST['description'];
-               
-               if( !isset($_POST['media_id']) )
-                  $this->story_edition->media_id = NULL;
-               else if($_POST['media_id'] == 'none')
-                  $this->story_edition->media_id = NULL;
+               if( $_POST['human'] != 'POZI' )
+                  $this->new_error_msg('Si no eres humano no puedes comentar. Y si, ya sé que esto es nazismo puro.');
                else
-                  $this->story_edition->media_id = $_POST['media_id'];
-               
-               $this->story_edition->save();
-               $this->new_message('Noticia editada correctamente. Hac clic <a href="'.
-                  $this->story_edition->url().'">aquí</a> para verla. Recuerda que
-                     aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
-               
-               $this->select_best_image4story();
+               {
+                  $this->story_edition->title = $_POST['title'];
+                  $this->story_edition->description = $_POST['description'];
+                  
+                  if( !isset($_POST['media_id']) )
+                     $this->story_edition->media_id = NULL;
+                  else if($_POST['media_id'] == 'none')
+                     $this->story_edition->media_id = NULL;
+                  else
+                     $this->story_edition->media_id = $_POST['media_id'];
+                  
+                  $this->story_edition->save();
+                  $this->new_message('Noticia editada correctamente. Hac clic <a href="'.
+                     $this->story_edition->url().'">aquí</a> para verla. Recuerda que
+                        aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
+                  
+                  $this->select_best_image4story();
+               }
             }
             
             $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);

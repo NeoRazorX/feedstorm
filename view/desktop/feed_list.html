@@ -31,19 +31,19 @@
                </li>
             </ul>
          </td>
-         <td valign="top" align="right">
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-related="neorazorx">Tweet</a>
-            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+         <td align="right" valign="top">
+            <a href="{$path}/index.php?page=stats">
+               <img class="face" src="{$path}/view/img/mother_of_god.png" alt="mother of god"/>
+            </a>
          </td>
       </tr>
    </table>
 </div>
 
-<div class="bloque2">
+<div class="bloque">
    <table class="lista">
       <tr>
-         <th align="left">Nombre</th>
-         <th align="left">URL</th>
+         <th align="left">Nombre + URL</th>
          <th align="left">Última comprobación</th>
          <th align="left">Última actualización</th>
          <th align="right">Suscriptores</th>
@@ -51,8 +51,7 @@
       </tr>
       {loop="$fsc->feed_list"}
       <tr>
-         <td><a href="{$value->url()}">{$value->name}</a></td>
-         <td>{$value->show_url()}</td>
+         <td><a href="{$value->url()}">{$value->name}</a> {$value->show_url()}</td>
          <td>{$value->last_check_timesince()}</td>
          <td>{$value->last_update_timesince()}</td>
          <td align="right">{$value->suscriptors}</td>

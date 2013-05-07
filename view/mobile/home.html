@@ -1,23 +1,26 @@
 {include="mobile/header"}
 
 {if condition="$fsc->stories"}
-   <div class="bloque">
-      <div id="stories">
+   <div>
       {loop="$fsc->stories"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
-            {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
-            {else}
-               <p>{$value->description()}</p>
-            {/if}
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+         {if condition="$value->media_item"}
+            <div class="image">{$value->media_item->show_image()}</div>
+            <h3>{$value->title}</h3>
+         {else}
+            <h3>{$value->title}</h3>
+            <p>{$value->description()}</p>
+         {/if}
+         <div class="timesince">
+            {$value->clics} clics
+            <span>{$value->timesince()}</span>
          </div>
-      {/loop}
       </div>
+      {/loop}
    </div>
 {else}
-   <div class="info">
-      <h1>No se han encontrado noticias para tí :(</h1>
+   <div class="alert">
+      <h3>No se han encontrado noticias para tí :(</h3>
       <p>
          Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
          mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
@@ -27,32 +30,39 @@
    </div>
    
    {if condition="$fsc->popular"}
-   <div class="bloque">
-      <div class="title">Las noticias más populares:</div>
-      <div id="stories">
+   <div>
       {loop="$fsc->editions"}
-         <div class="story" onclick="fs_go2url('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
-            {if condition="$value->media_item"}
+      <div class="story" onclick="fs_go2url('{$path}/{$value->url()}')">
+         {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
-            {else}
+            <h3>{$value->title}</h3>
+         {else}
+            <h3>{$value->title}</h3>
             <p>{$value->description()}</p>
-            {/if}
+         {/if}
+         <div class="timesince">
+            {$value->votes} votos
+            <span>{$value->timesince()}</span>
          </div>
-         <a href="{$path}/{$value->url()}"></a>
+      </div>
+      <a href="{$path}/{$value->url()}"></a>
       {/loop}
       {loop="$fsc->popular"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
-            {if condition="$value->media_item"}
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+         {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
-            {else}
+            <h3>{$value->title}</h3>
+         {else}
+            <h3>{$value->title}</h3>
             <p>{$value->description()}</p>
-            {/if}
+         {/if}
+         <div class="timesince">
+            {$value->clics} clics
+            <span>{$value->timesince()}</span>
          </div>
-         <a href="{$path}/{$value->url()}"></a>
-      {/loop}
       </div>
+      <a href="{$path}/{$value->url()}"></a>
+      {/loop}
    </div>
    {/if}
 {/if}

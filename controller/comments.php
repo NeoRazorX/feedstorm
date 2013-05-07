@@ -17,21 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story.php';
-
-class popular_stories extends fs_controller
+class comments extends fs_controller
 {
-   public $stories;
-   
    public function __construct()
    {
-      parent::__construct('popular_stories', 'Populares', 'populares@'.FS_NAME, 'popular');
+      parent::__construct('comments', 'Comentarios', 'comentarios@'.FS_NAME, 'comments');
    }
    
    protected function process()
    {
-      $story = new story();
-      $this->stories = $story->popular_stories();
+      
    }
 }
 

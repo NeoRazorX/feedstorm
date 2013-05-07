@@ -18,79 +18,77 @@
    });
 </script>
 
-<div class="popup_container">
-   <div class="popup2">
-   {if condition="$fsc->edition"}
-      <div class="story_info">
-         <h1>{$fsc->edition->title}</h1>
-         {if condition="$fsc->edition->media_item"}
-         <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
-         {/if}
-         <p>{$fsc->edition->description}</p>
-         <table width="100%">
-            <tr>
-               <td>
-                  <a class="button" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
-                  <span class="label-info">{$fsc->edition->votes} votos</span>
-               </td>
-               <td align="right">
-                  <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                  <a target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
-               </td>
-            </tr>
-         </table>
-      </div>
-      <ul class="pestanyas">
-         <li id="b_show_editions2" class="activa">Otras Ediciones</li>
-         <li id="b_show_feeds2">Fuentes</li>
-      </ul>
-      <div class="pestanya_content" id="story_editions2">
-         <table class="lista">
-            <tr>
-               <th align="left">Fecha</th>
-               <th align="left">Título</th>
-               <th align="right">Votos</th>
-            </tr>
-            {loop="$fsc->edition->editions()"}
-               <tr>
-               {if condition="$value->get_id()!=$fsc->edition->get_id()"}
-                  <td>{$value->timesince()}</td>
-                  <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
-                  <td align="right">{$value->votes}</td>
-               {else}
-                  <td>-</td><td>-</td><td align="right">-</td>
-               {/if}
-               </tr>
-            {/loop}
-            <tr>
-               <td>{$fsc->edition->story->timesince()}</td>
-               <td>
-                  <a href="{$path}/{$fsc->edition->story->url()}">{$fsc->edition->story->title}</a>
-               </td>
-               <td align="right">-</td>
-            </tr>
-         </table>
-      </div>
-      <div class="pestanya_content" id="story_feeds2">
-         <table class="lista">
-            <tr>
-               <th align="left">Fecha</th>
-               <th align="left">Enlace</th>
-               <th align="left">Fuente</th>
-            </tr>
-            {loop="$fsc->edition->story->feed_links()"}
-            <tr>
-               <td>{$value->timesince()}</td>
-               <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
-               <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-            </tr>
-            {else}
-            <tr><td colspan="3">Sin resultados.</td></tr>
-            {/loop}
-         </table>
-      </div>
+{if condition="$fsc->edition"}
+<div class="story_info">
+   <h3>{$fsc->edition->title}</h3>
+   {if condition="$fsc->edition->media_item"}
+      <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
+      <br/>
    {/if}
-   </div>
+   <p>{$fsc->edition->description}</p>
+   <table width="100%">
+      <tr>
+         <td>
+            <a class="btn btn-primary" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
+            <span class="label label-info">{$fsc->edition->votes} votos</span>
+         </td>
+         <td align="right">
+            <a href="{$fsc->edition->story->edit_url()}" class="btn btn-success">Editar</a> &nbsp;
+            <a target="_blank" href="{$fsc->edition->story->link()}" class="btn btn-primary">Abrir enlace</a>
+         </td>
+      </tr>
+   </table>
 </div>
+
+<ul class="pestanyas">
+   <li id="b_show_editions2" class="activa">Otras Ediciones</li>
+   <li id="b_show_feeds2">Fuentes</li>
+</ul>
+
+<div class="pestanya_content" id="story_editions2">
+   <table class="lista">
+      <tr>
+         <th align="left">Fecha</th>
+         <th align="left">Título</th>
+         <th align="right">Votos</th>
+      </tr>
+      {loop="$fsc->edition->editions()"}
+      <tr>
+         {if condition="$value->get_id()!=$fsc->edition->get_id()"}
+            <td>{$value->timesince()}</td>
+            <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
+            <td align="right">{$value->votes}</td>
+         {else}
+            <td>-</td><td>-</td><td align="right">-</td>
+         {/if}
+      </tr>
+      {/loop}
+      <tr>
+         <td>{$fsc->edition->story->timesince()}</td>
+         <td><a href="{$path}/{$fsc->edition->story->url()}">{$fsc->edition->story->title}</a></td>
+         <td align="right">-</td>
+      </tr>
+   </table>
+</div>
+
+<div class="pestanya_content" id="story_feeds2">
+   <table class="lista">
+      <tr>
+         <th align="left">Fecha</th>
+         <th align="left">Enlace</th>
+         <th align="left">Fuente</th>
+      </tr>
+      {loop="$fsc->edition->story->feed_links()"}
+      <tr>
+         <td>{$value->timesince()}</td>
+         <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+         <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+      </tr>
+      {else}
+      <tr><td colspan="3">Sin resultados.</td></tr>
+      {/loop}
+   </table>
+</div>
+{/if}
 
 {include="mobile/footer"}

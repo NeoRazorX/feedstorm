@@ -1,23 +1,26 @@
 {include="mobile/header"}
 
 {if condition="$fsc->stories"}
-   <div class="bloque">
-      <div id="stories">
-         {loop="$fsc->stories"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
-            {if condition="$value->media_item"}
+   <div>
+      {loop="$fsc->stories"}
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+         {if condition="$value->media_item"}
             <div class="image">{$value->media_item->show_image()}</div>
-            {else}
+            <h3>{$value->title}</h3>
+         {else}
+            <h3>{$value->title}</h3>
             <p>{$value->description()}</p>
-            {/if}
+         {/if}
+         <div class="timesince">
+            {$value->clics} clics
+            <span>{$value->timesince()}</span>
          </div>
-         <a href="{$path}/{$value->url()}"></a>
-         {/loop}
       </div>
+      <a href="{$path}/{$value->url()}"></a>
+      {/loop}
    </div>
 {else}
-   <div class="info">
+   <div class="alter">
       <h1>No se han encontrado noticias populares :(</h1>
       <p>
          Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente

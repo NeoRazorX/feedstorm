@@ -207,6 +207,12 @@ class suscription extends fs_model
       return $suslist;
    }
    
+   public function count4feed($fid)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      return $this->collection->find( array('feed_id' => $this->var2str($fid)) )->count();
+   }
+   
    public function cron_job()
    {
       

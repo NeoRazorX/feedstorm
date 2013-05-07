@@ -19,6 +19,7 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/feed_story.php';
+require_once 'model/suscription.php';
 require_once 'model/story.php';
 require_once 'model/story_media.php';
 require_once 'model/media_item.php';
@@ -121,6 +122,11 @@ class feed extends fs_model
       return ( substr($this->url, 0, 23) == 'http://www.meneame.net/' );
    }
    
+   public function reddit()
+   {
+      return ( substr($this->url, 0, 22) == 'http://www.reddit.com/' );
+   }
+   
    public function stories()
    {
       $feed_story = new feed_story();
@@ -133,122 +139,140 @@ class feed extends fs_model
       return $stories;
    }
    
+   public function suscriptors()
+   {
+      $suscription = new suscription();
+      return $suscription->count4feed( $this->get_id() );
+   }
+   
    public function read()
    {
       try
       {
          $ch = curl_init( $this->url );
+         $fp = fopen('tmp/'.$this->get_id().'.xml', 'wb');
+         curl_setopt($ch, CURLOPT_FILE, $fp);
+         curl_setopt($ch, CURLOPT_HEADER, 0);
          curl_setopt($ch, CURLOPT_TIMEOUT, 15);
-         curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-         curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
-         $html = curl_exec($ch);
-         curl_close($ch);
          
-         libxml_use_internal_errors(TRUE);
-         $xml = simplexml_load_string( $this->remove_bad_utf8($html) );
-         if( $xml )
+         if( !$this->reddit() )
          {
-            /// nos guardamos una copia del feed
-            if( file_exists("tmp/".$this->get_id().".xml") )
-               unlink("tmp/".$this->get_id().".xml");
-            $xml->saveXML("tmp/".$this->get_id().".xml");
-            
-            /// intentamos leer las noticias
-            $i = 0;
-            if( $xml->channel->item )
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+            curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+         }
+         
+         curl_exec($ch);
+         curl_close($ch);
+         fclose($fp);
+         
+         if( file_exists('tmp/'.$this->get_id().'.xml') )
+         {
+            libxml_use_internal_errors(TRUE);
+            $xml = simplexml_load_file('tmp/'.$this->get_id().'.xml');
+            if( $xml )
             {
-               foreach($xml->channel->item as $item)
+               /// intentamos leer las noticias
+               $i = 0;
+               if( $xml->channel->item )
                {
-                  if($i < FS_MAX_STORIES)
+                  foreach($xml->channel->item as $item)
                   {
-                     $this->new_story($item);
-                     $i++;
+                     if($i < FS_MAX_STORIES)
+                     {
+                        $this->new_story($item);
+                        $i++;
+                     }
+                     else
+                        break;
                   }
-                  else
-                     break;
                }
-            }
-            else if( $xml->item )
-            {
-               foreach($xml->item as $item)
+               else if( $xml->item )
                {
-                  if($i < FS_MAX_STORIES)
+                  foreach($xml->item as $item)
                   {
-                     $this->new_story($item);
-                     $i++;
+                     if($i < FS_MAX_STORIES)
+                     {
+                        $this->new_story($item);
+                        $i++;
+                     }
+                     else
+                        break;
                   }
-                  else
-                     break;
                }
-            }
-            else if( $xml->feed->entry )
-            {
-               foreach($xml->feed->entry as $item)
+               else if( $xml->feed->entry )
                {
-                  if($i < FS_MAX_STORIES)
+                  foreach($xml->feed->entry as $item)
                   {
-                     $this->new_story($item);
-                     $i++;
+                     if($i < FS_MAX_STORIES)
+                     {
+                        $this->new_story($item);
+                        $i++;
+                     }
+                     else
+                        break;
                   }
-                  else
-                     break;
                }
-            }
-            else if( $xml->entry )
-            {
-               foreach($xml->entry as $item)
+               else if( $xml->entry )
                {
-                  if($i < FS_MAX_STORIES)
+                  foreach($xml->entry as $item)
                   {
-                     $this->new_story($item);
-                     $i++;
+                     if($i < FS_MAX_STORIES)
+                     {
+                        $this->new_story($item);
+                        $i++;
+                     }
+                     else
+                        break;
                   }
-                  else
-                     break;
                }
+               else
+                  $this->new_error("Estructura irreconocible en el feed: ".$this->name);
+               
+               /// leemos el titulo del feed
+               if( $xml->channel->title )
+                  $this->name = (string)$xml->channel->title;
+               else if( $xml->title )
+               {
+                  foreach($xml->title as $item)
+                  {
+                     $this->name = (string)$item;
+                     break;
+                  }
+               }
+               /// leemos la descripción
+               if( $xml->channel->description )
+                  $this->description = (string)$xml->channel->description;
+               else if( $xml->description )
+               {
+                  foreach($xml->description as $item)
+                  {
+                     $this->description = (string)$item;
+                     break;
+                  }
+               }
+               
+               $this->strikes = 0;
             }
             else
-               $this->new_error("Estructura irreconocible en el feed: ".$this->name);
-            
-            /// leemos el titulo del feed
-            if( $xml->channel->title )
-               $this->name = (string)$xml->channel->title;
-            else if( $xml->title )
             {
-               foreach($xml->title as $item)
-               {
-                  $this->name = (string)$item;
-                  break;
-               }
+               $this->new_error("Imposible leer el xml.");
+               $this->strikes++;
             }
-            /// leemos la descripción
-            if( $xml->channel->description )
-               $this->description = (string)$xml->channel->description;
-            else if( $xml->description )
-            {
-               foreach($xml->description as $item)
-               {
-                  $this->description = (string)$item;
-                  break;
-               }
-            }
-            
-            $this->strikes = 0;
          }
          else
          {
-            $this->new_error("Imposible leer el feed: ".$this->name);
+            $this->new_error("Imposible leer el archivo: tmp/".$this->get_id().'.xml');
             $this->strikes++;
          }
       }
       catch(Exception $e)
       {
-         $this->new_error("Error al leer el feed: ".$this->name.'. '.$e);
+         $this->new_error("Error al leer el feed: ".$this->url.'. '.$e);
          $this->strikes++;
       }
       
       $this->last_check_date = time();
+      $this->suscriptors = $this->suscriptors();
       $this->save();
    }
    
@@ -269,6 +293,17 @@ class feed extends fs_model
             $story->link = (string)$element;
             $feed_story->link = (string)$item->link;
             break;
+         }
+      }
+      
+      /// ¿reddit?
+      if( $this->reddit() )
+      {
+         $links = array();
+         if( preg_match_all("/<a href=\"([^\"]*)\">\[link/", (string)$item->description, $links) )
+         {
+            $story->link = $links[1][0];
+            $feed_story->link = (string)$item->link;
          }
       }
       
@@ -362,7 +397,7 @@ class feed extends fs_model
                }
             }
          }
-         $story->set_description($description, $this->meneame());
+         $story->set_description( $this->remove_bad_utf8($description), $this->meneame());
          
          $story->save();
          $feed_story->story_id = $story->get_id();
@@ -388,7 +423,23 @@ class feed extends fs_model
                   if($mi->width > 0 AND $mi->height > 0)
                      $ratio = $mi->width / $mi->height;
                   
-                  if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
+                  if($story->link == $mi->url)
+                  {
+                     $story->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                     $story->save();
+                     break;
+                  }
+                  else if( !$story->media_id AND preg_match("#http://imgur.com/([a-zA-Z0-9]*)#", $story->link) )
+                  {
+                     $story->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                     $story->save();
+                     break;
+                  }
+                  else if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
                   {
                      $story->media_id = $mi->get_id();
                      $width = $mi->original_width;
@@ -538,9 +589,9 @@ class feed extends fs_model
             $f->delete();
             echo "\n * Eliminada la fuente ".$f->name.".\n";
          }
-         else if( $f->last_check_date < time() - 4000 )
+         else
          {
-            echo "\n * Procesando ".$f->name."...\n";
+            echo "\n * Procesando: tmp/".$f->get_id().".xml ...\n";
             $f->read();
             
             foreach($f->get_errors() as $e)

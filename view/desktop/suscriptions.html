@@ -1,24 +1,35 @@
 {include="desktop/header"}
 
 {if condition="$fsc->suscriptions"}
-<div class="bloque2">
-   <div class="title">Estas son tus suscripciones:</div>
-   <table class="lista">
+<div class="bloque">
+   <table width="100%">
       <tr>
-         <th align="left">Nombre + descripción</th>
-         <th align="left">Última actualización</th>
-         <th align="right">Suscriptores</th>
-      </tr>
-      {loop="$fsc->suscriptions"}
-      <tr>
-         <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
-         <td>{$value->last_update_timesince()}</td>
-         <td align="right">{$value->suscriptors()}</td>
-      </tr>
-      {/loop}
-      <tr>
-         <td colspan="3">
-            <a href="{$path}/index.php?page=feed_list">Añadir más fuentes...</a>
+         <td valign="top">
+            <div class="title">Estas son tus suscripciones:</div>
+            <table class="lista">
+               <tr>
+                  <th align="left">Nombre + descripción</th>
+                  <th align="left">Última actualización</th>
+                  <th align="right">Suscriptores</th>
+               </tr>
+               {loop="$fsc->suscriptions"}
+               <tr>
+                  <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
+                  <td>{$value->last_update_timesince()}</td>
+                  <td align="right">{$value->suscriptors()}</td>
+               </tr>
+               {/loop}
+               <tr>
+                  <td colspan="3">
+                     <a href="{$path}/index.php?page=feed_list">Añadir más fuentes...</a>
+                  </td>
+               </tr>
+            </table>
+         </td>
+         <td align="right" valign="top">
+            <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
+               <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
+            </a>
          </td>
       </tr>
    </table>

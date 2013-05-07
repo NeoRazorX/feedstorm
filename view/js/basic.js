@@ -103,12 +103,25 @@ function fs_go2url(url)
    window.location.href = url;
 }
 
+function fs_popup_iframe(url)
+{
+   $("#shadow_box").show();
+   $("#popups").html("<div id='popup2url' class='popup'><iframe src='"+url+"' width='800' height='1024'></iframe></div>");
+   $("#popup2url").css({
+      top: $(window).scrollTop()+15,
+      left: ($(window).width() - $("#popup2url").outerWidth())/2
+   });
+   $("#popup2url").show('fast');
+   $("#b_close_popup").css({
+      top: $(window).scrollTop()+5,
+      left: $("#popup2url").position().left - 15,
+      display: 'block'
+   });
+}
+
 $(document).ready(function() {
    $("#shadow_box").click(function() {
       fs_close_popups();
-   });
-   $("#b_top_menu").click(function() {
-      $("#top_menu").show();
    });
    $("#b_close_top_menu").click(function() {
       $("#top_menu").hide();

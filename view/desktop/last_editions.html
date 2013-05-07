@@ -13,20 +13,14 @@
                   y a continuación pulsar el botón <b>editar</b>.
                   <br/>
                   Y si encuentras algún fallo,
-                  <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
+                  <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
                </p>
                <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
             </td>
-            <td valign="top" align="right">
-               <div class="g-plusone" data-size="tall"></div>
-               <script type="text/javascript">
-                    window.___gcfg = {lang: 'es'};
-                    (function() {
-                      var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                      po.src = 'https://apis.google.com/js/plusone.js';
-                      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-                    })();
-               </script>
+            <td align="right" valign="top">
+               <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
+                  <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
+               </a>
             </td>
          </tr>
       </table>
@@ -44,20 +38,23 @@
       });
    </script>
    
-   <div class="bloque">
-      <div id="stories">
+   <div id="stories">
       {loop="$fsc->editions"}
          <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->votes} votos
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
       {/loop}
-      </div>
    </div>
 {else}
    <div class="info">

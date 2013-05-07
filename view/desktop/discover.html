@@ -12,7 +12,6 @@
                   Noticias de cualquier fuente. ¡Para cuando te aburras!
                </p>
                <ul>
-                  <li>Si quieres leer más sobre una noticia, haz clic sobre ella.</li>
                   <li>
                      Si alguna noticia está ilustrada con una imagen que no se corresponde o no
                      te gusta como está redactada, haz clic sobre la noticia y pulsa el botón
@@ -20,21 +19,15 @@
                   </li>
                   <li>
                      Y si encuentras algún fallo,
-                     <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
+                     <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
                   </li>
                </ul>
                <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Vale, ya lo pillo</a></p>
             </td>
-            <td valign="top" align="right">
-               <div id="fb-root"></div>
-               <div class="fb-like" data-send="true" data-layout="box_count" data-width="90" data-show-faces="false"></div>
-               <script>(function(d, s, id) {
-                    var js, fjs = d.getElementsByTagName(s)[0];
-                    if (d.getElementById(id)) return;
-                    js = d.createElement(s); js.id = id;
-                    js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
-                    fjs.parentNode.insertBefore(js, fjs);
-               }(document, 'script', 'facebook-jssdk'));</script>
+            <td align="right" valign="top">
+               <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
+                  <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
+               </a>
             </td>
          </tr>
       </table>
@@ -52,20 +45,23 @@
       });
    </script>
    
-   <div class="bloque">
-      <div id="stories">
+   <div id="stories">
       {loop="$fsc->stories"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->clics} clics
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
       {/loop}
-      </div>
    </div>
 {else}
    <div class="info">

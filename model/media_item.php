@@ -163,116 +163,125 @@ class media_item extends fs_model
    {
       $mlist = array();
       
-      if( $item )
-      {
-         $text = '';
-         if( $item->description )
-            $text .= (string)$item->description;
-         if( $item->content )
-            $text .= (string)$item->content;
-         else if( $item->summary )
-            $text .= (string)$item->summary;
-         else
-         {
-            /// intentamos leer el espacio de nombres atom
-            foreach($item->children('atom', TRUE) as $element)
-            {
-               if($element->getName() == 'summary')
-               {
-                  $text .= (string)$element;
-                  break;
-               }
-            }
-            foreach($item->children('content', TRUE) as $element)
-            {
-               if($element->getName() == 'encoded')
-               {
-                  $text .= (string)$element;
-                  break;
-               }
-            }
-         }
-      }
-      
-      $urls = $this->find_urls($text);
-      $urls[] = $link;
-      if( count($urls) < 10 )
-      {
-         /// buscamos más imágenes en el link, después descartamos
-         $ch0 = curl_init( $link );
-         curl_setopt($ch0, CURLOPT_TIMEOUT, 15);
-         curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
-         curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
-         curl_setopt($ch0, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
-         $html = curl_exec($ch0);
-         curl_close($ch0);
-         foreach($this->find_urls($html) as $url)
-         {
-            if( !in_array($url, $urls) )
-               $urls[] = $url;
-         }
-      }
-      foreach($urls as $url)
+      if( $this->is_valid_image_url($link) )
       {
          $mi = new media_item();
+         $mi->url = $link;
+         $mi->type = 'image';
+         $mlist[] = $mi;
+      }
+      else
+      {
+         if( $item )
+         {
+            $text = '';
+            if( $item->description )
+               $text .= (string)$item->description;
+            if( $item->content )
+               $text .= (string)$item->content;
+            else if( $item->summary )
+               $text .= (string)$item->summary;
+            else
+            {
+               /// intentamos leer el espacio de nombres atom
+               foreach($item->children('atom', TRUE) as $element)
+               {
+                  if($element->getName() == 'summary')
+                  {
+                     $text .= (string)$element;
+                     break;
+                  }
+               }
+               foreach($item->children('content', TRUE) as $element)
+               {
+                  if($element->getName() == 'encoded')
+                  {
+                     $text .= (string)$element;
+                     break;
+                  }
+               }
+            }
+         }
          
-         if( $this->is_valid_image_url($url) )
+         $urls = $this->find_urls($text);
+         $urls[] = $link;
+         if( count($urls) < 10 )
          {
-            $mi->url = $url;
-            $mi->type = 'image';
-            $mlist[] = $mi;
+            /// buscamos más imágenes en el link, después descartamos
+            $ch0 = curl_init( $link );
+            curl_setopt($ch0, CURLOPT_TIMEOUT, 15);
+            curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch0, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+            $html = curl_exec($ch0);
+            curl_close($ch0);
+            foreach($this->find_urls($html) as $url)
+            {
+               if( !in_array($url, $urls) )
+                  $urls[] = $url;
+            }
          }
-         else if( substr($url, 0, 29) == 'http://www.youtube.com/embed/' )
+         foreach($urls as $url)
          {
-            $mi->type = 'youtube';
-            $parts = explode('/', $url);
-            $mi->filename = $this->clean_youtube_id($parts[4]);
-            $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
-            $mi->original_width = $mi->width = 225;
-            $mi->original_height = $mi->height = 127;
-            $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
-            $mlist[] = $mi;
-         }
-         else if( substr($url, 0, 23) == 'http://www.youtube.com/' OR substr($url, 0, 24) == 'https://www.youtube.com/' )
-         {
-            $my_array_of_vars = array();
-            parse_str( parse_url($url, PHP_URL_QUERY), $my_array_of_vars);
-            if( isset($my_array_of_vars['v']) )
+            $mi = new media_item();
+            
+            if( $this->is_valid_image_url($url) )
+            {
+               $mi->url = $url;
+               $mi->type = 'image';
+               $mlist[] = $mi;
+            }
+            else if( substr($url, 0, 29) == 'http://www.youtube.com/embed/' )
             {
                $mi->type = 'youtube';
-               $mi->filename = $this->clean_youtube_id($my_array_of_vars['v']);
+               $parts = explode('/', $url);
+               $mi->filename = $this->clean_youtube_id($parts[4]);
                $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
                $mi->original_width = $mi->width = 225;
                $mi->original_height = $mi->height = 127;
                $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
                $mlist[] = $mi;
             }
-         }
-         else if( substr($url, 0, 17) == 'http://vimeo.com/' )
-         {
-            $mi->type = 'vimeo';
-            $parts = explode('/', $url);
-            $mi->filename = $this->clean_youtube_id($parts[3]);
-            if( is_numeric($mi->filename) )
+            else if( substr($url, 0, 23) == 'http://www.youtube.com/' OR substr($url, 0, 24) == 'https://www.youtube.com/' )
             {
-               $mi->url = 'http://vimeo.com/'.$mi->filename;
-               $mi->original_width = $mi->width = 225;
-               $mi->original_height = $mi->height = 127;
-               try
+               $my_array_of_vars = array();
+               parse_str( parse_url($url, PHP_URL_QUERY), $my_array_of_vars);
+               if( isset($my_array_of_vars['v']) )
                {
-                  $hash = unserialize( file_get_contents('http://vimeo.com/api/v2/video/'.$mi->filename.'.php') );
-                  $mi->thumbnail_url = $hash[0]['thumbnail_medium'];
+                  $mi->type = 'youtube';
+                  $mi->filename = $this->clean_youtube_id($my_array_of_vars['v']);
+                  $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
+                  $mi->original_width = $mi->width = 225;
+                  $mi->original_height = $mi->height = 127;
+                  $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
                   $mlist[] = $mi;
                }
-               catch(Exception $e)
+            }
+            else if( substr($url, 0, 17) == 'http://vimeo.com/' )
+            {
+               $mi->type = 'vimeo';
+               $parts = explode('/', $url);
+               $mi->filename = $this->clean_youtube_id($parts[3]);
+               if( is_numeric($mi->filename) )
                {
-                  $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$url."\n".$e);
+                  $mi->url = 'http://vimeo.com/'.$mi->filename;
+                  $mi->original_width = $mi->width = 225;
+                  $mi->original_height = $mi->height = 127;
+                  try
+                  {
+                     $hash = unserialize( file_get_contents('http://vimeo.com/api/v2/video/'.$mi->filename.'.php') );
+                     $mi->thumbnail_url = $hash[0]['thumbnail_medium'];
+                     $mlist[] = $mi;
+                  }
+                  catch(Exception $e)
+                  {
+                     $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$url."\n".$e);
+                  }
                }
             }
-            else
-               $this->new_error('Error al obtener el id de '.$url.' ID obtenido: '.$mi->filename);
          }
       }
+      
       return $mlist;
    }
    

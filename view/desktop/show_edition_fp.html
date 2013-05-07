@@ -105,23 +105,25 @@
       });
 </script>
 
-<div class="bloque">
-   <div class="title">Otras ediciones:</div>
-   <div id="stories">
-      {loop="$fsc->editions"}
-         {if condition="$value->get_id()!=$fsc->edition->get_id()"}
+<div id="stories">
+   {loop="$fsc->editions"}
+      {if condition="$value->get_id()!=$fsc->edition->get_id()"}
          <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->votes} votos
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
-         {/if}
-      {/loop}
-   </div>
+      {/if}
+   {/loop}
 </div>
 {/if}
 

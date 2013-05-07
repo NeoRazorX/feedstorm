@@ -1,39 +1,6 @@
 {include="desktop/header"}
 
 {if condition="$fsc->stories"}
-   {if condition="$fsc->show_info"}
-   <div class="info">
-      <table width="100%">
-         <tr>
-            <td>
-               <h1>¿Esto qué es?</h1>
-               <p>
-                  Aquí aparecen las noticias más populares. Noticias de cualquier fuente,
-                  aunque no estés suscrito, así no te pierdes nada.
-               </p>
-               <ul>
-                  <li>Si quieres leer más sobre una noticia, haz clic sobre ella.</li>
-                  <li>
-                     Si alguna noticia está ilustrada con una imagen que no se corresponde o no
-                     te gusta como está redactada, haz clic sobre la noticia y pulsa el botón
-                     <b>editar</b> para modificarla.
-                  </li>
-                  <li>
-                     Y si encuentras algún fallo,
-                     <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
-                  </li>
-               </ul>
-               <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
-            </td>
-            <td valign="top" align="right">
-               <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-related="neorazorx">Tweet</a>
-               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-            </td>
-         </tr>
-      </table>
-   </div>
-   {/if}
-   
    <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function() {
@@ -45,20 +12,23 @@
       });
    </script>
    
-   <div class="bloque">
-      <div id="stories">
-         {loop="$fsc->stories"}
+   <div id="stories">
+      {loop="$fsc->stories"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->clics} clics
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
-         {/loop}
-      </div>
+      {/loop}
    </div>
 {else}
    <div class="info">

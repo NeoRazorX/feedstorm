@@ -1,30 +1,6 @@
 {include="desktop/header"}
 
 {if condition="$fsc->stories"}
-   {if condition="$fsc->show_info"}
-   <div class="info">
-      <h1>¿Cómo funciona esto?</h1>
-      <p>
-         Aquí aparecen las noticias de las fuentes a las que te has
-         <a href="{$path}/index.php?page=suscription">suscrito</a>.
-         Recuerda, desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
-      </p>
-      <ul>
-         <li>Si quieres leer más sobre una noticia, haz clic sobre ella.</li>
-         <li>
-            Si alguna noticia está ilustrada con una imagen que no se corresponde o no
-            te gusta como está redactada, haz clic sobre la noticia y pulsa el botón
-            <b>editar</b> para modificarla.
-         </li>
-         <li>
-            Y si encuentras algún fallo,
-            <a target="_blank" href="https://github.com/NeoRazorX/feedstorm/issues">avísame!</a>
-         </li>
-      </ul>
-      <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Ya lo he pillado</a></p>
-   </div>
-   {/if}
-   
    <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
    $(document).ready(function() {
@@ -36,21 +12,34 @@
    });
    </script>
    
-   <div class="bloque">
-      <div id="stories">
+   <div id="stories">
       {loop="$fsc->stories"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
                <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
+               <h1>{$value->title}</h1>
                <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->clics} clics
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
       {/loop}
-      </div>
    </div>
 {else}
+   <div class="info">
+      <h1>No se han encontrado noticias para tí :(</h1>
+      <p>
+         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
+         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
+         También puedes buscar noticias interesantes desde la sección
+         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+      </p>
+   </div>
+   
    {if condition="$fsc->popular OR $fsc->editions"}
    <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
@@ -63,58 +52,73 @@
       });
    </script>
    
-   <div class="bloque">
-      <div class="title">Noticias populares:</div>
-      <div id="stories">
-         {loop="$fsc->editions"}
+   <div id="stories">
+      {loop="$fsc->editions"}
          <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->votes} votos
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
-         {/loop}
-         {loop="$fsc->popular"}
+      {/loop}
+      {loop="$fsc->popular"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->clics} clics
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
-         {/loop}
-      </div>
+      {/loop}
    </div>
    {/if}
 {/if}
 
-<div class="bloque2">
-   <div class="title">
-      Últimos cambios en {$name} {$fsc->version()}:
-   </div>
-   <ul>
-      <li>
-         30/03/2013:
-         <ul>
-            <li>Mejorado el CSS.</li>
-            <li>El botón abrir enlace usa el enlace de la noticia, en lugar de redirigir.</li>
-            <li>Los popups ahora incluyen un botón cerrar.</li>
-            <li>La página de estadísticas ya informa de la versión de FeedStorm y MongoDB.</li>
-            <li>Mejorada la gestión de errores con noticias eliminadas.</li>
-            <li>Ya no se añaden noticias antiguas (con un tiempo de vida mayor que FS_MAX_AGE).</li>
-            <li>Solucionados los problemas con caracteres utf8 defectuosos en algunas fuentes.</li>
-            <li>
-               La página principal (cuando no tienes fuentes) y la not_found ahora muestran
-               una mezcla de ediciones y noticias populares.
-            </li>
-         </ul>
-      </li>
-   </ul>
+<div class="info">
+   <table width="100%">
+      <tr>
+         <td align="right" valign="top">
+            <img class="face" src="{$path}/view/img/wooow.png" alt="wooow"/>
+         </td>
+         <td>
+            <h1>Últimos cambios en {$name} {$fsc->version()}:</h1>
+            <ul>
+               <li>
+                  07/05/2013:
+                  <ul>
+                     <li>Mejorado el CSS.</li>
+                     <li>El botón abrir enlace usa el enlace de la noticia, en lugar de redirigir.</li>
+                     <li>Los popups ahora incluyen un botón cerrar.</li>
+                     <li>La página de estadísticas ya informa de la versión de FeedStorm y MongoDB.</li>
+                     <li>Mejorada la gestión de errores con noticias eliminadas.</li>
+                     <li>Ya no se añaden noticias antiguas (con un tiempo de vida mayor que FS_MAX_AGE).</li>
+                     <li>Solucionados los problemas con caracteres utf8 defectuosos en algunas fuentes.</li>
+                     <li>
+                        La página principal (cuando no tienes fuentes) y la not_found ahora muestran
+                        una mezcla de ediciones y noticias populares.
+                     </li>
+                     <li>Añadida página de comentarios.</li>
+                  </ul>
+               </li>
+            </ul>
+         </td>
+      </tr>
+   </table>
 </div>
 
 {include="desktop/footer"}

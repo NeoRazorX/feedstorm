@@ -12,26 +12,38 @@
    });
 </script>
 
-<div class="info">
+<div class="bloque">
    <h1>Editar noticia:</h1>
    Desde aquí puedes editar la noticia para seleccionar una imágen más apropiada,
    corregir faltas de ortografía, mejorar la redacción, etc ... pero no te
    emociones porque no sustituye a la noticia original. Esta versión corregida
    aparecerá en la sección <b>ediciones</b>.
-</div>
-<div class="bloque">
+   
+   <br/><br/>
+   
    <form action="{$fsc->url()}" method="post">
       <table width="100%">
          <tr>
-            <td width="110" align="right"><b>Nuevo título:</b></td>
-            <td><input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60"/></td>
+            <td width="110" align="right"><b>¿Eres humano?</b> &nbsp;</td>
+            <td>
+               <input id="r_human_yes" type="radio" name="human" value="POZI"/>
+               <label for="r_human_yes">Si</label>
+               <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
+               <label for="r_human_no">No</label>
+            </td>
             <td width="100" align="center"><input type="submit" value="Guardar"/></td>
          </tr>
          <tr>
-            <td align="right"><b>Descripción:</b></td>
+            <td width="110" align="right"><b>Nuevo título:</b> &nbsp;</td>
+            <td><input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60"/></td>
+         </tr>
+         <tr>
+            <td align="right"><b>Descripción:</b> &nbsp;</td>
             <td><textarea name="description" rows="6">{$fsc->story_edition->description()}</textarea></td>
          </tr>
       </table>
+      
+      <h2>Ahora selecciona una imágen:</h2>
       
       <div id="media_items">
          <div class="media_item2">

@@ -225,8 +225,8 @@ class story extends fs_model
    
    public function save()
    {
-      $this->title = $this->true_text_break($this->title, 149, 15);
-      $this->description = $this->true_text_break($this->description, 499, 30);
+      $this->title = $this->true_text_break($this->title, 149, 18);
+      $this->description = $this->true_text_break($this->description, 499, 25);
       $this->media_id = $this->var2str($this->media_id);
       $this->calculate_popularity();
       

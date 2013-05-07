@@ -139,7 +139,7 @@ abstract class fs_model
       $special_char = FALSE;
       while( $pos0 < strlen($str) )
       {
-         $char = substr($str, $pos0, 1);
+         $char = mb_substr($str, $pos0, 1);
          
          if($special_char)
          {
@@ -155,7 +155,7 @@ abstract class fs_model
                $width = 0;
             else if($width >= $max_width)
             {
-               $str = substr($str, 0, $pos0).'&#8203;'.substr($str, $pos0, strlen($str) - $pos0 );
+               $str = mb_substr($str, 0, $pos0).'&#8203;'.mb_substr($str, $pos0, strlen($str) - $pos0 );
                $pos0 += 6;
                $width = 0;
             }
@@ -167,6 +167,7 @@ abstract class fs_model
          
          $pos0++;
       }
+      
       return $str;
    }
    
@@ -204,7 +205,8 @@ abstract class fs_model
    
    public function random_string($length = 10)
    {
-      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, $length);
+      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+              0, $length);
    }
    
    public function var2str($var)
@@ -242,26 +244,14 @@ abstract class fs_model
       /// Reemplazamos las putas comillas
       $str = str_replace('“', '"', $str);
       $str = str_replace('”', '"', $str);
+      $str = str_replace('‘', '"', $str);
+      $str = str_replace('’', '"', $str);
       $str = str_replace('&#8220;', '"', $str);
       $str = str_replace('&#8221;', '"', $str);
       
-      /// Eliminamos los hijos de puta de los caracteres no válidos
-      $regex = <<<'END'
-/
-  (
-    (?: [\x00-\x7F]                 # single-byte sequences   0xxxxxxx
-    |   [\xC0-\xDF][\x80-\xBF]      # double-byte sequences   110xxxxx 10xxxxxx
-    |   [\xE0-\xEF][\x80-\xBF]{2}   # triple-byte sequences   1110xxxx 10xxxxxx * 2
-    |   [\xF0-\xF7][\x80-\xBF]{3}   # quadruple-byte sequence 11110xxx 10xxxxxx * 3 
-    ){1,100}                        # ...one or more times
-  )
-| .                                 # anything else
-/x
-END;
-      preg_replace($regex, '$1', $str);
-      
       /// convertimos a utf8
-      return iconv('', 'UTF-8//IGNORE//TRANSLIT', $str);
+      ini_set('mbstring.substitute_character', "none");
+      return mb_convert_encoding($str, 'UTF-8', 'auto');
    }
    
    abstract public function get($id);

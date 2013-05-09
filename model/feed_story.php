@@ -266,7 +266,7 @@ class feed_story extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos feed_stories antiguos...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE

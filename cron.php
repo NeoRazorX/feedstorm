@@ -32,6 +32,13 @@ else
    
    if( !defined('FS_MAX_AGE') )
       define('FS_MAX_AGE', 2592000);
+   if( !defined('FS_TIMEOUT') )
+      define('FS_TIMEOUT', 3);
+   if( !defined('FS_MAX_DOWNLOADS') )
+      define('FS_MAX_DOWNLOADS', 5);
+   
+   $tiempo = explode(' ', microtime());
+   $uptime = $tiempo[1] + $tiempo[0];
    
    require_once 'base/fs_mongo.php';
    require_once 'model/feed.php';
@@ -79,7 +86,8 @@ else
    
    $mongo->close();
    
-   echo "\n";
+   $tiempo = explode(' ', microtime());
+   echo "\nTiempo de ejecución: ".number_format($tiempo[1] + $tiempo[0] - $uptime, 3)." s\n";
 }
 
 ?>

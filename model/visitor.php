@@ -220,7 +220,7 @@ class visitor extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos usuarios inactivos...";
          foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-FS_MAX_AGE)))->limit(FS_MAX_STORIES) as $v)

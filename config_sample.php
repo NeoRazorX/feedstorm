@@ -36,4 +36,19 @@ define('FS_MAX_STORIES', 50);
  */
 define('FS_MAX_AGE', 2592000);
 
+/*
+ * Timeout de las conexiones curl.
+ * El número de segundos máximo que se va a esperar antes de abortar
+ * la descarga. Cuanto mayor el número, más tarda.
+ */
+define('FS_TIMEOUT', 3);
+
+/*
+ * Cuando se comprueba una fuente, se extraen las historias, y para
+ * cada una se buscan imáganes asociadas. Pues esta constante
+ * define el número máximo de imáganes descargadas de una sóla vez.
+ * Cuanto mayor el número, más tarda.
+ */
+define('FS_MAX_DOWNLOADS', 5);
+
 ?>

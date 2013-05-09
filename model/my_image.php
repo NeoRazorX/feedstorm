@@ -30,16 +30,28 @@ class my_image
       try
       {
          $image_info = getimagesize($filename);
-         $this->image_type = $image_info[2];
          
-         if( $this->image_type == IMAGETYPE_JPEG )
-            $this->image = imagecreatefromjpeg($filename);
-         else if( $this->image_type == IMAGETYPE_GIF )
-            $this->image = imagecreatefromgif($filename);
-         else if( $this->image_type == IMAGETYPE_PNG )
-            $this->image = imagecreatefrompng($filename);
-         else
+         if($image_info[0] == 0 AND $image_info[1] == 0)
+         {
             $this->image = NULL;
+            $this->image_type = NULL;
+         }
+         else
+         {
+            $this->image_type = $image_info[2];
+            
+            if( $this->image_type == IMAGETYPE_JPEG )
+               $this->image = imagecreatefromjpeg($filename);
+            else if( $this->image_type == IMAGETYPE_GIF )
+               $this->image = imagecreatefromgif($filename);
+            else if( $this->image_type == IMAGETYPE_PNG )
+               $this->image = imagecreatefrompng($filename);
+            else
+            {
+               $this->image = NULL;
+               $this->image_type = NULL;
+            }
+         }
       }
       catch(Exception $e)
       {
@@ -50,7 +62,7 @@ class my_image
    
    function save($filename=FALSE, $image_type=IMAGETYPE_JPEG, $compression=75, $permissions=null)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          if( !$filename )
             $filename = $this->path;
@@ -69,7 +81,7 @@ class my_image
    
    function output($image_type=IMAGETYPE_JPEG)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          if( $image_type == IMAGETYPE_JPEG )
             imagejpeg($this->image);
@@ -98,41 +110,41 @@ class my_image
    
    function resizeToHeight($height)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          $ratio = $height / $this->getHeight();
          $width = $this->getWidth() * $ratio;
-         $this->resize($width,$height);
+         $this->resize($width, $height);
       }
    }
    
    function resizeToWidth($width)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          $ratio = $width / $this->getWidth();
          $height = $this->getheight() * $ratio;
-         $this->resize($width,$height);
+         $this->resize($width, $height);
       }
    }
    
    function scale($scale)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          $width = $this->getWidth() * $scale/100;
          $height = $this->getheight() * $scale/100;
-         $this->resize($width,$height);
+         $this->resize($width, $height);
       }
    }
    
    function resize($width,$height)
    {
-      if( !is_null($this->image) )
+      if( isset($this->image) )
       {
          $new_image = imagecreatetruecolor($width, $height);
          
-         if( $this->image_type == IMAGETYPE_GIF || $this->image_type == IMAGETYPE_PNG )
+         if($this->image_type == IMAGETYPE_GIF || $this->image_type == IMAGETYPE_PNG)
          {
             $current_transparent = imagecolortransparent($this->image);
             
@@ -143,7 +155,7 @@ class my_image
                imagefill($new_image, 0, 0, $current_transparent);
                imagecolortransparent($new_image, $current_transparent);
             }
-            else if( $this->image_type == IMAGETYPE_PNG)
+            else if($this->image_type == IMAGETYPE_PNG)
             {
                imagealphablending($new_image, false);
                $color = imagecolorallocatealpha($new_image, 0, 0, 0, 127);

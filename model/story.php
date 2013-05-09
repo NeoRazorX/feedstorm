@@ -144,28 +144,7 @@ class story extends fs_model
    
    public function description($width=300)
    {
-      if( strlen($this->description) > $width )
-         return substr($this->description, 0, $width).'...';
-      else
-         return $this->description;
-   }
-   
-   public function set_description($desc, $meneame=FALSE)
-   {
-      if( $meneame )
-      {
-         $aux = '';
-         for($i=0; $i<strlen($desc); $i++)
-         {
-            if( substr($desc, $i, 4) == '</p>' )
-               break;
-            else
-               $aux .= substr($desc, $i, 1);
-         }
-         $desc = $aux;
-      }
-      
-      $this->description = strip_tags($desc);
+      return $this->true_text_break($this->description, $width);
    }
    
    private function calculate_popularity()
@@ -308,7 +287,7 @@ class story extends fs_model
       {
          if($i < FS_MAX_STORIES)
          {
-            if( rand(0, 3) == 0 )
+            if( mt_rand(0, 3) == 0 )
             {
                $stlist[] = new story($s);
                $i++;
@@ -322,7 +301,7 @@ class story extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos historias antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE

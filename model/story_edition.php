@@ -129,8 +129,8 @@ class story_edition extends fs_model
    
    public function description($width=300)
    {
-      if( strlen($this->description) > $width )
-         return substr($this->description, 0, $width).'...';
+      if( mb_strlen($this->description) > $width )
+         return mb_substr($this->description, 0, $width).'...';
       else
          return $this->description;
    }
@@ -266,7 +266,7 @@ class story_edition extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos ediciones antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE

@@ -76,6 +76,14 @@ class media_item extends fs_model
       $this->collection->ensureIndex('url');
    }
    
+   public function ratio()
+   {
+      if($this->width > 0 AND $this->height > 0)
+         return($this->width / $this->height);
+      else
+         return 0;
+   }
+   
    public function show_image()
    {
       if($this->type == 'image')
@@ -159,7 +167,7 @@ class media_item extends fs_model
          return '';
    }
    
-   public function find_media($item, $link)
+   public function find_media($item, $link, $search_link=TRUE)
    {
       $mlist = array();
       
@@ -169,6 +177,57 @@ class media_item extends fs_model
          $mi->url = $link;
          $mi->type = 'image';
          $mlist[] = $mi;
+      }
+      else if( mb_substr($link, 0, 29) == 'http://www.youtube.com/embed/' )
+      {
+         $mi = new media_item();
+         $mi->type = 'youtube';
+         $parts = explode('/', $link);
+         $mi->filename = $this->clean_youtube_id($parts[4]);
+         $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
+         $mi->original_width = $mi->width = 225;
+         $mi->original_height = $mi->height = 127;
+         $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
+         $mlist[] = $mi;
+      }
+      else if( mb_substr($link, 0, 23) == 'http://www.youtube.com/' OR mb_substr($link, 0, 24) == 'https://www.youtube.com/' )
+      {
+         $my_array_of_vars = array();
+         parse_str( parse_url($link, PHP_URL_QUERY), $my_array_of_vars);
+         if( isset($my_array_of_vars['v']) )
+         {
+            $mi = new media_item();
+            $mi->type = 'youtube';
+            $mi->filename = $this->clean_youtube_id($my_array_of_vars['v']);
+            $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
+            $mi->original_width = $mi->width = 225;
+            $mi->original_height = $mi->height = 127;
+            $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
+            $mlist[] = $mi;
+         }
+      }
+      else if( mb_substr($link, 0, 17) == 'http://vimeo.com/' )
+      {
+         $mi = new media_item();
+         $mi->type = 'vimeo';
+         $parts = explode('/', $link);
+         $mi->filename = $this->clean_youtube_id($parts[3]);
+         if( is_numeric($mi->filename) )
+         {
+            $mi->url = 'http://vimeo.com/'.$mi->filename;
+            $mi->original_width = $mi->width = 225;
+            $mi->original_height = $mi->height = 127;
+            try
+            {
+               $hash = unserialize( file_get_contents('http://vimeo.com/api/v2/video/'.$mi->filename.'.php') );
+               $mi->thumbnail_url = $hash[0]['thumbnail_medium'];
+               $mlist[] = $mi;
+            }
+            catch(Exception $e)
+            {
+               $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$link."\n".$e);
+            }
+         }
       }
       else
       {
@@ -204,12 +263,12 @@ class media_item extends fs_model
          }
          
          $urls = $this->find_urls($text);
-         $urls[] = $link;
-         if( count($urls) < 10 )
+         
+         /// buscamos más imágenes en el link, después descartamos
+         if($search_link)
          {
-            /// buscamos más imágenes en el link, después descartamos
             $ch0 = curl_init( $link );
-            curl_setopt($ch0, CURLOPT_TIMEOUT, 15);
+            curl_setopt($ch0, CURLOPT_TIMEOUT, FS_TIMEOUT);
             curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
             curl_setopt($ch0, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
@@ -221,6 +280,7 @@ class media_item extends fs_model
                   $urls[] = $url;
             }
          }
+         
          foreach($urls as $url)
          {
             $mi = new media_item();
@@ -231,7 +291,7 @@ class media_item extends fs_model
                $mi->type = 'image';
                $mlist[] = $mi;
             }
-            else if( substr($url, 0, 29) == 'http://www.youtube.com/embed/' )
+            else if( mb_substr($url, 0, 29) == 'http://www.youtube.com/embed/' )
             {
                $mi->type = 'youtube';
                $parts = explode('/', $url);
@@ -242,7 +302,7 @@ class media_item extends fs_model
                $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
                $mlist[] = $mi;
             }
-            else if( substr($url, 0, 23) == 'http://www.youtube.com/' OR substr($url, 0, 24) == 'https://www.youtube.com/' )
+            else if( mb_substr($url, 0, 23) == 'http://www.youtube.com/' OR mb_substr($url, 0, 24) == 'https://www.youtube.com/' )
             {
                $my_array_of_vars = array();
                parse_str( parse_url($url, PHP_URL_QUERY), $my_array_of_vars);
@@ -257,7 +317,7 @@ class media_item extends fs_model
                   $mlist[] = $mi;
                }
             }
-            else if( substr($url, 0, 17) == 'http://vimeo.com/' )
+            else if( mb_substr($url, 0, 17) == 'http://vimeo.com/' )
             {
                $mi->type = 'vimeo';
                $parts = explode('/', $url);
@@ -289,9 +349,9 @@ class media_item extends fs_model
    {
       $new_yid = '';
       $yid = trim($yid);
-      for($i=0; $i<strlen($yid); $i++)
+      for($i = 0; $i < mb_strlen($yid); $i++)
       {
-         $aux = substr($yid, $i, 1);
+         $aux = mb_substr($yid, $i, 1);
          if( preg_match("#[a-zA-Z0-9\-_]#", $aux) )
             $new_yid .= $aux;
          else
@@ -324,23 +384,23 @@ class media_item extends fs_model
       $status = TRUE;
       $extensions = array('.png', '.PNG', '.jpg', '.JPG', 'jpeg', 'JPEG', '.gif', '.GIF');
       
-      if( substr($url, 0, 4) != 'http' )
+      if( mb_substr($url, 0, 4) != 'http' )
          $status = FALSE;
-      else if( strlen($url) > 200 )
+      else if( mb_strlen($url) > 200 )
          $status = FALSE;
-      else if( strstr($url, '/favicon.') )
+      else if( mb_strstr($url, '/favicon.') )
          $status = FALSE;
-      else if( strstr($url, 'doubleclick.net') )
+      else if( mb_strstr($url, 'doubleclick.net') )
          $status = FALSE;
-      else if( substr($url, 0, 10) == 'http://ad.' )
+      else if( mb_substr($url, 0, 10) == 'http://ad.' )
          $status = FALSE;
-      else if( strstr($url, '/avatar') )
+      else if( mb_strstr($url, '/avatar') )
          $status = FALSE;
-      else if( substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
+      else if( mb_substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
          $status = FALSE;
-      else if( substr($url, 0, 26) == 'http://publicidadinternet.' )
+      else if( mb_substr($url, 0, 26) == 'http://publicidadinternet.' )
          $status = FALSE;
-      else if( !in_array(substr($url, -4), $extensions) )
+      else if( !in_array(mb_substr($url, -4), $extensions) )
          $status = FALSE;
       
       return $status;
@@ -363,7 +423,7 @@ class media_item extends fs_model
             $fp = fopen('tmp/images/'.$this->filename, 'wb');
             curl_setopt($ch1, CURLOPT_FILE, $fp);
             curl_setopt($ch1, CURLOPT_HEADER, 0);
-            curl_setopt($ch1, CURLOPT_TIMEOUT, 15);
+            curl_setopt($ch1, CURLOPT_TIMEOUT, FS_TIMEOUT);
             curl_exec($ch1);
             curl_close($ch1);
             fclose($fp);
@@ -377,11 +437,8 @@ class media_item extends fs_model
                
                if($image->getWidth() > 100 AND $image->getHeight() > 80)
                {
-                  if($image->getWidth() > 225)
-                  {
-                     $image->resizeToWidth(225);
-                     $image->save();
-                  }
+                  $image->resizeToWidth(225);
+                  $image->save();
                   $this->height = $image->getHeight();
                   $this->width = $image->getWidth();
                   $status = TRUE;
@@ -415,7 +472,7 @@ class media_item extends fs_model
             $fp = fopen('tmp/images/'.$this->filename, 'wb');
             curl_setopt($ch1, CURLOPT_FILE, $fp);
             curl_setopt($ch1, CURLOPT_HEADER, 0);
-            curl_setopt($ch1, CURLOPT_TIMEOUT, 15);
+            curl_setopt($ch1, CURLOPT_TIMEOUT, FS_TIMEOUT);
             curl_exec($ch1);
             curl_close($ch1);
             fclose($fp);
@@ -428,11 +485,8 @@ class media_item extends fs_model
                $this->original_height = $image->getHeight();
                if($image->getWidth() > 100 AND $image->getHeight() > 80)
                {
-                  if($image->getWidth() > 225)
-                  {
-                     $image->resizeToWidth(225);
-                     $image->save();
-                  }
+                  $image->resizeToWidth(225);
+                  $image->save();
                   $this->height = $image->getHeight();
                   $this->width = $image->getWidth();
                }
@@ -537,7 +591,7 @@ class media_item extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          $DIR = 'tmp/images/';
          if( file_exists($DIR) )

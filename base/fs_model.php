@@ -137,7 +137,7 @@ abstract class fs_model
       $pos0 = 0;
       $width = 0;
       $special_char = FALSE;
-      while( $pos0 < strlen($str) )
+      while( $pos0 < mb_strlen($str) )
       {
          $char = mb_substr($str, $pos0, 1);
          
@@ -155,7 +155,7 @@ abstract class fs_model
                $width = 0;
             else if($width >= $max_width)
             {
-               $str = mb_substr($str, 0, $pos0).'&#8203;'.mb_substr($str, $pos0, strlen($str) - $pos0 );
+               $str = mb_substr($str, 0, $pos0).'&#8203;'.mb_substr($str, $pos0, mb_strlen($str) - $pos0 );
                $pos0 += 6;
                $width = 0;
             }
@@ -187,7 +187,7 @@ abstract class fs_model
       
       foreach(explode(' ', $desc) as $aux)
       {
-         if( strlen($description.' '.$aux) < $max_t_width-3 )
+         if( mb_strlen($description.' '.$aux) < $max_t_width-3 )
          {
             if($description == '')
                $description = $aux;
@@ -197,7 +197,7 @@ abstract class fs_model
          else
             break;
       }
-      if( strlen($description) < strlen($desc) )
+      if( mb_strlen($description) < mb_strlen($desc) )
          $description .= '...';
       
       return $description;
@@ -205,7 +205,7 @@ abstract class fs_model
    
    public function random_string($length = 10)
    {
-      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+      return mb_substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"),
               0, $length);
    }
    
@@ -232,11 +232,10 @@ abstract class fs_model
    public function no_html($t)
    {
       $newt = trim( preg_replace('/\s+/', ' ', $t) );
-      $newt = preg_replace('/</', '&lt;', $newt);
-      $newt = preg_replace('/>/', '&gt;', $newt);
-      $newt = preg_replace('/"/', '&quot;', $newt);
-      $newt = preg_replace("/'/", '&#39;', $newt);
-      return $newt;
+      $newt = str_replace('<', '&lt;', $newt);
+      $newt = str_replace('>', '&gt;', $newt);
+      $newt = str_replace('"', '&quot;', $newt);
+      return str_replace("'", '&#39;', $newt);
    }
    
    public function remove_bad_utf8($str)

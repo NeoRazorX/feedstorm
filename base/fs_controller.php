@@ -69,7 +69,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '0.10.1';
+      return '0.11';
    }
    
    public function mongo_version()
@@ -132,7 +132,7 @@ abstract class fs_controller
    
    public function domain()
    {
-      if( substr($_SERVER["SERVER_NAME"], 0, 4) == 'www.')
+      if( mb_substr($_SERVER["SERVER_NAME"], 0, 4) == 'www.')
          return 'http://'.$_SERVER["SERVER_NAME"].FS_PATH;
       else
          return 'http://www.'.$_SERVER["SERVER_NAME"].FS_PATH;

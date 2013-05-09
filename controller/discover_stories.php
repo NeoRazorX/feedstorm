@@ -42,7 +42,7 @@ class discover_stories extends fs_controller
       
       $this->stories = array();
       
-      if( rand(0, 2) == 0 )
+      if( mt_rand(0, 1) == 0 )
       {
          $feed = new feed();
          $rfeed = $feed->random();

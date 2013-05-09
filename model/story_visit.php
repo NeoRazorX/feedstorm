@@ -162,7 +162,7 @@ class story_visit extends fs_model
    
    public function cron_job()
    {
-      if( rand(0, 9) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos visitas antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE

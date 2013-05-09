@@ -79,10 +79,10 @@ class feed extends fs_model
    
    public function show_url($size=60)
    {
-      if( strlen($this->url) < $size )
+      if( mb_strlen($this->url) < $size )
          return $this->url;
       else
-         return substr($this->url, 0, $size).'...';
+         return mb_substr($this->url, 0, $size).'...';
    }
    
    public function last_check_date()
@@ -119,12 +119,12 @@ class feed extends fs_model
    
    public function meneame()
    {
-      return ( substr($this->url, 0, 23) == 'http://www.meneame.net/' );
+      return ( mb_substr($this->url, 0, 23) == 'http://www.meneame.net/' );
    }
    
    public function reddit()
    {
-      return ( substr($this->url, 0, 22) == 'http://www.reddit.com/' );
+      return ( mb_substr($this->url, 0, 22) == 'http://www.reddit.com/' );
    }
    
    public function stories()
@@ -153,7 +153,7 @@ class feed extends fs_model
          $fp = fopen('tmp/'.$this->get_id().'.xml', 'wb');
          curl_setopt($ch, CURLOPT_FILE, $fp);
          curl_setopt($ch, CURLOPT_HEADER, 0);
-         curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+         curl_setopt($ch, CURLOPT_TIMEOUT, FS_TIMEOUT);
          
          if( !$this->reddit() )
          {
@@ -230,23 +230,23 @@ class feed extends fs_model
                
                /// leemos el titulo del feed
                if( $xml->channel->title )
-                  $this->name = (string)$xml->channel->title;
+                  $this->name = $this->remove_bad_utf8( (string)$xml->channel->title );
                else if( $xml->title )
                {
                   foreach($xml->title as $item)
                   {
-                     $this->name = (string)$item;
+                     $this->name = $this->remove_bad_utf8( (string)$item );
                      break;
                   }
                }
                /// leemos la descripción
                if( $xml->channel->description )
-                  $this->description = (string)$xml->channel->description;
+                  $this->description = $this->remove_bad_utf8( (string)$xml->channel->description );
                else if( $xml->description )
                {
                   foreach($xml->description as $item)
                   {
-                     $this->description = (string)$item;
+                     $this->description = $this->remove_bad_utf8( (string)$item );
                      break;
                   }
                }
@@ -276,14 +276,14 @@ class feed extends fs_model
       $this->save();
    }
    
-   private function new_story($item)
+   private function new_story(&$item)
    {
       $feed_story = new feed_story();
       $feed_story->feed_id = $this->id;
-      $feed_story->title = (string)$item->title;
+      $feed_story->title = $this->remove_bad_utf8( (string)$item->title );
       
       $story = new story();
-      $story->title = (string)$item->title;
+      $story->title = $this->remove_bad_utf8( (string)$item->title );
       
       /// intentamos obtener el enlace original de meneame
       foreach($item->children('meneame', TRUE) as $element)
@@ -324,7 +324,7 @@ class feed extends fs_model
          {
             foreach($item->link as $l)
             {
-               if( substr((string)$l, 0, 4) == 'http' )
+               if( mb_substr((string)$l, 0, 4) == 'http' )
                   $story->link = (string)$l;
                else
                {
@@ -361,12 +361,18 @@ class feed extends fs_model
                break;
             }
          }
-         
          if( !$encontrada )
          {
             $feed_story->story_id = $story2->get_id();
             $feed_story->save();
          }
+         
+         /* 
+          * Si la historia no tiene asociado un elemento multimedia,
+          * tiramos un dado y buscamos más elementos multimedia.
+          */
+         if( is_null($story2->media_id) AND mt_rand(0, 2) == 0 )
+            $this->add_media_items($story2, $item);
       }
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
@@ -397,59 +403,107 @@ class feed extends fs_model
                }
             }
          }
-         $story->set_description( $this->remove_bad_utf8($description), $this->meneame());
          
+         if( $this->meneame() )
+         {
+            $aux = '';
+            for($i = 0; $i < mb_strlen($description); $i++)
+            {
+               if( mb_substr($description, $i, 4) == '</p>' )
+                  break;
+               else
+                  $aux .= mb_substr($description, $i, 1);
+            }
+            $description = $aux;
+         }
+         
+         /// eliminamos el html
+         $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
+         $story->description = $this->remove_bad_utf8( strip_tags($description) );
          $story->save();
          $feed_story->story_id = $story->get_id();
          $feed_story->save();
          
-         $width = 0;
-         $height = 0;
-         $media_item = new media_item();
-         foreach($media_item->find_media($item, $story->link) as $mi)
+         $this->add_media_items($story, $item, FALSE);
+      }
+   }
+   
+   private function add_media_items(&$story, &$item, $search_link=TRUE)
+   {
+      $num_downloads = 0;
+      $width = 0;
+      $height = 0;
+      $first_forced = FALSE;
+      $media_item = new media_item();
+      foreach($media_item->find_media($item, $story->link, $search_link) as $mi)
+      {
+         $story_media = new story_media();
+         $story_media->story_id = $story->get_id();
+         
+         if( !$media_item->get_by_url($mi->url) )
          {
-            $story_media = new story_media();
-            $story_media->story_id = $story->get_id();
-            
-            if( !$media_item->get_by_url($mi->url) )
+            if( $mi->download() )
             {
-               if( $mi->download() )
+               echo 'D';
+               $num_downloads++;
+               
+               $mi->save();
+               $story_media->media_id = $mi->get_id();
+               $story_media->save();
+               
+               if($story->link == $mi->url)
                {
-                  $mi->save();
-                  $story_media->media_id = $mi->get_id();
-                  $story_media->save();
+                  echo 'S';
                   
-                  $ratio = 0;
-                  if($mi->width > 0 AND $mi->height > 0)
-                     $ratio = $mi->width / $mi->height;
+                  $story->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $story->save();
+                  break;
+               }
+               else if($num_downloads == 1)
+               {
+                  echo 'S';
                   
-                  if($story->link == $mi->url)
-                  {
-                     $story->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                     $story->save();
-                     break;
-                  }
-                  else if( !$story->media_id AND preg_match("#http://imgur.com/([a-zA-Z0-9]*)#", $story->link) )
-                  {
-                     $story->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                     $story->save();
-                     break;
-                  }
-                  else if($ratio > 1 AND $ratio < 2 AND $mi->width > $width AND $mi->height > $height)
-                  {
-                     $story->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                     $story->save();
-                  }
+                  $story->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $story->save();
+                  
+                  if($mi->ratio() < 1 OR $mi->ratio() > 2)
+                     $first_forced = TRUE;
+               }
+               else if($num_downloads > FS_MAX_DOWNLOADS)
+               {
+                  break;
+               }
+               else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
+               {
+                  echo 'S';
+                  
+                  $story->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $story->save();
+               }
+               else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
+               {
+                  echo 'S';
+                  
+                  $story->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $story->save();
                }
             }
+            else
+               echo 'E';
          }
+         else
+            echo 'I';
       }
+      
+      echo "F\n";
    }
    
    public function get($id)
@@ -490,7 +544,11 @@ class feed extends fs_model
    public function test()
    {
       $this->name = $this->no_html($this->name);
+      if( mb_strlen($this->name) > 60 )
+         $this->name = mb_substr($this->name, 0, 57).'...';
+      
       $this->description = $this->no_html($this->description);
+      
       if( $this->suscriptors < 0 )
          $this->suscriptors = 0;
       
@@ -564,7 +622,7 @@ class feed extends fs_model
       $all_feeds = $this->all();
       if( count($all_feeds) > 1 )
       {
-         $selection = rand(0, count($all_feeds));
+         $selection = mt_rand(0, count($all_feeds));
          $i = 0;
          foreach($all_feeds as $f)
          {
@@ -587,11 +645,11 @@ class feed extends fs_model
          if($f->strikes > 72)
          {
             $f->delete();
-            echo "\n * Eliminada la fuente ".$f->name.".\n";
+            echo "\n * Eliminada la fuente ".$f->url.".\n";
          }
          else
          {
-            echo "\n * Procesando: tmp/".$f->get_id().".xml ...\n";
+            echo "\n * Procesando: ".$f->url."\n ** Archivo: tmp/".$f->get_id().".xml ...\n";
             $f->read();
             
             foreach($f->get_errors() as $e)

@@ -76,10 +76,18 @@ class show_story extends fs_controller
    
    public function get_description()
    {
-      if( $this->story )
+      if($this->story)
          return $this->story->description;
       else
          return parent::get_description();
+   }
+   
+   public function twitter_url()
+   {
+      if($this->story)
+         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->story->url() );
+      else
+         return 'https://twitter.com/share';
    }
 }
 

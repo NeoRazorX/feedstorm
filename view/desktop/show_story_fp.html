@@ -19,7 +19,10 @@
 </script>
 
 <div class="popup_container">
-   <div class="popup2">
+   <table width="100%">
+      <tr>
+         <td>
+            <div class="popup2">
       {if condition="$fsc->story"}
       <div class="story_info">
          <h1>{$fsc->story->title}</h1>
@@ -30,8 +33,8 @@
          <table width="100%">
             <tr>
                <td>
-                  <span class="label">{$fsc->story->clics} clics</span>
-                  <span class="label-info">Popularidad: {$fsc->story->popularity()}</span>
+                  <span class="label-info">{$fsc->story->clics} clics</span>
+                  <span class="label">Popularidad: {$fsc->story->popularity()}</span>
                </td>
                <td align="right">
                   <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
@@ -82,6 +85,48 @@
       </div>
       {/if}
    </div>
+         </td>
+         <td valign="top" align="center">
+            <div class="fb-like" data-href="{$fsc->story->link()}" data-layout="box_count" data-width="90" data-show-faces="false"></div>
+            <script>
+               (function(d, s, id) {
+                  var js, fjs = d.getElementsByTagName(s)[0];
+                  if (d.getElementById(id)) return;
+                  js = d.createElement(s);
+                  js.id = id;
+                  js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
+                  fjs.parentNode.insertBefore(js, fjs);
+               }(document, 'script', 'facebook-jssdk'));
+            </script>
+            <br/><br/>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-related="neorazorx" data-url="{$fsc->story->link()}">Tweet</a>
+            <script>
+               !function(d,s,id){
+                  var js,fjs=d.getElementsByTagName(s)[0];
+                  if(!d.getElementById(id)){
+                     js = d.createElement(s);
+                     js.id = id;
+                     js.src = "https://platform.twitter.com/widgets.js";
+                     fjs.parentNode.insertBefore(js, fjs);
+                  }
+               }(document,"script","twitter-wjs");
+            </script>
+            <br/><br/>
+            <div class="g-plusone" data-size="tall" data-href="{$fsc->story->link()}"></div>
+            <script type="text/javascript">
+               window.___gcfg = {lang: 'es'};
+               (function() {
+                  var po = document.createElement('script');
+                  po.type = 'text/javascript';
+                  po.async = true;
+                  po.src = 'https://apis.google.com/js/plusone.js';
+                  var s = document.getElementsByTagName('script')[0];
+                  s.parentNode.insertBefore(po, s);
+               })();
+            </script>
+         </td>
+      </tr>
+   </table>
 </div>
 
 {if condition="$fsc->popular OR $fsc->editions"}

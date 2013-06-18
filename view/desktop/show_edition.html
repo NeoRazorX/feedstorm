@@ -9,7 +9,8 @@
       <tr>
          <td>
             <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
-            <span class="label-info">{$fsc->edition->votes} votos</span>
+            <span class="label">{$fsc->edition->votes} votos</span>
+            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Tweet</a>
          </td>
          <td align="right">
             <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a> &nbsp;

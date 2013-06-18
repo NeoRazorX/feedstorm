@@ -87,7 +87,7 @@ class show_edition extends fs_controller
    
    public function url()
    {
-      if( $this->edition )
+      if($this->edition)
          return $this->edition->edit_url();
       else
          return parent::url();
@@ -95,10 +95,18 @@ class show_edition extends fs_controller
    
    public function get_description()
    {
-      if( $this->edition )
+      if($this->edition)
          return $this->edition->description;
       else
          return parent::get_description();
+   }
+   
+   public function twitter_url()
+   {
+      if($this->edition)
+         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url() );
+      else
+         return 'https://twitter.com/share';
    }
 }
 

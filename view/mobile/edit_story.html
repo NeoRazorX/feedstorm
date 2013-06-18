@@ -19,27 +19,39 @@
    emociones porque no sustituye a la noticia original. Esta versión corregida
    aparecerá en la sección <b>ediciones</b>.
 </div>
+<br/>
 <div class="bloque">
-   <form action="{$fsc->url()}" method="post">
-      <table width="100%">
-         <tr>
-            <td><b>Nuevo título:</b></td>
-            <td align="right"><input type="submit" value="Guardar"/></td>
-         </tr>
-         <tr>
-            <td colspan="2">
-               <input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60"/>
-            </td>
-         </tr>
-         <tr>
-            <td colspan="2">
-               <b>Descripción:</b>
-               <br/>
-               <textarea name="description" rows="6">{$fsc->story_edition->description()}</textarea>
-            </td>
-         </tr>
-      </table>
-      
+   <form class="form-horizontal" action="{$fsc->url()}" method="post">
+      <div class="control-group">
+         ¿Eres humano?
+         <div class="controls">
+            <label for="r_human_yes" class="radio inline">
+               <input id="r_human_yes" type="radio" name="human" value="POZI"/>
+               Si
+            </label>
+            <label for="r_human_no" class="radio inline">
+               <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
+               No
+            </label>
+         </div>
+      </div>
+      <div class="control-group">
+         <label class="control-label" for="input_title">Nuevo título</label>
+         <div class="controls">
+            <input type="text" name="title" id="input_title" placeholder="Título" value="{$fsc->story_edition->title}">
+         </div>
+      </div>
+      <div class="control-group">
+         <label class="control-label" for="input_description">Descripción</label>
+         <div class="controls">
+            <textarea name="description" rows="6">{$fsc->story_edition->description()}</textarea>
+         </div>
+      </div>
+      <div class="control-group">
+         <div class="controls">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+         </div>
+      </div>
       <div id="media_items">
          <div class="media_item2">
             {if condition="!$fsc->story_edition->media_id"}

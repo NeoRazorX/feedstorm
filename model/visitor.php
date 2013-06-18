@@ -75,7 +75,11 @@ class visitor extends fs_model
    
    public function human()
    {
-      if( strstr(strtolower($this->user_agent), 'bot') )
+      if( $this->user_agent == 'unknown' )
+         return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'href="http://') )
+         return FALSE;
+      else if( strstr(strtolower($this->user_agent), 'bot') )
          return FALSE;
       else if( strstr(strtolower($this->user_agent), 'spider') )
          return FALSE;

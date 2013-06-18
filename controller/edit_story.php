@@ -74,7 +74,9 @@ class edit_story extends fs_controller
                   $this->story_edition->media_id = $_POST['media_id'];
                
                if( $_POST['human'] != 'POZI' )
-                  $this->new_error_msg('Si no eres humano no puedes comentar. Y si, ya sé que esto es nazismo puro.');
+                  $this->new_error_msg('Has contestado que no eres humano, y si no eres
+                     humano no puedes editar noticias. Y si, ya sé que esto es nazismo puro,
+                     pero es una forma sencilla de atajar el SPAM.');
                else
                {
                   $this->story_edition->save();

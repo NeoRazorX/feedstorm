@@ -12,6 +12,12 @@
             </p>
             <form action="{$fsc->url()}" method="post">
                <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="50"/>
+               <b>¿Eres humano?</b>
+               <input id="r_human_yes" type="radio" name="human" value="POZI"/>
+               <label for="r_human_yes">Si</label>
+               <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
+               <label for="r_human_no">No</label>
+               <br/>
                <input type="submit" value="Añadir fuente"/>
             </form>
             <ul>

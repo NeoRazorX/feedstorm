@@ -52,6 +52,10 @@ class feed_list extends fs_controller
             $feed0->suscriptors++;
             $feed0->save();
          }
+         else if( $_POST['human'] != 'POZI' )
+            $this->new_error_msg('Has contestado que no eres humano, y si no eres
+               humano no puedes añadir fuentes. Y si, ya sé que esto es nazismo puro,
+               pero es una forma sencilla de atajar el SPAM.');
          else
          {
             $this->feed->url = $_POST['feed_url'];

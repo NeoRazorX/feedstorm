@@ -9,7 +9,19 @@
    </p>
    <form action="{$fsc->url()}" method="post">
       <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="25"/>
-      <input type="submit" value="Añadir fuente"/>
+      <br/>
+      <b>¿Eres humano?</b>
+      <br/>
+      <label for="r_human_yes" class="radio inline">
+         <input id="r_human_yes" type="radio" name="human" value="POZI"/>
+         Si
+      </label>
+      <label for="r_human_no" class="radio inline">
+         <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
+         No
+      </label>
+      <br/><br/>
+      <input type="submit" class="btn btn-primary" value="Añadir fuente"/>
    </form>
    <ul>
       <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>

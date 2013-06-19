@@ -226,7 +226,10 @@ class feed extends fs_model
                   }
                }
                else
+               {
                   $this->new_error("Estructura irreconocible en el feed: ".$this->name);
+                  $this->strikes++;
+               }
                
                /// leemos el titulo del feed
                if( $xml->channel->title )
@@ -250,8 +253,6 @@ class feed extends fs_model
                      break;
                   }
                }
-               
-               $this->strikes = 0;
             }
             else
             {
@@ -278,6 +279,8 @@ class feed extends fs_model
    
    private function new_story(&$item)
    {
+      $this->strikes = 0;
+      
       $feed_story = new feed_story();
       $feed_story->feed_id = $this->id;
       $feed_story->title = $this->remove_bad_utf8( (string)$item->title );
@@ -337,6 +340,9 @@ class feed extends fs_model
          }
       }
       
+      /// reemplazamos los &amp;
+      $story->link = str_replace('&amp;', '&', $story->link);
+      
       if( $item->pubDate )
          $story->date = strtotime( (string)$item->pubDate );
       else if( $item->published )
@@ -366,6 +372,8 @@ class feed extends fs_model
             $feed_story->story_id = $story2->get_id();
             $feed_story->save();
          }
+         
+         $story2->tweet_count();
          
          /* 
           * Si la historia no tiene asociado un elemento multimedia,
@@ -420,6 +428,7 @@ class feed extends fs_model
          /// eliminamos el html
          $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
          $story->description = $this->remove_bad_utf8( strip_tags($description) );
+         $story->tweet_count();
          $story->save();
          $feed_story->story_id = $story->get_id();
          $feed_story->save();

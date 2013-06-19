@@ -79,7 +79,7 @@ class visitor extends fs_model
          return FALSE;
       else if( !strstr(strtolower($this->user_agent), 'mozilla') AND !strstr(strtolower($this->user_agent), 'opera') )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'href="http://') )
+      else if( strstr(strtolower($this->user_agent), 'href="http') )
          return FALSE;
       else if( strstr(strtolower($this->user_agent), 'bot') )
          return FALSE;

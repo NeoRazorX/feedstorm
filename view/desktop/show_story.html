@@ -8,8 +8,9 @@
    <table width="100%">
       <tr>
          <td>
-            <span class="label-info">{$fsc->story->clics} clics</span>
-            <span class="label">Popularidad: {$fsc->story->popularity()}</span>
+            <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets">
+               Popularidad: {$fsc->story->popularity()}
+            </span>
             <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Tweet</a>
          </td>
          <td align="right">

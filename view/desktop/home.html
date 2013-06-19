@@ -23,7 +23,7 @@
                <p>{$value->description()}</p>
             {/if}
             <div class="timesince">
-               {$value->clics} clics
+               {$value->popularity()}
                <span>{$value->timesince()}</span>
             </div>
          </div>
@@ -79,7 +79,7 @@
                <p>{$value->description()}</p>
             {/if}
             <div class="timesince">
-               {$value->clics} clics
+               {$value->popularity()}
                <span>{$value->timesince()}</span>
             </div>
          </div>
@@ -99,7 +99,9 @@
             <h1>Últimos cambios en {$name} {$fsc->version()}:</h1>
             <ul>
                <li>Añadidos más filtros anti-spam.</li>
-               <li>Añadidos botones para compartir en <a class="twitter" href="#">twitter</a>.</li>
+               <li>Añadidos botones para compartir en <a class="twitter" href="#">twitter</a></li>
+               <li>Los tweets de las noticias cuentan para calcular su popularidad.</li>
+               <li>Mejorado el algoritmo para extraer vídeos de youtube.</li>
             </ul>
          </td>
       </tr>

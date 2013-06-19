@@ -85,7 +85,8 @@ class show_story extends fs_controller
    public function twitter_url()
    {
       if($this->story)
-         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->story->url() );
+         return 'https://twitter.com/share?url='.urlencode($this->story->link).
+              '&text='.urlencode($this->story->title);
       else
          return 'https://twitter.com/share';
    }

@@ -30,6 +30,7 @@ class story extends fs_model
    public $link;
    public $media_id;
    public $clics;
+   public $tweets;
    public $popularity;
    
    private $media_items;
@@ -38,7 +39,7 @@ class story extends fs_model
    public function __construct($item=FALSE)
    {
       parent::__construct('stories');
-      if( $item )
+      if($item)
       {
          $this->id = $item['_id'];
          $this->date = $item['date'];
@@ -47,6 +48,11 @@ class story extends fs_model
          $this->link = $item['link'];
          $this->media_id = $item['media_id'];
          $this->clics = $item['clics'];
+         
+         if( isset($item['tweets']) )
+            $this->tweets = $item['tweets'];
+         else
+            $this->tweets = 0;
       }
       else
       {
@@ -57,6 +63,7 @@ class story extends fs_model
          $this->link = NULL;
          $this->media_id = NULL;
          $this->clics = 0;
+         $this->tweets = 0;
       }
       
       if( is_null($this->media_id) )
@@ -115,7 +122,7 @@ class story extends fs_model
    
    public function popularity()
    {
-      return number_format($this->popularity, 3);
+      return number_format($this->popularity, 2, ',', ' ');
    }
    
    public function feed_links()
@@ -149,9 +156,10 @@ class story extends fs_model
    
    private function calculate_popularity()
    {
+      $tclics = $this->clics + $this->tweets;
       $difft = 1 + intval( (time() - $this->date) / 86400 );
-      if($difft > 0 AND $this->clics > 0)
-         $this->popularity = $this->clics / $difft;
+      if($difft > 0 AND $tclics > 0)
+         $this->popularity = $tclics / $difft;
       else
          $this->popularity = 0;
    }
@@ -165,6 +173,21 @@ class story extends fs_model
    {
       if( !isset($_COOKIE['s_'.$this->id]) )
          setcookie('s_'.$this->id, $this->id, time()+86400);
+   }
+   
+   public function tweet_count()
+   {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_URL, 'http://urls.api.twitter.com/1/urls/count.json?url='.$this->link);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);       
+      $json_string = curl_exec($ch);
+      curl_close($ch);
+      $json = json_decode($json_string, TRUE);
+      
+      $this->tweets = isset($json['count']) ? intval($json['count']) : 0;
    }
    
    public function get($id)
@@ -216,6 +239,7 @@ class story extends fs_model
           'link' => $this->link,
           'media_id' => $this->media_id,
           'clics' => $this->clics,
+          'tweets' => $this->tweets,
           'popularity' => $this->popularity
       );
       
@@ -282,20 +306,27 @@ class story extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      $i = 0;
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(3*FS_MAX_STORIES) as $s)
+      
+      $aux = array();
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit(4*FS_MAX_STORIES) as $a)
+         $aux[] = new story($a);
+      
+      if($aux)
       {
-         if($i < FS_MAX_STORIES)
+         $aux_count = count($aux) - 1;
+         $nums = array();
+         for($i = 0; $i < FS_MAX_STORIES; $i++)
          {
-            if( mt_rand(0, 3) == 0 )
-            {
-               $stlist[] = new story($s);
-               $i++;
-            }
+            $num = mt_rand(0, $aux_count);
+            if( !in_array($num, $nums) )
+               $nums[] = $num;
          }
-         else
-            break;
+         
+         sort($nums);
+         foreach($nums as $n)
+            $stlist[] = $aux[$n];
       }
+      
       return $stlist;
    }
    
@@ -312,6 +343,9 @@ class story extends fs_model
          echo "\nActualizamos las noticias populares...";
          foreach($this->popular_stories() as $ps)
          {
+            /// obtenemos el número de tweets de la noticia
+            $ps->tweet_count();
+            
             /// si la imagen seleccionada no está en tmp, la redescargamos
             if( $ps->media_item )
                $ps->media_item->redownload();

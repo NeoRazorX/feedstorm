@@ -104,7 +104,8 @@ class show_edition extends fs_controller
    public function twitter_url()
    {
       if($this->edition)
-         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url() );
+         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url() ).
+              '&text='.urlencode($this->edition->title);
       else
          return 'https://twitter.com/share';
    }

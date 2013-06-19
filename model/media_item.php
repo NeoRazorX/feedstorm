@@ -206,6 +206,18 @@ class media_item extends fs_model
             $mlist[] = $mi;
          }
       }
+      else if( mb_substr($link, 0, 16) == 'http://youtu.be/' )
+      {
+         $mi = new media_item();
+         $mi->type = 'youtube';
+         $parts = explode('/', $link);
+         $mi->filename = $this->clean_youtube_id($parts[3]);
+         $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
+         $mi->original_width = $mi->width = 225;
+         $mi->original_height = $mi->height = 127;
+         $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
+         $mlist[] = $mi;
+      }
       else if( mb_substr($link, 0, 17) == 'http://vimeo.com/' )
       {
          $mi = new media_item();
@@ -316,6 +328,18 @@ class media_item extends fs_model
                   $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
                   $mlist[] = $mi;
                }
+            }
+            else if( mb_substr($url, 0, 16) == 'http://youtu.be/' )
+            {
+               $mi = new media_item();
+               $mi->type = 'youtube';
+               $parts = explode('/', $url);
+               $mi->filename = $this->clean_youtube_id($parts[3]);
+               $mi->url = 'http://www.youtube.com/embed/'.$mi->filename;
+               $mi->original_width = $mi->width = 225;
+               $mi->original_height = $mi->height = 127;
+               $mi->thumbnail_url = 'http://img.youtube.com/vi/'.$mi->filename.'/0.jpg';
+               $mlist[] = $mi;
             }
             else if( mb_substr($url, 0, 17) == 'http://vimeo.com/' )
             {

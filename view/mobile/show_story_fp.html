@@ -20,16 +20,19 @@
 
 {if condition="$fsc->story"}
 <div class="story_info">
+   <span class="label">Popularidad: {$fsc->story->popularity()}</span>
    <h3>{$fsc->story->title}</h3>
    {if condition="$fsc->story->media_item"}
       <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
-      <br/>
    {/if}
    <p>{$fsc->story->description}</p>
    <table width="100%">
       <tr>
-         <td><a href="{$fsc->story->edit_url()}" class="btn btn-success">Editar</a></td>
+         <td>
+            <a class="btn" target="_blank" href="{$fsc->twitter_url()}">Tweet</a>
+         </td>
          <td align="right">
+            <a href="{$fsc->story->edit_url()}" class="btn btn-success">Editar</a>
             <a target="_blank" href="{$fsc->story->link()}" class="btn btn-primary">Abrir enlace</a>
          </td>
       </tr>

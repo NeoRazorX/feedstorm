@@ -23,68 +23,69 @@
       <tr>
          <td>
             <div class="popup2">
-      {if condition="$fsc->story"}
-      <div class="story_info">
-         <h1>{$fsc->story->title}</h1>
-         {if condition="$fsc->story->media_item"}
-         <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
-         {/if}
-         <p>{$fsc->story->description}</p>
-         <table width="100%">
-            <tr>
-               <td>
-                  <span class="label-info">{$fsc->story->clics} clics</span>
-                  <span class="label">Popularidad: {$fsc->story->popularity()}</span>
-               </td>
-               <td align="right">
-                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                  <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-               </td>
-            </tr>
-         </table>
-      </div>
-      <ul class="pestanyas">
-         <li id="b_show_feeds2" class="activa">Fuentes</li>
-         <li id="b_show_editions2">Ediciones</li>
-      </ul>
-      <div class="pestanya_content" id="story_feeds2">
-         <table class="lista">
-            <tr>
-               <th align="left">Fecha</th>
-               <th align="left">Enlace</th>
-               <th align="left">Fuente</th>
-            </tr>
-            {loop="$fsc->story->feed_links()"}
-            <tr>
-               <td>{$value->timesince()}</td>
-               <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
-               <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-            </tr>
-            {else}
-            <tr><td colspan="3">Sin resultados.</td></tr>
-            {/loop}
-         </table>
-      </div>
-      <div class="pestanya_content" id="story_editions2">
-         <table class="lista">
-            <tr>
-               <th align="left">Fecha</th>
-               <th align="left">Título</th>
-               <th align="right">Votos</th>
-            </tr>
-            {loop="$fsc->story->editions()"}
-            <tr>
-               <td>{$value->timesince()}</td>
-               <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
-               <td align="right">{$value->votes}</td>
-            </tr>
-            {else}
-            <tr><td colspan="3">Sin resultados.</td></tr>
-            {/loop}
-         </table>
-      </div>
-      {/if}
-   </div>
+            {if condition="$fsc->story"}
+               <div class="story_info">
+                  <h1>{$fsc->story->title}</h1>
+                  {if condition="$fsc->story->media_item"}
+                  <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
+                  {/if}
+                  <p>{$fsc->story->description}</p>
+                  <table width="100%">
+                     <tr>
+                        <td>
+                           <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets">
+                              Popularidad: {$fsc->story->popularity()}
+                           </span>
+                        </td>
+                        <td align="right">
+                           <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
+                           <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+                        </td>
+                     </tr>
+                  </table>
+               </div>
+               <ul class="pestanyas">
+                  <li id="b_show_feeds2" class="activa">Fuentes</li>
+                  <li id="b_show_editions2">Ediciones</li>
+               </ul>
+               <div class="pestanya_content" id="story_feeds2">
+                  <table class="lista">
+                     <tr>
+                        <th align="left">Fecha</th>
+                        <th align="left">Enlace</th>
+                        <th align="left">Fuente</th>
+                     </tr>
+                     {loop="$fsc->story->feed_links()"}
+                     <tr>
+                        <td>{$value->timesince()}</td>
+                        <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+                        <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+                     </tr>
+                     {else}
+                     <tr><td colspan="3">Sin resultados.</td></tr>
+                     {/loop}
+                  </table>
+               </div>
+               <div class="pestanya_content" id="story_editions2">
+                  <table class="lista">
+                     <tr>
+                        <th align="left">Fecha</th>
+                        <th align="left">Título</th>
+                        <th align="right">Votos</th>
+                     </tr>
+                     {loop="$fsc->story->editions()"}
+                     <tr>
+                        <td>{$value->timesince()}</td>
+                        <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
+                        <td align="right">{$value->votes}</td>
+                     </tr>
+                     {else}
+                     <tr><td colspan="3">Sin resultados.</td></tr>
+                     {/loop}
+                  </table>
+               </div>
+            {/if}
+            </div>
          </td>
          <td valign="top" align="center">
             <div class="fb-like" data-href="{$fsc->story->link()}" data-layout="box_count" data-width="90" data-show-faces="false"></div>
@@ -132,25 +133,30 @@
 {if condition="$fsc->popular OR $fsc->editions"}
 <script src="{$path}/view/js/jquery.masonry.min.js"></script>
 <script type="text/javascript">
-      $(document).ready(function() {
-         $("#stories").masonry({
-            itemSelector: '.story',
-            isFitWidth: true,
-            isAnimated: true
-         });
+   $(document).ready(function() {
+      $("#stories").masonry({
+         itemSelector: '.story',
+         isFitWidth: true,
+         isAnimated: true
       });
+   });
 </script>
 
 <div id="stories">
    {loop="$fsc->popular"}
       {if condition="$value->get_id()!=$fsc->story->get_id()"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            <h1>{$value->title}</h1>
             {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">{$value->media_item->show_image()}</div>
+               <h1>{$value->title}</h1>
             {else}
-            <p>{$value->description()}</p>
+               <h1>{$value->title}</h1>
+               <p>{$value->description()}</p>
             {/if}
+            <div class="timesince">
+               {$value->popularity()}
+               <span>{$value->timesince()}</span>
+            </div>
          </div>
          <a href="{$path}/{$value->url()}"></a>
       {/if}

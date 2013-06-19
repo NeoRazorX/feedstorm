@@ -20,9 +20,9 @@ div.story {
    box-shadow: 2px 2px 2px #888;
 }
 
-div.story h3 {
+div.story h4 {
    margin: 0px;
-   padding: 10px;
+   padding: 8px;
    line-height: 25px;
    color: #424242;
 }
@@ -62,15 +62,8 @@ div.story_info {
    padding: 5px;
 }
 
-div.story_info h1 {
-   margin: 0px;
-   padding: 0px;
-   padding-bottom: 5px;
-   text-align: center;
-   font-size: 25px;
-}
-
 div.story_info div.media_item {
+   margin-bottom: 10px;
    padding: 5px;
    text-align: center;
 }

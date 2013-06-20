@@ -69,7 +69,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '0.12';
+      return '0.12.1';
    }
    
    public function mongo_version()

@@ -8,10 +8,11 @@
    <table width="100%">
       <tr>
          <td>
-            <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets">
+            <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets, {$fsc->story->likes} likes, {$fsc->story->meneos} meneos">
                Popularidad: {$fsc->story->popularity()}
             </span>
-            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Tweet</a>
+            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
+            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
          </td>
          <td align="right">
             <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;

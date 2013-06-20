@@ -489,6 +489,18 @@ a.twitter {
    font-weight: bold;
 }
 
+a.facebook {
+   display: inline-block;
+   padding: 2px;
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #EEF1F8;
+   border: 1px solid #A8B6CA;
+   border-radius: 3px;
+   color: #364B8B;
+   font-weight: bold;
+}
+
 span.label, span.label-info {
    display: inline-block;
    padding: 3px;

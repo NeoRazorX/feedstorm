@@ -289,13 +289,17 @@ class feed extends fs_model
       $story->title = $this->remove_bad_utf8( (string)$item->title );
       
       /// intentamos obtener el enlace original de meneame
+      $meneos = 0;
       foreach($item->children('meneame', TRUE) as $element)
       {
          if($element->getName() == 'url')
          {
             $story->link = (string)$element;
             $feed_story->link = (string)$item->link;
-            break;
+         }
+         else if($element->getName() == 'votes')
+         {
+            $meneos = intval( (string)$element );
          }
       }
       
@@ -374,6 +378,8 @@ class feed extends fs_model
          }
          
          $story2->tweet_count();
+         $story2->facebook_count();
+         $story2->meneos = $meneos;
          
          /* 
           * Si la historia no tiene asociado un elemento multimedia,
@@ -429,6 +435,8 @@ class feed extends fs_model
          $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
          $story->description = $this->remove_bad_utf8( strip_tags($description) );
          $story->tweet_count();
+         $story->facebook_count();
+         $story->meneos = $meneos;
          $story->save();
          $feed_story->story_id = $story->get_id();
          $feed_story->save();

@@ -73,7 +73,25 @@ class explore_feed extends fs_controller
       if( $this->feed )
          return $this->feed->description;
       else
-         parent::get_description();
+         return parent::get_description();
+   }
+   
+   public function twitter_url()
+   {
+      if($this->feed)
+         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->feed->url() ).
+              '&text='.urlencode($this->feed->name);
+      else
+         return 'https://twitter.com/share';
+   }
+   
+   public function facebook_url()
+   {
+      if($this->feed)
+         return 'http://www.facebook.com/sharer.php?s=100&p[title]='.urlencode($this->feed->name).
+              '&p[url]='.urlencode( $this->domain().'/'.$this->feed->url() );
+      else
+         return 'http://www.facebook.com/sharer.php';
    }
 }
 

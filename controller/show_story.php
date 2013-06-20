@@ -90,6 +90,15 @@ class show_story extends fs_controller
       else
          return 'https://twitter.com/share';
    }
+   
+   public function facebook_url()
+   {
+      if($this->story)
+         return 'http://www.facebook.com/sharer.php?s=100&p[title]='.urlencode($this->story->title).
+              '&p[url]='.urlencode($this->story->link);
+      else
+         return 'http://www.facebook.com/sharer.php';
+   }
 }
 
 ?>

@@ -109,6 +109,15 @@ class show_edition extends fs_controller
       else
          return 'https://twitter.com/share';
    }
+   
+   public function facebook_url()
+   {
+      if($this->edition)
+         return 'http://www.facebook.com/sharer.php?s=100&p[title]='.urlencode($this->edition->title).
+              '&p[url]='.urlencode( $this->domain().'/'.$this->edition->url() );
+      else
+         return 'http://www.facebook.com/sharer.php';
+   }
 }
 
 ?>

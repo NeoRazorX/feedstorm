@@ -31,6 +31,8 @@ class story extends fs_model
    public $media_id;
    public $clics;
    public $tweets;
+   public $meneos;
+   public $likes;
    public $popularity;
    
    private $media_items;
@@ -53,6 +55,16 @@ class story extends fs_model
             $this->tweets = $item['tweets'];
          else
             $this->tweets = 0;
+         
+         if( isset($item['meneos']) )
+            $this->meneos = $item['meneos'];
+         else
+            $this->meneos = 0;
+         
+         if( isset($item['likes']) )
+            $this->likes = $item['likes'];
+         else
+            $this->likes = 0;
       }
       else
       {
@@ -64,6 +76,8 @@ class story extends fs_model
          $this->media_id = NULL;
          $this->clics = 0;
          $this->tweets = 0;
+         $this->meneos = 0;
+         $this->likes = 0;
       }
       
       if( is_null($this->media_id) )
@@ -156,7 +170,23 @@ class story extends fs_model
    
    private function calculate_popularity()
    {
-      $tclics = $this->clics + $this->tweets;
+      $tclics = $this->clics;
+      
+      if($this->tweets > 1000)
+         $tclics += min( array($this->tweets, 10 + 2*$this->clics) );
+      else
+         $tclics += min( array($this->tweets, 1 + $this->clics) );
+      
+      if($this->likes > 1000)
+         $tclics += min( array($this->likes, 10 + 2*$this->clics) );
+      else
+         $tclics += min( array($this->likes, 1 + $this->clics) );
+      
+      if($this->meneos > 200)
+         $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
+      else
+         $tclics += min( array($this->meneos, 1 + $this->clics) );
+      
       $difft = 1 + intval( (time() - $this->date) / 86400 );
       if($difft > 0 AND $tclics > 0)
          $this->popularity = $tclics / $difft;
@@ -172,7 +202,27 @@ class story extends fs_model
    public function read()
    {
       if( !isset($_COOKIE['s_'.$this->id]) )
+      {
+         /*
+          * Eliminamos cookies para no sobrepasar el límite
+          */
+         if( count($_COOKIE) > 50 )
+         {
+            $num = 10;
+            foreach($_COOKIE as $k => $value)
+            {
+               if($num <= 0)
+                  break;
+               else if( substr($k, 0, 2) == 's_' )
+               {
+                  setcookie($k, $value, time()-86400);
+                  $num--;
+               }
+            }
+         }
+         
          setcookie('s_'.$this->id, $this->id, time()+86400);
+      }
    }
    
    public function tweet_count()
@@ -181,13 +231,28 @@ class story extends fs_model
       curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
       curl_setopt($ch, CURLOPT_HEADER, 0);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, 'http://urls.api.twitter.com/1/urls/count.json?url='.$this->link);
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);       
+      curl_setopt($ch, CURLOPT_URL, 'http://urls.api.twitter.com/1/urls/count.json?url='.rawurlencode($this->link) );
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
       $json_string = curl_exec($ch);
       curl_close($ch);
       $json = json_decode($json_string, TRUE);
       
       $this->tweets = isset($json['count']) ? intval($json['count']) : 0;
+   }
+   
+   public function facebook_count()
+   {
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_URL, 'http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls='.rawurlencode($this->link) );
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+      $json_string = curl_exec($ch);
+      curl_close($ch);
+      $json = json_decode($json_string, TRUE);
+      
+      $this->likes = isset($json[0]['total_count']) ? intval($json[0]['total_count']) : 0;
    }
    
    public function get($id)
@@ -240,6 +305,8 @@ class story extends fs_model
           'media_id' => $this->media_id,
           'clics' => $this->clics,
           'tweets' => $this->tweets,
+          'meneos' => $this->meneos,
+          'likes' => $this->likes,
           'popularity' => $this->popularity
       );
       
@@ -345,6 +412,7 @@ class story extends fs_model
          {
             /// obtenemos el número de tweets de la noticia
             $ps->tweet_count();
+            $ps->facebook_count();
             
             /// si la imagen seleccionada no está en tmp, la redescargamos
             if( $ps->media_item )

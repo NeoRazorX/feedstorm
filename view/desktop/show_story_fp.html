@@ -19,115 +19,72 @@
 </script>
 
 <div class="popup_container">
-   <table width="100%">
-      <tr>
-         <td>
-            <div class="popup2">
-            {if condition="$fsc->story"}
-               <div class="story_info">
-                  <h1>{$fsc->story->title}</h1>
-                  {if condition="$fsc->story->media_item"}
-                  <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
-                  {/if}
-                  <p>{$fsc->story->description}</p>
-                  <table width="100%">
-                     <tr>
-                        <td>
-                           <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets">
-                              Popularidad: {$fsc->story->popularity()}
-                           </span>
-                        </td>
-                        <td align="right">
-                           <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                           <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-                        </td>
-                     </tr>
-                  </table>
-               </div>
-               <ul class="pestanyas">
-                  <li id="b_show_feeds2" class="activa">Fuentes</li>
-                  <li id="b_show_editions2">Ediciones</li>
-               </ul>
-               <div class="pestanya_content" id="story_feeds2">
-                  <table class="lista">
-                     <tr>
-                        <th align="left">Fecha</th>
-                        <th align="left">Enlace</th>
-                        <th align="left">Fuente</th>
-                     </tr>
-                     {loop="$fsc->story->feed_links()"}
-                     <tr>
-                        <td>{$value->timesince()}</td>
-                        <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
-                        <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-                     </tr>
-                     {else}
-                     <tr><td colspan="3">Sin resultados.</td></tr>
-                     {/loop}
-                  </table>
-               </div>
-               <div class="pestanya_content" id="story_editions2">
-                  <table class="lista">
-                     <tr>
-                        <th align="left">Fecha</th>
-                        <th align="left">Título</th>
-                        <th align="right">Votos</th>
-                     </tr>
-                     {loop="$fsc->story->editions()"}
-                     <tr>
-                        <td>{$value->timesince()}</td>
-                        <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
-                        <td align="right">{$value->votes}</td>
-                     </tr>
-                     {else}
-                     <tr><td colspan="3">Sin resultados.</td></tr>
-                     {/loop}
-                  </table>
-               </div>
-            {/if}
-            </div>
-         </td>
-         <td valign="top" align="center">
-            <div class="fb-like" data-href="{$fsc->story->link()}" data-layout="box_count" data-width="90" data-show-faces="false"></div>
-            <script>
-               (function(d, s, id) {
-                  var js, fjs = d.getElementsByTagName(s)[0];
-                  if (d.getElementById(id)) return;
-                  js = d.createElement(s);
-                  js.id = id;
-                  js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
-                  fjs.parentNode.insertBefore(js, fjs);
-               }(document, 'script', 'facebook-jssdk'));
-            </script>
-            <br/><br/>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-lang="es" data-count="vertical" data-related="neorazorx" data-url="{$fsc->story->link()}">Tweet</a>
-            <script>
-               !function(d,s,id){
-                  var js,fjs=d.getElementsByTagName(s)[0];
-                  if(!d.getElementById(id)){
-                     js = d.createElement(s);
-                     js.id = id;
-                     js.src = "https://platform.twitter.com/widgets.js";
-                     fjs.parentNode.insertBefore(js, fjs);
-                  }
-               }(document,"script","twitter-wjs");
-            </script>
-            <br/><br/>
-            <div class="g-plusone" data-size="tall" data-href="{$fsc->story->link()}"></div>
-            <script type="text/javascript">
-               window.___gcfg = {lang: 'es'};
-               (function() {
-                  var po = document.createElement('script');
-                  po.type = 'text/javascript';
-                  po.async = true;
-                  po.src = 'https://apis.google.com/js/plusone.js';
-                  var s = document.getElementsByTagName('script')[0];
-                  s.parentNode.insertBefore(po, s);
-               })();
-            </script>
-         </td>
-      </tr>
-   </table>
+   <div class="popup2">
+   {if condition="$fsc->story"}
+      <div class="story_info">
+         <h1>{$fsc->story->title}</h1>
+         {if condition="$fsc->story->media_item"}
+         <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
+         {/if}
+         <p>{$fsc->story->description}</p>
+         <table width="100%">
+            <tr>
+               <td>
+                  <span class="label" title="{$fsc->story->clics} clics, {$fsc->story->tweets} tweets, {$fsc->story->likes} likes, {$fsc->story->meneos} meneos">
+                     Popularidad: {$fsc->story->popularity()}
+                  </span>
+                  <a class="twitter" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
+                  <a class="facebook" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+               </td>
+               <td align="right">
+                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
+                  <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+               </td>
+            </tr>
+         </table>
+      </div>
+      <ul class="pestanyas">
+         <li id="b_show_feeds2" class="activa">Fuentes</li>
+         <li id="b_show_editions2">Ediciones</li>
+      </ul>
+      <div class="pestanya_content" id="story_feeds2">
+         <table class="lista">
+            <tr>
+               <th align="left">Fecha</th>
+               <th align="left">Enlace</th>
+               <th align="left">Fuente</th>
+            </tr>
+            {loop="$fsc->story->feed_links()"}
+            <tr>
+               <td>{$value->timesince()}</td>
+               <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+               <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+            </tr>
+            {else}
+            <tr><td colspan="3">Sin resultados.</td></tr>
+            {/loop}
+         </table>
+      </div>
+      <div class="pestanya_content" id="story_editions2">
+         <table class="lista">
+            <tr>
+               <th align="left">Fecha</th>
+               <th align="left">Título</th>
+               <th align="right">Votos</th>
+            </tr>
+            {loop="$fsc->story->editions()"}
+            <tr>
+               <td>{$value->timesince()}</td>
+               <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
+               <td align="right">{$value->votes}</td>
+            </tr>
+            {else}
+            <tr><td colspan="3">Sin resultados.</td></tr>
+            {/loop}
+         </table>
+      </div>
+   {/if}
+   </div>
 </div>
 
 {if condition="$fsc->popular OR $fsc->editions"}

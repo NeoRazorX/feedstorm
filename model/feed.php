@@ -375,11 +375,15 @@ class feed extends fs_model
          {
             $feed_story->story_id = $story2->get_id();
             $feed_story->save();
+            
+            /// actualizamos la noticia
+            $story2->tweet_count();
+            $story2->facebook_count();
+            if($meneos > $story2->meneos)
+               $story2->meneos = $meneos;
+            $story2->save();
          }
          
-         $story2->tweet_count();
-         $story2->facebook_count();
-         $story2->meneos = $meneos;
          
          /* 
           * Si la historia no tiene asociado un elemento multimedia,

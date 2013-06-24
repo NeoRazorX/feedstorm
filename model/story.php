@@ -403,7 +403,13 @@ class story extends fs_model
       {
          echo "\nEliminamos historias antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE
-         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
+         $this->collection->remove(
+            array(
+               '$and' => array(
+                   'date' => array('$lt' => time()-FS_MAX_AGE)),
+                   'clics' => array('$lt' => 100)
+            )
+         );
       }
       else
       {

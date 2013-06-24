@@ -9,6 +9,9 @@
          isFitWidth: true,
          isAnimated: true
       });
+      $('#b_remove_feed').click(function() {
+         window.location.href = "{$fsc->url()}&delete="+prompt('Clave maestra:');
+      });
    });
 </script>
 
@@ -19,8 +22,6 @@
             <h1>{$fsc->feed->name}</h1>
          </td>
          <td align="right">
-            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
-            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
             {if condition="$fsc->unsuscribe"}
             <a class="button_remove" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
             {else}
@@ -45,6 +46,17 @@
          <td>{$fsc->feed->last_check_timesince()}</td>
          <td align="right">{$fsc->feed->suscriptors}</td>
          <td align="right">{$fsc->feed->strikes}</td>
+      </tr>
+   </table>
+   <table width="100%">
+      <tr>
+         <td>
+            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
+         </td>
+         <td align="right">
+            <a id="b_remove_feed" class="remove" href="#">Eliminar esta fuente</a>
+         </td>
       </tr>
    </table>
 </div>

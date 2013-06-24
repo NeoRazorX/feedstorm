@@ -31,6 +31,8 @@ else
    
    if( !defined('FS_MAX_AGE') )
       define('FS_MAX_AGE', 2592000);
+   if( !defined('FS_MASTER_KEY') )
+      define('FS_MASTER_KEY', '');
    
    require_once 'base/fs_controller.php';
    require_once 'raintpl/rain.tpl.class.php';

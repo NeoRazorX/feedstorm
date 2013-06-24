@@ -51,4 +51,9 @@ define('FS_TIMEOUT', 3);
  */
 define('FS_MAX_DOWNLOADS', 5);
 
+/*
+ * Contraseña maestra, necesaria para tareas como eliminar fuentes.
+ */
+define('FS_MASTER_KEY', '');
+
 ?>

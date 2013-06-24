@@ -39,7 +39,21 @@ class explore_feed extends fs_controller
       $this->stories = array();
       
       if( isset($_GET['id']) )
+      {
          $this->feed = $feed->get($_GET['id']);
+         
+         if( isset($_GET['delete']) )
+         {
+            if($_GET['delete'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+            {
+               $this->feed->delete();
+               $this->new_message('Fuente eliminada correctamente.');
+               $this->feed = FALSE;
+            }
+            else
+               $this->new_error_msg('Clave incorrecta.');
+         }
+      }
       else
          $this->feed = FALSE;
       
@@ -66,6 +80,14 @@ class explore_feed extends fs_controller
       }
       else
          $this->new_error_msg('Fuente no encontrada.');
+   }
+   
+   public function url()
+   {
+      if($this->feed)
+         return $this->feed->url();
+      else
+         return parent::url();
    }
    
    public function get_description()

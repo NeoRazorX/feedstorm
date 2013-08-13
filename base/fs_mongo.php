@@ -29,7 +29,7 @@ class fs_mongo
       {
          self::$link = new Mongo( FS_MONGO_HOST );
          self::$db = self::$link->selectDB( FS_MONGO_DBNAME );
-         self::$db->command(array('profile' => 1, 'slowms' => 50));
+         ///self::$db->command(array('profile' => 1, 'slowms' => 50));
          self::$history = array();
       }
    }

@@ -34,6 +34,7 @@ class story extends fs_model
    public $meneos;
    public $likes;
    public $popularity;
+   public $native_lang;
    
    private $media_items;
    public $media_item;
@@ -50,21 +51,10 @@ class story extends fs_model
          $this->link = $item['link'];
          $this->media_id = $item['media_id'];
          $this->clics = $item['clics'];
-         
-         if( isset($item['tweets']) )
-            $this->tweets = $item['tweets'];
-         else
-            $this->tweets = 0;
-         
-         if( isset($item['meneos']) )
-            $this->meneos = $item['meneos'];
-         else
-            $this->meneos = 0;
-         
-         if( isset($item['likes']) )
-            $this->likes = $item['likes'];
-         else
-            $this->likes = 0;
+         $this->tweets = $item['tweets'];
+         $this->meneos = $item['meneos'];
+         $this->likes = $item['likes'];
+         $this->native_lang = $item['native_lang'];
       }
       else
       {
@@ -78,6 +68,7 @@ class story extends fs_model
          $this->tweets = 0;
          $this->meneos = 0;
          $this->likes = 0;
+         $this->native_lang = TRUE;
       }
       
       if( is_null($this->media_id) )
@@ -98,11 +89,11 @@ class story extends fs_model
       $this->collection->ensureIndex('link');
    }
    
-   public function url($sitemap=FALSE)
+   public function url($w3c=FALSE)
    {
       if( is_null($this->id) )
          return 'index.php';
-      else if($sitemap)
+      else if($w3c)
          return 'index.php?page=show_story&amp;id='.$this->id;
       else
          return 'index.php?page=show_story&id='.$this->id;
@@ -172,24 +163,33 @@ class story extends fs_model
    {
       $tclics = $this->clics;
       
-      if($this->tweets > 1000)
-         $tclics += min( array($this->tweets, 10 + 2*$this->clics) );
-      else
-         $tclics += min( array($this->tweets, 1 + $this->clics) );
+      if($this->native_lang)
+      {
+         if($this->tweets > 10000)
+            $tclics += min( array($this->tweets, 20 + 2*$this->clics) );
+         else if($this->tweets > 1000)
+            $tclics += min( array($this->tweets, 10 + 2*$this->clics) );
+         else
+            $tclics += min( array($this->tweets, 1 + $this->clics) );
+         
+         if($this->likes > 10000)
+            $tclics += min( array($this->likes, 20 + 2*$this->clics) );
+         else if($this->likes > 1000)
+            $tclics += min( array($this->likes, 10 + 2*$this->clics) );
+         else
+            $tclics += min( array($this->likes, 1 + $this->clics) );
+         
+         if($this->meneos > 1000)
+            $tclics += min( array($this->meneos, 20 + 2*$this->clics) );
+         else if($this->meneos > 200)
+            $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
+         else
+            $tclics += min( array($this->meneos, 1 + $this->clics) );
+      }
       
-      if($this->likes > 1000)
-         $tclics += min( array($this->likes, 10 + 2*$this->clics) );
-      else
-         $tclics += min( array($this->likes, 1 + $this->clics) );
-      
-      if($this->meneos > 200)
-         $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
-      else
-         $tclics += min( array($this->meneos, 1 + $this->clics) );
-      
-      $difft = 1 + intval( (time() - $this->date) / 86400 );
-      if($difft > 0 AND $tclics > 0)
-         $this->popularity = $tclics / $difft;
+      $difft = intval( (time() - $this->date) / 86400 );
+      if($tclics > 0)
+         $this->popularity = $tclics / pow(2, $difft);
       else
          $this->popularity = 0;
    }
@@ -227,14 +227,7 @@ class story extends fs_model
    
    public function tweet_count()
    {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, 'http://urls.api.twitter.com/1/urls/count.json?url='.rawurlencode($this->link) );
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-      $json_string = curl_exec($ch);
-      curl_close($ch);
+      $json_string = $this->curl_download('http://urls.api.twitter.com/1/urls/count.json?url='.rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
       $this->tweets = isset($json['count']) ? intval($json['count']) : 0;
@@ -242,17 +235,21 @@ class story extends fs_model
    
    public function facebook_count()
    {
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_URL, 'http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls='.rawurlencode($this->link) );
-      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-      $json_string = curl_exec($ch);
-      curl_close($ch);
+      $json_string = $this->curl_download('http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls='.rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
       $this->likes = isset($json[0]['total_count']) ? intval($json[0]['total_count']) : 0;
+   }
+   
+   public function meneame_count()
+   {
+      $string = $this->curl_download('http://www.meneame.net/api/url.php?url='.rawurlencode($this->link), FALSE);
+      $vars = explode( ' ', $string);
+      
+      if( count($vars) == 4 )
+         $this->meneos = intval( $vars[2] );
+      else
+         $this->meneos = 0;
    }
    
    public function get($id)
@@ -307,7 +304,8 @@ class story extends fs_model
           'tweets' => $this->tweets,
           'meneos' => $this->meneos,
           'likes' => $this->likes,
-          'popularity' => $this->popularity
+          'popularity' => $this->popularity,
+          'native_lang' => $this->native_lang
       );
       
       if( $this->exists() )
@@ -360,11 +358,11 @@ class story extends fs_model
       return $stlist;
    }
    
-   public function popular_stories()
+   public function popular_stories($num = FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      foreach($this->collection->find()->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
+      foreach($this->collection->find()->sort(array('popularity'=>-1))->limit($num) as $s)
          $stlist[] = new story($s);
       return $stlist;
    }
@@ -374,27 +372,105 @@ class story extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
       
-      $aux = array();
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(4*FS_MAX_STORIES) as $a)
-         $aux[] = new story($a);
+      if( mt_rand(0, 1) == 0 )
+         $order = array('date' => -1);
+      else
+         $order = array('popularity' => -1);
       
-      if($aux)
-      {
-         $aux_count = count($aux) - 1;
-         $nums = array();
-         for($i = 0; $i < FS_MAX_STORIES; $i++)
-         {
-            $num = mt_rand(0, $aux_count);
-            if( !in_array($num, $nums) )
-               $nums[] = $num;
-         }
-         
-         sort($nums);
-         foreach($nums as $n)
-            $stlist[] = $aux[$n];
-      }
+      $offset = mt_rand(0, max( array(0, $this->count()-FS_MAX_STORIES) ) );
+      
+      foreach($this->collection->find()->sort($order)->skip($offset)->limit(FS_MAX_STORIES) as $a)
+         $stlist[] = new story($a);
       
       return $stlist;
+   }
+   
+   public function search($query)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $stlist = array();
+      $search = array( 'title' => new MongoRegex('/'.$query.'/i') );
+      foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
+         $stlist[] = new story($s);
+      return $stlist;
+   }
+   
+   public function add_media_items($item=FALSE, $search_link=TRUE)
+   {
+      $num_downloads = 0;
+      $width = 0;
+      $height = 0;
+      $first_forced = FALSE;
+      $media_item = new media_item();
+      foreach($media_item->find_media($item, $this->link, $search_link) as $mi)
+      {
+         $story_media = new story_media();
+         $story_media->story_id = $this->id;
+         
+         if( !$media_item->get_by_url($mi->url) )
+         {
+            if( $mi->download() )
+            {
+               echo 'D';
+               $num_downloads++;
+               
+               $mi->save();
+               $story_media->media_id = $mi->get_id();
+               $story_media->save();
+               
+               if($this->link == $mi->url)
+               {
+                  echo 'S';
+                  
+                  $this->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $this->save();
+                  break;
+               }
+               else if($num_downloads == 1)
+               {
+                  echo 'S';
+                  
+                  $this->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $this->save();
+                  
+                  if($mi->ratio() < 1 OR $mi->ratio() > 2)
+                     $first_forced = TRUE;
+               }
+               else if($num_downloads > FS_MAX_DOWNLOADS)
+               {
+                  break;
+               }
+               else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
+               {
+                  echo 'S';
+                  
+                  $this->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $this->save();
+               }
+               else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
+               {
+                  echo 'S';
+                  
+                  $this->media_id = $mi->get_id();
+                  $width = $mi->original_width;
+                  $height = $mi->original_height;
+                  $this->save();
+               }
+            }
+            else
+               echo 'E';
+         }
+         else
+            echo 'I';
+      }
+      
+      echo "F\n";
    }
    
    public function cron_job()
@@ -402,7 +478,7 @@ class story extends fs_model
       if( mt_rand(0, 9) == 0 )
       {
          echo "\nEliminamos historias antiguas...";
-         /// eliminamos los registros más antiguos que FS_MAX_AGE
+         /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
          $this->collection->remove(
             array(
                '$and' => array(
@@ -414,15 +490,32 @@ class story extends fs_model
       else
       {
          echo "\nActualizamos las noticias populares...";
-         foreach($this->popular_stories() as $ps)
+         foreach($this->popular_stories(FS_MAX_STORIES * 2) as $ps)
          {
-            /// obtenemos el número de tweets de la noticia
-            $ps->tweet_count();
-            $ps->facebook_count();
+            /// obtenemos las menciones de la noticia
+            switch( mt_rand(0, 3) )
+            {
+               case 0:
+                  $ps->tweet_count();
+                  break;
+               
+               case 1:
+                  $ps->facebook_count();
+                  break;
+               
+               case 2:
+                  $ps->meneame_count();
+                  break;
+               
+               default:
+                  break;
+            }
             
-            /// si la imagen seleccionada no está en tmp, la redescargamos
-            if( $ps->media_item )
+            /// si la imagen seleccionada no está en tmp, la re-descargamos
+            if($ps->media_item)
                $ps->media_item->redownload();
+            else if( mt_rand(0, 2) == 0 ) /// si no hay imágen, buscamos más
+               $this->add_media_items();
             
             $ps->save();
          }

@@ -1,72 +1,65 @@
 {include="desktop/header"}
 
-<div class="info">
-   <table width="100%">
-      <tr>
-         <td>
-            <h1>¿Qué hago yo aquí?</h1>
-            <p>
-               Aquí tienes la lista de fuentes de <b>{$name}</b>.
-               Si no encuentras lo que buscas, puedes añadir una fuente
-               desde este formulario:
-            </p>
-            <form action="{$fsc->url()}" method="post">
-               <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="50"/>
-               <b>¿Eres humano?</b>
-               <input id="r_human_yes" type="radio" name="human" value="POZI"/>
-               <label for="r_human_yes">Si</label>
-               <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
-               <label for="r_human_no">No</label>
-               <br/>
-               <input type="submit" value="Añadir fuente"/>
-            </form>
-            <ul>
-               <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>
-               <li>
-                  La mayoría de las fuentes dicen que cumplen los estandares RSS o ATOM,
-                  pero es mentira.
-               </li>
-               <li>
-                  No te preocupes, esta web saca noticias de cualquier
-                  fuente, por muy mentirosa que sea.
-               </li>
-               <li>
-                  Si no sabes de qué estoy hablando, simplemente elige una fuente de abajo,
-                  haces clic y ves las noticias que tiene. Si te gusta, pulsas el botón
-                  suscribir.
-               </li>
-            </ul>
-         </td>
-         <td align="right" valign="top">
-            <a href="{$path}/index.php?page=stats">
-               <img class="face" src="{$path}/view/img/mother_of_god.png" alt="mother of god"/>
-            </a>
-         </td>
-      </tr>
-   </table>
-</div>
-
 <div class="bloque">
+   <img class="face_right" src="{$path}/view/img/mother_of_god.png" alt="mother of god" onclick="fs_go2url('{$path}/index.php?page=stats')"/>
+   <h1>Listado de fuentes:</h1>
+   <ul>
+      <li>
+         Aquí tienes la lista de fuentes de <b>{$name}</b>.
+         Si no encuentras lo que buscas, puedes <a href="#add_feed">añadir más fuentes</a>.
+      </li>
+      <li>
+         Si no sabes de lo que estoy hablando ... mejor no toques nada.
+      </li>
+   </ul>
    <table class="lista">
       <tr>
-         <th align="left">Nombre + URL</th>
-         <th align="left">Última comprobación</th>
-         <th align="left">Última actualización</th>
+         <th align="left">Nº</th>
+         <th align="left">Nombre</th>
+         <th>Nativa</th>
+         <th align="right">Historias</th>
          <th align="right">Suscriptores</th>
-         <th align="right">Errores</th>
+         <th align="right">Última actualización</th>
       </tr>
       {loop="$fsc->feed_list"}
       <tr>
-         <td><a href="{$value->url()}">{$value->name}</a> {$value->show_url()}</td>
-         <td>{$value->last_check_timesince()}</td>
-         <td>{$value->last_update_timesince()}</td>
+         <td>{$counter+1}</td>
+         <td><a href="{$value->url()}" title="{$value->url}">{$value->name}</a></td>
+         <td align="center">
+            {if condition="$value->native_lang"}-{else}No{/if}
+         </td>
+         <td align="right">{$value->num_stories}</td>
          <td align="right">{$value->suscriptors}</td>
-         <td align="right">{$value->strikes}</td>
+         <td align="right">{$value->last_update_timesince()}</td>
       </tr>
       {else}
-      <tr><td colspan="6">Sin resultados.</td></tr>
+      <tr><td colspan="4">Sin resultados.</td></tr>
       {/loop}
    </table>
+</div>
+
+<div class="info">
+   <a name="add_feed"></a>
+   <h1>Añadir una fuente a {$name}:</h1>
+   <form action="{$fsc->url()}" method="post">
+      <input type="text" name="feed_url" placeholder="URL (RSS/ATOM)" size="50"/>
+      <b>¿Eres humano?</b>
+      <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+      <label for="r_human_yes">Si</label>
+      <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+      <label for="r_human_no">No</label> &nbsp;
+      <input type="submit" value="Añadir"/>
+   </form>
+   <ul>
+      <li>Tienes que introducir la dirección de una fuente en formato RSS o ATOM.</li>
+      <li>
+         La mayoría de las fuentes dicen que cumplen los estandares RSS o ATOM,
+         pero es mentira.
+      </li>
+      <li>
+         No te preocupes, esta web saca historias de cualquier fuente, por muy mentirosa que sea.
+      </li>
+   </ul>
 </div>
 
 {include="desktop/footer"}

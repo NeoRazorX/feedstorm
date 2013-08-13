@@ -29,7 +29,7 @@ class my_image
       
       try
       {
-         $image_info = getimagesize($filename);
+         $image_info = @getimagesize($filename);
          
          if($image_info[0] == 0 AND $image_info[1] == 0)
          {
@@ -94,7 +94,7 @@ class my_image
    
    function getWidth()
    {
-      if( is_null($this->image) )
+      if( is_null($this->image) OR is_bool($this->image) )
          return 0;
       else
          return imagesx($this->image);
@@ -102,7 +102,7 @@ class my_image
    
    function getHeight()
    {
-      if( is_null($this->image) )
+      if( is_null($this->image) OR is_bool($this->image) )
          return 0;
       else
          return imagesy($this->image);
@@ -138,20 +138,21 @@ class my_image
       }
    }
    
-   function resize($width,$height)
+   function resize($width, $height)
    {
       if( isset($this->image) )
       {
          $new_image = imagecreatetruecolor($width, $height);
          
-         if($this->image_type == IMAGETYPE_GIF || $this->image_type == IMAGETYPE_PNG)
+         if($this->image_type == IMAGETYPE_GIF OR $this->image_type == IMAGETYPE_PNG)
          {
             $current_transparent = imagecolortransparent($this->image);
             
             if($current_transparent != -1)
             {
-               $transparent_color = imagecolorsforindex($this->image, $current_transparent);
-               $current_transparent = imagecolorallocate($new_image, $transparent_color['red'], $transparent_color['green'], $transparent_color['blue']);
+               $transparent_color = @imagecolorsforindex($this->image, $current_transparent);
+               $current_transparent = imagecolorallocate($new_image, $transparent_color['red'],
+                       $transparent_color['green'], $transparent_color['blue']);
                imagefill($new_image, 0, 0, $current_transparent);
                imagecolortransparent($new_image, $current_transparent);
             }
@@ -164,7 +165,8 @@ class my_image
             }
          }
          
-         imagecopyresampled($new_image, $this->image, 0, 0, 0, 0, $width, $height, $this->getWidth(), $this->getHeight());
+         imagecopyresampled($new_image, $this->image, 0, 0, 0, 0, $width, $height,
+                 $this->getWidth(), $this->getHeight());
          $this->image = $new_image;
       }
    }

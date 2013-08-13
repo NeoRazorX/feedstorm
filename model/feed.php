@@ -33,6 +33,8 @@ class feed extends fs_model
    public $last_update;
    public $suscriptors;
    public $strikes;
+   public $num_stories;
+   public $native_lang;
    
    public function __construct($f=FALSE)
    {
@@ -47,6 +49,8 @@ class feed extends fs_model
          $this->last_update = $f['last_update'];
          $this->suscriptors = $f['suscriptors'];
          $this->strikes = $f['strikes'];
+         $this->num_stories = $f['num_stories'];
+         $this->native_lang = $f['native_lang'];
       }
       else
       {
@@ -58,6 +62,8 @@ class feed extends fs_model
          $this->last_update = 0;
          $this->suscriptors = 0;
          $this->strikes = 0;
+         $this->num_stories = 0;
+         $this->native_lang = TRUE;
       }
    }
    
@@ -142,28 +148,23 @@ class feed extends fs_model
    public function suscriptors()
    {
       $suscription = new suscription();
-      return $suscription->count4feed( $this->get_id() );
+      return $suscription->count4feed($this->id);
+   }
+   
+   public function num_stories()
+   {
+      $feed_story = new feed_story();
+      return $feed_story->count4feed($this->id);
    }
    
    public function read()
    {
       try
       {
-         $ch = curl_init( $this->url );
-         $fp = fopen('tmp/'.$this->get_id().'.xml', 'wb');
-         curl_setopt($ch, CURLOPT_FILE, $fp);
-         curl_setopt($ch, CURLOPT_HEADER, 0);
-         curl_setopt($ch, CURLOPT_TIMEOUT, FS_TIMEOUT);
-         
-         if( !$this->reddit() )
-         {
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-            curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
-         }
-         
-         curl_exec($ch);
-         curl_close($ch);
-         fclose($fp);
+         if( $this->reddit() )
+            $this->curl_save($this->url, 'tmp/'.$this->get_id().'.xml');
+         else
+            $this->curl_save($this->url, 'tmp/'.$this->get_id().'.xml', TRUE, TRUE);
          
          if( file_exists('tmp/'.$this->get_id().'.xml') )
          {
@@ -274,6 +275,7 @@ class feed extends fs_model
       
       $this->last_check_date = time();
       $this->suscriptors = $this->suscriptors();
+      $this->num_stories = $this->num_stories();
       $this->save();
    }
    
@@ -342,20 +344,67 @@ class feed extends fs_model
                }
             }
          }
+         
+         $feed_story->link = $story->link;
       }
       
       /// reemplazamos los &amp;
       $story->link = str_replace('&amp;', '&', $story->link);
       
       if( $item->pubDate )
-         $story->date = strtotime( (string)$item->pubDate );
+         $story->date = min( array( strtotime( (string)$item->pubDate ), time() ) );
       else if( $item->published )
-         $story->date = strtotime( (string)$item->published );
+         $story->date = min( array( strtotime( (string)$item->published ), time() ) );
       
       $feed_story->date = $story->date;
       
       if($feed_story->date > $this->last_update)
          $this->last_update = $feed_story->date;
+      
+      if( $item->description )
+         $description = (string)$item->description;
+      else if( $item->content )
+         $description = (string)$item->content;
+      else if( $item->summary )
+         $description = (string)$item->summary;
+      else
+      {
+         $description = '';
+         /// intentamos leer el espacio de nombres atom
+         foreach($item->children('atom', TRUE) as $element)
+         {
+            if($element->getName() == 'summary')
+            {
+               $description = (string)$element;
+               break;
+            }
+         }
+         foreach($item->children('content', TRUE) as $element)
+         {
+            if($element->getName() == 'encoded')
+            {
+               $description = (string)$element;
+               break;
+            }
+         }
+      }
+      
+      if( $this->meneame() )
+      {
+         $aux = '';
+         for($i = 0; $i < mb_strlen($description); $i++)
+         {
+            if( mb_substr($description, $i, 4) == '</p>' )
+               break;
+            else
+               $aux .= mb_substr($description, $i, 1);
+         }
+         $description = $aux;
+      }
+      
+      /// eliminamos el html
+      $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
+      $story->description = $this->remove_bad_utf8( strip_tags($description) );
       
       /// ¿story ya existe?
       $story2 = $story->get_by_link($story->link);
@@ -376,6 +425,14 @@ class feed extends fs_model
             $feed_story->story_id = $story2->get_id();
             $feed_story->save();
             
+            /// ¿La fuente proporciona información nativa de una noticia no nativa?
+            if( !$story2->native_lang AND $this->native_lang )
+            {
+               $story2->native_lang = TRUE;
+               $story2->title = $story->title;
+               $story2->description = $story->description;
+            }
+            
             /// actualizamos la noticia
             $story2->tweet_count();
             $story2->facebook_count();
@@ -390,141 +447,21 @@ class feed extends fs_model
           * tiramos un dado y buscamos más elementos multimedia.
           */
          if( is_null($story2->media_id) AND mt_rand(0, 2) == 0 )
-            $this->add_media_items($story2, $item);
+            $story2->add_media_items($item);
       }
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
-         if( $item->description )
-            $description = (string)$item->description;
-         else if( $item->content )
-            $description = (string)$item->content;
-         else if( $item->summary )
-            $description = (string)$item->summary;
-         else
-         {
-            $description = '';
-            /// intentamos leer el espacio de nombres atom
-            foreach($item->children('atom', TRUE) as $element)
-            {
-               if($element->getName() == 'summary')
-               {
-                  $description = (string)$element;
-                  break;
-               }
-            }
-            foreach($item->children('content', TRUE) as $element)
-            {
-               if($element->getName() == 'encoded')
-               {
-                  $description = (string)$element;
-                  break;
-               }
-            }
-         }
          
-         if( $this->meneame() )
-         {
-            $aux = '';
-            for($i = 0; $i < mb_strlen($description); $i++)
-            {
-               if( mb_substr($description, $i, 4) == '</p>' )
-                  break;
-               else
-                  $aux .= mb_substr($description, $i, 1);
-            }
-            $description = $aux;
-         }
-         
-         /// eliminamos el html
-         $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
-         $story->description = $this->remove_bad_utf8( strip_tags($description) );
          $story->tweet_count();
          $story->facebook_count();
          $story->meneos = $meneos;
+         $story->native_lang = $this->native_lang;
          $story->save();
          $feed_story->story_id = $story->get_id();
          $feed_story->save();
          
-         $this->add_media_items($story, $item, FALSE);
+         $story->add_media_items($item, FALSE);
       }
-   }
-   
-   private function add_media_items(&$story, &$item, $search_link=TRUE)
-   {
-      $num_downloads = 0;
-      $width = 0;
-      $height = 0;
-      $first_forced = FALSE;
-      $media_item = new media_item();
-      foreach($media_item->find_media($item, $story->link, $search_link) as $mi)
-      {
-         $story_media = new story_media();
-         $story_media->story_id = $story->get_id();
-         
-         if( !$media_item->get_by_url($mi->url) )
-         {
-            if( $mi->download() )
-            {
-               echo 'D';
-               $num_downloads++;
-               
-               $mi->save();
-               $story_media->media_id = $mi->get_id();
-               $story_media->save();
-               
-               if($story->link == $mi->url)
-               {
-                  echo 'S';
-                  
-                  $story->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  $story->save();
-                  break;
-               }
-               else if($num_downloads == 1)
-               {
-                  echo 'S';
-                  
-                  $story->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  $story->save();
-                  
-                  if($mi->ratio() < 1 OR $mi->ratio() > 2)
-                     $first_forced = TRUE;
-               }
-               else if($num_downloads > FS_MAX_DOWNLOADS)
-               {
-                  break;
-               }
-               else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
-               {
-                  echo 'S';
-                  
-                  $story->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  $story->save();
-               }
-               else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
-               {
-                  echo 'S';
-                  
-                  $story->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  $story->save();
-               }
-            }
-            else
-               echo 'E';
-         }
-         else
-            echo 'I';
-      }
-      
-      echo "F\n";
    }
    
    public function get($id)
@@ -564,12 +501,6 @@ class feed extends fs_model
    
    public function test()
    {
-      $this->name = $this->no_html($this->name);
-      if( mb_strlen($this->name) > 60 )
-         $this->name = mb_substr($this->name, 0, 57).'...';
-      
-      $this->description = $this->no_html($this->description);
-      
       if( $this->suscriptors < 0 )
          $this->suscriptors = 0;
       
@@ -588,12 +519,14 @@ class feed extends fs_model
       {
          $data = array(
              'url' => $this->url,
-             'name' => $this->name,
-             'description' => $this->description,
+             'name' => $this->ucfirst( $this->true_text_break($this->name, 30) ),
+             'description' => $this->true_text_break($this->description, 200),
              'last_check_date' => $this->last_check_date,
              'last_update' => $this->last_update,
              'suscriptors' => $this->suscriptors,
-             'strikes' => $this->strikes
+             'strikes' => $this->strikes,
+             'num_stories' => $this->num_stories,
+             'native_lang' => $this->native_lang
          );
          
          if( $this->exists() )
@@ -662,25 +595,28 @@ class feed extends fs_model
    {
       echo "\nProcesamos las fuentes...";
       foreach($this->all() as $f)
+         $f->mini_cron_job();
+   }
+   
+   public function mini_cron_job()
+   {
+      if($this->strikes > 72)
       {
-         if($f->strikes > 72)
-         {
-            $f->delete();
-            echo "\n * Eliminada la fuente ".$f->url.".\n";
-         }
-         else
-         {
-            echo "\n * Procesando: ".$f->url."\n ** Archivo: tmp/".$f->get_id().".xml ...\n";
-            $f->read();
-            
-            foreach($f->get_errors() as $e)
-               echo $e."\n";
-            $f->clean_errors();
-            
-            foreach($f->get_messages() as $m)
-               echo $m."\n";
-            $f->clean_messages();
-         }
+         $this->delete();
+         echo "\n * Eliminada la fuente ".$this->url.".\n";
+      }
+      else
+      {
+         echo "\n * Procesando: ".$this->url."\n ** Archivo: tmp/".$this->get_id().".xml ...\n";
+         $this->read();
+         
+         foreach($this->get_errors() as $e)
+            echo $e."\n";
+         $this->clean_errors();
+         
+         foreach($this->get_messages() as $m)
+            echo $m."\n";
+         $this->clean_messages();
       }
    }
 }

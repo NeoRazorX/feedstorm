@@ -31,10 +31,7 @@ class explore_feed extends fs_controller
    public function __construct()
    {
       parent::__construct('explore_feed', 'Fuente', FS_NAME, 'explore_feed');
-   }
-   
-   protected function process()
-   {
+      
       $feed = new feed();
       $this->stories = array();
       
@@ -53,11 +50,17 @@ class explore_feed extends fs_controller
             else
                $this->new_error_msg('Clave incorrecta.');
          }
+         else if( isset($_GET['native_lang']) )
+         {
+            $this->feed->native_lang = ($_GET['native_lang'] == 'TRUE');
+            $this->feed->save();
+            $this->new_message("Fuente modificada correctamente.");
+         }
       }
       else
          $this->feed = FALSE;
       
-      if( $this->feed )
+      if($this->feed)
       {
          $this->title = $this->feed->name;
          $this->stories = $this->feed->stories();

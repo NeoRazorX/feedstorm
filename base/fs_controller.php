@@ -59,7 +59,6 @@ abstract class fs_controller
       setcookie('key', $this->visitor->get_id(), time()+31536000);
       
       $this->set_template($template);
-      $this->process();
    }
    
    public function __destruct()
@@ -69,7 +68,12 @@ abstract class fs_controller
    
    public function version()
    {
-      return '0.12.1';
+      return '1.0b1';
+   }
+   
+   public function php_version()
+   {
+      return PHP_VERSION;
    }
    
    public function mongo_version()
@@ -122,8 +126,6 @@ abstract class fs_controller
       $tiempo = explode(" ", microtime());
       return (number_format($tiempo[1] + $tiempo[0] - $this->uptime, 3) . ' s');
    }
-   
-   abstract protected function process();
    
    public function url()
    {

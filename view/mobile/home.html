@@ -3,68 +3,34 @@
 {if condition="$fsc->stories"}
    <div>
       {loop="$fsc->stories"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
-         {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
-            <h4>{$value->title}</h4>
-         {else}
-            <h4>{$value->title}</h4>
-            <p>{$value->description()}</p>
-         {/if}
-         <div class="timesince">
+      <div class="panel{if condition="$value->readed()"} panel-warning{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
+         <div class="panel-heading">
+            <h3 class="panel-title">{$value->title}</h3>
+         </div>
+         <div{if condition="$value->media_item"} style="min-height: {$value->media_item->height}px;"{/if}>
+            {if condition="$value->media_item"}
+            <div class="media_item2">{$value->media_item->show_image()}</div>
+            {/if}
+            {$value->description()}
+         </div>
+         <div class="panel-footer">
             {$value->popularity()}
-            <span>{$value->timesince()}</span>
+            <span class="pull-right">{$value->timesince()}</span>
          </div>
       </div>
       {/loop}
    </div>
 {else}
-   <div class="alert">
-      <h3>No se han encontrado noticias para tí :(</h3>
+   <div class="alert alert-info">
+      <h3>No se han encontrado historias para tí :(</h3>
       <p>
-         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
-         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
-         También puedes buscar noticias interesantes desde la sección
-         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+         Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
+         es una mierda.<br/>
+         Añade alguna fuente desde la sección
+         <a href="{$path}/index.php?page=feed_list">fuentes</a>. O deja que lo haga
+         otro y luego di que has sido tú y te llevas el mérito ;-)
       </p>
    </div>
-   
-   {if condition="$fsc->popular"}
-   <div>
-      {loop="$fsc->editions"}
-      <div class="story" onclick="fs_go2url('{$path}/{$value->url()}')">
-         {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
-            <h4>{$value->title}</h4>
-         {else}
-            <h4>{$value->title}</h4>
-            <p>{$value->description()}</p>
-         {/if}
-         <div class="timesince">
-            {$value->votes} votos
-            <span>{$value->timesince()}</span>
-         </div>
-      </div>
-      <a href="{$path}/{$value->url()}"></a>
-      {/loop}
-      {loop="$fsc->popular"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
-         {if condition="$value->media_item"}
-            <div class="image">{$value->media_item->show_image()}</div>
-            <h4>{$value->title}</h4>
-         {else}
-            <h4>{$value->title}</h4>
-            <p>{$value->description()}</p>
-         {/if}
-         <div class="timesince">
-            {$value->popularity()}
-            <span>{$value->timesince()}</span>
-         </div>
-      </div>
-      <a href="{$path}/{$value->url()}"></a>
-      {/loop}
-   </div>
-   {/if}
 {/if}
 
 {include="mobile/footer"}

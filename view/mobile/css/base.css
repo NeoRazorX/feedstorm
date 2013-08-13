@@ -7,130 +7,24 @@
 */
 
 body {
-   background-color: #f1f1f1;
+   padding: 10px;
 }
 
-div.story {
-   margin: 0px;
-   margin-bottom: 10px;
-   padding: 0px;
-   background-color: white;
-   border: 1px solid #999999;
-   border-radius: 5px;
-   box-shadow: 2px 2px 2px #888;
+div.panel, div.list-group {
+   box-shadow: 3px 3px 3px #aaa;
 }
 
-div.story h4 {
-   margin: 0px;
-   padding: 8px;
-   line-height: 25px;
-   color: #424242;
-}
-
-div.story p {
-   margin: 0px;
-   padding: 4px;
-   text-align: justify;
-}
-
-div.story div.image img {
-   display: block;
-   width: 100%;
-   border-top-left-radius: 4px;
-   border-top-right-radius: 4px;
-}
-
-div.story div.timesince {
-   padding: 5px;
-   background-color: #F4F2F2;
-   border-top: 1px solid #bbbbbb;
-   border-bottom-left-radius: 5px;
-   border-bottom-right-radius: 5px;
-   font-size: 11px;
-}
-
-div.story div.timesince span {
-   float: right;
-}
-
-div.story_readed {
-   border: 1px dashed #777777;
-   box-shadow: 0px 0px 0px #aaa;
-}
-
-div.story_info {
-   padding: 5px;
-}
-
-div.story_info div.media_item {
-   margin-bottom: 10px;
-   padding: 5px;
+div.media_item {
+   margin-top: 5px;
+   margin-bottom: 5px;
    text-align: center;
-}
-
-div.story_info div.media_item img {
-   box-shadow: 2px 2px 2px #666;
-}
-
-div.story_info p {
-   text-align: justify;
-}
-
-ul.pestanyas {
-   margin: 0px;
-   margin-top: 10px;
-   padding: 0px;
-   padding-left: 10px;
-   list-style-type: none;
-   border-bottom: 1px solid #cccccc;
-}
-
-ul.pestanyas li {
-   display: inline-block;
-   padding: 5px;
-   padding-right: 10px;
-   border-top-left-radius: 3px 3px;
-   border-top-right-radius: 3px 3px;
-   border-bottom: 3px solid transparent;
-}
-
-ul.pestanyas li:hover {
-   cursor: pointer;
-   background-color: #a0ccfe;
-}
-
-ul.pestanyas li.activa {
-   border-bottom: 3px solid #0077b3;
-   color: #0077b3;
-}
-
-div.pestanya_content {
-   padding: 5px;
-   background-color: white;
-   border: 1px solid #cccccc;
-}
-
-div#media_items {
-   margin: 0 auto;
 }
 
 div.media_item2 {
-   display: inline-block;
-   min-width: 240px;
-   min-height: 50px;
-   margin: 5px;
-   padding: 5px;
-   background-color: white;
-   border: 1px solid #666;
-   box-shadow: 2px 2px 2px #666;
-}
-
-div.media_item2 div.media_item_show {
-   min-width: 80px;
-   min-height: 80px;
-   margin-top: 5px;
-   padding: 3px;
-   text-align: center;
+   margin-right: 10px;
+   margin-bottom: 5px;
+   float: left;
+   clear: both;
 }
 
 div.footer {

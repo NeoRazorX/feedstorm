@@ -40,11 +40,8 @@ class stats extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('stats', 'Estadísticas', 'stats@'.FS_NAME, 'stats');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('stats', 'Estadísticas', 'Estadísticas &lsaquo; '.FS_NAME, 'stats');
+      
       $this->feed = new feed();
       $this->feed_story = new feed_story();
       $this->media_item = new media_item();
@@ -53,6 +50,42 @@ class stats extends fs_controller
       $this->story_media = new story_media();
       $this->story_visit = new story_visit();
       $this->suscription = new suscription();
+   }
+   
+   public function tmp_size($path='tmp', $show_units=TRUE)
+   {
+      $total_size = 0;
+      $files = scandir($path);
+      
+      foreach($files as $t)
+      {
+         if(is_dir(rtrim($path, '/') . '/' . $t))
+         {
+            if($t<>"." && $t<>"..")
+            {
+               $size = $this->tmp_size( rtrim($path, '/').'/'.$t, FALSE );
+               $total_size += $size;
+            }
+         }
+         else
+         {
+            $size = filesize( rtrim($path, '/').'/'.$t );
+            $total_size += $size;
+         }
+      }
+      
+      if($show_units)
+      {
+         $mod = 1024;
+         $units = explode(' ','B KB MB GB TB PB');
+         
+         for($i = 0; $total_size > $mod; $i++)
+            $total_size /= $mod;
+         
+         return round($total_size, 2) . ' ' . $units[$i];
+      }
+      else
+         return $total_size;
    }
 }
 

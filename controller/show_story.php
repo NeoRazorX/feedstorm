@@ -27,11 +27,8 @@ class show_story extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('show_story', 'noticia...', 'Noticia...', 'show_story');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('show_story', 'historia...', 'Historia...', 'show_story');
+      
       $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
@@ -55,6 +52,7 @@ class show_story extends fs_controller
             $sv0 = $story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
             if( !$sv0 )
             {
+               $story_visit->visitor_id = $this->visitor->get_id();
                $story_visit->story_id = $this->story->get_id();
                $story_visit->save();
                $this->story->clics++;
@@ -71,7 +69,7 @@ class show_story extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Noticia no encontrada.');
+         $this->new_error_msg('Historia no encontrada.');
    }
    
    public function get_description()

@@ -1,0 +1,84 @@
+{include="desktop/header"}
+
+<div class="info">
+   <h1>¿Qué es {$name}?</h1>
+   <p>
+      Pues básicamente es una web que <b>recopila historial</b> de {$fsc->feed->show_count()}
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>. <b>Las analiza</b> para extraer
+      imágenes y vídeos y además <b>calcula su popularidad</b>. Una vez completado este
+      proceso, <u>que se ejecuta cada hora</u>, se muestran estas historias a los
+      visitantes (tú) formando un mural de historias, <b>para que puedas hechar
+      un vistazo rápido a la actualidad</b>™.
+   </p>
+   <p>
+      ¡La actualidad manda! Por eso {$name} <b>elimina automáticamente todo contenido
+      de hace más de {$fsc->show_max_age()}</b>.
+   </p>
+</div>
+
+<div class="bloque">
+   <img class="face_right" src="{$path}/view/img/eso_es.png" alt="eso es"/>
+   <h1>¿Cómo se calcula la popularidad?</h1>
+   <p>
+      {$name} busca menciones de cada historia en <b>twitter</b>, <b>facebook</b>
+      y <b>meneame</b> para calcular una puntuación, a eso le suma los clics
+      sobre esa historia. Y por último divide esa puntuación entre el número de
+      días que hace que la historia fue publicada ¡La actualidad manda!
+      Así es como obtenemos la nota que mide la popularidad de cada historia,
+      cuanto más alto es el número, más popular es.
+   </p>
+</div>
+
+<div class="bloque">
+   <img class="face_left" src="{$path}/view/img/mother_of_god.png" alt="mother of god"/>
+   <h1>Personalizar la portada:</h1>
+   <p>
+      Por defecto {$name} te muestra en portada las historias más populares,
+      pero si quieres puedes elegir que te muestre solamente las historias de tus
+      fuentes favoritas. Lo único que tienes que hacer es ir a la sección
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>, hacer clic sobre
+      las que te gusten y <b>pulsar el botón suscribir</b>.
+   </p>
+</div>
+
+<div class="bloque" style="text-align: center; background-color: #221F1D; color: white;">
+   <h2>Truquitos:</h2>
+   <img src="{$path}/view/img/truquitos.png" alt="truquitos"/>
+   <p>¡También funciona con reddit!</p>
+</div>
+
+<div class="info">
+   <img class="face_right" src="{$path}/view/img/wooow.png" alt="wooow"/>
+   <h1>Últimos cambios en {$name} {$fsc->version()}:</h1>
+   <ul>
+      <li>Nuevo diseño.</li>
+      <li>
+         Ahora se obtienen los meneos de todos los enlaces. Además, el algoritmo
+         para calcular la popularidad penaliza aun más a las historias antiguas,
+         para que no permanezcan tanto tiempo en la lista de populares, y  a las
+         historias escritas en idiona no nativo.
+      </li>
+      <li>
+         Nuevo script cron_multicore.sh que crea un nuevo proceso
+         por cada core y cada fuente de la lista.
+      </li>
+      <li>
+         Las imágenes de imgur se cargan directamente desde imgur,
+         en vez de cargar desde la cache de esta web, además se ha añadido
+         soporte para vídeos mp4 y webm.
+      </li>
+      <li>
+         Añadidos más datos estadísticos, así como una lista de
+         visitantes habituales.
+      </li>
+      <li>
+         Añadida la página de ayuda y el buscador.
+      </li>
+      <li>
+         ¿Tienes dudas, quejas o sugerencias?
+         Pues <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">¡Habla!</a>
+      </li>
+   </ul>
+</div>
+
+{include="desktop/footer"}

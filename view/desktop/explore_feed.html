@@ -1,10 +1,10 @@
 {include="desktop/header"}
 
 {if condition="$fsc->feed"}
-<script src="{$path}/view/js/jquery.masonry.min.js"></script>
 <script type="text/javascript">
    $(document).ready(function() {
-      $("#stories").masonry({
+      var container = document.querySelector('#stories');
+      var msnry = new Masonry( container, {
          itemSelector: '.story',
          isFitWidth: true,
          isAnimated: true
@@ -33,32 +33,19 @@
    <table class="lista">
       <tr>
          <th align="left">Descripción</th>
-         <th align="left">URL</th>
-         <th align="left">Última actualización</th>
-         <th align="left">Última comprobación</th>
+         <th align="right">Historias</th>
          <th align="right">Suscriptores</th>
-         <th align="right">Errores</th>
+         <th align="right">Última actualización</th>
       </tr>
       <tr>
-         <td>{$fsc->feed->description}.</td>
-         <td>{$fsc->feed->url}</td>
-         <td>{$fsc->feed->last_update_timesince()}</td>
-         <td>{$fsc->feed->last_check_timesince()}</td>
+         <td>{$fsc->feed->description}</td>
+         <td align="right">{$fsc->feed->num_stories}</td>
          <td align="right">{$fsc->feed->suscriptors}</td>
-         <td align="right">{$fsc->feed->strikes}</td>
+         <td align="right">{$fsc->feed->last_update_timesince()}</td>
       </tr>
    </table>
-   <table width="100%">
-      <tr>
-         <td>
-            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
-            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
-         </td>
-         <td align="right">
-            <a id="b_remove_feed" class="remove" href="#">Eliminar esta fuente</a>
-         </td>
-      </tr>
-   </table>
+   <a class="facebook" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+   <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
 </div>
 
 <div id="stories">
@@ -76,8 +63,46 @@
             <span>{$value->timesince()}</span>
          </div>
       </div>
-      <a href="{$path}/{$value->url()}"></a>
+      <a href="{$path}/{$value->url(TRUE)}"></a>
+   {else}
+   <div class="story">
+      <h1>¡Vaya!</h1>
+      <div class="image">
+         <img src='{$path}/view/img/troll.png' alt='oops' width='196' height='160'/>
+      </div>
+      
+      <p>Parece que esta fuente lleva inactiva mucho tiempo...</p>
+   </div>
    {/loop}
+</div>
+
+<div class="info">
+   <table width="100%">
+      <tr>
+         <td valign="top">
+            <h1>Más datos:</h1>
+            <ul class="horizontal">
+               <li>URL: {$fsc->feed->url}</li>
+               <li>Última comprobación: {$fsc->feed->last_check_timesince()}</li>
+               <li>Errores: {$fsc->feed->strikes}</li>
+               <li>
+                  {if condition="$fsc->feed->native_lang"}
+                  <a href="{$fsc->feed->url()}&native_lang=FALSE">
+                     Marcar esta fuente como extranjera
+                  </a>
+                  {else}
+                  <a href="{$fsc->feed->url()}&native_lang=TRUE">
+                     Marcar esta fuente como nativa
+                  </a>
+                  {/if}
+               </li>
+            </ul>
+         </td>
+         <td align="right" valign="top">
+            <a id="b_remove_feed" class="button_remove" href="#">Eliminar esta fuente</a>
+         </td>
+      </tr>
+   </table>
 </div>
 {/if}
 

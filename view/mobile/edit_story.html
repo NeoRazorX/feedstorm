@@ -1,76 +1,62 @@
 {include="mobile/header"}
 
 {if condition="$fsc->story"}
-<script src="{$path}/view/js/jquery.masonry.min.js"></script>
-<script type="text/javascript">
-   $(document).ready(function() {
-      $("#media_items").masonry({
-         itemSelector: '.media_item2',
-         isFitWidth: true,
-         isAnimated: true
-      });
-   });
-</script>
-
-<div class="info">
-   <h1>Editar noticia:</h1>
-   Desde aquí puedes editar la noticia para seleccionar una imágen más apropiada,
+<div class="alert alert-info">
+   <h4>Editar historia:</h4>
+   Desde aquí puedes editar la historia para seleccionar una imágen más apropiada,
    corregir faltas de ortografía, mejorar la redacción, etc ... pero no te
-   emociones porque no sustituye a la noticia original. Esta versión corregida
+   emociones porque no sustituye a la historia original. Esta versión corregida
    aparecerá en la sección <b>ediciones</b>.
 </div>
-<br/>
-<div class="bloque">
+
+<div class="panel">
    <form class="form-horizontal" action="{$fsc->url()}" method="post">
-      <div class="control-group">
-         ¿Eres humano?
-         <div class="controls">
-            <label for="r_human_yes" class="radio inline">
-               <input id="r_human_yes" type="radio" name="human" value="POZI"/>
+      <fieldset>
+         <div class="control-group">
+            <label>¿Eres humano?</label> &nbsp; &nbsp;
+            <label for="r_human_yes" class="radio-inline">
+               <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
                Si
             </label>
-            <label for="r_human_no" class="radio inline">
-               <input id="r_human_no" type="radio" name="human" value="PONO" checked="checked"/>
+            <label for="r_human_no" class="radio-inline">
+               <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
                No
             </label>
          </div>
-      </div>
-      <div class="control-group">
-         <label class="control-label" for="input_title">Nuevo título</label>
-         <div class="controls">
-            <input type="text" name="title" id="input_title" placeholder="Título" value="{$fsc->story_edition->title}">
+         <div class="control-group">
+            <label class="control-label" for="input_title">Nuevo título</label>
+            <input class="form-control" type="text" name="title" id="input_title" placeholder="Título" value="{$fsc->story_edition->title}">
          </div>
-      </div>
-      <div class="control-group">
-         <label class="control-label" for="input_description">Descripción</label>
-         <div class="controls">
-            <textarea name="description" rows="6">{$fsc->story_edition->description()}</textarea>
+         <div class="control-group">
+            <label class="control-label" for="input_description">Descripción</label>
+            <textarea class="form-control" name="description" rows="6">{$fsc->story_edition->description()}</textarea>
          </div>
-      </div>
-      <div class="control-group">
-         <div class="controls">
-            <button type="submit" class="btn btn-primary">Guardar</button>
+         
+         <br/>
+         
+         <div class="control-group">
+            <label>Elige una imágen:</label>
+            <div class="thumbnail">
+               <label>
+                  <input type="radio" name="media_id" value="none"{if condition="!$fsc->story_edition->media_id"} checked="checked"{/if}/>
+                  Ninguna
+               </label>
+            </div>
+            {loop="$fsc->story->media_items()"}
+            <div class="thumbnail">
+               <label>
+                  <input type="radio" name="media_id" value="{$value->get_id()}"{if condition="$value->get_id()==$fsc->story_edition->media_id"}checked="checked"{/if}/>
+                  Seleccionar
+                  {$value->show()}
+               </label>
+            </div>
+            {/loop}
          </div>
-      </div>
-      <div id="media_items">
-         <div class="media_item2">
-            {if condition="!$fsc->story_edition->media_id"}
-               <input type="radio" name="media_id" value="none" checked="checked"/> Ninguna
-            {else}
-               <input type="radio" name="media_id" value="none"/> Ninguna
-            {/if}
-         </div>
-         {loop="$fsc->story->media_items()"}
-         <div class="media_item2">
-            {if condition="$value->get_id()==$fsc->story_edition->media_id"}
-               <input type="radio" name="media_id" value="{$value->get_id()}" checked="checked"/> Seleccionar
-            {else}
-               <input type="radio" name="media_id" value="{$value->get_id()}"/> Seleccionar
-            {/if}
-            <div class="media_item_show">{$value->show()}</div>
-         </div>
-         {/loop}
-      </div>
+         
+         <br/>
+         
+         <button type="submit" class="btn btn-primary">Guardar</button>
+      </fieldset>
    </form>
 </div>
 {/if}

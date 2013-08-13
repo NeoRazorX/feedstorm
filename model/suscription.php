@@ -117,6 +117,15 @@ class suscription extends fs_model
          return '-';
    }
    
+   public function num_stories()
+   {
+      $f = $this->feed();
+      if($f)
+         return $f->num_stories;
+      else
+         return '-';
+   }
+   
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);

@@ -1,15 +1,15 @@
 {include="desktop/header"}
 
 {if condition="$fsc->stories"}
-   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
-   $(document).ready(function() {
-      $("#stories").masonry({
-         itemSelector: '.story',
-         isFitWidth: true,
-         isAnimated: true
+      $(document).ready(function() {
+         var container = document.querySelector('#stories');
+         var msnry = new Masonry( container, {
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
       });
-   });
    </script>
    
    <div id="stories">
@@ -27,91 +27,20 @@
                <span>{$value->timesince()}</span>
             </div>
          </div>
+         <a href="{$path}/{$value->url(TRUE)}"></a>
       {/loop}
    </div>
 {else}
    <div class="info">
-      <h1>No se han encontrado noticias para tí :(</h1>
+      <h1>No se han encontrado historias para tí :(</h1>
       <p>
-         Para que aparezcan noticias aquí debes suscribirte a alguna fuente,
-         mira en la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>.
-         También puedes buscar noticias interesantes desde la sección
-         <a href="{$path}/index.php?page=discover_stories">descubrir</a>.
+         Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
+         es una mierda.<br/>
+         Añade alguna fuente desde la sección
+         <a href="{$path}/index.php?page=feed_list">fuentes</a>. O deja que lo haga
+         otro y luego di que has sido tú y te llevas el mérito ;-)
       </p>
    </div>
-   
-   {if condition="$fsc->popular OR $fsc->editions"}
-   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
-   <script type="text/javascript">
-      $(document).ready(function() {
-         $("#stories").masonry({
-            itemSelector: '.story',
-            isFitWidth: true,
-            isAnimated: true
-         });
-      });
-   </script>
-   
-   <div id="stories">
-      {loop="$fsc->editions"}
-         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
-            {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
-               <h1>{$value->title}</h1>
-            {else}
-               <h1>{$value->title}</h1>
-               <p>{$value->description()}</p>
-            {/if}
-            <div class="timesince">
-               {$value->votes} votos
-               <span>{$value->timesince()}</span>
-            </div>
-         </div>
-         <a href="{$path}/{$value->url()}"></a>
-      {/loop}
-      {loop="$fsc->popular"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
-            {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
-               <h1>{$value->title}</h1>
-            {else}
-               <h1>{$value->title}</h1>
-               <p>{$value->description()}</p>
-            {/if}
-            <div class="timesince">
-               {$value->popularity()}
-               <span>{$value->timesince()}</span>
-            </div>
-         </div>
-         <a href="{$path}/{$value->url()}"></a>
-      {/loop}
-   </div>
-   {/if}
 {/if}
-
-<div class="info">
-   <table width="100%">
-      <tr>
-         <td align="right" valign="top">
-            <img class="face" src="{$path}/view/img/wooow.png" alt="wooow"/>
-         </td>
-         <td>
-            <h1>Últimos cambios en {$name} {$fsc->version()}:</h1>
-            <ul>
-               <li>Añadidos más filtros anti-spam.</li>
-               <li>
-                  Añadidos botones para compartir en <a class="twitter" href="#">twitter</a>
-                  y <a class="facebook" href="#">facebook</a>
-               </li>
-               <li>
-                  Las menciones en Twitter, Facebook y Meneame cuentan
-                  para calcular la popularidad de cada noticia.
-               </li>
-               <li>Mejorado el algoritmo para extraer vídeos de youtube.</li>
-            </ul>
-         </td>
-      </tr>
-   </table>
-</div>
 
 {include="desktop/footer"}

@@ -18,38 +18,36 @@
  */
 
 require_once 'model/feed.php';
-require_once 'model/story.php';
 
-class discover_stories extends fs_controller
+class help extends fs_controller
 {
-   public $stories;
+   public $feed;
    
    public function __construct()
    {
-      parent::__construct('discover_stories', 'Descubrir', 'Descubrir &lsaquo; '.FS_NAME, 'discover');
+      parent::__construct('help', 'Ayuda', 'Ayuda &lsaquo; '.FS_NAME, 'help');
       
-      $this->stories = array();
+      $this->feed = new feed();
+   }
+   
+   public function show_max_age()
+   {
+      $time = FS_MAX_AGE;
       
-      if( mt_rand(0, 1) == 0 )
-      {
-         $feed = new feed();
-         $rfeed = $feed->random();
-         if($rfeed)
-            $this->stories = $rfeed->stories();
-      }
-      
-      if( count($this->stories) < FS_MAX_STORIES )
-      {
-         $story = new story();
-         $more_stories = $story->random_stories();
-         
-         $i = 0;
-         while( $i < count($more_stories) AND count($this->stories) < FS_MAX_STORIES )
-         {
-            $this->stories[] = $more_stories[$i];
-            $i++;
-         }
-      }
+      if($time <= 60)
+         return $time.' segundos';
+      else if(60 < $time && $time <= 3600)
+         return round($time/60,0).' minutos';
+      else if(3600 < $time && $time <= 86400)
+         return round($time/3600,0).' horas';
+      else if(86400 < $time && $time <= 604800)
+         return round($time/86400,0).' dias';
+      else if(604800 < $time && $time <= 2592000)
+         return round($time/604800,0).' semanas';
+      else if(2592000 < $time && $time <= 29030400)
+         return round($time/2592000,0).' meses';
+      else if($time > 29030400)
+         return 'mucho tiempo';
    }
 }
 

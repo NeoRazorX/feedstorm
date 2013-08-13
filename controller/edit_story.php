@@ -29,11 +29,8 @@ class edit_story extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('edit_story', 'Editar noticia', 'Editar noticia', 'edit_story');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('edit_story', 'Editar historia', 'Editar historia', 'edit_story');
+      
       $this->story_edition = new story_edition();
       $this->story_visit = new story_visit();
       
@@ -75,16 +72,30 @@ class edit_story extends fs_controller
                
                if( $_POST['human'] != 'POZI' )
                   $this->new_error_msg('Has contestado que no eres humano, y si no eres
-                     humano no puedes editar noticias. Y si, ya sé que esto es nazismo puro,
+                     humano no puedes editar historias. Y si, ya sé que esto es nazismo puro,
                      pero es una forma sencilla de atajar el SPAM.');
                else
                {
                   $this->story_edition->save();
-                  $this->new_message('Noticia editada correctamente. Hac clic <a href="'.
+                  $this->new_message('Historia editada correctamente. Hac clic <a href="'.
                      $this->story_edition->url().'">aquí</a> para verla. Recuerda que
                         aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
                   
                   $this->select_best_image4story();
+                  
+                  /// ¿La noticia está en otro idioma?
+                  if( !$this->story->native_lang )
+                  {
+                     $this->story->title = $this->story_edition->title;
+                     $this->story->description = $this->story_edition->description;
+                     $this->story->native_lang = TRUE;
+                     $this->story->save();
+                  }
+                  
+                  /// actualizamos al visitante
+                  $this->visitor->human = TRUE;
+                  $this->visitor->need_save = TRUE;
+                  $this->visitor->save();
                }
             }
             
@@ -105,7 +116,7 @@ class edit_story extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Noticia no encontrada.');
+         $this->new_error_msg('Historia no encontrada.');
    }
    
    public function url()
@@ -126,7 +137,7 @@ class edit_story extends fs_controller
    
    private function select_best_image4story()
    {
-       /// Elegimos la foto de la edición más votada de la noticia
+      /// Elegimos la foto de la edición más votada de esta historia
       $maxvotes = 0;
       foreach($this->story->editions() as $edi)
       {

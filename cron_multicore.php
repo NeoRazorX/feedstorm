@@ -18,6 +18,7 @@
  */
 
 date_default_timezone_set('Europe/Madrid');
+///error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if( !function_exists('curl_init') )
    echo "Necesitas instalar php5-curl\n";
@@ -35,9 +36,6 @@ else
       define('FS_TIMEOUT', 3);
    if( !defined('FS_MAX_DOWNLOADS') )
       define('FS_MAX_DOWNLOADS', 5);
-   
-   $tiempo = explode(' ', microtime());
-   $uptime = $tiempo[1] + $tiempo[0];
    
    require_once 'base/fs_mongo.php';
    require_once 'model/feed.php';
@@ -61,32 +59,46 @@ else
    $suscription = new suscription();
    $visitor = new visitor();
    
-   echo "Comprobamos los índices... ";
-   $feed->install_indexes();
-   $feed_story->install_indexes();
-   $media_item->install_indexes();
-   $story->install_indexes();
-   $story_edition->install_indexes();
-   $story_media->install_indexes();
-   $story_visit->install_indexes();
-   $suscription->install_indexes();
-   $visitor->install_indexes();
-   
-   echo "\nComprobamos los modelos... ";
-   $feed->cron_job();
-   $feed_story->cron_job();
-   $media_item->cron_job();
-   $story->cron_job();
-   $story_edition->cron_job();
-   $story_media->cron_job();
-   $story_visit->cron_job();
-   $suscription->cron_job();
-   $visitor->cron_job();
+   if( count($_SERVER["argv"]) == 2 )
+   {
+      $feed0 = $feed->get( $_SERVER["argv"][1] );
+      if($feed0)
+         $feed0->mini_cron_job();
+      else
+         echo "¡Feed ".$_SERVER["argv"][1]." no encontrado!";
+   }
+   else
+   {
+      echo "Comprobamos los índices... ";
+      $feed->install_indexes();
+      $feed_story->install_indexes();
+      $media_item->install_indexes();
+      $story->install_indexes();
+      $story_edition->install_indexes();
+      $story_media->install_indexes();
+      $story_visit->install_indexes();
+      $suscription->install_indexes();
+      $visitor->install_indexes();
+      
+      echo "\nComprobamos los modelos... ";
+      $feed_story->cron_job();
+      $media_item->cron_job();
+      $story->cron_job();
+      $story_edition->cron_job();
+      $story_media->cron_job();
+      $story_visit->cron_job();
+      $suscription->cron_job();
+      $visitor->cron_job();
+      
+      echo "\n";
+      
+      $fp = fopen('tmp/feeds.txt', 'wb');
+      foreach($feed->all() as $f)
+         fwrite ($fp, $f->get_id()."\n");
+      fclose($fp);
+   }
    
    $mongo->close();
-   
-   $tiempo = explode(' ', microtime());
-   echo "\nTiempo de ejecución: ".number_format($tiempo[1] + $tiempo[0] - $uptime, 3)." s\n";
 }
 
 ?>

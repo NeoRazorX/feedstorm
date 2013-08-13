@@ -1,0 +1,42 @@
+{include="mobile/header"}
+
+<div class="well-small">
+   <h4>¿Qué es {$name}?</h4>
+   <p>
+      Pues básicamente es una web que <b>recopila historial</b> de {$fsc->feed->show_count()}
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>. <b>Las analiza</b> para extraer
+      imágenes y vídeos y además <b>calcula su popularidad</b>. Una vez completado este
+      proceso, <u>que se ejecuta cada hora</u>, se muestran estas historias a los
+      visitantes (tú) formando un mural de historias, <b>para que puedas hechar
+      un vistazo rápido a la actualidad</b>™.
+   </p>
+   <p>
+      ¡La actualidad manda! Por eso {$name} <b>elimina automáticamente todo contenido
+      de hace más de {$fsc->show_max_age()}</b>.
+   </p>
+</div>
+
+<div class="well-small">
+   <h4>¿Cómo se calcula la popularidad?</h4>
+   <p>
+      {$name} busca menciones de cada historia en <b>twitter</b>, <b>facebook</b>
+      y <b>meneame</b> para calcular una puntuación, a eso le suma los clics
+      sobre esa historia. Y por último divide esa puntuación entre el número de
+      días que hace que la historia fue publicada ¡La actualidad manda!
+      Así es como obtenemos la nota que mide la popularidad de cada historia,
+      cuanto más alto es el número, más popular es.
+   </p>
+</div>
+
+<div class="well-small">
+   <h4>Personalizar la portada:</h4>
+   <p>
+      Por defecto {$name} te muestra en portada las historias más populares,
+      pero si quieres puedes elegir que te muestre solamente las historias de tus
+      fuentes favoritas. Lo único que tienes que hacer es ir a la sección
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>, hacer clic sobre
+      las que te gusten y <b>pulsar el botón suscribir</b>.
+   </p>
+</div>
+
+{include="mobile/footer"}

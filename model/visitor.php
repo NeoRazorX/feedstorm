@@ -18,14 +18,18 @@
  */
 
 require_once 'base/fs_model.php';
-require_once 'model/suscription.php';
 require_once 'model/feed_story.php';
+require_once 'model/story_visit.php';
+require_once 'model/suscription.php';
 
 class visitor extends fs_model
 {
    public $nick;
    public $user_agent;
+   public $first_login_date;
    public $last_login_date;
+   public $human; /// humano confirmado (ha contenstado que si es humano)
+   public $num_suscriptions;
    
    public $noob;
    public $need_save;
@@ -39,7 +43,10 @@ class visitor extends fs_model
          $this->id = $k['_id'];
          $this->nick = $k['nick'];
          $this->user_agent = $k['user_agent'];
+         $this->first_login_date = $k['first_login_date'];
          $this->last_login_date = $k['last_login_date'];
+         $this->human = $k['human'];
+         $this->num_suscriptions = $k['num_suscriptions'];
          $this->noob = FALSE;
          $this->need_save = FALSE;
       }
@@ -47,6 +54,9 @@ class visitor extends fs_model
       {
          $this->id = NULL;
          $this->nick = $this->random_string(12);
+         $this->first_login_date = time();
+         $this->human = FALSE;
+         $this->num_suscriptions = 0;
          $this->login();
          $this->noob = TRUE;
          $this->need_save = TRUE;
@@ -66,6 +76,26 @@ class visitor extends fs_model
    public function login_timesince()
    {
       return $this->time2timesince($this->last_login_date);
+   }
+   
+   public function age()
+   {
+      $time = $this->last_login_date - $this->first_login_date;
+      
+      if($time <= 60)
+         return $time.' segundos';
+      else if(60 < $time && $time <= 3600)
+         return round($time/60,0).' minutos';
+      else if(3600 < $time && $time <= 86400)
+         return round($time/3600,0).' horas';
+      else if(86400 < $time && $time <= 604800)
+         return round($time/86400,0).' dias';
+      else if(604800 < $time && $time <= 2592000)
+         return round($time/604800,0).' semanas';
+      else if(2592000 < $time && $time <= 29030400)
+         return round($time/2592000,0).' meses';
+      else if($time > 29030400)
+         return 'más de un año';
    }
    
    public function mobile()
@@ -109,12 +139,31 @@ class visitor extends fs_model
       }
    }
    
+   public function num_visits()
+   {
+      $sv = new story_visit();
+      return $sv->count4visitor($this->id);
+   }
+   
+   public function last_visits()
+   {
+      $sv = new story_visit();
+      return $sv->all4visitor($this->id);
+   }
+   
    public function suscriptions()
    {
       if( !isset($this->suscriptions) )
       {
          $suscription = new suscription();
          $this->suscriptions = $suscription->all4visitor($this->id);
+         
+         if( $this->num_suscriptions != count($this->suscriptions) )
+         {
+            $this->num_suscriptions = count($this->suscriptions);
+            $this->need_save = TRUE;
+            $this->save();
+         }
       }
       return $this->suscriptions;
    }
@@ -166,7 +215,11 @@ class visitor extends fs_model
          $data = array(
              'nick' => $this->nick,
              'user_agent' => $this->user_agent,
-             'last_login_date' => $this->last_login_date
+             'first_login_date' => $this->first_login_date,
+             'last_login_date' => $this->last_login_date,
+             'human' => $this->human,
+             'num_suscriptions' => $this->num_suscriptions,
+             'mobile' => $this->mobile()
          );
          
          if( $this->exists() )
@@ -191,7 +244,11 @@ class visitor extends fs_model
           '_id' => $this->id,
           'nick' => $this->nick,
           'user_agent' => $this->user_agent,
-          'last_login_date' => $this->last_login_date
+          'first_login_date' => $this->first_login_date,
+          'last_login_date' => $this->last_login_date,
+          'human' => $this->human,
+          'num_suscriptions' => $this->num_suscriptions,
+          'mobile' => $this->mobile()
       );
       $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
       $this->collection->insert($data);
@@ -224,9 +281,33 @@ class visitor extends fs_model
       return $vlist;
    }
    
+   public function usuals()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $vlist = array();
+      $js = "function() { return this.last_login_date > this.first_login_date }";
+      foreach($this->collection->find( array('$where' => $js) )->sort(array('last_login_date'=>-1))->limit(FS_MAX_STORIES) as $v)
+         $vlist[] = new visitor($v);
+      return $vlist;
+   }
+   
+   public function count_usuals()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $js = "function() { return this.last_login_date > this.first_login_date }";
+      return $this->collection->find( array('$where' => $js) )->count();
+   }
+   
+   public function show_count_usuals()
+   {
+      return number_format($this->count_usuals(), 0, ',', '.');
+   }
+   
    public function cron_job()
    {
-      if( mt_rand(0, 9) == 0 )
+      $option = mt_rand(0, 9);
+      
+      if($option == 0)
       {
          echo "\nEliminamos usuarios inactivos...";
          foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-FS_MAX_AGE)))->limit(FS_MAX_STORIES) as $v)

@@ -61,6 +61,10 @@ else
             {
                $f0 = new feed();
                $f0->url = base64_decode( (string)$item->feed );
+               
+               if( $f0->reddit() )
+                  $f0->native_lang = FALSE;
+               
                $f0->save();
             }
             

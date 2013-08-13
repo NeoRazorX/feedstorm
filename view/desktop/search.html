@@ -1,5 +1,18 @@
 {include="desktop/header"}
 
+<script type="text/javascript">
+      $(document).ready(function() {
+         document.f_search.query.focus();
+      });
+</script>
+
+<div style="text-align: center;">
+   <form name="f_search" action="{$fsc->url()}" method="post">
+      <input type="text" name="query" size="80" value="{$fsc->query}" autocomplete="off"/>
+      <input type="submit" value="¡Busca!"/>
+   </form>
+</div>
+
 {if condition="$fsc->stories"}
    <script type="text/javascript">
       $(document).ready(function() {
@@ -27,19 +40,7 @@
                <span>{$value->timesince()}</span>
             </div>
          </div>
-         <a href="{$path}/{$value->url(TRUE)}"></a>
       {/loop}
-   </div>
-{else}
-   <div class="info">
-      <h1>No se han encontrado historias populares :(</h1>
-      <p>
-         Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
-         es una mierda.<br/>
-         Añade alguna fuente desde la sección
-         <a href="{$path}/index.php?page=feed_list">fuentes</a>. O deja que lo haga
-         otro y luego di que has sido tú y te llevas el mérito ;-)
-      </p>
    </div>
 {/if}
 

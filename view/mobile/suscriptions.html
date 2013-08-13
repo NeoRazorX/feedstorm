@@ -1,20 +1,46 @@
 {include="mobile/header"}
 
 {if condition="$fsc->suscriptions"}
-<div class="well">
-   <h3>Nombre + descripción:</h3>
+<div class="list-group">
+   <div class="list-group-item">
+      <h4 class="list-group-item-heading">Tus suscripciones:</h4>
+   </div>
    {loop="$fsc->suscriptions"}
-      <p><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</p>
+   <a class="list-group-item" href="{$value->url()}">
+      {$value->name()} <span class="badge">{$value->num_stories()}</span>
+   </a>
    {/loop}
 </div>
+<a class="btn btn-primary btn-small" href="{$path}/index.php?page=feed_list">Añadir más fuentes...</a>
+<br/><br/>
 {else}
-<div class="alert">
-   <h2>No estás suscrito a ninguna fuente.</h2>
+<div class="alert alert-info">
+   <h3>No estás suscrito a ninguna fuente.</h3>
    <p>
-      Puedes buscar fuentes interesantes desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>
-      y suscríbirte.
+      Por defecto {$name} te muestra en portada las historias más populares,
+      pero si quieres puedes elegir que te muestre solamente las historias de tus
+      fuentes favoritas. Lo único que tienes que hacer es ir a la sección
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>, hacer clic sobre
+      las que te gusten y <b>pulsar el botón suscribir</b>.
    </p>
 </div>
 {/if}
+
+<div class="list-group">
+   <div class="list-group-item">
+      <h4 class="list-group-item-heading">Historial:</h4>
+   </div>
+   {loop="$fsc->last_visits"}
+      <div class="list-group-item">
+         {if condition="$value->edition_id"}
+            <a class="label" href="{$path}/{$value->edition_url()}">edición</a>
+         {/if}
+         <a href="{$path}/{$value->url()}">{$value->title()}</a>
+         {$value->timesince()}
+      </div>
+   {else}
+   <div class="list-group-item">Sin resultados.</div>
+   {/loop}
+</div>
 
 {include="mobile/footer"}

@@ -1,18 +1,33 @@
 {include="mobile/header"}
 
-<div class="bloque">
-   <div class="title">Estadísticas:</div>
-   <ul>
-      <li>Usuarios: {$fsc->visitor->show_count()}</li>
-      <li>Fuentes: {$fsc->feed->show_count()}</li>
-      <li>Suscripciones: {$fsc->suscription->show_count()}</li>
-      <li>Historias/fuente: {$fsc->feed_story->show_count()}</li>
-      <li>Historias: {$fsc->story->show_count()}</li>
-      <li>Ediciones: {$fsc->story_edition->show_count()}</li>
-      <li>Visitas: {$fsc->story_visit->show_count()}</li>
-      <li>Elementos multimedia/historia: {$fsc->story_media->show_count()}</li>
-      <li>Elementos multimedia: {$fsc->media_item->show_count()}</li>
-   </ul>
+<div class="list-group">
+   <div class="list-group-item">
+      <h4 class="list-group-item-heading">Estadísticas:</h4>
+   </div>
+   <div class="list-group-item">
+      Usuarios: <span class="badge">{$fsc->visitor->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Usuarios habituales: <span class="badge">{$fsc->visitor->show_count_usuals()}</span>
+   </div>
+   <div class="list-group-item">
+      Visitas: <span class="badge">{$fsc->story_visit->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Suscripciones: <span class="badge">{$fsc->suscription->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Fuentes: <span class="badge">{$fsc->feed->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Historias: <span class="badge">{$fsc->story->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Ediciones: <span class="badge">{$fsc->story_edition->show_count()}</span>
+   </div>
+   <div class="list-group-item">
+      Elementos multimedia: <span class="badge">{$fsc->media_item->show_count()}</span>
+   </div>
 </div>
 
 {include="mobile/footer"}

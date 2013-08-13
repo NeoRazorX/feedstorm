@@ -3,34 +3,26 @@
 {if condition="$fsc->editions"}
    {if condition="$fsc->show_info"}
    <div class="info">
-      <table width="100%">
-         <tr>
-            <td>
-               <h1>¿Esto qué es?</h1>
-               <p>
-                  Aquí aparecen las últimas noticias editadas por los usuarios.
-                  Para editar una noticia sólo tienes que hacer clic sobre ella
-                  y a continuación pulsar el botón <b>editar</b>.
-                  <br/>
-                  Y si encuentras algún fallo,
-                  <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
-               </p>
-               <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a></p>
-            </td>
-            <td align="right" valign="top">
-               <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
-                  <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
-               </a>
-            </td>
-         </tr>
-      </table>
+      <img class="face_right" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
+      <h1>¿Esto qué es?</h1>
+      <p>
+         Aquí aparecen las últimas noticias editadas por los usuarios.
+         Para editar una historia sólo tienes que hacer clic sobre ella
+         y a continuación pulsar el botón <b>editar</b>.
+         <br/>
+         Y si encuentras algún fallo,
+         <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
+      </p>
+      <p>
+         <a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a>
+      </p>
    </div>
    {/if}
    
-   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function() {
-         $("#stories").masonry({
+         var container = document.querySelector('#stories');
+         var msnry = new Masonry( container, {
             itemSelector: '.story',
             isFitWidth: true,
             isAnimated: true
@@ -53,14 +45,14 @@
                <span>{$value->timesince()}</span>
             </div>
          </div>
-         <a href="{$path}/{$value->url()}"></a>
+         <a href="{$path}/{$value->url(TRUE)}"></a>
       {/loop}
    </div>
 {else}
    <div class="info">
       <h1>No se han encontrado ediciones :(</h1>
       <p>
-         Para crear una edición simplemente selecciona una noticia y pulsa el
+         Para crear una edición simplemente selecciona una historia y pulsa el
          botón <b>editar</b>.
       </p>
    </div>

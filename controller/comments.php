@@ -23,11 +23,6 @@ class comments extends fs_controller
    {
       parent::__construct('comments', 'Comentarios', 'comentarios@'.FS_NAME, 'comments');
    }
-   
-   protected function process()
-   {
-      
-   }
 }
 
 ?>

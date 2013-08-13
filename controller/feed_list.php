@@ -27,11 +27,8 @@ class feed_list extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('feed_list', 'Fuentes', 'fuentes@'.FS_NAME, 'feed_list');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('feed_list', 'Fuentes', 'Fuentes &lsaquo; '.FS_NAME, 'feed_list');
+      
       $this->feed = new feed();
       
       if( isset($_POST['feed_url']) AND $this->visitor->human() )
@@ -59,6 +56,10 @@ class feed_list extends fs_controller
          else
          {
             $this->feed->url = $_POST['feed_url'];
+            
+            if( $this->feed->reddit() )
+               $this->feed->native_lang = FALSE;
+            
             if( $this->feed->save() )
             {
                $this->new_message('Se ha añadido '.$_POST['feed_url'].' como fuente.
@@ -74,6 +75,11 @@ class feed_list extends fs_controller
                /// actualizamos el número de suscriptores
                $this->feed->suscriptors++;
                $this->feed->save();
+               
+               /// actualizamos al visitante
+               $this->visitor->human = TRUE;
+               $this->visitor->need_save = TRUE;
+               $this->visitor->save();
             }
          }
       }

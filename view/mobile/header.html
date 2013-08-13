@@ -7,11 +7,9 @@
    <meta name="Robots" content="all" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <link type="text/css" href="{$path}/view/mobile/css/bootstrap.min.css" rel="stylesheet" />
-   <link type="text/css" href="{$path}/view/mobile/css/bootstrap-responsive.min.css" rel="stylesheet" />
    <link type="text/css" href="{$path}/view/mobile/css/base.css" rel="stylesheet" />
-   <script src="{$path}/view/js/jquery.js"></script>
+   <script src="{$path}/view/js/jquery.min.js"></script>
    <script src="{$path}/view/mobile/js/bootstrap.min.js"></script>
-   <script src="{$path}/view/mobile/js/bootstrap-responsive.min.js"></script>
    {if condition="$analytics"}
    <script type="text/javascript">
       var _gaq = _gaq || [];
@@ -27,54 +25,60 @@
    <script src="{$path}/view/js/basic.js"></script>
 </head>
 <body>
-   <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-         <a class="brand" href="{$path}/">{$name}</a>
-         <div class="container">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-               <span class="icon-bar"></span>
-            </button>
-            <div class="nav-collapse collapse">
-            <ul class="nav">
-            {if condition="$fsc->page=='home'"}
-               <li class="active"><a href="{$path}/">Portada</a></li>
-            {else}
-               <li><a href="{$path}/">Portada</a></li>
-            {/if}
-            {if condition="$fsc->page=='popular_stories'"}
-               <li class="active"><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
-            {/if}
-            {if condition="$fsc->page=='discover_stories'"}
-               <li class="active"><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
-            {/if}
-            {if condition="$fsc->page=='last_editions'"}
-               <li class="active"><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
-            {/if}
-            {if condition="$fsc->page=='feed_list'"}
-               <li class="active"><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
-            {/if}
-            {if condition="$fsc->page=='suscriptions'"}
-               <li class="active"><a href="{$path}/index.php?page=suscriptions">Suscripciones</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=suscriptions">Suscripciones</a></li>
-            {/if}
-            {if condition="$fsc->page=='comments'"}
-               <li class="active"><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
-            {else}
-               <li><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
-            {/if}
+   <div class="navbar navbar-inverse">
+      <div class="container">
+         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+         </button>
+         <a class="navbar-brand" href="{$path}/">{$name}</a>
+         <div class="nav-collapse collapse navbar-responsive-collapse">
+            <ul class="nav navbar-nav">
+               {if condition="$fsc->page=='home'"}
+                  <li class="active"><a href="{$path}/">Portada</a></li>
+               {else}
+                  <li><a href="{$path}/">Portada</a></li>
+               {/if}
+               {if condition="$fsc->visitor->suscriptions()"}
+                  {if condition="$fsc->page=='popular_stories'"}
+                     <li class="active"><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                  {else}
+                     <li><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                  {/if}
+               {/if}
+               {if condition="$fsc->page=='discover_stories'"}
+                  <li class="active"><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
+               {/if}
+               {if condition="$fsc->page=='last_editions'"}
+                  <li class="active"><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
+               {/if}
+               {if condition="$fsc->page=='comments'"}
+                  <li class="active"><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
+               {/if}
+               {if condition="$fsc->page=='feed_list'"}
+                  <li class="active"><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+               {/if}
+               {if condition="$fsc->page=='suscriptions'"}
+                  <li class="active"><a href="{$path}/index.php?page=suscriptions">Tu perfil</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=suscriptions">Tu perfil</a></li>
+               {/if}
+               <li>
+                  <form class="navbar-form" action="{$path}/index.php?page=search" method="post">
+                     <input type="text" name="query" class="form-control" style="width: 200px;">
+                     <button type="submit" class="btn btn-primary">Buscar</button>
+                  </form>
+               </li>
             </ul>
-            </div>
          </div>
       </div>
    </div>

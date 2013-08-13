@@ -104,7 +104,25 @@ abstract class fs_model
       {
          $time = time() - $v;
          
-         if($time <= 60)
+         if($time < 0)
+         {
+            $time = abs($time);
+            if($time <= 60)
+               return $time.' segundos en el futuro WTF!';
+            else if(60 < $time && $time <= 3600)
+               return round($time/60,0).' minutos en el futuro WTF!';
+            else if(3600 < $time && $time <= 86400)
+               return round($time/3600,0).' horas en el futuro WTF!';
+            else if(86400 < $time && $time <= 604800)
+               return round($time/86400,0).' dias en el futuro WTF!';
+            else if(604800 < $time && $time <= 2592000)
+               return round($time/604800,0).' semanas en el futuro WTF!';
+            else if(2592000 < $time && $time <= 29030400)
+               return round($time/2592000,0).' meses en el futuro WTF!';
+            else if($time > 29030400)
+               return 'más de un año en el futuro WTF!';
+         }
+         else if($time <= 60)
             return 'hace '.$time.' segundos';
          else if(60 < $time && $time <= 3600)
             return 'hace '.round($time/60,0).' minutos';
@@ -121,6 +139,14 @@ abstract class fs_model
       }
       else
          return 'fecha desconocida';
+   }
+   
+   public function ucfirst($string, $encoding='utf-8')
+   {
+      $strlen = mb_strlen($string, $encoding);
+      $firstChar = mb_substr($string, 0, 1, $encoding);
+      $then = mb_substr($string, 1, $strlen - 1, $encoding);
+      return mb_strtoupper($firstChar, $encoding) . $then;
    }
    
    /*
@@ -182,25 +208,29 @@ abstract class fs_model
     */
    public function true_text_break($str, $max_t_width=500, $max_w_width=30)
    {
-      $description = '';
       $desc = $this->true_word_break( $this->no_html($str), $max_w_width );
       
-      foreach(explode(' ', $desc) as $aux)
+      if( mb_strlen($desc) <= $max_t_width )
+         return $desc;
+      else
       {
-         if( mb_strlen($description.' '.$aux) < $max_t_width-3 )
+         $description = '';
+         
+         foreach(explode(' ', $desc) as $aux)
          {
-            if($description == '')
-               $description = $aux;
+            if( mb_strlen($description.' '.$aux) < $max_t_width-3 )
+            {
+               if($description == '')
+                  $description = $aux;
+               else
+                  $description .= ' ' . $aux;
+            }
             else
-               $description .= ' ' . $aux;
+               break;
          }
-         else
-            break;
+         
+         return $description.'...';
       }
-      if( mb_strlen($description) < mb_strlen($desc) )
-         $description .= '...';
-      
-      return $description;
    }
    
    public function random_string($length = 10)
@@ -270,6 +300,41 @@ abstract class fs_model
    public function show_count()
    {
       return number_format($this->count(), 0, ',', '.');
+   }
+   
+   public function curl_download($url, $googlebot=TRUE, $timeout=FS_TIMEOUT)
+   {
+      $ch0 = curl_init($url);
+      curl_setopt($ch0, CURLOPT_TIMEOUT, $timeout);
+      curl_setopt($ch0, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch0, CURLOPT_FOLLOWLOCATION, true);
+      
+      if($googlebot)
+         curl_setopt($ch0, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+      
+      $html = curl_exec($ch0);
+      curl_close($ch0);
+      
+      return $html;
+   }
+   
+   public function curl_save($url, $filename, $googlebot=FALSE, $followlocation=FALSE)
+   {
+      $ch = curl_init($url);
+      $fp = fopen($filename, 'wb');
+      curl_setopt($ch, CURLOPT_FILE, $fp);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_TIMEOUT, FS_TIMEOUT);
+      
+      if($followlocation)
+         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+      
+      if($googlebot)
+         curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (+http://www.google.com/bot.html)');
+      
+      curl_exec($ch);
+      curl_close($ch);
+      fclose($fp);
    }
 }
 

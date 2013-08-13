@@ -18,14 +18,17 @@
  */
 
 require_once 'base/fs_model.php';
+require_once 'model/story.php';
 
 class story_visit extends fs_model
 {
+   public $visitor_id;
    public $story_id;
    public $edition_id;
    public $ip;
    public $date;
-   public $user_agent;
+   
+   private $story;
    
    public function __construct($sv = FALSE)
    {
@@ -33,15 +36,21 @@ class story_visit extends fs_model
       if($sv)
       {
          $this->id = $sv['_id'];
+         
+         if( isset($sv['visitor_id']) )
+            $this->visitor_id = $sv['visitor_id'];
+         else
+            $this->visitor_id = NULL;
+         
          $this->story_id = $sv['story_id'];
          $this->edition_id = $sv['edition_id'];
          $this->ip = $sv['ip'];
          $this->date = $sv['date'];
-         $this->user_agent = $sv['user_agent'];
       }
       else
       {
          $this->id = NULL;
+         $this->visitor_id = NULL;
          $this->story_id = NULL;
          $this->edition_id = NULL;
          
@@ -51,12 +60,9 @@ class story_visit extends fs_model
             $this->ip = 'unknown';
          
          $this->date = time();
-         
-         if( isset($_SERVER['HTTP_USER_AGENT']) )
-            $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
-         else
-            $this->user_agent = 'unknown';
       }
+      
+      $this->story = NULL;
    }
    
    public function install_indexes()
@@ -72,6 +78,22 @@ class story_visit extends fs_model
    public function url()
    {
       return 'index.php?page=show_story&id='.$this->story_id;
+   }
+   
+   public function edition_url()
+   {
+      return 'index.php?page=show_edition&id='.$this->edition_id;
+   }
+   
+   public function title()
+   {
+      if( !isset($this->story) )
+      {
+         $story = new story();
+         $this->story = $story->get($this->story_id);
+      }
+      
+      return $this->story->title;
    }
    
    public function get($id)
@@ -111,15 +133,16 @@ class story_visit extends fs_model
    
    public function save()
    {
+      $this->visitor_id = $this->var2str($this->visitor_id);
       $this->story_id = $this->var2str($this->story_id);
       $this->edition_id = $this->var2str($this->edition_id);
       
       $data = array(
+          'visitor_id' => $this->visitor_id,
           'story_id' => $this->story_id,
           'edition_id' => $this->edition_id,
           'ip' => $this->ip,
-          'date' => $this->date,
-          'user_agent' => $this->user_agent
+          'date' => $this->date
       );
       
       if( $this->exists() )
@@ -151,6 +174,15 @@ class story_visit extends fs_model
       return $svlist;
    }
    
+   public function all4visitor($id)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $svlist = array();
+      foreach($this->collection->find(array('visitor_id'=>$this->var2str($id)))->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $sv)
+         $svlist[] = new story_visit($sv);
+      return $svlist;
+   }
+   
    public function last()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
@@ -158,6 +190,12 @@ class story_visit extends fs_model
       foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $sv)
          $svlist[] = new story_visit($sv);
       return $svlist;
+   }
+   
+   public function count4visitor($id)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      return $this->collection->find(array('visitor_id'=>$this->var2str($id)))->count();
    }
    
    public function cron_job()

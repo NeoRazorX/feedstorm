@@ -1,69 +1,82 @@
 {include="desktop/header"}
 
 <div class="bloque">
-   <table width="100%">
-      <tr>
-         <td align="right" valign="top">
-            <img class="face" src="{$path}/view/img/mother_of_god.png" alt="wooow"/>
-         </td>
-         <td valign="top">
-            <div class="title">Estadísticas:</div>
-            <ul class="horizontal">
-               <li>FeedStorm: v{$fsc->version()}</li>
-               <li>MongoDB: v{$fsc->mongo_version()}</li>
-               <li>Usuarios: {$fsc->visitor->show_count()}</li>
-               <li>Fuentes: {$fsc->feed->show_count()}</li>
-               <li>Suscripciones: {$fsc->suscription->show_count()}</li>
-               <li>Historias/fuente: {$fsc->feed_story->show_count()}</li>
-               <li>Historias: {$fsc->story->show_count()}</li>
-               <li>Ediciones: {$fsc->story_edition->show_count()}</li>
-               <li>Visitas: {$fsc->story_visit->show_count()}</li>
-               <li>Elementos multimedia/historia: {$fsc->story_media->show_count()}</li>
-               <li>Elementos multimedia: {$fsc->media_item->show_count()}</li>
-            </ul>
-         </td>
-      </tr>
-   </table>
-</div>
-
-<div class="info">
-   <h1>Últimas visitas:</h1>
-   <table class="lista">
-      <tr>
-         <th align="left">Fecha</th>
-         <th align="left">IP</th>
-         <th align="left">Navegador</th>
-         <th align="right">Historia</th>
-      </tr>
-      {loop="$fsc->story_visit->last()"}
-      <tr>
-         <td>{$value->timesince()}</td>
-         <td>{$value->ip}</td>
-         <td>{$value->user_agent}</td>
-         <td align="right"><a target="_blank" href="{$value->url()}">{$value->story_id}</a></td>
-      </tr>
-      {else}
-      <tr><td>-</td><td>-</td><td>-</td><td align="right">-</td></tr>
-      {/loop}
-   </table>
+   <img class="face_right" src="{$path}/view/img/mother_of_god.png" alt="wooow"/>
+   <h1>Estadísticas de la web:</h1>
+   <ul class="horizontal">
+      <li>FeedStorm: v{$fsc->version()}</li>
+      <li>PHP: v{$fsc->php_version()}</li>
+      <li>MongoDB: v{$fsc->mongo_version()}</li>
+      <li>El directorio temporal ocupa {$fsc->tmp_size()}</li>
+   </ul>
 </div>
 
 <div class="bloque">
-   <div class="title">Nuevos usuarios:</div>
+   <h1>Usuarios:</h1>
+   <ul class="horizontal">
+      <li>{$fsc->visitor->show_count()} usuarios</li>
+      <li>{$fsc->visitor->show_count_usuals()} <a href="#usuals">usuarios habituales</a></li>
+      <li>{$fsc->story_visit->show_count()} visitas</li>
+      <li>{$fsc->suscription->show_count()} suscripciones</li>
+   </ul>
+</div>
+
+<div class="bloque">
+   <h1>Fuentes:</h1>
+   <ul class="horizontal">
+      <li>{$fsc->feed->show_count()} fuentes</li>
+      <li>{$fsc->feed_story->show_count()} relaciones con historias</li>
+      <li>{$fsc->suscription->show_count()} suscripciones</li>
+   </ul>
+</div>
+
+<div class="bloque">
+   <h1>Historias:</h1>
+   <ul class="horizontal">
+      <li>{$fsc->story->show_count()} historias</li>
+      <li>{$fsc->feed_story->show_count()} relaciones con fuentes</li>
+      <li>{$fsc->story_media->show_count()} relaciones con elementos multimedia</li>
+      <li>{$fsc->story_visit->show_count()} visitas</li>
+      <li>{$fsc->story_edition->show_count()} ediciones</li>
+   </ul>
+</div>
+
+<div class="bloque">
+   <h1>Elementos multimedia:</h1>
+   <ul class="horizontal">
+      <li>{$fsc->media_item->show_count()} elementos multimedia</li>
+      <li>{$fsc->story_media->show_count()} relaciones con historias</li>
+      {loop="$fsc->media_item->stats()"}
+      <li>{$value[1]} de tipo {$value[0]}</li>
+      {/loop}
+   </ul>
+</div>
+
+<div class="bloque">
+   <a name="usuals"></a>
+   <h1>Usuarios habituales:</h1>
    <table class="lista">
       <tr>
-         <th align="left">Fecha</th>
          <th align="left">Nick</th>
          <th align="left">Navegador</th>
+         <th>Móvil</th>
+         <th>Humano</th>
+         <th align="right">Suscripciones</th>
+         <th align="right">Visitas</th>
+         <th align="right">Edad</th>
       </tr>
-      {loop="$fsc->visitor->last()"}
+      {loop="$fsc->visitor->usuals()"}
       <tr>
-         <td>{$value->login_timesince()}</td>
          <td>{$value->nick}</td>
          <td>{$value->user_agent}</td>
+         <td align="center">{if condition="$value->mobile()"}SI{else}-{/if}</td>
+         <td align="center">{if condition="$value->human"}SI{else}-{/if}</td>
+         <td align="right">{$value->num_suscriptions}</td>
+         <td align="right">{$value->num_visits()}</td>
+         <td align="right">{$value->age()}</td>
       </tr>
       {else}
-      <tr><td>-</td><td>-</td><td>-</td></tr>
+      <tr><td colspan="7">Nada que mostrar.</td></tr>
       {/loop}
    </table>
 </div>

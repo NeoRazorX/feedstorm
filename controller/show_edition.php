@@ -28,10 +28,7 @@ class show_edition extends fs_controller
    public function __construct()
    {
       parent::__construct('show_edition', 'edición...', 'Edición...', 'show_edition');
-   }
-   
-   protected function process()
-   {
+      
       $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
@@ -67,6 +64,7 @@ class show_edition extends fs_controller
                }
                else
                {
+                  $story_visit->visitor_id = $this->visitor->get_id();
                   $story_visit->story_id = $this->edition->story_id;
                   $story_visit->edition_id = $this->edition->get_id();
                   $story_visit->save();

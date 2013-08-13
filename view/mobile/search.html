@@ -1,20 +1,8 @@
 {include="mobile/header"}
 
-{if condition="$fsc->feed"}
-<div class="panel">
-   <div class="panel-heading">
-      <h3 class="panel-title">{$fsc->feed->name}</h3>
-   </div>
-   <p>{$fsc->feed->description}</p>
-   {if condition="$fsc->unsuscribe"}
-      <a class="btn btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
-   {else}
-      <a class="btn btn-success" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
-   {/if}
-</div>
-
-<div>
-   {loop="$fsc->stories"}
+{if condition="$fsc->stories"}
+   <div>
+      {loop="$fsc->stories"}
       <div class="panel{if condition="$value->readed()"} panel-warning{/if}" onclick="fs_go2url('{$path}/{$value->url()}')">
          <div class="panel-heading">
             <h3 class="panel-title">{$value->title}</h3>
@@ -30,8 +18,8 @@
             <span class="pull-right">{$value->timesince()}</span>
          </div>
       </div>
-   {/loop}
-</div>
+      {/loop}
+   </div>
 {/if}
 
 {include="mobile/footer"}

@@ -22,14 +22,12 @@ require_once 'model/suscription.php';
 class suscriptions extends fs_controller
 {
    public $suscriptions;
+   public $last_visits;
    
    public function __construct()
    {
-      parent::__construct('suscriptions', 'Suscripciones', 'suscripciones@'.FS_NAME, 'suscriptions');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('suscriptions', 'Tu perfil', 'Tu perfil &lsaquo; '.FS_NAME, 'suscriptions');
+      
       $suscription = new suscription();
       
       if( isset($_GET['suscribe']) AND $this->visitor->human() )
@@ -41,7 +39,7 @@ class suscriptions extends fs_controller
          
          /// actualizamos el número de suscriptores
          $feed = $suscription->feed();
-         if( $feed )
+         if($feed)
          {
             $feed->suscriptors++;
             $feed->save();
@@ -68,6 +66,7 @@ class suscriptions extends fs_controller
       }
       
       $this->suscriptions = $this->visitor->suscriptions();
+      $this->last_visits = $this->visitor->last_visits();
    }
 }
 

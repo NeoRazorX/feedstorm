@@ -25,11 +25,8 @@ class popular_stories extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('popular_stories', 'Populares', 'populares@'.FS_NAME, 'popular');
-   }
-   
-   protected function process()
-   {
+      parent::__construct('popular_stories', 'Populares', 'Populares &lsaquo; '.FS_NAME, 'popular');
+      
       $story = new story();
       $this->stories = $story->popular_stories();
    }

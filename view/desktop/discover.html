@@ -1,43 +1,10 @@
 {include="desktop/header"}
 
 {if condition="$fsc->stories"}
-   {if condition="$fsc->show_info"}
-   <div class="info">
-      <table width="100%">
-         <tr>
-            <td>
-               <h1>¿Qué pasa aquí?</h1>
-               <p>
-                  Aquí tienes una ración aleatoria de noticias frescas, fresquísimas.
-                  Noticias de cualquier fuente. ¡Para cuando te aburras!
-               </p>
-               <ul>
-                  <li>
-                     Si alguna noticia está ilustrada con una imagen que no se corresponde o no
-                     te gusta como está redactada, haz clic sobre la noticia y pulsa el botón
-                     <b>editar</b> para modificarla.
-                  </li>
-                  <li>
-                     Y si encuentras algún fallo,
-                     <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
-                  </li>
-               </ul>
-               <p><a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Vale, ya lo pillo</a></p>
-            </td>
-            <td align="right" valign="top">
-               <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
-                  <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
-               </a>
-            </td>
-         </tr>
-      </table>
-   </div>
-   {/if}
-   
-   <script src="{$path}/view/js/jquery.masonry.min.js"></script>
    <script type="text/javascript">
       $(document).ready(function() {
-         $("#stories").masonry({
+         var container = document.querySelector('#stories');
+         var msnry = new Masonry( container, {
             itemSelector: '.story',
             isFitWidth: true,
             isAnimated: true
@@ -60,12 +27,12 @@
                <span>{$value->timesince()}</span>
             </div>
          </div>
-         <a href="{$path}/{$value->url()}"></a>
+         <a href="{$path}/{$value->url(TRUE)}"></a>
       {/loop}
    </div>
 {else}
    <div class="info">
-      <h1>No se han encontrado noticias :(</h1>
+      <h1>No se han encontrado historias :(</h1>
       <p>
          Esto es muy grave. No en plan "¡Vamos a morir todos!". No, simplemente
          es una mierda.<br/>

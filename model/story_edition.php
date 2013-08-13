@@ -129,10 +129,7 @@ class story_edition extends fs_model
    
    public function description($width=300)
    {
-      if( mb_strlen($this->description) > $width )
-         return mb_substr($this->description, 0, $width).'...';
-      else
-         return $this->description;
+      return $this->true_text_break($this->description, $width);
    }
    
    public function editions()

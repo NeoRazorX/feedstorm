@@ -2,34 +2,24 @@
 
 {if condition="$fsc->suscriptions"}
 <div class="bloque">
-   <table width="100%">
+   <img class="face_right" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_popup_iframe('{$path}/index.php?page=comments')"/>
+   <h1>Estas son tus suscripciones:</h1>
+   <table class="lista">
       <tr>
-         <td valign="top">
-            <div class="title">Estas son tus suscripciones:</div>
-            <table class="lista">
-               <tr>
-                  <th align="left">Nombre + descripción</th>
-                  <th align="left">Última actualización</th>
-                  <th align="right">Suscriptores</th>
-               </tr>
-               {loop="$fsc->suscriptions"}
-               <tr>
-                  <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
-                  <td>{$value->last_update_timesince()}</td>
-                  <td align="right">{$value->suscriptors()}</td>
-               </tr>
-               {/loop}
-               <tr>
-                  <td colspan="3">
-                     <a href="{$path}/index.php?page=feed_list">Añadir más fuentes...</a>
-                  </td>
-               </tr>
-            </table>
-         </td>
-         <td align="right" valign="top">
-            <a id="b_talk" href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">
-               <img class="face" src="{$path}/view/img/me_gusta.png" alt="me gusta"/>
-            </a>
+         <th align="left">Nombre + descripción</th>
+         <th align="right">Historias</th>
+         <th align="right">Última actualización</th>
+      </tr>
+      {loop="$fsc->suscriptions"}
+      <tr>
+         <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
+         <td align="right">{$value->num_stories()}</td>
+         <td align="right">{$value->last_update_timesince()}</td>
+      </tr>
+      {/loop}
+      <tr>
+         <td colspan="3">
+            <a class="add_line" href="{$path}/index.php?page=feed_list">Añadir más fuentes...</a>
          </td>
       </tr>
    </table>
@@ -38,10 +28,34 @@
 <div class="info">
    <h1>No estás suscrito a ninguna fuente.</h1>
    <p>
-      Puedes buscar fuentes interesantes desde la sección <a href="{$path}/index.php?page=feed_list">fuentes</a>
-      y suscríbirte.
+      Por defecto {$name} te muestra en portada las historias más populares,
+      pero si quieres puedes elegir que te muestre solamente las historias de tus
+      fuentes favoritas. Lo único que tienes que hacer es ir a la sección
+      <a href="{$path}/index.php?page=feed_list">fuentes</a>, hacer clic sobre
+      las que te gusten y <b>pulsar el botón suscribir</b>.
    </p>
 </div>
 {/if}
+
+<div class="bloque">
+   <h1>Historial:</h1>
+   <table class="lista">
+      {loop="$fsc->last_visits"}
+      <tr>
+         <td><a href="#" onclick="fs_popup_story('{$path}/{$value->url()}')">{$value->title()}</a></td>
+         <td align="center">
+            {if condition="$value->edition_id"}
+            <a href="#" onclick="fs_popup_edition('{$path}/{$value->edition_url()}')">edición</a>
+            {/if}
+         </td>
+         <td align="right">{$value->timesince()}</td>
+      </tr>
+      {else}
+      <tr>
+         <td colspan="2">Sin resultados.</td>
+      </tr>
+      {/loop}
+   </table>
+</div>
 
 {include="desktop/footer"}

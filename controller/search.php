@@ -19,20 +19,29 @@
 
 require_once 'model/story.php';
 
-class home extends fs_controller
+class search extends fs_controller
 {
+   public $query;
    public $stories;
    
    public function __construct()
    {
-      parent::__construct('home', 'Portada', 'Portada &lsaquo; '.FS_NAME, 'home');
+      parent::__construct('search', 'Buscar', 'Buscar &lsaquo; '.FS_NAME, 'search');
       
-      $this->stories = $this->visitor->last_stories();
+      $this->query = '';
+      $this->stories = array();
       
-      if( count($this->stories) == 0 )
+      if( isset($_POST['query']) )
       {
-         $story = new story();
-         $this->stories = $story->popular_stories();
+         $this->query = trim($_POST['query']);
+         if( mb_strlen($this->query) >= 2 )
+         {
+            $story = new story();
+            $this->stories = $story->search($this->query);
+            
+            if( count($this->stories) == 0 )
+               $this->new_message('Sin resultados!');
+         }
       }
    }
 }

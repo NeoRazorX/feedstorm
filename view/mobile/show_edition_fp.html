@@ -1,56 +1,35 @@
 {include="mobile/header"}
 
-<script type="text/javascript">
-   $(document).ready(function() {
-      $("#story_feeds2").hide();
-      $('#b_show_feeds2').click(function () {
-            $("#b_show_editions2").removeClass('activa');
-            $("#story_editions2").hide();
-            $('#b_show_feeds2').addClass('activa');
-            $("#story_feeds2").show();
-      });
-      $('#b_show_editions2').click(function () {
-            $('#b_show_feeds2').removeClass('activa');
-            $("#story_feeds2").hide();
-            $("#b_show_editions2").addClass('activa');
-            $("#story_editions2").show();
-      });
-   });
-</script>
-
 {if condition="$fsc->edition"}
-<div class="story_info">
+<div>
+   <p>
+      <a class="btn btn-info btn-small" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
+      <span class="label label-info">{$fsc->edition->votes} votos</span>
+   </p>
    <h3>{$fsc->edition->title}</h3>
    {if condition="$fsc->edition->media_item"}
-      <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
-      <br/>
+      <div class="media_item">
+         {$fsc->edition->media_item->show($fsc->edition->story->link())}
+      </div>
    {/if}
    <p>{$fsc->edition->description}</p>
-   <table width="100%">
-      <tr>
-         <td>
-            <a class="btn btn-primary" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
-            <span class="label label-info">{$fsc->edition->votes} votos</span>
-         </td>
-         <td align="right">
-            <a href="{$fsc->edition->story->edit_url()}" class="btn btn-success">Editar</a> &nbsp;
-            <a target="_blank" href="{$fsc->edition->story->link()}" class="btn btn-primary">Abrir enlace</a>
-         </td>
-      </tr>
-   </table>
+   <p>
+      <a href="{$fsc->edition->story->edit_url()}" class="btn btn-success">Editar</a>
+      <a target="_blank" href="{$fsc->edition->story->link()}" class="btn btn-primary pull-right">Abrir enlace</a>
+   </p>
 </div>
 
-<ul class="pestanyas">
-   <li id="b_show_editions2" class="activa">Otras Ediciones</li>
-   <li id="b_show_feeds2">Fuentes</li>
-</ul>
+<br/>
 
-<div class="pestanya_content" id="story_editions2">
-   <table class="lista">
+<div class="panel">
+   <div class="panel-heading">
+      <h3 class="panel-title">Ediciones:</h3>
+   </div>
+   <table class="table">
       <tr>
-         <th align="left">Fecha</th>
-         <th align="left">Título</th>
-         <th align="right">Votos</th>
+         <th>Fecha</th>
+         <th>Título</th>
+         <th>Votos</th>
       </tr>
       {loop="$fsc->edition->editions()"}
       <tr>
@@ -71,12 +50,15 @@
    </table>
 </div>
 
-<div class="pestanya_content" id="story_feeds2">
-   <table class="lista">
+<div class="panel">
+   <div class="panel-heading">
+      <h3 class="panel-title">Fuentes:</h3>
+   </div>
+   <table class="table">
       <tr>
-         <th align="left">Fecha</th>
-         <th align="left">Enlace</th>
-         <th align="left">Fuente</th>
+         <th>Fecha</th>
+         <th>Enlace</th>
+         <th>Fuente</th>
       </tr>
       {loop="$fsc->edition->story->feed_links()"}
       <tr>

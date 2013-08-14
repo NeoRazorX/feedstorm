@@ -49,8 +49,16 @@ class feed extends fs_model
          $this->last_update = $f['last_update'];
          $this->suscriptors = $f['suscriptors'];
          $this->strikes = $f['strikes'];
-         $this->num_stories = $f['num_stories'];
-         $this->native_lang = $f['native_lang'];
+         
+         if( isset($f['num_stories']) )
+            $this->num_stories = $f['num_stories'];
+         else
+            $this->num_stories = 0;
+         
+         if( isset($f['native_lang']) )
+            $this->native_lang = $f['native_lang'];
+         else
+            $this->native_lang = TRUE;
       }
       else
       {

@@ -51,10 +51,26 @@ class story extends fs_model
          $this->link = $item['link'];
          $this->media_id = $item['media_id'];
          $this->clics = $item['clics'];
-         $this->tweets = $item['tweets'];
-         $this->meneos = $item['meneos'];
-         $this->likes = $item['likes'];
-         $this->native_lang = $item['native_lang'];
+         
+         if( isset($item['tweets']) )
+            $this->tweets = $item['tweets'];
+         else
+            $this->tweets = 0;
+         
+         if( isset($item['meneos']) )
+            $this->meneos = $item['meneos'];
+         else
+            $this->meneos = 0;
+         
+         if( isset($item['likes']) )
+            $this->likes = $item['likes'];
+         else
+            $this->likes = 0;
+         
+         if( isset($item['native_lang']) )
+            $this->native_lang = $item['native_lang'];
+         else
+            $this->native_lang = TRUE;
       }
       else
       {
@@ -367,7 +383,7 @@ class story extends fs_model
       return $stlist;
    }
    
-   public function random_stories()
+   public function random_stories($limit=FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
@@ -377,9 +393,9 @@ class story extends fs_model
       else
          $order = array('popularity' => -1);
       
-      $offset = mt_rand(0, max( array(0, $this->count()-FS_MAX_STORIES) ) );
+      $offset = mt_rand(0, max( array(0, $this->count()-$limit) ) );
       
-      foreach($this->collection->find()->sort($order)->skip($offset)->limit(FS_MAX_STORIES) as $a)
+      foreach($this->collection->find()->sort($order)->skip($offset)->limit($limit) as $a)
          $stlist[] = new story($a);
       
       return $stlist;
@@ -475,50 +491,56 @@ class story extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 9) == 0 )
+      if( mt_rand(0, 1) == 0 )
       {
          echo "\nEliminamos historias antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
          $this->collection->remove(
-            array(
-               '$and' => array(
-                   'date' => array('$lt' => time()-FS_MAX_AGE)),
-                   'clics' => array('$lt' => 100)
-            )
+            array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
          );
       }
       else
       {
-         echo "\nActualizamos las noticias populares...";
-         foreach($this->popular_stories(FS_MAX_STORIES * 2) as $ps)
+         echo "\nComprobamos las imágenes de historias aleatorias...";
+         foreach($this->random_stories() as $s)
          {
-            /// obtenemos las menciones de la noticia
-            switch( mt_rand(0, 3) )
+            if($s->media_item)
             {
-               case 0:
-                  $ps->tweet_count();
-                  break;
-               
-               case 1:
-                  $ps->facebook_count();
-                  break;
-               
-               case 2:
-                  $ps->meneame_count();
-                  break;
-               
-               default:
-                  break;
+               $s->media_item->redownload();
+               echo '.';
             }
-            
-            /// si la imagen seleccionada no está en tmp, la re-descargamos
-            if($ps->media_item)
-               $ps->media_item->redownload();
-            else if( mt_rand(0, 2) == 0 ) /// si no hay imágen, buscamos más
-               $this->add_media_items();
-            
-            $ps->save();
          }
+      }
+      
+      echo "\nActualizamos las noticias populares...\n";
+      foreach($this->popular_stories(FS_MAX_STORIES * 2) as $ps)
+      {
+         /// obtenemos las menciones de la noticia
+         switch( mt_rand(0, 3) )
+         {
+            case 0:
+               $ps->tweet_count();
+               break;
+            
+            case 1:
+               $ps->facebook_count();
+               break;
+            
+            case 2:
+               $ps->meneame_count();
+               break;
+            
+            default:
+               break;
+         }
+         
+         /// si la imagen seleccionada no está en tmp, la re-descargamos
+         if($ps->media_item)
+            $ps->media_item->redownload();
+         else if( mt_rand(0, 2) == 0 ) /// si no hay imágen, buscamos más
+            $this->add_media_items();
+         
+         $ps->save();
       }
    }
 }

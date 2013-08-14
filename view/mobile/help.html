@@ -1,6 +1,6 @@
 {include="mobile/header"}
 
-<div class="well-small">
+<div class="well">
    <h4>¿Qué es {$name}?</h4>
    <p>
       Pues básicamente es una web que <b>recopila historial</b> de {$fsc->feed->show_count()}
@@ -12,11 +12,12 @@
    </p>
    <p>
       ¡La actualidad manda! Por eso {$name} <b>elimina automáticamente todo contenido
-      de hace más de {$fsc->show_max_age()}</b>.
+      de hace más de {$fsc->show_max_age()}</b>,
+      mira las <a href="{$path}/index.php?page=stats">estadísticas</a>.
    </p>
 </div>
 
-<div class="well-small">
+<div class="well">
    <h4>¿Cómo se calcula la popularidad?</h4>
    <p>
       {$name} busca menciones de cada historia en <b>twitter</b>, <b>facebook</b>
@@ -28,7 +29,7 @@
    </p>
 </div>
 
-<div class="well-small">
+<div class="well">
    <h4>Personalizar la portada:</h4>
    <p>
       Por defecto {$name} te muestra en portada las historias más populares,

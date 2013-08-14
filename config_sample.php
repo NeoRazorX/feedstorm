@@ -21,7 +21,7 @@ define('FS_ANALYTICS', '');
  * Configuración de MongoDB
  */
 define('FS_MONGO_HOST', 'localhost');
-define('FS_MONGO_DBNAME', '');
+define('FS_MONGO_DBNAME', 'ponme_un_nombre');
 
 /// Número de historias máximo para cada feed y para la portada.
 define('FS_MAX_STORIES', 50);
@@ -34,14 +34,14 @@ define('FS_MAX_STORIES', 50);
  *  - las ediciones con una edad superior a FS_MAX_AGE segundos.
  *  - los elementos multimedia con una edad superior a FS_MAX_AGE segundos.
  */
-define('FS_MAX_AGE', 2592000);
+define('FS_MAX_AGE', 5184000);
 
 /*
  * Timeout de las conexiones curl.
  * El número de segundos máximo que se va a esperar antes de abortar
  * la descarga. Cuanto mayor el número, más tarda.
  */
-define('FS_TIMEOUT', 3);
+define('FS_TIMEOUT', 10);
 
 /*
  * Cuando se comprueba una fuente, se extraen las historias, y para
@@ -49,7 +49,7 @@ define('FS_TIMEOUT', 3);
  * define el número máximo de imáganes descargadas de una sóla vez.
  * Cuanto mayor el número, más tarda.
  */
-define('FS_MAX_DOWNLOADS', 5);
+define('FS_MAX_DOWNLOADS', 10);
 
 /*
  * Contraseña maestra, necesaria para tareas como eliminar fuentes.

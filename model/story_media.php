@@ -148,9 +148,9 @@ class story_media extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 9) == 0 )
+      if( mt_rand(0, 2) == 0 )
       {
-         echo "\nEliminamos stori_medias antiguas...";
+         echo "\nEliminamos story_medias antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE
          $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
       }

@@ -72,6 +72,11 @@
                {else}
                   <li><a href="{$path}/index.php?page=suscriptions">Tu perfil</a></li>
                {/if}
+               {if condition="$fsc->page=='help'"}
+                  <li class="active"><a href="{$path}/index.php?page=help">¿?</a></li>
+               {else}
+                  <li><a href="{$path}/index.php?page=help">¿?</a></li>
+               {/if}
                <li>
                   <form class="navbar-form" action="{$path}/index.php?page=search" method="post">
                      <input type="text" name="query" class="form-control" style="width: 200px;">

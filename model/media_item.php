@@ -421,13 +421,15 @@ class media_item extends fs_model
          $status = FALSE;
       else if( mb_substr($url, 0, 10) == 'http://ad.' )
          $status = FALSE;
-      else if( mb_strstr($url, '/avatar') )
+      else if( mb_strstr($url, '/avatar') OR mb_strstr($url, 'banner') )
          $status = FALSE;
       else if( mb_substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
          $status = FALSE;
       else if( mb_substr($url, 0, 26) == 'http://publicidadinternet.' )
          $status = FALSE;
       else if( !in_array( mb_strtolower( mb_substr($url, -4) ), $extensions) )
+         $status = FALSE;
+      else if( mb_substr($url, -19) == 'vpreview_center.png' )
          $status = FALSE;
       
       return $status;
@@ -537,7 +539,7 @@ class media_item extends fs_model
                   $this->width = $image->getWidth();
                }
                else
-                  $this->delete();
+                  unlink('tmp/images/'.$this->filename);
             }
             else
                $this->delete();
@@ -638,6 +640,16 @@ class media_item extends fs_model
       return $mlist;
    }
    
+   public function random($limit=FS_MAX_STORIES)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $mlist = array();
+      $offset = mt_rand(0, max( array(0, $this->count()-$limit) ) );
+      foreach($this->collection->find()->skip($offset)->limit($limit) as $i)
+         $mlist[] = new media_item($i);
+      return $mlist;
+   }
+   
    public function stats()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
@@ -652,7 +664,7 @@ class media_item extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 9) == 0 )
+      if( mt_rand(0, 2) == 0 )
       {
          $DIR = 'tmp/images/';
          if( file_exists($DIR) )

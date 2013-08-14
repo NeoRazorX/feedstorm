@@ -30,6 +30,7 @@ class visitor extends fs_model
    public $last_login_date;
    public $human; /// humano confirmado (ha contenstado que si es humano)
    public $num_suscriptions;
+   public $age;
    
    public $noob;
    public $need_save;
@@ -43,10 +44,24 @@ class visitor extends fs_model
          $this->id = $k['_id'];
          $this->nick = $k['nick'];
          $this->user_agent = $k['user_agent'];
-         $this->first_login_date = $k['first_login_date'];
+         
+         if( isset($k['first_login_date']) )
+            $this->first_login_date = $k['first_login_date'];
+         else
+            $this->first_login_date = $k['last_login_date'];
+         
          $this->last_login_date = $k['last_login_date'];
-         $this->human = $k['human'];
-         $this->num_suscriptions = $k['num_suscriptions'];
+         
+         if( isset($k['human']) )
+            $this->human = $k['human'];
+         else
+            $this->human = FALSE;
+         
+         if( isset($k['num_suscriptions']) )
+            $this->num_suscriptions = $k['num_suscriptions'];
+         else
+            $this->num_suscriptions = 0;
+         
          $this->noob = FALSE;
          $this->need_save = FALSE;
       }
@@ -61,6 +76,8 @@ class visitor extends fs_model
          $this->noob = TRUE;
          $this->need_save = TRUE;
       }
+      
+      $this->age = $this->last_login_date - $this->first_login_date;
    }
    
    public function install_indexes()
@@ -219,7 +236,8 @@ class visitor extends fs_model
              'last_login_date' => $this->last_login_date,
              'human' => $this->human,
              'num_suscriptions' => $this->num_suscriptions,
-             'mobile' => $this->mobile()
+             'mobile' => $this->mobile(),
+             'age' => $this->age
          );
          
          if( $this->exists() )
@@ -248,7 +266,8 @@ class visitor extends fs_model
           'last_login_date' => $this->last_login_date,
           'human' => $this->human,
           'num_suscriptions' => $this->num_suscriptions,
-          'mobile' => $this->mobile()
+          'mobile' => $this->mobile(),
+          'age' => $this->age
       );
       $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
       $this->collection->insert($data);
@@ -259,7 +278,7 @@ class visitor extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
       
-      foreach($this->suscriptions as $sus)
+      foreach($this->suscriptions() as $sus)
          $sus->delete();
    }
    
@@ -285,8 +304,7 @@ class visitor extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
-      $js = "function() { return this.last_login_date > this.first_login_date }";
-      foreach($this->collection->find( array('$where' => $js) )->sort(array('last_login_date'=>-1))->limit(FS_MAX_STORIES) as $v)
+      foreach($this->collection->find( array('age' => array('$gt'=>300)) )->limit(FS_MAX_STORIES) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
    }
@@ -294,8 +312,7 @@ class visitor extends fs_model
    public function count_usuals()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $js = "function() { return this.last_login_date > this.first_login_date }";
-      return $this->collection->find( array('$where' => $js) )->count();
+      return $this->collection->find( array('age' => array('$gt'=>300)) )->count();
    }
    
    public function show_count_usuals()
@@ -305,16 +322,12 @@ class visitor extends fs_model
    
    public function cron_job()
    {
-      $option = mt_rand(0, 9);
-      
-      if($option == 0)
+      echo "\nEliminamos usuarios inactivos...";
+      foreach($this->collection->find( array('last_login_date' => array('$lt'=>time()-FS_MAX_AGE)) ) as $v)
       {
-         echo "\nEliminamos usuarios inactivos...";
-         foreach($this->collection->find(array('last_login_date' => array('$lt'=>time()-FS_MAX_AGE)))->limit(FS_MAX_STORIES) as $v)
-         {
-            $visit0 = new visitor($v);
-            $visit0->delete();
-         }
+         $visit0 = new visitor($v);
+         $visit0->delete();
+         echo '.';
       }
    }
 }

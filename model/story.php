@@ -33,6 +33,7 @@ class story extends fs_model
    public $tweets;
    public $meneos;
    public $likes;
+   public $plusones;
    public $popularity;
    public $native_lang;
    
@@ -67,6 +68,11 @@ class story extends fs_model
          else
             $this->likes = 0;
          
+         if( isset($item['plusones']) )
+            $this->plusones = $item['plusones'];
+         else
+            $this->plusones = 0;
+         
          if( isset($item['native_lang']) )
             $this->native_lang = $item['native_lang'];
          else
@@ -84,6 +90,7 @@ class story extends fs_model
          $this->tweets = 0;
          $this->meneos = 0;
          $this->likes = 0;
+         $this->plusones = 0;
          $this->native_lang = TRUE;
       }
       
@@ -201,6 +208,8 @@ class story extends fs_model
             $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
          else
             $tclics += min( array($this->meneos, 1 + $this->clics) );
+         
+         $tclics += min( array($this->plusones, 1 + $this->clics) );
       }
       
       $difft = intval( (time() - $this->date) / 86400 );
@@ -243,7 +252,8 @@ class story extends fs_model
    
    public function tweet_count()
    {
-      $json_string = $this->curl_download('http://urls.api.twitter.com/1/urls/count.json?url='.rawurlencode($this->link), FALSE);
+      $json_string = $this->curl_download('http://urls.api.twitter.com/1/urls/count.json?url='.
+              rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
       $this->tweets = isset($json['count']) ? intval($json['count']) : 0;
@@ -251,7 +261,8 @@ class story extends fs_model
    
    public function facebook_count()
    {
-      $json_string = $this->curl_download('http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls='.rawurlencode($this->link), FALSE);
+      $json_string = $this->curl_download('http://api.facebook.com/restserver.php?method=links.getStats&format=json&urls='.
+              rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
       $this->likes = isset($json[0]['total_count']) ? intval($json[0]['total_count']) : 0;
@@ -266,6 +277,46 @@ class story extends fs_model
          $this->meneos = intval( $vars[2] );
       else
          $this->meneos = 0;
+   }
+   
+   public function plusones_count()
+   {
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, "https://clients6.google.com/rpc");
+      curl_setopt($curl, CURLOPT_POST, TRUE);
+      curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+      curl_setopt($curl, CURLOPT_POSTFIELDS, '[{"method":"pos.plusones.get","id":"p","params":{"nolog":true,"id":"'.
+              rawurldecode($this->link).'","source":"widget","userId":"@viewer","groupId":"@self"},"jsonrpc":"2.0","key":"p","apiVersion":"v1"}]');
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+      curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+      curl_setopt($curl, CURLOPT_TIMEOUT, FS_TIMEOUT);
+      $curl_results = curl_exec ($curl);
+      curl_close ($curl);
+      $json = json_decode($curl_results, TRUE);
+      $this->plusones = isset($json[0]['result']['metadata']['globalCounts']['count'])?intval( $json[0]['result']['metadata']['globalCounts']['count'] ):0;
+   }
+   
+   public function random_count($meneame = TRUE)
+   {
+      switch( mt_rand(0, 3) )
+      {
+         case 0:
+            $this->tweet_count();
+            break;
+         
+         case 1:
+            $this->facebook_count();
+            break;
+         
+         case 2:
+            if($meneame)
+               $this->meneame_count();
+            break;
+         
+         default:
+            $this->plusones_count();
+            break;
+      }
    }
    
    public function get($id)
@@ -320,6 +371,7 @@ class story extends fs_model
           'tweets' => $this->tweets,
           'meneos' => $this->meneos,
           'likes' => $this->likes,
+          'plusones' => $this->plusones,
           'popularity' => $this->popularity,
           'native_lang' => $this->native_lang
       );
@@ -491,7 +543,7 @@ class story extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 1) == 0 )
+      if( mt_rand(0, 2) == 0 )
       {
          echo "\nEliminamos historias antiguas...";
          /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
@@ -501,9 +553,12 @@ class story extends fs_model
       }
       else
       {
-         echo "\nComprobamos las imágenes de historias aleatorias...";
+         echo "\nComprobamos historias aleatorias...";
          foreach($this->random_stories() as $s)
          {
+            /// obtenemos las menciones de la noticia
+            $s->random_count();
+            
             if($s->media_item)
             {
                $s->media_item->redownload();
@@ -516,23 +571,7 @@ class story extends fs_model
       foreach($this->popular_stories(FS_MAX_STORIES * 2) as $ps)
       {
          /// obtenemos las menciones de la noticia
-         switch( mt_rand(0, 3) )
-         {
-            case 0:
-               $ps->tweet_count();
-               break;
-            
-            case 1:
-               $ps->facebook_count();
-               break;
-            
-            case 2:
-               $ps->meneame_count();
-               break;
-            
-            default:
-               break;
-         }
+         $ps->random_count();
          
          /// si la imagen seleccionada no está en tmp, la re-descargamos
          if($ps->media_item)

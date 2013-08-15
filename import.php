@@ -49,13 +49,6 @@ else
          
          foreach($xml->item as $item)
          {
-            $vis0 = $visitor->get( (string)$item->user );
-            if( !$vis0 )
-            {
-               $vis0 = new visitor();
-               $vis0->force_insert( (string)$item->user );
-            }
-            
             $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
             if( !$f0 )
             {
@@ -68,10 +61,20 @@ else
                $f0->save();
             }
             
-            $suscription = new suscription();
-            $suscription->visitor_id = $vis0->get_id();
-            $suscription->feed_id = $f0->get_id();
-            $suscription->save();
+            if( (string)$item->user != '-' )
+            {
+               $vis0 = $visitor->get( (string)$item->user );
+               if( !$vis0 )
+               {
+                  $vis0 = new visitor();
+                  $vis0->force_insert( (string)$item->user );
+               }
+               
+               $suscription = new suscription();
+               $suscription->visitor_id = $vis0->get_id();
+               $suscription->feed_id = $f0->get_id();
+               $suscription->save();
+            }
          }
       }
       else

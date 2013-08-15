@@ -25,6 +25,7 @@ if( !defined('FS_MAX_AGE') )
    define('FS_MAX_AGE', 2592000);
 
 require_once 'base/fs_mongo.php';
+require_once 'model/feed.php';
 require_once 'model/suscription.php';
 
 header("Content-type: text/xml");
@@ -32,11 +33,17 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<suscriptions>';
 
 $mongo = new fs_mongo();
-$suscription = new suscription();
 
+$suscription = new suscription();
 foreach($suscription->all() as $sus)
 {
    echo '<item><user>'.$sus->visitor_id.'</user><feed>'.base64_encode($sus->feed_url()).'</feed></item>';
+}
+
+$feed = new feed();
+foreach($feed->all() as $f)
+{
+   echo '<item><user>-</user><feed>'.base64_encode($f->url).'</feed></item>';
 }
 
 $mongo->close();

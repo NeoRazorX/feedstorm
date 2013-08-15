@@ -442,13 +442,11 @@ class feed extends fs_model
             }
             
             /// actualizamos la noticia
-            $story2->tweet_count();
-            $story2->facebook_count();
             if($meneos > $story2->meneos)
                $story2->meneos = $meneos;
+            $story2->random_count(FALSE);
             $story2->save();
          }
-         
          
          /* 
           * Si la historia no tiene asociado un elemento multimedia,
@@ -459,10 +457,8 @@ class feed extends fs_model
       }
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
-         
-         $story->tweet_count();
-         $story->facebook_count();
          $story->meneos = $meneos;
+         $story->random_count(FALSE);
          $story->native_lang = $this->native_lang;
          $story->save();
          $feed_story->story_id = $story->get_id();

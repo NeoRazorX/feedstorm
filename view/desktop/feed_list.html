@@ -1,7 +1,7 @@
 {include="desktop/header"}
 
 <div class="bloque">
-   <img class="face_right" src="{$path}/view/img/mother_of_god.png" alt="mother of god" onclick="fs_go2url('{$path}/index.php?page=stats')"/>
+   <img class="face_right link" src="{$path}/view/img/mother_of_god.png" alt="mother of god" onclick="fs_go2url('{$path}/index.php?page=stats')"/>
    <h1>Listado de fuentes:</h1>
    <ul>
       <li>
@@ -58,6 +58,9 @@
       </li>
       <li>
          No te preocupes, esta web saca historias de cualquier fuente, por muy mentirosa que sea.
+      </li>
+      <li>
+         Si encuentras algún fallo, <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
       </li>
    </ul>
 </div>

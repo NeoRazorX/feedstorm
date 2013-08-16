@@ -322,11 +322,20 @@ class story extends fs_model
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
-      if($data)
-         return new story($data);
-      else
+      
+      try
+      {
+         $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         if($data)
+            return new story($data);
+         else
+            return FALSE;
+      }
+      catch(Exception $e)
+      {
+         $this->new_error($e);
          return FALSE;
+      }
    }
    
    public function get_by_link($url)
@@ -554,7 +563,7 @@ class story extends fs_model
       else
       {
          echo "\nComprobamos historias aleatorias...";
-         foreach($this->random_stories() as $s)
+         foreach($this->random_stories(FS_MAX_STORIES * 4) as $s)
          {
             /// obtenemos las menciones de la noticia
             $s->random_count();
@@ -568,7 +577,7 @@ class story extends fs_model
       }
       
       echo "\nActualizamos las noticias populares...\n";
-      foreach($this->popular_stories(FS_MAX_STORIES * 2) as $ps)
+      foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones de la noticia
          $ps->random_count();

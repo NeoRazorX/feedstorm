@@ -106,7 +106,7 @@ function fs_go2url(url)
 function fs_popup_iframe(url)
 {
    $("#shadow_box").fadeIn();
-   $("#popups").html("<div id='popup2url' class='popup'><iframe src='"+url+"' width='800' height='1024'></iframe></div>");
+   $("#popups").html("<div id='popup2url' class='popup'><iframe src='"+url+"' width='700' height='800' frameborder='0'></iframe></div>");
    $("#popup2url").css({
       top: $(window).scrollTop()+65,
       left: ($(window).width() - $("#popup2url").outerWidth())/2

@@ -140,11 +140,20 @@ class story_edition extends fs_model
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
-      if($data)
-         return new story_edition($data);
-      else
+      
+      try
+      {
+         $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         if($data)
+            return new story_edition($data);
+         else
+            return FALSE;
+      }
+      catch(Exception $e)
+      {
+         $this->new_error($e);
          return FALSE;
+      }
    }
    
    public function get_by_params($sid, $vid)

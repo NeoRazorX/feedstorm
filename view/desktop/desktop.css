@@ -621,13 +621,16 @@ img.face_right {
    margin-bottom: 10px;
 }
 
-div.comments {
-   padding: 10px;
+.link:hover {
+   cursor: pointer;
 }
 
-#HCB_comment_box blockquote, p#no_comments {
-   padding: 5px;
-   background-color: #a0ccfe;
-   border: 1px solid silver;
-   border-radius: 4px;
+div.comments {
+   padding: 10px;
+   text-align: center;
+}
+
+div.comments h1 {
+   margin-top: 0px;
+   padding-top: 0px;
 }

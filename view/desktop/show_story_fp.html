@@ -1,5 +1,6 @@
 {include="desktop/header"}
 
+{if condition="$fsc->story"}
 <script type="text/javascript">
    $(document).ready(function() {
       $("#story_editions2").hide();
@@ -20,7 +21,6 @@
 
 <div class="popup_container">
    <div class="popup2">
-   {if condition="$fsc->story"}
       <div class="story_info">
          <h1>{$fsc->story->title}</h1>
          {if condition="$fsc->story->media_item"}
@@ -83,26 +83,25 @@
             {/loop}
          </table>
       </div>
-   {/if}
    </div>
 </div>
+{/if}
 
 {if condition="$fsc->popular OR $fsc->editions"}
-<script src="{$path}/view/js/jquery.masonry.min.js"></script>
 <script type="text/javascript">
-   $(document).ready(function() {
-      $("#stories").masonry({
-         itemSelector: '.story',
-         isFitWidth: true,
-         isAnimated: true
+      $(document).ready(function() {
+         var container = document.querySelector('#stories');
+         var msnry = new Masonry( container, {
+            itemSelector: '.story',
+            isFitWidth: true,
+            isAnimated: true
+         });
       });
-   });
 </script>
 
 <div id="stories">
    {loop="$fsc->popular"}
-      {if condition="$value->get_id()!=$fsc->story->get_id()"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
             {if condition="$value->media_item"}
                <div class="image">{$value->media_item->show_image()}</div>
                <h1>{$value->title}</h1>
@@ -114,9 +113,8 @@
                {$value->popularity()}
                <span>{$value->timesince()}</span>
             </div>
-         </div>
-         <a href="{$path}/{$value->url(TRUE)}"></a>
-      {/if}
+      </div>
+      <a href="{$path}/{$value->url(TRUE)}"></a>
    {/loop}
 </div>
 {/if}

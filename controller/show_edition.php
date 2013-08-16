@@ -29,21 +29,21 @@ class show_edition extends fs_controller
    {
       parent::__construct('show_edition', 'edición...', 'Edición...', 'show_edition');
       
+      /// seleccionamos la plantilla adecuada
+      if( !isset($_POST['popup']) )
+         $this->set_template('show_edition_fp');
+      
+      $se = new story_edition();
       $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
-      {
-         $se = new story_edition();
          $this->edition = $se->get($_GET['id']);
-      }
       else
          $this->edition = FALSE;
       
       if($this->edition)
       {
-         /// seleccionamos la plantilla adecuada
-         if( !isset($_POST['popup']) )
-            $this->set_template('show_edition_fp');
+         $this->title = $this->edition->title;
          
          if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
@@ -75,12 +75,11 @@ class show_edition extends fs_controller
                }
             }
          }
-         
-         $this->title = $this->edition->title;
-         $this->editions = $this->edition->last_editions();
       }
       else
          $this->new_error_msg('Edición no encontrada.');
+      
+      $this->editions = $se->last_editions();
    }
    
    public function url()

@@ -203,11 +203,20 @@ class visitor extends fs_model
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
-      if($data)
-         return new visitor($data);
-      else
+      
+      try
+      {
+         $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         if($data)
+            return new visitor($data);
+         else
+            return FALSE;
+      }
+      catch(Exception $e)
+      {
+         $this->new_error($e);
          return FALSE;
+      }
    }
    
    public function exists()

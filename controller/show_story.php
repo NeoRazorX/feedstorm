@@ -29,21 +29,23 @@ class show_story extends fs_controller
    {
       parent::__construct('show_story', 'historia...', 'Historia...', 'show_story');
       
+      /// seleccionamos la plantilla adecuada
+      if( isset($_GET['redir']) )
+         $this->template = 'redir';
+      else if( !isset($_POST['popup']) )
+         $this->set_template('show_story_fp');
+      
+      $story = new story();
       $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
-      {
-         $story = new story();
          $this->story = $story->get($_GET['id']);
-      }
       else
          $this->story = FALSE;
       
       if($this->story)
       {
-         /// seleccionamos la plantilla adecuada
-         if( !isset($_POST['popup']) )
-            $this->set_template('show_story_fp');
+         $this->title = $this->story->title;
          
          if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
@@ -59,17 +61,11 @@ class show_story extends fs_controller
                $this->story->save();
             }
          }
-         
-         if( isset($_GET['redir']) )
-            $this->template = 'redir';
-         else
-         {
-            $this->title = $this->story->title;
-            $this->popular = $this->story->popular_stories();
-         }
       }
       else
          $this->new_error_msg('Historia no encontrada.');
+      
+      $this->popular = $story->popular_stories();
    }
    
    public function get_description()

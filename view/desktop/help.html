@@ -7,7 +7,7 @@
       <a href="{$path}/index.php?page=feed_list">fuentes</a>. <b>Las analiza</b> para extraer
       imágenes y vídeos y además <b>calcula su popularidad</b>. Una vez completado este
       proceso, <u>que se ejecuta cada hora</u>, se muestran estas historias a los
-      visitantes (tú) formando un mural de historias, <b>para que puedas hechar
+      visitantes (tú) formando un mural de historias, <b>para que puedas echar
       un vistazo rápido a la actualidad</b>™.
    </p>
    <p>
@@ -21,8 +21,8 @@
    <img class="face_right" src="{$path}/view/img/eso_es.png" alt="eso es"/>
    <h1>¿Cómo se calcula la popularidad?</h1>
    <p>
-      {$name} busca menciones de cada historia en <b>twitter</b>, <b>facebook</b>
-      y <b>meneame</b> para calcular una puntuación, a eso le suma los clics
+      {$name} busca menciones de cada historia en <b>twitter</b>, <b>facebook</b>,
+      <b>google+</b> y <b>meneame</b> para calcular una puntuación, a eso le suma los clics
       sobre esa historia. Y por último divide esa puntuación entre el número de
       días que hace que la historia fue publicada ¡La actualidad manda!
       Así es como obtenemos la nota que mide la popularidad de cada historia,
@@ -42,22 +42,16 @@
    </p>
 </div>
 
-<div class="bloque" style="text-align: center; background-color: #221F1D; color: white;">
-   <h2>Truquitos:</h2>
-   <img src="{$path}/view/img/truquitos.png" alt="truquitos"/>
-   <p>¡También funciona con reddit!</p>
-</div>
-
-<div class="info">
+<div class="bloque">
    <img class="face_right" src="{$path}/view/img/wooow.png" alt="wooow"/>
    <h1>Últimos cambios en {$name} {$fsc->version()}:</h1>
    <ul>
       <li>Nuevo diseño.</li>
       <li>
-         Ahora se obtienen los meneos de todos los enlaces. Además, el algoritmo
-         para calcular la popularidad penaliza aun más a las historias antiguas,
-         para que no permanezcan tanto tiempo en la lista de populares, y  a las
-         historias escritas en idiona no nativo.
+         Ahora se obtienen las menciones en google+ y menéame de todos los enlaces.
+         Además, el algoritmo para calcular la popularidad penaliza aun más a las
+         historias antiguas, para que no permanezcan tanto tiempo en la lista de
+         populares, y a las historias escritas en idiona no nativo.
       </li>
       <li>
          Nuevo script cron_multicore.sh que crea un nuevo proceso
@@ -75,11 +69,18 @@
       <li>
          Añadida la página de ayuda y el buscador.
       </li>
+      <li>Mayor tolerancia a fallos.</li>
       <li>
          ¿Tienes dudas, quejas o sugerencias?
          Pues <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">¡Habla!</a>
       </li>
    </ul>
+</div>
+
+<div class="bloque" style="text-align: center; background-color: #221F1D; color: white;">
+   <h2>Truquitos:</h2>
+   <img src="{$path}/view/img/truquitos.png" alt="truquitos"/>
+   <p>¡También funciona con reddit!</p>
 </div>
 
 {include="desktop/footer"}

@@ -37,6 +37,7 @@ class story extends fs_model
    public $popularity;
    public $native_lang;
    
+   private static $mi0;
    private $media_items;
    public $media_item;
    
@@ -73,10 +74,22 @@ class story extends fs_model
          else
             $this->plusones = 0;
          
+         $this->popularity = $item['popularity'];
+         
          if( isset($item['native_lang']) )
             $this->native_lang = $item['native_lang'];
          else
             $this->native_lang = TRUE;
+         
+         if( is_null($this->media_id) )
+            $this->media_item = NULL;
+         else
+         {
+            if( !isset(self::$mi0) )
+               self::$mi0 = new media_item();
+            
+            $this->media_item = self::$mi0->get($this->media_id);
+         }
       }
       else
       {
@@ -91,18 +104,11 @@ class story extends fs_model
          $this->meneos = 0;
          $this->likes = 0;
          $this->plusones = 0;
+         $this->popularity = 0;
          $this->native_lang = TRUE;
-      }
-      
-      if( is_null($this->media_id) )
+         
          $this->media_item = NULL;
-      else
-      {
-         $mi0 = new media_item();
-         $this->media_item = $mi0->get($this->media_id);
       }
-      
-      $this->calculate_popularity();
    }
    
    public function install_indexes()
@@ -112,7 +118,7 @@ class story extends fs_model
       $this->collection->ensureIndex('link');
    }
    
-   public function url($w3c=FALSE)
+   public function url($w3c=TRUE)
    {
       if( is_null($this->id) )
          return 'index.php';
@@ -138,9 +144,12 @@ class story extends fs_model
          return 'index.php?page=edit_story&id='.$this->id;
    }
    
-   public function show_date()
+   public function show_date($iso=FALSE)
    {
-      return Date('Y-m-d H:m', $this->date);
+      if($iso)
+         return Date('c', $this->date);
+      else
+         return Date('Y-m-d H:m', $this->date);
    }
    
    public function timesince()
@@ -560,21 +569,6 @@ class story extends fs_model
             array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
          );
       }
-      else
-      {
-         echo "\nComprobamos historias aleatorias...";
-         foreach($this->random_stories(FS_MAX_STORIES * 4) as $s)
-         {
-            /// obtenemos las menciones de la noticia
-            $s->random_count();
-            
-            if($s->media_item)
-            {
-               $s->media_item->redownload();
-               echo '.';
-            }
-         }
-      }
       
       echo "\nActualizamos las noticias populares...\n";
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
@@ -589,6 +583,28 @@ class story extends fs_model
             $this->add_media_items();
          
          $ps->save();
+      }
+   }
+   
+   public function full_process()
+   {
+      echo "\nEliminamos historias antiguas...";
+      /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
+      $this->collection->remove(
+         array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
+      );
+      
+      echo "\nComprobamos TODAS las historias...";
+      foreach($this->all() as $s)
+      {
+         /// obtenemos las menciones de la noticia
+         $s->random_count();
+         
+         if($s->media_item)
+            $s->media_item->redownload();
+         
+         $s->save();
+         echo '.';
       }
    }
 }

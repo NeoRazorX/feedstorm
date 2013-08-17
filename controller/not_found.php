@@ -27,7 +27,7 @@ class not_found extends fs_controller
    {
       parent::__construct('not_found', '404', '¡Página no encontrada en '.FS_NAME.'!', 'home');
       
-      $this->new_error_msg('¡Página no encontrada!');
+      $this->new_error_msg('¡Página no encontrada! <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
       
       $story = new story();
       $this->stories = $story->popular_stories();

@@ -2,12 +2,12 @@
    RewriteEngine On
    RewriteRule ^view/  -  [L]
    RewriteRule ^tmp/images/  -  [L]
-   RewriteRule ^(.*)/(.*)$ index.php?page=$1&param1=$2 [L]
+   RewriteRule ^(.*)/(.*)$ index.php?page=$1&id=$2 [L]
    RewriteRule ^(.*)/$ index.php?page=$1 [L]
    RewriteRule ^([^/.]+)$ index.php?page=$1 [L]
 </IfModule>
 
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresDefault "access plus 3 days"
+    ExpiresDefault "access plus 1 week"
 </IfModule>

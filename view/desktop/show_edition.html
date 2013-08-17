@@ -10,12 +10,12 @@
          <td>
             <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
             <span class="label">{$fsc->edition->votes} votos</span>
-            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
-            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
+            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
          </td>
          <td align="right">
             <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-            <a target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
+            <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
          </td>
       </tr>
    </table>
@@ -63,7 +63,7 @@
       {loop="$fsc->edition->story->feed_links()"}
       <tr>
          <td>{$value->timesince()}</td>
-         <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+         <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
          <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}
@@ -72,5 +72,17 @@
       </tr>
       {/loop}
    </table>
+</div>
+{/if}
+
+{if condition="$debug"}
+<div>
+   <ul>
+   {loop="$fsc->get_mongo_history()"}
+      <li>{$value}</li>
+   {/loop}
+   </ul>
+   Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+   en {$fsc->duration()}.
 </div>
 {/if}

@@ -27,18 +27,10 @@ else if( !file_exists('config.php') )
    echo "Tienes que modificar el archivo config.php a partir del config-sample.php\n";
 else
 {
-   require_once 'config.php';
-   
-   if( !defined('FS_MAX_AGE') )
-      define('FS_MAX_AGE', 2592000);
-   if( !defined('FS_TIMEOUT') )
-      define('FS_TIMEOUT', 3);
-   if( !defined('FS_MAX_DOWNLOADS') )
-      define('FS_MAX_DOWNLOADS', 5);
-   
    $tiempo = explode(' ', microtime());
    $uptime = $tiempo[1] + $tiempo[0];
    
+   require_once 'config.php';
    require_once 'base/fs_mongo.php';
    require_once 'model/feed.php';
    require_once 'model/feed_story.php';
@@ -72,16 +64,30 @@ else
    $suscription->install_indexes();
    $visitor->install_indexes();
    
+   /// si se pasa el parámetro full_stories procesamos todas las historias
+   if( count($_SERVER["argv"]) == 2 )
+      $full = ($_SERVER['argv'][1] == 'full_stories');
+   else
+      $full = FALSE;
+   
    echo "\nComprobamos los modelos... ";
-   $feed->cron_job();
-   $feed_story->cron_job();
-   $media_item->cron_job();
-   $story->cron_job();
-   $story_edition->cron_job();
-   $story_media->cron_job();
-   $story_visit->cron_job();
-   $suscription->cron_job();
-   $visitor->cron_job();
+   if($full)
+   {
+      $story->full_process();
+   }
+   else
+   {
+      echo "\nComprobamos los modelos... ";
+      $feed->cron_job();
+      $feed_story->cron_job();
+      $media_item->cron_job();
+      $story->cron_job();
+      $story_edition->cron_job();
+      $story_media->cron_job();
+      $story_visit->cron_job();
+      $suscription->cron_job();
+      $visitor->cron_job();
+   }
    
    $mongo->close();
    

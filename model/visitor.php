@@ -19,6 +19,7 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/feed_story.php';
+require_once 'model/story.php';
 require_once 'model/story_visit.php';
 require_once 'model/suscription.php';
 
@@ -34,6 +35,8 @@ class visitor extends fs_model
    
    public $noob;
    public $need_save;
+   
+   private static $sus0;
    private $suscriptions;
    
    public function __construct($k=FALSE)
@@ -62,6 +65,7 @@ class visitor extends fs_model
          else
             $this->num_suscriptions = 0;
          
+         $this->age = $this->last_login_date - $this->first_login_date;
          $this->noob = FALSE;
          $this->need_save = FALSE;
       }
@@ -73,16 +77,19 @@ class visitor extends fs_model
          $this->human = FALSE;
          $this->num_suscriptions = 0;
          $this->login();
+         $this->age = 0;
          $this->noob = TRUE;
          $this->need_save = TRUE;
       }
       
-      $this->age = $this->last_login_date - $this->first_login_date;
+      if( !isset(self::$sus0) )
+         self::$sus0 = new suscription();
    }
    
    public function install_indexes()
    {
       $this->collection->ensureIndex('last_login_date');
+      $this->collection->ensureIndex( array('age' => -1) );
    }
    
    public function login_date()
@@ -172,8 +179,7 @@ class visitor extends fs_model
    {
       if( !isset($this->suscriptions) )
       {
-         $suscription = new suscription();
-         $this->suscriptions = $suscription->all4visitor($this->id);
+         $this->suscriptions = self::$sus0->all4visitor($this->id);
          
          if( $this->num_suscriptions != count($this->suscriptions) )
          {
@@ -187,17 +193,25 @@ class visitor extends fs_model
    
    public function last_stories()
    {
-      $fids = array();
-      foreach($this->suscriptions() as $sus)
-         $fids[] = $sus->feed_id;
-      $feed_story = new feed_story();
-      $stories = array();
-      foreach($feed_story->last4feeds($fids) as $fs)
+      if( $this->suscriptions() )
       {
-         if( $fs->story() )
-            $stories[] = $fs->story();
+         $fids = array();
+         foreach($this->suscriptions as $sus)
+            $fids[] = $sus->feed_id;
+         $feed_story = new feed_story();
+         $stories = array();
+         foreach($feed_story->last4feeds($fids) as $fs)
+         {
+            if( $fs->story() )
+               $stories[] = $fs->story();
+         }
+         return $stories;
       }
-      return $stories;
+      else
+      {
+         $story = new story();
+         return $story->popular_stories();
+      }
    }
    
    public function get($id)
@@ -287,8 +301,8 @@ class visitor extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
       
-      foreach($this->suscriptions() as $sus)
-         $sus->delete();
+      /// eliminamos las suscripciones
+      self::$sus0->delete4visitor($this->id);
    }
    
    public function all()

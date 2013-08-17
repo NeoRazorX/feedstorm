@@ -47,14 +47,7 @@ class media_item extends fs_model
          $this->height = $m['height'];
          $this->original_height = $m['original_height'];
          $this->thumbnail_url = $m['thumbnail_url'];
-         
-         if( isset($m['date']) )
-            $this->date = $m['date'];
-         else
-         {
-            $this->date = time();
-            $this->save();
-         }
+         $this->date = $m['date'];
       }
       else
       {
@@ -128,11 +121,11 @@ class media_item extends fs_model
    {
       if($this->type == 'imgur')
       {
-         $aux = '<img src="'.$this->url.'" alt="'.$this->date.'" width="'.$this->width.'"
+         $aux = '<img itemprop="image" src="'.$this->url.'" alt="'.$this->date.'" width="'.$this->width.'"
                height="'.$this->height.'"/>';
          
          if($url)
-            return '<a target="_blank" href="'.$url.'">'.$aux.'</a>';
+            return '<a rel="nofollow" target="_blank" href="'.$url.'">'.$aux.'</a>';
          else
             return $aux;
       }
@@ -142,11 +135,11 @@ class media_item extends fs_model
             return '';
          else
          {
-            $aux = '<img src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
+            $aux = '<img itemprop="image" src="'.FS_PATH.'/tmp/images/'.$this->filename.'" alt="'.$this->filename.
                     '" width="'.$this->width.'" height="'.$this->height.'"/>';
             
             if($url)
-               return '<a target="_blank" href="'.$url.'">'.$aux.'</a>';
+               return '<a rel="nofollow" target="_blank" href="'.$url.'">'.$aux.'</a>';
             else
                return $aux;
          }

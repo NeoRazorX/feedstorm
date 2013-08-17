@@ -34,7 +34,6 @@ class show_edition extends fs_controller
          $this->set_template('show_edition_fp');
       
       $se = new story_edition();
-      $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
          $this->edition = $se->get($_GET['id']);
@@ -45,12 +44,13 @@ class show_edition extends fs_controller
       {
          $this->title = $this->edition->title;
          
-         if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
+         if( !$this->edition->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
             $this->edition->story->read();
             
             if( isset($_GET['vote']) )
             {
+               $story_visit = new story_visit();
                $sv0 = $story_visit->get_by_params($this->edition->story_id, $_SERVER['REMOTE_ADDR']);
                if( $sv0 )
                {
@@ -77,9 +77,12 @@ class show_edition extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Edición no encontrada.');
+         $this->new_error_msg('Edición no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
       
-      $this->editions = $se->last_editions();
+      if( isset($_POST['popup']) OR $this->visitor->mobile() )
+         $this->editions = array();
+      else
+         $this->editions = $se->last_editions();
    }
    
    public function url()

@@ -11,12 +11,12 @@
             <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
                Popularidad: {$fsc->story->popularity()}
             </span>
-            <a class="twitter" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
-            <a class="facebook" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
+            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
          </td>
          <td align="right">
             <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-            <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+            <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
          </td>
       </tr>
    </table>
@@ -35,7 +35,7 @@
       {loop="$fsc->story->feed_links()"}
       <tr>
          <td>{$value->timesince()}</td>
-         <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+         <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
          <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}
@@ -64,5 +64,18 @@
       </tr>
       {/loop}
    </table>
+</div>
+{/if}
+
+{if condition="$debug"}
+<div class="pestanya_content">
+   <h2>Historial de mongodb:</h2>
+   <ul>
+   {loop="$fsc->get_mongo_history()"}
+      <li>{$value}</li>
+   {/loop}
+   </ul>
+   Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+   en {$fsc->duration()}.
 </div>
 {/if}

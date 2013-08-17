@@ -25,11 +25,19 @@ class fs_mongo
    
    public function __construct()
    {
+      if( !defined('FS_DEBUG') )
+         define('FS_DEBUG', FALSE);
+      
       if( !isset(self::$link) )
       {
          self::$link = new Mongo( FS_MONGO_HOST );
          self::$db = self::$link->selectDB( FS_MONGO_DBNAME );
-         ///self::$db->command(array('profile' => 1, 'slowms' => 50));
+         
+         if(FS_DEBUG)
+            self::$db->command( array('profile' => 1, 'slowms' => 50) );
+         else
+            self::$db->command( array('profile' => 0) );
+         
          self::$history = array();
       }
    }

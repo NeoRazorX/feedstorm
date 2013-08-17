@@ -3,8 +3,8 @@
 {if condition="$fsc->story"}
 <div>
    <p>
-      <a class="btn btn-info btn-small" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
-      <a class="btn btn-info btn-small" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+      <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
+      <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
       <span class="label">Popularidad: {$fsc->story->popularity()}</span>
    </p>
    <h3>{$fsc->story->title}</h3>
@@ -18,7 +18,7 @@
    </p>
    <p>
       <a href="{$fsc->story->edit_url()}" class="btn btn-success">Editar</a>
-      <a target="_blank" href="{$fsc->story->link()}" class="btn btn-primary pull-right">Abrir enlace</a>
+      <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="btn btn-primary pull-right">Abrir enlace</a>
    </p>
 </div>
 
@@ -37,7 +37,7 @@
       {loop="$fsc->story->feed_links()"}
       <tr>
          <td>{$value->timesince()}</td>
-         <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+         <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
          <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}

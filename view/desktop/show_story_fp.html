@@ -21,24 +21,25 @@
 
 <div class="popup_container">
    <div class="popup2">
-      <div class="story_info">
-         <h1>{$fsc->story->title}</h1>
+      <div class="story_info" itemscope itemtype="http://schema.org/Article">
+         <h1 itemprop="name">{$fsc->story->title}</h1>
          {if condition="$fsc->story->media_item"}
          <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
          {/if}
-         <p>{$fsc->story->description}</p>
+         <p itemprop="articleBody">{$fsc->story->description}</p>
          <table width="100%">
             <tr>
                <td>
-                  <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
-                     Popularidad: {$fsc->story->popularity()}
+                  <meta itemprop="datePublished" content="{$fsc->story->show_date(TRUE)}" />
+                  <span itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
+                     Popularidad: <span itemprop="ratingCount">{$fsc->story->popularity()}</span>
                   </span>
-                  <a class="twitter" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
-                  <a class="facebook" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+                  <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
+                  <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
                </td>
                <td align="right">
                   <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                  <a target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+                  <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
                </td>
             </tr>
          </table>
@@ -57,7 +58,7 @@
             {loop="$fsc->story->feed_links()"}
             <tr>
                <td>{$value->timesince()}</td>
-               <td><a target="_blank" href="{$value->link()}">{$value->title}</a></td>
+               <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
                <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
             </tr>
             {else}

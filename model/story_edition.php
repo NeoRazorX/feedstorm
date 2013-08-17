@@ -32,7 +32,10 @@ class story_edition extends fs_model
    public $media_id;
    public $votes;
    
+   private static $mi0;
    public $media_item;
+   
+   private static $st0;
    public $story;
    
    public function __construct($se = FALSE)
@@ -49,6 +52,26 @@ class story_edition extends fs_model
          $this->description = $se['description'];
          $this->media_id = $se['media_id'];
          $this->votes = $se['votes'];
+         
+         if( is_null($this->story_id) )
+            $this->story = NULL;
+         else
+         {
+            if( !isset(self::$st0) )
+               self::$st0 = new story();
+            
+            $this->story = self::$st0->get($this->story_id);
+         }
+         
+         if( is_null($this->media_id) )
+            $this->media_item = NULL;
+         else
+         {
+            if( !isset(self::$mi0) )
+               self::$mi0 = new media_item();
+            
+            $this->media_item = self::$mi0->get($this->media_id);
+         }
       }
       else
       {
@@ -66,22 +89,9 @@ class story_edition extends fs_model
          $this->description = '';
          $this->media_id = NULL;
          $this->votes = 1;
-      }
-      
-      if( is_null($this->story_id) )
+         
          $this->story = NULL;
-      else
-      {
-         $story = new story();
-         $this->story = $story->get($this->story_id);
-      }
-      
-      if( is_null($this->media_id) )
          $this->media_item = NULL;
-      else
-      {
-         $mi0 = new media_item();
-         $this->media_item = $mi0->get($this->media_id);
       }
    }
    
@@ -240,33 +250,12 @@ class story_edition extends fs_model
       return $selist;
    }
    
-   public function last_editions()
+   public function last_editions($limit = FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      $num = 0;
-      foreach($this->collection->find()->sort(array('date'=>-1)) as $se)
-      {
-         if($num < FS_MAX_STORIES)
-         {
-            $encontrada = FALSE;
-            foreach($stlist as $se2)
-            {
-               if($se['story_id'] == $se2->story_id)
-               {
-                  $encontrada = TRUE;
-                  break;
-               }
-            }
-            if( !$encontrada )
-            {
-               $stlist[] = new story_edition($se);
-               $num++;
-            }
-         }
-         else
-            break;
-      }
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit($limit) as $se)
+         $stlist[] = new story_edition($se);
       return $stlist;
    }
    

@@ -5,10 +5,33 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="description" content="{$fsc->get_description()}" />
    <meta name="Robots" content="all" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <meta property="fb:admins" content="neorazorx"/>
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <meta name="expires" content="{$fsc->expires()}" />
+   <meta property="fb:admins" content="neorazorx" />
    <link type="text/css" href="{$path}/view/mobile/css/bootstrap.min.css" rel="stylesheet" />
-   <link type="text/css" href="{$path}/view/mobile/css/base.css" rel="stylesheet" />
+   <style type="text/css">
+      body {
+         padding: 10px;
+      }
+      div.panel, div.list-group {
+         box-shadow: 3px 3px 3px #aaa;
+      }
+      div.media_item {
+         margin-top: 5px;
+         margin-bottom: 5px;
+         text-align: center;
+      }
+      div.media_item2 {
+         margin-right: 10px;
+         margin-bottom: 5px;
+         float: left;
+         clear: both;
+      }
+      div.footer {
+         margin-top: 20px;
+         text-align: center;
+      }
+   </style>
    <script src="{$path}/view/js/jquery.min.js"></script>
    <script src="{$path}/view/mobile/js/bootstrap.min.js"></script>
    {if condition="$analytics"}
@@ -41,7 +64,7 @@
                {else}
                   <li><a href="{$path}/">Portada</a></li>
                {/if}
-               {if condition="$fsc->visitor->suscriptions()"}
+               {if condition="$fsc->visitor->num_suscriptions > 0"}
                   {if condition="$fsc->page=='popular_stories'"}
                      <li class="active"><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
                   {else}

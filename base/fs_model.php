@@ -32,6 +32,15 @@ abstract class fs_model
    
    public function __construct($cname='test')
    {
+      if( !defined('FS_MAX_AGE') )
+         define('FS_MAX_AGE', 2592000);
+      
+      if( !defined('FS_TIMEOUT') )
+         define('FS_TIMEOUT', 3);
+      
+      if( !defined('FS_MAX_DOWNLOADS') )
+         define('FS_MAX_DOWNLOADS', 5);
+      
       if( !isset(self::$mongo) )
          self::$mongo = new fs_mongo();
       

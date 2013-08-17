@@ -36,7 +36,6 @@ class show_story extends fs_controller
          $this->set_template('show_story_fp');
       
       $story = new story();
-      $story_visit = new story_visit();
       
       if( isset($_GET['id']) )
          $this->story = $story->get($_GET['id']);
@@ -47,10 +46,11 @@ class show_story extends fs_controller
       {
          $this->title = $this->story->title;
          
-         if( $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
+         if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
             $this->story->read();
             
+            $story_visit = new story_visit();
             $sv0 = $story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
             if( !$sv0 )
             {
@@ -63,9 +63,12 @@ class show_story extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Historia no encontrada.');
+         $this->new_error_msg('Historia no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
       
-      $this->popular = $story->popular_stories();
+      if( isset($_POST['popup']) OR $this->visitor->mobile() )
+         $this->popular = array();
+      else
+         $this->popular = $story->popular_stories();
    }
    
    public function get_description()

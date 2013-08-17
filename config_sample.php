@@ -56,4 +56,10 @@ define('FS_MAX_DOWNLOADS', 10);
  */
 define('FS_MASTER_KEY', '');
 
+/*
+ * True si quieres que te muestre el historial de consultas a mongodb.
+ * Sólo para tareas de desarrollo.
+ */
+define('FS_DEBUG', FALSE);
+
 ?>

@@ -27,5 +27,18 @@
       </p>
       <div class="fb-comments" data-href="{$fsc->domain()}" data-width="650"></div>
    </div>
+   
+   {if condition="$debug"}
+   <div>
+      <h2>Historial de mongodb:</h2>
+      <ul>
+      {loop="$fsc->get_mongo_history()"}
+         <li>{$value}</li>
+      {/loop}
+      </ul>
+      Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+      en {$fsc->duration()}.
+   </div>
+   {/if}
 </body>
 </html>

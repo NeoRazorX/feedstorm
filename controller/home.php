@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story.php';
-
 class home extends fs_controller
 {
    public $stories;
@@ -28,12 +26,6 @@ class home extends fs_controller
       parent::__construct('home', 'Portada', 'Portada &lsaquo; '.FS_NAME, 'home');
       
       $this->stories = $this->visitor->last_stories();
-      
-      if( count($this->stories) == 0 )
-      {
-         $story = new story();
-         $this->stories = $story->popular_stories();
-      }
    }
 }
 

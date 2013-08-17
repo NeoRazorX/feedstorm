@@ -34,6 +34,9 @@ abstract class fs_controller
    
    public function __construct($name, $ptitle, $title, $template)
    {
+      if( !defined('FS_MASTER_KEY') )
+         define('FS_MASTER_KEY', '');
+      
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
@@ -68,7 +71,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.0b3';
+      return '1.0b4';
    }
    
    public function php_version()
@@ -138,6 +141,11 @@ abstract class fs_controller
          return 'http://'.$_SERVER["SERVER_NAME"].FS_PATH;
       else
          return 'http://www.'.$_SERVER["SERVER_NAME"].FS_PATH;
+   }
+   
+   public function expires()
+   {
+      echo date('D, d M Y H:i:s O', strtotime('+1 week'));
    }
 }
 

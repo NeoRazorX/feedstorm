@@ -39,7 +39,7 @@ foreach($feed->all() as $f)
 }
 
 $story = new story();
-foreach($story->popular_stories() as $s)
+foreach($story->popular_stories(FS_MAX_STORIES * 2) as $s)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
            Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';

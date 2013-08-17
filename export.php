@@ -20,10 +20,6 @@
 date_default_timezone_set('Europe/Madrid');
 
 require_once 'config.php';
-
-if( !defined('FS_MAX_AGE') )
-   define('FS_MAX_AGE', 2592000);
-
 require_once 'base/fs_mongo.php';
 require_once 'model/feed.php';
 require_once 'model/suscription.php';

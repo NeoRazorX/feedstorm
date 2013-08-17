@@ -445,7 +445,12 @@ div.footer a {
 div.footer table {
    margin-left: auto;
    margin-right: auto;
+   width: 80%;
    text-align: left;
+}
+
+div.footer table td {
+   vertical-align: top;
 }
 
 div.footer ul li {

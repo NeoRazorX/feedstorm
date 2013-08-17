@@ -29,14 +29,6 @@ else if( !file_exists('config.php') )
 else
 {
    require_once 'config.php';
-   
-   if( !defined('FS_MAX_AGE') )
-      define('FS_MAX_AGE', 2592000);
-   if( !defined('FS_TIMEOUT') )
-      define('FS_TIMEOUT', 3);
-   if( !defined('FS_MAX_DOWNLOADS') )
-      define('FS_MAX_DOWNLOADS', 5);
-   
    require_once 'base/fs_mongo.php';
    require_once 'model/feed.php';
    require_once 'model/feed_story.php';

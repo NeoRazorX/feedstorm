@@ -5,6 +5,7 @@
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="description" content="{$fsc->get_description()}" />
    <meta name="Robots" content="all" />
+   <meta name="expires" content="{$fsc->expires()}" />
    <meta property="fb:admins" content="neorazorx"/>
    <link type="text/css" href="{$path}/view/desktop/desktop.css" rel="stylesheet" />
    <script src="{$path}/view/js/jquery.min.js"></script>
@@ -44,7 +45,7 @@
                {else}
                <a href="{$path}/">Portada</a>
                {/if}
-               {if condition="$fsc->visitor->suscriptions()"}
+               {if condition="$fsc->visitor->num_suscriptions > 0"}
                   {if condition="$fsc->page=='popular_stories'"}
                   <a class="selected" href="{$path}/index.php?page=popular_stories">Populares</a>
                   {else}

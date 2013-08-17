@@ -68,6 +68,7 @@ class story_visit extends fs_model
    public function install_indexes()
    {
       $this->collection->ensureIndex( array('date' => -1) );
+      $this->collection->ensureIndex('visitor_id');
    }
    
    public function timesince()

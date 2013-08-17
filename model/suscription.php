@@ -189,6 +189,12 @@ class suscription extends fs_model
       $this->collection->remove( array('_id' => $this->id) );
    }
    
+   public function delete4visitor($vid)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $this->collection->remove( array('visitor_id' => $this->var2str($vid)) );
+   }
+   
    public function all()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);

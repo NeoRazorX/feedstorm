@@ -145,7 +145,7 @@ abstract class fs_controller
    
    public function expires()
    {
-      echo date('D, d M Y G:i:s e', strtotime('+1 week'));
+      echo gmdate('D, d M Y H:i:s', strtotime('+1 week')).' GMT';
    }
 }
 

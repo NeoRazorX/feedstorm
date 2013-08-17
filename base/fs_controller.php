@@ -142,11 +142,6 @@ abstract class fs_controller
       else
          return 'http://www.'.$_SERVER["SERVER_NAME"].FS_PATH;
    }
-   
-   public function expires()
-   {
-      echo gmdate('D, d M Y H:i:s', strtotime('+1 week')).' GMT';
-   }
 }
 
 ?>

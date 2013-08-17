@@ -8,6 +8,9 @@
 </IfModule>
 
 <IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresDefault "access plus 1 week"
+   ExpiresActive On
+   ExpiresDefault "access plus 1 week"
+   <FilesMatch "\.(php|cgi)$">
+      ExpiresActive Off
+   </FilesMatch>
 </IfModule>

@@ -282,8 +282,8 @@ abstract class fs_model
       /// Reemplazamos las putas comillas
       $str = str_replace('“', '"', $str);
       $str = str_replace('”', '"', $str);
-      $str = str_replace('‘', '"', $str);
-      $str = str_replace('’', '"', $str);
+      $str = str_replace('‘', "'", $str);
+      $str = str_replace('’', "'", $str);
       $str = str_replace('&#8220;', '"', $str);
       $str = str_replace('&#8221;', '"', $str);
       

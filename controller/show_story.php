@@ -68,7 +68,19 @@ class show_story extends fs_controller
       if( isset($_POST['popup']) OR $this->visitor->mobile() )
          $this->popular = array();
       else
+      {
          $this->popular = $story->popular_stories();
+         
+         if($this->story)
+         {
+            /// excluimos la historia actual
+            foreach($this->popular as $i => $value)
+            {
+               if( $value->get_id() == $this->story->get_id() )
+                  unset($this->popular[$i]);
+            }
+         }
+      }
    }
    
    public function get_description()

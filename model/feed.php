@@ -444,7 +444,7 @@ class feed extends fs_model
             /// actualizamos la noticia
             if($meneos > $story2->meneos)
                $story2->meneos = $meneos;
-            $story2->random_count(FALSE);
+            $story2->random_count( !$this->meneame() );
             $story2->save();
          }
          
@@ -458,13 +458,13 @@ class feed extends fs_model
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
          $story->meneos = $meneos;
-         $story->random_count(FALSE);
+         $story->random_count( !$this->meneame() );
          $story->native_lang = $this->native_lang;
-         $story->save();
+         $story->save(); /// hay que guardar para tener un ID
          $feed_story->story_id = $story->get_id();
          $feed_story->save();
          
-         $story->add_media_items($item, FALSE);
+         $story->add_media_items($item, FALSE); /// ya se encarga de guardar
       }
    }
    

@@ -82,7 +82,19 @@ class show_edition extends fs_controller
       if( isset($_POST['popup']) OR $this->visitor->mobile() )
          $this->editions = array();
       else
+      {
          $this->editions = $se->last_editions();
+         
+         if($this->edition)
+         {
+            /// excluimos la edición actual
+            foreach($this->editions as $i => $value)
+            {
+               if( $value->get_id() == $this->edition->get_id() )
+                  unset($this->editions[$i]);
+            }
+         }
+      }
    }
    
    public function url()

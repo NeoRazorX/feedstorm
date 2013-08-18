@@ -66,14 +66,14 @@ else
    
    /// si se pasa el parámetro full_stories procesamos todas las historias
    if( count($_SERVER["argv"]) == 2 )
-      $full = ($_SERVER['argv'][1] == 'full_stories');
+      $full = ($_SERVER['argv'][1] == 'redownload');
    else
       $full = FALSE;
    
    echo "\nComprobamos los modelos... ";
    if($full)
    {
-      $story->full_process();
+      $story->full_redownload();
    }
    else
    {

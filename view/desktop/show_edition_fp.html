@@ -60,7 +60,9 @@
                   <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
                   <td align="right">{$value->votes}</td>
                {else}
-                  <td>-</td><td>-</td><td align="right">-</td>
+                  <td>{$value->timesince()}</td>
+                  <td>-</td>
+                  <td align="right">-</td>
                {/if}
             </tr>
             {/loop}

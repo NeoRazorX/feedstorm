@@ -40,7 +40,9 @@
       </tr>
       {else}
       <tr>
-         <td colspan="3">Sin resultados.</td>
+         <td>{$fsc->story->timesince()}</td>
+         <td>-</td>
+         <td>-</td>
       </tr>
       {/loop}
    </table>

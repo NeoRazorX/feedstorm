@@ -310,16 +310,20 @@ class story extends fs_model
       switch( mt_rand(0, 3) )
       {
          case 0:
-            $this->tweet_count();
-            break;
-         
          case 1:
+            $this->tweet_count();
             $this->facebook_count();
             break;
          
          case 2:
             if($meneame)
                $this->meneame_count();
+            else if($this->likes == 0)
+               $this->facebook_count();
+            else if($this->tweets == 0)
+               $this->tweet_count();
+            else
+               $this->plusones_count();
             break;
          
          default:
@@ -511,7 +515,6 @@ class story extends fs_model
                   $this->media_id = $mi->get_id();
                   $width = $mi->original_width;
                   $height = $mi->original_height;
-                  $this->save();
                   break;
                }
                else if($num_downloads == 1)
@@ -521,7 +524,6 @@ class story extends fs_model
                   $this->media_id = $mi->get_id();
                   $width = $mi->original_width;
                   $height = $mi->original_height;
-                  $this->save();
                   
                   if($mi->ratio() < 1 OR $mi->ratio() > 2)
                      $first_forced = TRUE;
@@ -537,7 +539,6 @@ class story extends fs_model
                   $this->media_id = $mi->get_id();
                   $width = $mi->original_width;
                   $height = $mi->original_height;
-                  $this->save();
                }
                else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
                {
@@ -546,7 +547,6 @@ class story extends fs_model
                   $this->media_id = $mi->get_id();
                   $width = $mi->original_width;
                   $height = $mi->original_height;
-                  $this->save();
                }
             }
             else
@@ -557,6 +557,7 @@ class story extends fs_model
       }
       
       echo "F\n";
+      $this->save();
    }
    
    public function cron_job()
@@ -570,23 +571,30 @@ class story extends fs_model
          );
       }
       
-      echo "\nActualizamos las noticias populares...\n";
-      foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
+      echo "\nActualizamos las historias populares...\n";
+      $i = 0;
+      foreach($this->popular_stories(FS_MAX_STORIES * 5) as $ps)
       {
-         /// obtenemos las menciones de la noticia
+         /// obtenemos las menciones de la historia
          $ps->random_count();
          
-         /// si la imagen seleccionada no está en tmp, la re-descargamos
-         if($ps->media_item)
-            $ps->media_item->redownload();
-         else if( mt_rand(0, 2) == 0 ) /// si no hay imágen, buscamos más
-            $this->add_media_items();
+         if($i < FS_MAX_STORIES)
+         {
+            /// si no hay imagen, buscamos más
+            if( !$ps->media_item AND mt_rand(0, 2) == 0 )
+               $this->add_media_items();
+            else
+               echo '.';
+         }
+         else
+            echo '.';
          
          $ps->save();
+         $i++;
       }
    }
    
-   public function full_process()
+   public function full_redownload()
    {
       echo "\nEliminamos historias antiguas...";
       /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
@@ -597,14 +605,13 @@ class story extends fs_model
       echo "\nComprobamos TODAS las historias...";
       foreach($this->all() as $s)
       {
-         /// obtenemos las menciones de la noticia
-         $s->random_count();
-         
          if($s->media_item)
+         {
             $s->media_item->redownload();
-         
-         $s->save();
-         echo '.';
+            echo 'D';
+         }
+         else
+            echo '.';
       }
    }
 }

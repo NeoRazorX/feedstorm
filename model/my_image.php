@@ -41,11 +41,11 @@ class my_image
             $this->image_type = $image_info[2];
             
             if( $this->image_type == IMAGETYPE_JPEG )
-               $this->image = imagecreatefromjpeg($filename);
+               $this->image = @imagecreatefromjpeg($filename);
             else if( $this->image_type == IMAGETYPE_GIF )
-               $this->image = imagecreatefromgif($filename);
+               $this->image = @imagecreatefromgif($filename);
             else if( $this->image_type == IMAGETYPE_PNG )
-               $this->image = imagecreatefrompng($filename);
+               $this->image = @imagecreatefrompng($filename);
             else
             {
                $this->image = NULL;

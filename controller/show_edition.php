@@ -117,7 +117,7 @@ class show_edition extends fs_controller
    {
       if($this->edition)
          return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url() ).
-              '&text='.urlencode($this->edition->title);
+              '&amp;text='.urlencode($this->edition->title);
       else
          return 'https://twitter.com/share';
    }
@@ -125,8 +125,8 @@ class show_edition extends fs_controller
    public function facebook_url()
    {
       if($this->edition)
-         return 'http://www.facebook.com/sharer.php?s=100&p[title]='.urlencode($this->edition->title).
-              '&p[url]='.urlencode( $this->domain().'/'.$this->edition->url() );
+         return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->edition->title).
+              '&amp;p[url]='.urlencode( $this->domain().'/'.$this->edition->url() );
       else
          return 'http://www.facebook.com/sharer.php';
    }

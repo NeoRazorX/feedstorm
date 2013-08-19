@@ -3,8 +3,10 @@
 {if condition="$fsc->edition"}
 <div>
    <p>
-      <a class="btn btn-info btn-small" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
-      <span class="label label-info">{$fsc->edition->votes} votos</span>
+      <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
+      <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+      <a class="btn btn-success btn-small" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
+      <span class="label label-success">{$fsc->edition->votes} votos</span>
    </p>
    <h3>{$fsc->edition->title}</h3>
    {if condition="$fsc->edition->media_item"}
@@ -38,7 +40,9 @@
             <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
             <td align="right">{$value->votes}</td>
          {else}
-            <td>-</td><td>-</td><td align="right">-</td>
+            <td>{$value->timesince()}</td>
+            <td>-</td>
+            <td align="right">-</td>
          {/if}
       </tr>
       {/loop}
@@ -47,28 +51,6 @@
          <td><a href="{$path}/{$fsc->edition->story->url()}">{$fsc->edition->story->title}</a></td>
          <td align="right">-</td>
       </tr>
-   </table>
-</div>
-
-<div class="panel">
-   <div class="panel-heading">
-      <h3 class="panel-title">Fuentes:</h3>
-   </div>
-   <table class="table">
-      <tr>
-         <th>Fecha</th>
-         <th>Enlace</th>
-         <th>Fuente</th>
-      </tr>
-      {loop="$fsc->edition->story->feed_links()"}
-      <tr>
-         <td>{$value->timesince()}</td>
-         <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
-         <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-      </tr>
-      {else}
-      <tr><td colspan="3">Sin resultados.</td></tr>
-      {/loop}
    </table>
 </div>
 {/if}

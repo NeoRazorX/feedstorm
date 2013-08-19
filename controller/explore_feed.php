@@ -39,22 +39,25 @@ class explore_feed extends fs_controller
       {
          $this->feed = $feed->get($_GET['id']);
          
-         if( isset($_GET['delete']) )
+         if( isset($_GET['mkey']) )
          {
-            if($_GET['delete'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+            if($_GET['mkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
             {
-               $this->feed->delete();
-               $this->new_message('Fuente eliminada correctamente.');
-               $this->feed = FALSE;
+               if( isset($_GET['delete']) )
+               {
+                  $this->feed->delete();
+                  $this->new_message('Fuente eliminada correctamente.');
+                  $this->feed = FALSE;
+               }
+               else if( isset($_GET['native_lang']) )
+               {
+                  $this->feed->native_lang = ($_GET['native_lang'] == 'TRUE');
+                  $this->feed->save();
+                  $this->new_message("Fuente modificada correctamente.");
+               }
             }
             else
                $this->new_error_msg('Clave incorrecta.');
-         }
-         else if( isset($_GET['native_lang']) )
-         {
-            $this->feed->native_lang = ($_GET['native_lang'] == 'TRUE');
-            $this->feed->save();
-            $this->new_message("Fuente modificada correctamente.");
          }
       }
       else
@@ -105,7 +108,7 @@ class explore_feed extends fs_controller
    {
       if($this->feed)
          return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->feed->url() ).
-              '&text='.urlencode($this->feed->name);
+              '&amp;text='.urlencode($this->feed->name);
       else
          return 'https://twitter.com/share';
    }
@@ -113,8 +116,8 @@ class explore_feed extends fs_controller
    public function facebook_url()
    {
       if($this->feed)
-         return 'http://www.facebook.com/sharer.php?s=100&p[title]='.urlencode($this->feed->name).
-              '&p[url]='.urlencode( $this->domain().'/'.$this->feed->url() );
+         return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->feed->name).
+              '&amp;p[url]='.urlencode( $this->domain().'/'.$this->feed->url() );
       else
          return 'http://www.facebook.com/sharer.php';
    }

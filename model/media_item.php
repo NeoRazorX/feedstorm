@@ -101,9 +101,7 @@ class media_item extends fs_model
          return '<img src="'.$this->thumbnail_url.'" alt="'.$this->filename.
               '" width="225" height="127"/>';
       else if($this->type == 'video')
-         return '<video width="225" height="127" src="'.$this->url.'" controls>
-            Navegador no compatible.
-            </video>';
+         return '<img src="'.FS_PATH.'/view/img/video.png" alt="'.$this->date.'" width="225" height="127"/>';
       else
          return '';
    }
@@ -148,7 +146,7 @@ class media_item extends fs_model
       {
          if( $this->mobile() )
          {
-            return '<iframe width="250" height="141" src="http://www.youtube.com/embed/'.
+            return '<iframe width="300" height="169" src="http://www.youtube.com/embed/'.
                     $this->filename.'" frameborder="0" allowfullscreen></iframe>';
          }
          else
@@ -162,7 +160,7 @@ class media_item extends fs_model
          if( $this->mobile() )
          {
             return '<iframe src="http://player.vimeo.com/video/'.$this->filename.
-                    '" width="250" height="141" frameborder="0" '.
+                    '" width="300" height="169" frameborder="0" '.
                'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
          }
          else
@@ -175,7 +173,7 @@ class media_item extends fs_model
       else if($this->type == 'video')
       {
          if( $this->mobile() )
-            return '<video width="225" height="127" src="'.$this->url.'" controls>
+            return '<video width="300" height="170" src="'.$this->url.'" controls>
                Navegador no compatible.
                </video>';
          else

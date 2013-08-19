@@ -1,6 +1,8 @@
    {if condition="$debug"}
-   <div>
-      <h4>Historial de mongodb:</h4>
+   <div class="panel">
+      <div class="panel-heading">
+         <h4 class="panel-title">Historial de mongodb:</h4>
+      </div>
       <ul>
       {loop="$fsc->get_mongo_history()"}<li>{$value}</li>{/loop}
       </ul>

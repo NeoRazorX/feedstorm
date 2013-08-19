@@ -6,6 +6,9 @@
       <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
       <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
       <span class="label">Popularidad: {$fsc->story->popularity()}</span>
+      {if condition="!$fsc->story->native_lang"}
+      <span class="label"><s>español</s></span>
+      {/if}
    </p>
    <h3>{$fsc->story->title}</h3>
    {if condition="$fsc->story->media_item"}
@@ -41,7 +44,10 @@
          <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}
-      <tr><td colspan="3">Sin resultados.</td></tr>
+      <tr>
+         <td>{$fsc->story->timesince()}</td>
+         <td colspan="2">Sin resultados.</td>
+      </tr>
       {/loop}
    </table>
 </div>

@@ -9,8 +9,15 @@
          isFitWidth: true,
          isAnimated: true
       });
+      $('#b_change_lang').click(function() {
+         {if condition="$fsc->feed->native_lang"}
+         window.location.href = "{$fsc->feed->url()}&native_lang=FALSE&mkey="+prompt('Clave maestra:');
+         {else}
+         window.location.href = "{$fsc->feed->url()}&native_lang=TRUE&mkey="+prompt('Clave maestra:');
+         {/if}
+      });
       $('#b_remove_feed').click(function() {
-         window.location.href = "{$fsc->url()}&delete="+prompt('Clave maestra:');
+         window.location.href = "{$fsc->url()}&delete=TRUE&mkey="+prompt('Clave maestra:');
       });
    });
 </script>
@@ -21,6 +28,7 @@
          <td>
             <h1>{$fsc->feed->name}</h1>
          </td>
+         {if condition="$fsc->visitor->human()"}
          <td align="right">
             {if condition="$fsc->unsuscribe"}
             <a class="button_remove" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
@@ -28,6 +36,7 @@
             <a class="button" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
             {/if}
          </td>
+         {/if}
       </tr>
    </table>
    <table class="lista">
@@ -76,6 +85,7 @@
    {/loop}
 </div>
 
+{if condition="$fsc->visitor->human()"}
 <div class="info">
    <table width="100%">
       <tr>
@@ -87,13 +97,9 @@
                <li>Errores: {$fsc->feed->strikes}</li>
                <li>
                   {if condition="$fsc->feed->native_lang"}
-                  <a href="{$fsc->feed->url()}&native_lang=FALSE">
-                     Marcar esta fuente como extranjera
-                  </a>
+                  Esta fuente SI está en español <a id="b_change_lang" href="#">cambiar</a>
                   {else}
-                  <a href="{$fsc->feed->url()}&native_lang=TRUE">
-                     Marcar esta fuente como nativa
-                  </a>
+                  Esta fuente NO está en español <a id="b_change_lang" href="#">cambiar</a>
                   {/if}
                </li>
             </ul>
@@ -104,6 +110,8 @@
       </tr>
    </table>
 </div>
+{/if}
+
 {/if}
 
 {include="desktop/footer"}

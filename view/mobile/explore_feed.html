@@ -6,10 +6,12 @@
       <h3 class="panel-title">{$fsc->feed->name}</h3>
    </div>
    <p>{$fsc->feed->description}</p>
-   {if condition="$fsc->unsuscribe"}
+   {if condition="$fsc->visitor->human()"}
+      {if condition="$fsc->unsuscribe"}
       <a class="btn btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
-   {else}
+      {else}
       <a class="btn btn-success" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+      {/if}
    {/if}
 </div>
 

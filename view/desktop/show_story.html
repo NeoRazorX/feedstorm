@@ -11,6 +11,9 @@
             <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
                Popularidad: {$fsc->story->popularity()}
             </span>
+            {if condition="!$fsc->story->native_lang"}
+            <span class="label" title="esta historia no está en español"><s>español</s></span>
+            {/if}
             <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
             <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
          </td>
@@ -70,14 +73,14 @@
 {/if}
 
 {if condition="$debug"}
-<div class="pestanya_content">
+<div class="popup_info">
    <h2>Historial de mongodb:</h2>
-   <ul>
-   {loop="$fsc->get_mongo_history()"}
-      <li>{$value}</li>
-   {/loop}
+   <ul class="horizontal2">
+   {loop="$fsc->get_mongo_history()"}<li>{$value}</li>{/loop}
    </ul>
-   Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
-   en {$fsc->duration()}.
+   <div class="right">
+      Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+      en {$fsc->duration()}.
+   </div>
 </div>
 {/if}

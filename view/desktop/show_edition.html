@@ -78,13 +78,15 @@
 {/if}
 
 {if condition="$debug"}
-<div>
-   <ul>
+<div class="popup_info">
+   <ul class="horizontal2">
    {loop="$fsc->get_mongo_history()"}
       <li>{$value}</li>
    {/loop}
    </ul>
-   Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
-   en {$fsc->duration()}.
+   <div class="right">
+      Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+      en {$fsc->duration()}.
+   </div>
 </div>
 {/if}

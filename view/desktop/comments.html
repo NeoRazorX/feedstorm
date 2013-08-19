@@ -29,15 +29,17 @@
    </div>
    
    {if condition="$debug"}
-   <div>
+   <div class="popup_info">
       <h2>Historial de mongodb:</h2>
-      <ul>
+      <ul class="horizontal2">
       {loop="$fsc->get_mongo_history()"}
          <li>{$value}</li>
       {/loop}
       </ul>
-      Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
-      en {$fsc->duration()}.
+      <div class="right">
+         Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+         en {$fsc->duration()}.
+      </div>
    </div>
    {/if}
 </body>

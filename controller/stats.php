@@ -38,6 +38,8 @@ class stats extends fs_controller
    public $story_visit;
    public $suscription;
    
+   public $showing;
+   
    public function __construct()
    {
       parent::__construct('stats', 'Estadísticas', 'Estadísticas &lsaquo; '.FS_NAME, 'stats');
@@ -50,6 +52,10 @@ class stats extends fs_controller
       $this->story_media = new story_media();
       $this->story_visit = new story_visit();
       $this->suscription = new suscription();
+      
+      $this->showing = 'visits';
+      if( isset($_GET['showing']) )
+         $this->showing = $_GET['showing'];
    }
    
    public function tmp_size($path='tmp', $show_units=TRUE)
@@ -86,6 +92,46 @@ class stats extends fs_controller
       }
       else
          return $total_size;
+   }
+   
+   public function analyze_visits()
+   {
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $ip = $_SERVER['REMOTE_ADDR'];
+      else
+         $ip = 'unknown';
+      
+      $visits = $this->story_visit->last(FS_MAX_STORIES * 4, $ip);
+      $aux = array();
+      
+      foreach($visits as $i => $value)
+      {
+         if( array_key_exists($value->story_id, $aux) )
+            $aux[$value->story_id]++;
+         else
+            $aux[$value->story_id] = 1;
+      }
+      
+      arsort($aux);
+      
+      $stlist = array();
+      $n = 0;
+      foreach($aux as $i => $value)
+      {
+         if($n < FS_MAX_STORIES AND $value > 1)
+         {
+            $stlist[] = array(
+                'story' => $this->story->get($i),
+                'visits' => $value
+            );
+         }
+         else
+            break;
+         
+         $n++;
+      }
+      
+      return $stlist;
    }
 }
 

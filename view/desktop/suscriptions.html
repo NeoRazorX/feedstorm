@@ -43,10 +43,10 @@
    <table class="lista">
       {loop="$fsc->last_visits"}
       <tr>
-         <td><a href="#" onclick="fs_popup_story('{$path}/{$value->url()}')">{$value->title()}</a></td>
+         <td><a href="#" onclick="fs_popup_story('{$path}/{$value->url()}'); return false;">{$value->title()}</a></td>
          <td align="center">
             {if condition="$value->edition_id"}
-            <a href="#" onclick="fs_popup_edition('{$path}/{$value->edition_url()}')">edición</a>
+            <a href="#" onclick="fs_popup_edition('{$path}/{$value->edition_url()}'); return false;">edición</a>
             {/if}
          </td>
          <td align="right">{$value->timesince()}</td>

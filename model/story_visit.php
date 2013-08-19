@@ -184,12 +184,24 @@ class story_visit extends fs_model
       return $svlist;
    }
    
-   public function last()
+   public function last($limit = FS_MAX_STORIES, $exclude_ip = '')
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $svlist = array();
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $sv)
-         $svlist[] = new story_visit($sv);
+      $order = array('date'=>-1);
+      
+      if($exclude_ip == '')
+      {
+         foreach($this->collection->find()->sort($order)->limit($limit) as $sv)
+            $svlist[] = new story_visit($sv);
+      }
+      else
+      {
+         $find = array( 'ip' => array('$ne' => $exclude_ip) );
+         foreach($this->collection->find($find)->sort($order)->limit($limit) as $sv)
+            $svlist[] = new story_visit($sv);
+      }
+      
       return $svlist;
    }
    

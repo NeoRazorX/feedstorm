@@ -111,7 +111,7 @@ class story_edition extends fs_model
       return $this->time2timesince($this->date);
    }
    
-   public function url($sitemap=FALSE)
+   public function url($sitemap=TRUE)
    {
       if( is_null($this->id) )
          return 'index.php';
@@ -126,7 +126,7 @@ class story_edition extends fs_model
       if( is_null($this->id) )
          return 'index.php';
       else
-         return 'index.php?page=edit_story&id='.$this->id;
+         return 'index.php?page=edit_story&amp;id='.$this->id;
    }
    
    public function vote_url()
@@ -134,7 +134,7 @@ class story_edition extends fs_model
       if( is_null($this->id) )
          return 'index.php';
       else
-         return 'index.php?page=show_edition&id='.$this->id.'&vote=TRUE';
+         return 'index.php?page=show_edition&amp;id='.$this->id.'&amp;vote=TRUE';
    }
    
    public function description($width=300)

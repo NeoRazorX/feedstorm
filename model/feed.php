@@ -81,7 +81,7 @@ class feed extends fs_model
       $this->collection->ensureIndex('name');
    }
    
-   public function url($sitemap=FALSE)
+   public function url($sitemap=TRUE)
    {
       if( is_null($this->id) )
          return 'index.php';

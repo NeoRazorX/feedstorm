@@ -147,12 +147,12 @@ class media_item extends fs_model
          if( $this->mobile() )
          {
             return '<iframe width="300" height="169" src="http://www.youtube.com/embed/'.
-                    $this->filename.'" frameborder="0" allowfullscreen></iframe>';
+                    $this->filename.'" allowfullscreen></iframe>';
          }
          else
          {
             return '<iframe width="640" height="360" src="http://www.youtube.com/embed/'.
-                    $this->filename.'" frameborder="0" allowfullscreen></iframe>';
+                    $this->filename.'" allowfullscreen></iframe>';
          }
       }
       else if($this->type == 'vimeo')
@@ -160,13 +160,13 @@ class media_item extends fs_model
          if( $this->mobile() )
          {
             return '<iframe src="http://player.vimeo.com/video/'.$this->filename.
-                    '" width="300" height="169" frameborder="0" '.
+                    '" width="300" height="169" '.
                'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
          }
          else
          {
             return '<iframe src="http://player.vimeo.com/video/'.$this->filename.
-                    '" width="500" height="281" frameborder="0" '.
+                    '" width="500" height="281" '.
                'webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>';
          }
       }

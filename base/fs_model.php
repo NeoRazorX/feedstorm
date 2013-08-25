@@ -169,39 +169,42 @@ abstract class fs_model
       /// Eliminamos cualquier rastro de &#8203;
       $str = str_replace('&#8203;', '', $str);
       
+      $chrArray = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
       $pos0 = 0;
       $width = 0;
-      $special_char = FALSE;
-      while( $pos0 < mb_strlen($str) )
+      while( $pos0 < count($chrArray) )
       {
-         $char = mb_substr($str, $pos0, 1);
+         $char = $chrArray[$pos0];
          
-         if($special_char)
+         if($char == ' ')
+            $width = 0;
+         else if($char == '&')
          {
-            if($char == ';')
+            /// nos saltamos los elementos escapados
+            for($pos1 = $pos0 + 1; $pos1 < min( array($pos0 + 9, count($chrArray)) ) ; $pos1++)
             {
-               $special_char = FALSE;
-               $width++;
+               if( $chrArray[$pos1] == ';' )
+               {
+                  $pos0 = $pos1;
+                  break;
+               }
             }
+            $width++;
+         }
+         else if($width >= $max_width)
+         {
+            $chrArray[$pos0] = '&#8203;' . $chrArray[$pos0];
+            $width = 0;
          }
          else
-         {
-            if($char == ' ')
-               $width = 0;
-            else if($width >= $max_width)
-            {
-               $str = mb_substr($str, 0, $pos0).'&#8203;'.mb_substr($str, $pos0, mb_strlen($str) - $pos0 );
-               $pos0 += 6;
-               $width = 0;
-            }
-            else if($char == '&')
-               $special_char = TRUE;
-            else
-               $width++;
-         }
+            $width++;
          
          $pos0++;
       }
+      
+      $str = '';
+      foreach($chrArray as $ch)
+         $str .= $ch;
       
       return $str;
    }

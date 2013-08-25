@@ -42,15 +42,19 @@
    <h1>Historial:</h1>
    <table class="lista">
       {loop="$fsc->last_visits"}
-      <tr>
-         <td><a href="#" onclick="fs_popup_story('{$path}/{$value->url()}'); return false;">{$value->title()}</a></td>
-         <td align="center">
-            {if condition="$value->edition_id"}
-            <a href="#" onclick="fs_popup_edition('{$path}/{$value->edition_url()}'); return false;">edición</a>
-            {/if}
-         </td>
-         <td align="right">{$value->timesince()}</td>
-      </tr>
+         {if condition="$value->url()!='#'"}
+         <tr>
+            <td>
+               <a href="#" onclick="fs_popup_story('{$path}/{$value->url()}'); return false;">{$value->title()}</a>
+            </td>
+            <td align="center">
+               {if condition="$value->edition_id"}
+               <a href="#" onclick="fs_popup_edition('{$path}/{$value->edition_url()}'); return false;">edición</a>
+               {/if}
+            </td>
+            <td align="right">{$value->timesince()}</td>
+         </tr>
+         {/if}
       {else}
       <tr>
          <td colspan="2">Sin resultados.</td>

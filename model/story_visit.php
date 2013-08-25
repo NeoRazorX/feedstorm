@@ -76,17 +76,7 @@ class story_visit extends fs_model
       return $this->time2timesince($this->date);
    }
    
-   public function url()
-   {
-      return 'index.php?page=show_story&id='.$this->story_id;
-   }
-   
-   public function edition_url()
-   {
-      return 'index.php?page=show_edition&id='.$this->edition_id;
-   }
-   
-   public function title()
+   public function story()
    {
       if( !isset($this->story) )
       {
@@ -94,7 +84,37 @@ class story_visit extends fs_model
          $this->story = $story->get($this->story_id);
       }
       
-      return $this->story->title;
+      return $this->story;
+   }
+   
+   public function url()
+   {
+      $s = $this->story();
+      
+      if($s)
+         return 'index.php?page=show_story&id='.$this->story_id;
+      else
+         return '#';
+   }
+   
+   public function edition_url()
+   {
+      $s = $this->story();
+      
+      if($s)
+         return 'index.php?page=show_edition&id='.$this->edition_id;
+      else
+         return '#';
+   }
+   
+   public function title()
+   {
+      $s = $this->story();
+      
+      if($s)
+         return $this->story->title;
+      else
+         return 'Noticia no encontrada.';
    }
    
    public function get($id)

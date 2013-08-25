@@ -668,3 +668,7 @@ div.comments h1 {
 div.right {
    text-align: right;
 }
+
+iframe {
+   border: 0px solid white;
+}

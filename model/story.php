@@ -570,6 +570,14 @@ class story extends fs_model
             array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
          );
       }
+      else
+      {
+         /*
+          * debido a un bug en la versión anterior de esta función,
+          * se han ido guardando noticias vacías, así que las eliminamos.
+          */
+         $this->collection->remove( array('link' => NULL) );
+      }
       
       echo "\nActualizamos las historias populares...\n";
       $i = 0;
@@ -582,7 +590,7 @@ class story extends fs_model
          {
             /// si no hay imagen, buscamos más
             if( !$ps->media_item AND mt_rand(0, 2) == 0 )
-               $this->add_media_items();
+               $ps->add_media_items();
             else
                echo '.';
          }

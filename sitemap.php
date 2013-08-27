@@ -35,11 +35,11 @@ $feed = new feed();
 foreach($feed->all() as $f)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$f->url(TRUE),'</loc><lastmod>',
-           Date('Y-m-d', $f->last_update),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+           Date('Y-m-d', $f->last_update),'</lastmod><changefreq>always</changefreq><priority>0.7</priority></url>';
 }
 
 $story = new story();
-foreach($story->popular_stories(FS_MAX_STORIES * 2) as $s)
+foreach($story->popular_stories(FS_MAX_STORIES * 4) as $s)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
            Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
@@ -49,7 +49,7 @@ $edition = new story_edition();
 foreach($edition->last_editions() as $e)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$e->url(TRUE),'</loc><lastmod>',
-           Date('Y-m-d', $e->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+           Date('Y-m-d', $e->date),'</lastmod><changefreq>always</changefreq><priority>0.7</priority></url>';
 }
 
 $mongo->close();

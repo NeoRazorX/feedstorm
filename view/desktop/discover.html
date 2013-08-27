@@ -7,8 +7,11 @@
          var msnry = new Masonry( container, {
             itemSelector: '.story',
             isFitWidth: true,
-            isAnimated: true
+            isAnimated: true,
+            isInitLayout: false
          });
+         msnry._isLayoutInited = true;
+         msnry.layout();
       });
    </script>
    

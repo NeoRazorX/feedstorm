@@ -221,9 +221,9 @@ class story extends fs_model
          $tclics += min( array($this->plusones, 1 + $this->clics) );
       }
       
-      $difft = intval( (time() - $this->date) / 86400 );
+      $difft = 1 + intval( (time() - $this->date) / 86400 );
       if($tclics > 0)
-         $this->popularity = $tclics / pow(2, $difft);
+         $this->popularity = $tclics / $difft;
       else
          $this->popularity = 0;
    }
@@ -307,28 +307,31 @@ class story extends fs_model
    
    public function random_count($meneame = TRUE)
    {
-      switch( mt_rand(0, 3) )
+      if($this->native_lang)
       {
-         case 0:
-         case 1:
-            $this->tweet_count();
-            $this->facebook_count();
-            break;
-         
-         case 2:
-            if($meneame)
-               $this->meneame_count();
-            else if($this->likes == 0)
-               $this->facebook_count();
-            else if($this->tweets == 0)
+         switch( mt_rand(0, 3) )
+         {
+            case 0:
+            case 1:
                $this->tweet_count();
-            else
+               $this->facebook_count();
+               break;
+            
+            case 2:
+               if($meneame)
+                  $this->meneame_count();
+               else if($this->likes == 0)
+                  $this->facebook_count();
+               else if($this->tweets == 0)
+                  $this->tweet_count();
+               else
+                  $this->plusones_count();
+               break;
+               
+            default:
                $this->plusones_count();
-            break;
-         
-         default:
-            $this->plusones_count();
-            break;
+               break;
+         }
       }
    }
    

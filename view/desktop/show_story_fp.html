@@ -3,6 +3,7 @@
 {if condition="$fsc->story"}
 <script type="text/javascript">
    $(document).ready(function() {
+      $("#story_feeds2").hide();
       $("#story_editions2").hide();
       $('#b_show_feeds2').click(function () {
          $("#b_show_editions2").removeClass('activa');
@@ -16,8 +17,28 @@
          $("#b_show_editions2").addClass('activa');
          $("#story_editions2").show();
       });
+      $('#b_show_comments').click(function () {
+         $('#b_show_feeds2').removeClass('activa');
+         $("#story_feeds2").hide();
+         $("#b_show_editions2").removeClass('activa');
+         $("#story_editions2").hide();
+         $("#b_show_comments").addClass('activa');
+         $("#story_comments").show();
+      });
    });
 </script>
+
+<script>
+   (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
+      fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+
+<div id="fb-root"></div>
 
 <div class="popup_container">
    <div class="popup2">
@@ -48,8 +69,9 @@
          </table>
       </div>
       <ul class="pestanyas">
-         <li id="b_show_feeds2" class="activa">Fuentes</li>
+         <li id="b_show_feeds2">Fuentes</li>
          <li id="b_show_editions2">Ediciones</li>
+         <li id="b_show_comments" class="activa">Comentarios</li>
       </ul>
       <div class="pestanya_content" id="story_feeds2">
          <table class="lista">
@@ -91,6 +113,9 @@
             {/loop}
          </table>
       </div>
+      <div class="pestanya_content" id="story_comments" style='text-align: center;'>
+         <div class="fb-comments" data-href="{$fsc->story->link()}" data-width="800"></div>
+      </div>
    </div>
 </div>
 {/if}
@@ -111,18 +136,24 @@
    {loop="$fsc->popular"}
       <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
             {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">
+                  <a href="{$path}/{$value->url(TRUE)}">
+                     {$value->media_item->show_image()}
+                  </a>
+               </div>
                <h1>{$value->title}</h1>
             {else}
                <h1>{$value->title}</h1>
-               <p>{$value->description()}</p>
+               <p>
+                  {$value->description()}
+                  <a href="{$path}/{$value->url(TRUE)}">leer más</a>.
+               </p>
             {/if}
             <div class="timesince">
                {$value->popularity()}
                <span>{$value->timesince()}</span>
             </div>
       </div>
-      <a href="{$path}/{$value->url(TRUE)}"></a>
    {/loop}
 </div>
 {/if}

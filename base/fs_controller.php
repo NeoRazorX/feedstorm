@@ -58,8 +58,16 @@ abstract class fs_controller
          else
             $this->new_error_msg('No se encuentra el usuario.');
       }
-      $this->visitor->save();
-      setcookie('key', $this->visitor->get_id(), time()+31536000);
+      
+      if($this->visitor->noob)
+      {
+         $this->new_message('Oye, que esta web <a href="index.php?page=help#cookies">usa cookies</a> y tal, que lo sepas!');
+      }
+      
+      if( $this->visitor->save() )
+      {
+         setcookie('key', $this->visitor->get_id(), time()+FS_MAX_AGE);
+      }
       
       $this->set_template($template);
    }
@@ -71,7 +79,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.0b8';
+      return '1.0b9';
    }
    
    public function php_version()

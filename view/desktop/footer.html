@@ -13,29 +13,35 @@
                Páginas especiales:
                <ul>
                   <li><a href="{$path}/index.php?page=stats">Estadísticas</a></li>
-                  <li><a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">Contacto</a></li>
+                  <li>
+                     <a href="{$path}/index.php?page=comments" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">Contacto</a>
+                  </li>
                </ul>
             </td>
             <td>
                Autor:
                <ul>
-                  <li><a target="_blank" href="http://www.neorazorx.com">Mi blog</a></li>
-                  <li><a target="_blank" href="https://twitter.com/neorazorx">Mi twitter</a></li>
-                  <li><a target="_blank" href="http://www.facebook.com/neorazorx">Mi facebook</a></li>
+                  <li><a rel="nofollow" target="_blank" href="http://www.neorazorx.com">Mi blog</a></li>
+                  <li><a rel="nofollow" target="_blank" href="https://twitter.com/neorazorx">Mi twitter</a></li>
+                  <li><a rel="nofollow" target="_blank" href="http://www.facebook.com/neorazorx">Mi facebook</a></li>
                </ul>
             </td>
             <td>
                Otros proyectos:
                <ul>
-                  <li><a target="_blank" href="http://www.facturascripts.com">FacturaScripts</a></li>
-                  <li><a target="_blank" href="http://www.kelinux.net">Kelinux.net</a></li>
-                  <li><a target="_blank" href="http://www.locierto.es">LoCierto.es</a></li>
+                  <li><a rel="nofollow" target="_blank" href="http://www.facturascripts.com">FacturaScripts</a></li>
+                  {if condition="$fsc->domain() != 'http://www.kelinux.net'"}
+                  <li><a rel="nofollow" target="_blank" href="http://www.kelinux.net">Kelinux.net</a></li>
+                  {/if}
+                  {if condition="$fsc->domain() != 'http://www.locierto.es'"}
+                  <li><a rel="nofollow" target="_blank" href="http://www.locierto.es">LoCierto.es</a></li>
+                  {/if}
                </ul>
             </td>
          </tr>
       </table>
       <br/><br/>
-      Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
+      Procesado por <a rel="nofollow" target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
       en {$fsc->duration()}.
    </div>
 </body>

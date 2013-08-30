@@ -52,6 +52,7 @@
    </table>
 </div>
 
+{if condition="$fsc->story->editions()"}
 <div class="panel">
    <div class="panel-heading">
       <h3 class="panel-title">Ediciones:</h3>
@@ -68,11 +69,11 @@
          <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
          <td align="right">{$value->votes}</td>
       </tr>
-      {else}
-      <tr><td colspan="3">Sin resultados.</td></tr>
       {/loop}
    </table>
 </div>
+{/if}
+
 {/if}
 
 {include="mobile/footer"}

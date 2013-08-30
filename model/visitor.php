@@ -275,7 +275,11 @@ class visitor extends fs_model
             $this->collection->insert($data);
             $this->id = $data['_id'];
          }
+         
+         return TRUE;
       }
+      else
+         return FALSE;
    }
    
    public function force_insert($id)

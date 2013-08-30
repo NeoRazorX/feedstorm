@@ -29,11 +29,18 @@
       {loop="$fsc->stories"}
          <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
             {if condition="$value->media_item"}
-               <div class="image">{$value->media_item->show_image()}</div>
+               <div class="image">
+                  <a href="{$path}/{$value->url(TRUE)}">
+                     {$value->media_item->show_image()}
+                  </a>
+               </div>
                <h1>{$value->title}</h1>
             {else}
                <h1>{$value->title}</h1>
-               <p>{$value->description()}</p>
+               <p>
+                  {$value->description()}
+                  <a href="{$path}/{$value->url(TRUE)}">leer más</a>.
+               </p>
             {/if}
             <div class="timesince">
                {$value->popularity()}

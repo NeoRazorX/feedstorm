@@ -409,10 +409,49 @@ class feed extends fs_model
          }
          $description = $aux;
       }
+      else if( $this->reddit() )
+      {
+         $description = $story->title;
+      }
       
       /// eliminamos el html
       $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
       $story->description = $this->remove_bad_utf8( strip_tags($description) );
+      
+      /// si la descripción de la noticia es demasiado corta, incluimos información adicional.
+      if( mb_strlen($story->description) < 250 )
+      {
+         $dado = mt_rand(0, 4);
+         switch ($dado)
+         {
+            case 0:
+               $story->description .= ' Historia original de '.$this->name.' y publicada '.$story->timesince().
+                    ' ¿Y tú qué opinas?';
+               break;
+            
+            case 1:
+               $story->description .= ' Escrito '.$story->timesince().' desde la fuente '.$this->name.
+                    ' ¿Tienes más información? Escribe un comentario ;-)';
+               break;
+            
+            case 2:
+               $story->description .= ' ¿Y tú qué opinas? Deja un comentario ¡Que es gratis!';
+               break;
+            
+            case 3:
+               $story->description .= ' No sé tú como lo ves ... ¿Por qué no dejas un comentario? ¡Es gratis!';
+               break;
+            
+            default:
+               $story->description .= ' Historia indexada el '.Date('d/m/Y').' desde '.$this->name.'.';
+               if( !$this->native_lang )
+               {
+                  $story->description .= ' Esta historia no está e español,
+                     pero puedes traducirla pulsando el botón editar.';
+               }
+               break;
+         }
+      }
       
       /// ¿story ya existe?
       $story2 = $story->get_by_link($story->link);

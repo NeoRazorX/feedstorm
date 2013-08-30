@@ -254,8 +254,17 @@ class story_edition extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
+      $sids = array();
+      
       foreach($this->collection->find()->sort(array('date'=>-1))->limit($limit) as $se)
-         $stlist[] = new story_edition($se);
+      {
+         if( !in_array($se['story_id'], $sids) )
+         {
+            $sids[] = $se['story_id'];
+            $stlist[] = new story_edition($se);
+         }
+      }
+      
       return $stlist;
    }
    

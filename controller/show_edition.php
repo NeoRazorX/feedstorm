@@ -42,7 +42,7 @@ class show_edition extends fs_controller
       
       if($this->edition)
       {
-         $this->title = $this->edition->title;
+         $this->title = $this->edition->title . ' (edición)';
          
          if( !$this->edition->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {

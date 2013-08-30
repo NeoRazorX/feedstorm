@@ -221,9 +221,10 @@ class story extends fs_model
          $tclics += min( array($this->plusones, 1 + $this->clics) );
       }
       
-      $difft = 1 + intval( (time() - $this->date) / 86400 );
+      $dias = 1 + intval( (time() - $this->date) / 86400 );
+      $semanas = 1 + intval($dias / 7);
       if($tclics > 0)
-         $this->popularity = $tclics / $difft;
+         $this->popularity = $tclics / ($dias * $semanas);
       else
          $this->popularity = 0;
    }
@@ -312,8 +313,10 @@ class story extends fs_model
          switch( mt_rand(0, 3) )
          {
             case 0:
-            case 1:
                $this->tweet_count();
+               break;
+            
+            case 1:
                $this->facebook_count();
                break;
             
@@ -573,18 +576,10 @@ class story extends fs_model
             array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
          );
       }
-      else
-      {
-         /*
-          * debido a un bug en la versión anterior de esta función,
-          * se han ido guardando noticias vacías, así que las eliminamos.
-          */
-         $this->collection->remove( array('link' => NULL) );
-      }
       
       echo "\nActualizamos las historias populares...\n";
       $i = 0;
-      foreach($this->popular_stories(FS_MAX_STORIES * 5) as $ps)
+      foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones de la historia
          $ps->random_count();

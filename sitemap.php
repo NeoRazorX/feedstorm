@@ -45,12 +45,17 @@ foreach($story->popular_stories(FS_MAX_STORIES * 4) as $s)
            Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
 }
 
+/*
+ * Lo quito hasta que las ediciones tengan más calidad.
+ * 
 $edition = new story_edition();
 foreach($edition->last_editions() as $e)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$e->url(TRUE),'</loc><lastmod>',
            Date('Y-m-d', $e->date),'</lastmod><changefreq>always</changefreq><priority>0.7</priority></url>';
 }
+ * 
+ */
 
 $mongo->close();
 

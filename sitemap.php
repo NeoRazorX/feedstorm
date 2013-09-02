@@ -21,42 +21,19 @@ date_default_timezone_set('Europe/Madrid');
 
 require_once 'config.php';
 require_once 'base/fs_mongo.php';
-require_once 'model/feed.php';
 require_once 'model/story.php';
-require_once 'model/story_edition.php';
 
 header("Content-type: text/xml");
 echo '<?xml version="1.0" encoding="UTF-8"?>';
 echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
 $mongo = new fs_mongo();
-
-$feed = new feed();
-foreach($feed->all() as $f)
-{
-   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$f->url(TRUE),'</loc><lastmod>',
-           Date('Y-m-d', $f->last_update),'</lastmod><changefreq>always</changefreq><priority>0.7</priority></url>';
-}
-
 $story = new story();
 foreach($story->popular_stories(FS_MAX_STORIES * 4) as $s)
 {
    echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
            Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
 }
-
-/*
- * Lo quito hasta que las ediciones tengan más calidad.
- * 
-$edition = new story_edition();
-foreach($edition->last_editions() as $e)
-{
-   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$e->url(TRUE),'</loc><lastmod>',
-           Date('Y-m-d', $e->date),'</lastmod><changefreq>always</changefreq><priority>0.7</priority></url>';
-}
- * 
- */
-
 $mongo->close();
 
 echo '</urlset>';

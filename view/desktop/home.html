@@ -6,7 +6,7 @@
    <p>
       Oye, que como parece que eres un visitante habitual ¿Qué opinas de esta web?
       ¿Hay algo que te gustaría que cambiara?
-      <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">¡Cuéntamelo!</a>
+      <a href="{$path}/index.php?page=comments">¡Cuéntamelo!</a>
       Y si crees que esta web es interesante, puedes compartirla con tus amigos.
       <br/><br/>
       <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
@@ -29,7 +29,7 @@
    
    <div id="stories">
       {loop="$fsc->stories"}
-         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+         <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
             {if condition="$value->media_item"}
                <div class="image">
                   <a href="{$path}/{$value->url(TRUE)}">

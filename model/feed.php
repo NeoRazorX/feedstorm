@@ -425,13 +425,13 @@ class feed extends fs_model
          switch ($dado)
          {
             case 0:
-               $story->description .= ' Historia original de '.$this->name.' y publicada '.$story->timesince().
+               $story->description .= ' Historia original de "'.$this->name.'" y publicada '.$story->timesince().
                     ' ¿Y tú qué opinas?';
                break;
             
             case 1:
-               $story->description .= ' Escrito '.$story->timesince().' desde la fuente '.$this->name.
-                    ' ¿Tienes más información? Escribe un comentario ;-)';
+               $story->description .= ' Escrito '.$story->timesince().' desde la fuente "'.$this->name.
+                    '" ¿Tienes más información? Escribe un comentario ;-)';
                break;
             
             case 2:
@@ -443,7 +443,7 @@ class feed extends fs_model
                break;
             
             default:
-               $story->description .= ' Historia indexada el '.Date('d/m/Y').' desde '.$this->name.'.';
+               $story->description .= ' Historia indexada el '.Date('d/m/Y').' desde "'.$this->name.'".';
                if( !$this->native_lang )
                {
                   $story->description .= ' Esta historia no está e español,

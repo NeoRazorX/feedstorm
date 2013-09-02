@@ -1,46 +1,58 @@
-<!doctype html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
-<head>
-   <title>{$fsc->title}</title>
-   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-   <meta name="description" content="{$fsc->get_description()}" />
-   <meta name="Robots" content="all" />
-   <link type="text/css" href="{$path}/view/desktop/desktop.css" rel="stylesheet" />
-   <script src="{$path}/view/js/jquery.min.js"></script>
-   <script>
-      (function(d, s, id) {
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) return;
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
-         fjs.parentNode.insertBefore(js, fjs);
-      }(document, 'script', 'facebook-jssdk'));
-   </script>
-</head>
-<body>
-   <div id="fb-root"></div>
-   <div class="comments">
-      <h1>Deja tus comentarios o sugerencias:</h1>
-      <p>
-         Si quieres contactar conmigo directamente, envíame un email a
-         neorazorx@gmail.com
-      </p>
-      <div class="fb-comments" data-href="{$fsc->domain()}" data-width="650"></div>
-   </div>
-   
-   {if condition="$debug"}
-   <div class="popup_info">
-      <h2>Historial de mongodb:</h2>
-      <ul class="horizontal2">
-      {loop="$fsc->get_mongo_history()"}
-         <li>{$value}</li>
-      {/loop}
-      </ul>
-      <div class="right">
-         Procesado por <a target="_blank" href="https://github.com/NeoRazorX/feedstorm">FeedStorm</a>
-         en {$fsc->duration()}.
-      </div>
-   </div>
-   {/if}
-</body>
-</html>
+{include="desktop/header"}
+
+<div class="popup_container">
+   <table width="100%">
+      <tr>
+         <td valign="top">
+            <div class="popup2">
+               <div class="story_info">
+                  <h2>Chat general:</h2>
+               </div>
+               <div class="comments">
+                  {loop="$fsc->comment->all4thread()"}
+                  <div class="comment">
+                     <div>
+                        <u>{$value->nick}</u> dice:
+                        <span class="pull-right">{$value->timesince()}</span>
+                     </div>
+                     <p>{$value->text}</p>
+                  </div>
+                  {/loop}
+                  <div class="comment">
+                     <form name="f_comment2" action="{$fsc->url()}" method="post">
+                        <textarea name="comment" rows="3">{$fsc->txt_comment}</textarea>
+                        <input type="submit" value="enviar"/>
+                        <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+                        <label for="r_human_yes">Soy humano</label>
+                        <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+                        <label for="r_human_no">No no humano, no me dejes comentar XD</label>
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </td>
+         <td valign="top">
+            <div class="popup2">
+               <div class="story_info">
+                  <h2>Otras conversaciones:</h2>
+               </div>
+               <div class="comments">
+                  {loop="$fsc->comment->all()"}
+                     {if condition="$value->thread"}
+                     <div class="comment link" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
+                        <div>
+                           <u>{$value->nick}</u> dice:
+                           <span class="pull-right">{$value->timesince()}</span>
+                        </div>
+                        <p>{$value->text}</p>
+                     </div>
+                     {/if}
+                  {/loop}
+               </div>
+            </div>
+         </td>
+      </tr>
+   </table>
+</div>
+
+{include="desktop/footer"}

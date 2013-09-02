@@ -17,11 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/chan.php';
+require_once 'model/comment.php';
+
 class comments extends fs_controller
 {
+   public $comment;
+   public $txt_comment;
+   
    public function __construct()
    {
       parent::__construct('comments', 'Comentarios', 'comentarios@'.FS_NAME, 'comments');
+      
+      $this->comment = new comment();
+      $this->txt_comment = '¡Escribe algo!';
+      
+      if( isset($_POST['comment']) )
+      {
+         $comment2 = new comment();
+         $comment2->nick = $this->visitor->nick;
+         $comment2->text = $_POST['comment'];
+         $comment2->save();
+      }
    }
 }
 

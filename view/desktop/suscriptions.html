@@ -2,7 +2,7 @@
 
 {if condition="$fsc->suscriptions"}
 <div class="bloque">
-   <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_popup_iframe('{$path}/index.php?page=comments')"/>
+   <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_go2url('{$path}/index.php?page=comments')"/>
    <h1>Estas son tus suscripciones:</h1>
    <table class="lista">
       <tr>
@@ -26,7 +26,7 @@
 </div>
 {else}
 <div class="info">
-   <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_popup_iframe('{$path}/index.php?page=comments')"/>
+   <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_go2url('{$path}/index.php?page=comments')"/>
    <h1>No estás suscrito a ninguna fuente.</h1>
    <p>
       Por defecto {$name} te muestra en portada las historias más populares,

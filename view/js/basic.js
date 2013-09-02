@@ -49,6 +49,10 @@ function fs_popup_story(url)
                left: ($(window).width() - $("#popup2url").outerWidth())/2
             });
          });
+         $("#new_comment_textarea").click(function() {
+            $("#new_comment_controls").show();
+            $(this).select();
+         });
       }
    });
 }

@@ -3,7 +3,7 @@
 {if condition="$fsc->editions"}
    {if condition="$fsc->show_info"}
    <div class="info">
-      <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_popup_iframe('{$path}/index.php?page=comments');"/>
+      <img class="face_right link" src="{$path}/view/img/me_gusta.png" alt="me gusta" onclick="fs_go2url('{$path}/index.php?page=comments')"/>
       <h1>¿Esto qué es?</h1>
       <p>
          Aquí aparecen las últimas noticias editadas por los usuarios.
@@ -11,7 +11,7 @@
          y a continuación pulsar el botón <b>editar</b>.
          <br/>
          Y si encuentras algún fallo,
-         <a href="#" onclick="fs_popup_iframe('{$path}/index.php?page=comments'); return false;">avísame!</a>
+         <a href="#" onclick="fs_go2url('{$path}/index.php?page=comments')">avísame!</a>
       </p>
       <p>
          <a class="button" href="{$path}/{$fsc->url()}&show_info=FALSE">Entendido</a>
@@ -32,7 +32,7 @@
    
    <div id="stories">
       {loop="$fsc->editions"}
-         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
+         <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}');return false;">
             {if condition="$value->media_item"}
                <div class="image">
                   <a href="{$path}/{$value->url(TRUE)}">

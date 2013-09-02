@@ -185,6 +185,33 @@ class media_item extends fs_model
          return '';
    }
    
+   public function min_height()
+   {
+      if($this->type == 'youtube')
+      {
+         if( $this->mobile() )
+            return 169;
+         else
+            return 360;
+      }
+      else if($this->type == 'vimeo')
+      {
+         if( $this->mobile() )
+            return 169;
+         else
+            return 281;
+      }
+      else if($this->type == 'video')
+      {
+         if( $this->mobile() )
+            return 170;
+         else
+            return 281;
+      }
+      else
+         return $this->height;
+   }
+   
    public function find_media($item, $link, $search_link=TRUE)
    {
       $mlist = array();

@@ -3,7 +3,6 @@
 {if condition="$fsc->story"}
 <script type="text/javascript">
    $(document).ready(function() {
-      $("#story_feeds2").hide();
       $("#story_editions2").hide();
       $('#b_show_feeds2').click(function () {
          $("#b_show_editions2").removeClass('activa');
@@ -17,61 +16,47 @@
          $("#b_show_editions2").addClass('activa');
          $("#story_editions2").show();
       });
-      $('#b_show_comments').click(function () {
-         $('#b_show_feeds2').removeClass('activa');
-         $("#story_feeds2").hide();
-         $("#b_show_editions2").removeClass('activa');
-         $("#story_editions2").hide();
-         $("#b_show_comments").addClass('activa');
-         $("#story_comments").show();
+      $("#new_comment_textarea").click(function() {
+         $("#new_comment_controls").show();
+         $(this).select();
       });
    });
 </script>
 
-<script>
-   (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
-      fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
-
-<div id="fb-root"></div>
-
 <div class="popup_container">
    <div class="popup2">
-      <div class="story_info" itemscope itemtype="http://schema.org/Article">
-         <h1 itemprop="name">{$fsc->story->title}</h1>
+      <div class="story_info">
+         <div class="right">
+            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
+            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+            {if condition="!$fsc->story->native_lang"}
+            <span class="label" title="esta historia no está en español"><s>español</s></span>
+            {/if}
+            <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
+               Popularidad: {$fsc->story->popularity()}
+            </span>
+         </div>
+         <br/>
          {if condition="$fsc->story->media_item"}
-         <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
+         <div style="min-height: {$fsc->story->media_item->min_height()}px">
+            <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
+            <h1>{$fsc->story->title}</h1>
+            <p>{$fsc->story->description}</p>
+            <div class="right">
+               <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+            </div>
+         </div>
+         {else}
+            <h2>{$fsc->story->title}</h2>
+            <p>{$fsc->story->description}</p>
+            <div class="right">
+               <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+            </div>
          {/if}
-         <p itemprop="articleBody">{$fsc->story->description}</p>
-         <table width="100%">
-            <tr>
-               <td>
-                  <meta itemprop="datePublished" content="{$fsc->story->show_date(TRUE)}" />
-                  <span itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating" class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
-                     Popularidad: <span itemprop="ratingCount">{$fsc->story->popularity()}</span>
-                  </span>
-                  {if condition="!$fsc->story->native_lang"}
-                  <span class="label" title="esta historia no está en español"><s>español</s></span>
-                  {/if}
-                  <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
-                  <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
-               </td>
-               <td align="right">
-                  <a href="{$fsc->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                  <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-               </td>
-            </tr>
-         </table>
       </div>
       <ul class="pestanyas">
-         <li id="b_show_feeds2">Fuentes</li>
+         <li id="b_show_feeds2" class="activa">Fuentes</li>
          <li id="b_show_editions2">Ediciones</li>
-         <li id="b_show_comments" class="activa">Comentarios</li>
       </ul>
       <div class="pestanya_content" id="story_feeds2">
          <table class="lista">
@@ -108,19 +93,42 @@
                <td><a href="{$path}/{$value->url()}">{$value->title}</a></td>
                <td align="right">{$value->votes}</td>
             </tr>
-            {else}
-            <tr><td colspan="3">Sin resultados.</td></tr>
             {/loop}
+            <tr>
+               <td colspan="3">
+                  <a href="{$fsc->story->edit_url()}" class="add_line">Editar esta noticia</a>
+               </td>
+            </tr>
          </table>
       </div>
-      <div class="pestanya_content" id="story_comments" style='text-align: center;'>
-         <div class="fb-comments" data-href="{$fsc->story->link()}" data-width="800"></div>
+      <div class="comments">
+         <div class="comment">
+            <form name="f_comment2" action="{$fsc->url()}" method="post">
+               <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>
+               <div id="new_comment_controls" class="hidden">
+                  <input type="submit" value="enviar"/>
+                  <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+                  <label for="r_human_yes">Soy humano</label>
+                  <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+                  <label for="r_human_no">No no humano, no me dejes comentar XD</label>
+               </div>
+            </form>
+         </div>
+         {loop="$fsc->comments"}
+         <div class="comment">
+            <div>
+               <u>{$value->nick}</u> dice:
+               <span class="pull-right">{$value->timesince()}</span>
+            </div>
+            <p>{$value->text}</p>
+         </div>
+         {/loop}
       </div>
    </div>
 </div>
 {/if}
 
-{if condition="$fsc->popular OR $fsc->editions"}
+{if condition="$fsc->popular"}
 <script type="text/javascript">
       $(document).ready(function() {
          var container = document.querySelector('#stories');
@@ -134,7 +142,7 @@
 
 <div id="stories">
    {loop="$fsc->popular"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
             {if condition="$value->media_item"}
                <div class="image">
                   <a href="{$path}/{$value->url(TRUE)}">

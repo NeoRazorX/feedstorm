@@ -17,13 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/chan.php';
+require_once 'model/comment.php';
 require_once 'model/story.php';
 require_once 'model/story_visit.php';
 
 class show_story extends fs_controller
 {
-   public $story;
+   public $comments;
    public $popular;
+   public $story;
+   public $txt_comment;
    
    public function __construct()
    {
@@ -45,6 +49,7 @@ class show_story extends fs_controller
       if($this->story)
       {
          $this->title = $this->story->title;
+         $this->comments = $this->comments();
          
          if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
@@ -69,7 +74,7 @@ class show_story extends fs_controller
          $this->popular = array();
       else
       {
-         $this->popular = $story->popular_stories();
+         $this->popular = $story->popular_stories(20);
          
          if($this->story)
          {
@@ -81,6 +86,14 @@ class show_story extends fs_controller
             }
          }
       }
+   }
+   
+   public function url()
+   {
+      if( isset($this->story) )
+         return $this->story->url();
+      else
+         parent::url();
    }
    
    public function get_description()
@@ -107,6 +120,50 @@ class show_story extends fs_controller
               '&amp;p[url]='.urlencode($this->story->link);
       else
          return 'http://www.facebook.com/sharer.php';
+   }
+   
+   private function comments()
+   {
+      $comment = new comment();
+      $this->txt_comment = '¡Escribe algo!';
+      $all_comments = $comment->all4thread( $this->story->get_id() );
+      
+      if( isset($_POST['comment']) )
+      {
+         if($this->visitor->human() AND $_POST['human'] == 'POZI' )
+         {
+            $comment = new comment();
+            $comment->thread = $this->story->get_id();
+            $comment->nick = $this->visitor->nick;
+            $comment->text = $_POST['comment'];
+            $comment->save();
+            array_unshift($all_comments, $comment);
+            
+            /// actualizamos al visitante
+            $this->visitor->human = TRUE;
+            $this->visitor->need_save = TRUE;
+            $this->visitor->save();
+         }
+         else
+         {
+            $this->new_error_msg('Ahhh, se siente. Has dicho que no eras humano.');
+            $this->txt_comment = $_POST['comment'];
+         }
+      }
+      else if( count($all_comments) == 0 )
+      {
+         $chan = new chan();
+         $comment->thread = $this->story->get_id();
+         $comment->nick = $chan->nick;
+         $comment->text = $chan->answer($this->story->title.' '.$this->story->description);
+         if( $chan->save_answer() )
+         {
+            $comment->save();
+            $all_comments[] = $comment;
+         }
+      }
+      
+      return $all_comments;
    }
 }
 

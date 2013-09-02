@@ -11,13 +11,13 @@
       });
       $('#b_change_lang').click(function() {
          {if condition="$fsc->feed->native_lang"}
-         window.location.href = "{$fsc->feed->url()}&native_lang=FALSE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$fsc->feed->url(FALSE)}&native_lang=FALSE&mkey="+prompt('Clave maestra:');
          {else}
-         window.location.href = "{$fsc->feed->url()}&native_lang=TRUE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$fsc->feed->url(FALSE)}&native_lang=TRUE&mkey="+prompt('Clave maestra:');
          {/if}
       });
       $('#b_remove_feed').click(function() {
-         window.location.href = "{$fsc->url()}&delete=TRUE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$fsc->feed->url(FALSE)}&delete=TRUE&mkey="+prompt('Clave maestra:');
       });
    });
 </script>
@@ -59,7 +59,7 @@
 
 <div id="stories">
    {loop="$fsc->stories"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}')">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
          {if condition="$value->media_item"}
             <div class="image">
                <a href="{$path}/{$value->url(TRUE)}">

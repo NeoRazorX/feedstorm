@@ -22,25 +22,31 @@
 <div class="popup_container">
    <div class="popup2">
       <div class="story_info">
-         <h1>{$fsc->edition->title}</h1>
+         <div class="right">
+            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
+            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
+            <span class="label">{$fsc->edition->votes} votos</span>
+            <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
+            &nbsp;
+            <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>
+         </div>
+         <br>
          {if condition="$fsc->edition->media_item"}
-         <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
+         <div style="min-height: {$fsc->edition->media_item->min_height()}px">
+            <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
+            <h1>{$fsc->edition->title}</h1>
+            <p>{$fsc->edition->description}</p>
+            <div class="right">
+               <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
+            </div>
+         </div>
+         {else}
+            <h2>{$fsc->edition->title}</h2>
+            <p>{$fsc->edition->description}</p>
+            <div class="right">
+               <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
+            </div>
          {/if}
-         <p>{$fsc->edition->description}</p>
-         <table width="100%">
-            <tr>
-               <td>
-                  <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
-                  <span class="label">{$fsc->edition->votes} votos</span>
-                  <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
-                  <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
-               </td>
-               <td align="right">
-                  <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a> &nbsp;
-                  <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
-               </td>
-            </tr>
-         </table>
       </div>
       <ul class="pestanyas">
          <li id="b_show_editions2" class="activa">Otras Ediciones</li>
@@ -109,7 +115,7 @@
 
 <div id="stories">
    {loop="$fsc->editions"}
-      <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}')">
+      <div class="story" onclick="fs_popup_edition('{$path}/{$value->url()}');return false;">
             {if condition="$value->media_item"}
                <div class="image">
                   <a href="{$path}/{$value->url(TRUE)}">

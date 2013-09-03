@@ -9,6 +9,16 @@
                   <h2>Chat general:</h2>
                </div>
                <div class="comments">
+                  <div class="comment">
+                     <form name="f_comment2" action="{$fsc->url()}" method="post">
+                        <textarea name="comment" rows="6">{$fsc->txt_comment}</textarea>
+                        <input type="submit" value="enviar"/>
+                        <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+                        <label for="r_human_yes">Soy humano</label>
+                        <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+                        <label for="r_human_no">No no soy humano, no me dejes comentar XD</label>
+                     </form>
+                  </div>
                   {loop="$fsc->comment->all4thread()"}
                   <div class="comment">
                      <div>
@@ -18,16 +28,6 @@
                      <p>{$value->text}</p>
                   </div>
                   {/loop}
-                  <div class="comment">
-                     <form name="f_comment2" action="{$fsc->url()}" method="post">
-                        <textarea name="comment" rows="3">{$fsc->txt_comment}</textarea>
-                        <input type="submit" value="enviar"/>
-                        <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-                        <label for="r_human_yes">Soy humano</label>
-                        <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-                        <label for="r_human_no">No no humano, no me dejes comentar XD</label>
-                     </form>
-                  </div>
                </div>
             </div>
          </td>

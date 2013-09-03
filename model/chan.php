@@ -32,7 +32,7 @@ class chan
    {
       $txt = strtolower($txt);
       
-      if( preg_match("/(^|\s)@chan/i", $txt) )
+      if( preg_match("/(^|\s)@chan/", $txt) )
       {
          $this->valid_comment = TRUE;
          return $this->random_from_file('chan_personal', $nick);
@@ -44,16 +44,16 @@ class chan
          
          if( !$this->valid_comment )
          {
-            if( mt_rand(0, 19) == 0 )
+            if( mt_rand(0, 29) == 0 )
             {
                $this->valid_comment = TRUE;
                
-               if( mt_rand(0, 1) == 0 )
+               if( mt_rand(0, 2) == 0 )
                   $answer = 'Dato curioso: '.$this->random_from_file('chan_a_datos', $nick);
                else
                   $answer = '¿Sabías que...? '.$this->random_from_file('chan_a_datos', $nick);
             }
-            else if( mt_rand(0, 9) == 0 )
+            else if( mt_rand(0, 19) == 0 )
             {
                $this->valid_comment = TRUE;
                $answer = $this->random_from_file('chan_a_paridas', $nick);
@@ -61,6 +61,15 @@ class chan
          }
          
          return $answer;
+      }
+   }
+   
+   public function personal_answer($txt, $nick = 'anónimo')
+   {
+      if( preg_match("/(^|\s)@chan/", $txt) )
+      {
+         $this->valid_comment = TRUE;
+         return $this->random_from_file('chan_personal', $nick);
       }
    }
    
@@ -182,6 +191,11 @@ class chan
       }
       
       return $found;
+   }
+   
+   public function cron_job()
+   {
+      
    }
 }
 

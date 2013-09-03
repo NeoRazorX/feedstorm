@@ -1,24 +1,17 @@
 {include="mobile/header"}
 
-<script>
-   (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) return;
-      js = d.createElement(s); js.id = id;
-      js.src = "//connect.facebook.net/es_ES/all.js#xfbml=1";
-      fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
-
-<div id="fb-root"></div>
-
-<div>
-   <h3>Deja tus comentarios o sugerencias:</h3>
-   <p>
-      Si quieres contactar conmigo directamente, envíame un email a
-      neorazorx@gmail.com
-   </p>
-   <div class="fb-comments" data-href="{$fsc->domain()}" data-width="650"></div>
+<div class="list-group">
+   <div class="list-group-item">
+      <h4 class="list-group-item-heading">Chat general:</h4>
+   </div>
+   {loop="$fsc->comment->all4thread()"}
+      <div class="list-group-item">
+         <div>
+            <u>{$value->nick}</u> {$value->timesince()}:
+         </div>
+         <p>{$value->text}</p>
+      </div>
+   {/loop}
 </div>
 
 {include="mobile/footer"}

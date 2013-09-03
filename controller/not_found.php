@@ -32,6 +32,11 @@ class not_found extends fs_controller
       $story = new story();
       $this->stories = $story->popular_stories();
    }
+   
+   public function show_usual_visitor_add()
+   {
+      return FALSE;
+   }
 }
 
 ?>

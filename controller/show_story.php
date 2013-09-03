@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/chan.php';
 require_once 'model/comment.php';
 require_once 'model/story.php';
 require_once 'model/story_visit.php';
@@ -148,18 +147,6 @@ class show_story extends fs_controller
          {
             $this->new_error_msg('Ahhh, se siente. Has dicho que no eras humano.');
             $this->txt_comment = $_POST['comment'];
-         }
-      }
-      else if( count($all_comments) == 0 )
-      {
-         $chan = new chan();
-         $comment->thread = $this->story->get_id();
-         $comment->nick = $chan->nick;
-         $comment->text = $chan->answer($this->story->title.' '.$this->story->description);
-         if( $chan->save_answer() )
-         {
-            $comment->save();
-            $all_comments[] = $comment;
          }
       }
       

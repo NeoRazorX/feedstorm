@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/chan.php';
 require_once 'model/comment.php';
 
 class comments extends fs_controller
@@ -34,10 +33,18 @@ class comments extends fs_controller
       
       if( isset($_POST['comment']) )
       {
-         $comment2 = new comment();
-         $comment2->nick = $this->visitor->nick;
-         $comment2->text = $_POST['comment'];
-         $comment2->save();
+         if($this->visitor->human() AND $_POST['human'] == 'POZI' )
+         {
+            $comment2 = new comment();
+            $comment2->nick = $this->visitor->nick;
+            $comment2->text = $_POST['comment'];
+            $comment2->save();
+         }
+         else
+         {
+            $this->new_error_msg('Ahhh, se siente. Has dicho que no eras humano.');
+            $this->txt_comment = $_POST['comment'];
+         }
       }
    }
 }

@@ -19,10 +19,10 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/feed_story.php';
+require_once 'model/media_item.php';
 require_once 'model/suscription.php';
 require_once 'model/story.php';
 require_once 'model/story_media.php';
-require_once 'model/media_item.php';
 
 class feed extends fs_model
 {
@@ -178,7 +178,7 @@ class feed extends fs_model
          {
             libxml_use_internal_errors(TRUE);
             $xml = simplexml_load_file('tmp/'.$this->get_id().'.xml');
-            if( $xml )
+            if($xml)
             {
                /// intentamos leer las noticias
                $i = 0;
@@ -251,6 +251,7 @@ class feed extends fs_model
                      break;
                   }
                }
+               
                /// leemos la descripción
                if( $xml->channel->description )
                   $this->description = $this->remove_bad_utf8( (string)$xml->channel->description );

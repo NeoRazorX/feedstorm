@@ -204,6 +204,7 @@ class chan2
    
    public function cron_job()
    {
+      /*
       $comment = new comment();
       $story = new story();
       
@@ -233,6 +234,7 @@ class chan2
             $comment2->save();
          }
       }
+       */
    }
 }
 

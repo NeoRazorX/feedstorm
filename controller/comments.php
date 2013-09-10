@@ -26,7 +26,7 @@ class comments extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('comments', 'Comentarios', 'comentarios@'.FS_NAME, 'comments');
+      parent::__construct('comments', 'Comentarios', 'Comentarios &lsaquo; '.FS_NAME, 'comments');
       
       $this->comment = new comment();
       $this->txt_comment = '¡Escribe algo!';
@@ -46,6 +46,11 @@ class comments extends fs_controller
             $this->txt_comment = $_POST['comment'];
          }
       }
+   }
+   
+   public function get_description()
+   {
+      return 'Chat general de '.FS_NAME.' junto con todas las conversaciones recientes de la web.';
    }
 }
 

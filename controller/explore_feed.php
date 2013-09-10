@@ -65,7 +65,7 @@ class explore_feed extends fs_controller
       
       if($this->feed)
       {
-         $this->title = $this->feed->name;
+         $this->title = $this->feed->name.' &lsaquo; '.FS_NAME;
          $this->stories = $this->feed->stories();
          
          $suscription = new suscription();

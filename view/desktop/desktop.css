@@ -239,6 +239,7 @@ div.story div.image img {
    margin-right: auto;
    border-top-left-radius: 2px;
    border-top-right-radius: 2px;
+   border: 0px solid white;
 }
 
 div.story div.timesince {
@@ -296,6 +297,10 @@ a#b_close_popup {
    top: 10px;
    left: 10px;
    z-index: 5;
+}
+
+a#b_close_popup img {
+   border: 0px solid white;
 }
 
 div.popup {
@@ -378,6 +383,7 @@ div.story_info div.media_item {
 
 div.story_info div.media_item img {
    box-shadow: 2px 2px 2px #666;
+   border: 0px solid white;
 }
 
 div.story_info p {

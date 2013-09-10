@@ -31,13 +31,18 @@ class last_editions extends fs_controller
       if( isset($_GET['show_info']) )
       {
          $this->show_info = FALSE;
-         setcookie('editions_info', 'FALSE', time()+315360000);
+         setcookie('editions_info', 'FALSE', time()+315360000, FS_PATH);
       }
       else
          $this->show_info = !isset($_COOKIE['editions_info']);
       
       $se = new story_edition();
       $this->editions = $se->last_editions();
+   }
+   
+   public function get_description()
+   {
+      return 'Últimas modificaciones realizadas por los usuarios. Historias corregidas o mejoradas.';
    }
 }
 

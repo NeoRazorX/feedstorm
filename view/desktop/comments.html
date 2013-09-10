@@ -22,7 +22,11 @@
                   {loop="$fsc->comment->all4thread()"}
                   <div class="comment">
                      <div>
+                        {if condition="$fsc->visitor->nick==$value->nick"}
+                        <b>Tú</b> dices:
+                        {else}
                         <u>{$value->nick}</u> dice:
+                        {/if}
                         <span class="pull-right">{$value->timesince()}</span>
                      </div>
                      <p>{$value->text}</p>
@@ -41,7 +45,11 @@
                      {if condition="$value->thread"}
                      <div class="comment link" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
                         <div>
+                           {if condition="$fsc->visitor->nick==$value->nick"}
+                           <b>Tú</b> dices:
+                           {else}
                            <u>{$value->nick}</u> dice:
+                           {/if}
                            <span class="pull-right">{$value->timesince()}</span>
                         </div>
                         <p>{$value->text}</p>

@@ -81,11 +81,13 @@ class feed extends fs_model
       $this->collection->ensureIndex('name');
    }
    
-   public function url($sitemap=TRUE)
+   public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
          return 'index.php';
-      else if($sitemap)
+      else if(FS_MOD_REWRITE)
+         return 'explore_feed/'.$this->id;
+      else if($w3c)
          return 'index.php?page=explore_feed&amp;id='.$this->id;
       else
          return 'index.php?page=explore_feed&id='.$this->id;

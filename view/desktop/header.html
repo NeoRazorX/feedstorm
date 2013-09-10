@@ -46,40 +46,40 @@
                {/if}
                {if condition="$fsc->visitor->num_suscriptions > 0"}
                   {if condition="$fsc->page=='popular_stories'"}
-                  <a class="selected" href="{$path}/index.php?page=popular_stories">Populares</a>
+                  <a class="selected" href="{$fsc->page_url('popular_stories')}">Populares</a>
                   {else}
-                  <a href="{$path}/index.php?page=popular_stories">Populares</a>
+                  <a href="{$fsc->page_url('popular_stories')}">Populares</a>
                   {/if}
                {/if}
                {if condition="$fsc->page=='discover_stories'"}
-               <a class="selected" href="{$path}/index.php?page=discover_stories">Descubrir</a>
+               <a class="selected" href="{$fsc->page_url('discover_stories')}">Descubrir</a>
                {else}
-               <a href="{$path}/index.php?page=discover_stories">Descubrir</a>
+               <a href="{$fsc->page_url('discover_stories')}">Descubrir</a>
                {/if}
                {if condition="$fsc->page=='comments'"}
-               <a class="selected" href="{$path}/index.php?page=comments">¡Habla!</a>
+               <a class="selected" href="{$fsc->page_url('comments')}">¡Habla!</a>
                {else}
-               <a href="{$path}/index.php?page=comments">¡Habla!</a>
+               <a href="{$fsc->page_url('comments')}">¡Habla!</a>
                {/if}
                {if condition="$fsc->page=='feed_list'"}
-               <a class="selected" href="{$path}/index.php?page=feed_list">Fuentes</a>
+               <a class="selected" href="{$fsc->page_url('feed_list')}">Fuentes</a>
                {else}
-               <a href="{$path}/index.php?page=feed_list">Fuentes</a>
+               <a href="{$fsc->page_url('feed_list')}">Fuentes</a>
                {/if}
                {if condition="$fsc->page=='suscriptions'"}
-               <a class="selected" href="{$path}/index.php?page=suscriptions">Tu perfil</a>
+               <a class="selected" href="{$fsc->page_url('suscriptions')}">Tu perfil</a>
                {else}
-               <a href="{$path}/index.php?page=suscriptions">Tu perfil</a>
+               <a href="{$fsc->page_url('suscriptions')}">Tu perfil</a>
                {/if}
                {if condition="$fsc->page=='help'"}
-               <a class="selected" href="{$path}/index.php?page=help">¿?</a>
+               <a class="selected" href="{$fsc->page_url('help')}">¿?</a>
                {else}
-               <a href="{$path}/index.php?page=help">¿?</a>
+               <a href="{$fsc->page_url('help')}">¿?</a>
                {/if}
                {if condition="$fsc->page=='search'"}
-                  <img class="selected" src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$path}/index.php?page=search')"/>
+                  <img class="selected" src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$fsc->page_url('search')}')"/>
                {else}
-                  <img src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$path}/index.php?page=search')"/>
+                  <img src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$fsc->page_url('search')}')"/>
                {/if}
             </div>
             <div class="lat2"></div>

@@ -20,7 +20,7 @@
       {$fsc->story->description}
    </p>
    <p>
-      <a href="{$fsc->story->edit_url()}" class="btn btn-success">Editar</a>
+      <a href="{$path}/{$fsc->story->edit_url()}" class="btn btn-success">Editar</a>
       <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="btn btn-primary pull-right">Abrir enlace</a>
    </p>
 </div>
@@ -41,7 +41,7 @@
       <tr>
          <td>{$value->timesince()}</td>
          <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
-         <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+         <td><a href="{$path}/{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}
       <tr>

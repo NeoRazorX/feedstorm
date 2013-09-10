@@ -92,7 +92,15 @@ class show_story extends fs_controller
       if( isset($this->story) )
          return $this->story->url();
       else
-         parent::url();
+         return parent::url();
+   }
+   
+   private function full_url()
+   {
+      if( isset($this->story) )
+         return $this->domain().'/'.$this->story->url(FALSE);
+      else
+         return $this->domain();
    }
    
    public function get_description()
@@ -106,8 +114,14 @@ class show_story extends fs_controller
    public function twitter_url()
    {
       if($this->story)
-         return 'https://twitter.com/share?url='.urlencode($this->story->link).
-              '&amp;text='.urlencode($this->story->title);
+      {
+         if( mt_rand(0, 2) == 0 )
+            return 'https://twitter.com/share?url='.urlencode($this->full_url()).
+                 '&amp;text='.urlencode($this->story->title);
+         else
+            return 'https://twitter.com/share?url='.urlencode($this->story->link).
+                 '&amp;text='.urlencode($this->story->title);
+      }
       else
          return 'https://twitter.com/share';
    }
@@ -115,8 +129,14 @@ class show_story extends fs_controller
    public function facebook_url()
    {
       if($this->story)
-         return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
-              '&amp;p[url]='.urlencode($this->story->link);
+      {
+         if( mt_rand(0, 2) == 0 )
+            return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+                 '&amp;p[url]='.urlencode($this->full_url());
+         else
+            return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+                 '&amp;p[url]='.urlencode($this->story->link);
+      }
       else
          return 'http://www.facebook.com/sharer.php';
    }

@@ -89,10 +89,8 @@ class feed_list extends fs_controller
    
    public function get_description()
    {
-      if( $this->feed )
-         return $this->feed->description;
-      else
-         return parent::get_description();
+      return 'Listado de fuentes de '.FS_NAME.'. Suscríbete a las más interesantes,
+         o añade las tuyas, si no están ya.';
    }
 }
 

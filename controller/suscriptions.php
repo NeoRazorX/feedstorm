@@ -68,6 +68,12 @@ class suscriptions extends fs_controller
       $this->suscriptions = $this->visitor->suscriptions();
       $this->last_visits = $this->visitor->last_visits();
    }
+   
+   public function get_description()
+   {
+      return 'Tu perfil en '.FS_NAME.'. Gestiona tus suscripciones a golpe de clic
+         para tener una portada acorde a tus intereses.';
+   }
 }
 
 ?>

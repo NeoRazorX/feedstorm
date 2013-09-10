@@ -44,6 +44,12 @@ class search extends fs_controller
          }
       }
    }
+   
+   public function get_description()
+   {
+      return 'El buscador de '.FS_NAME.'. Si no encuentras una historia aquí es porque
+         ya no es popular XD.';
+   }
 }
 
 ?>

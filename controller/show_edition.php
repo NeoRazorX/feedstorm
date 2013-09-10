@@ -40,7 +40,7 @@ class show_edition extends fs_controller
       else
          $this->edition = FALSE;
       
-      if($this->edition)
+      if($this->edition AND $this->edition->story)
       {
          $this->title = $this->edition->title . ' (edición)';
          

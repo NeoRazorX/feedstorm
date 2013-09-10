@@ -30,6 +30,12 @@ class popular_stories extends fs_controller
       $story = new story();
       $this->stories = $story->popular_stories();
    }
+   
+   public function get_description()
+   {
+      return 'Listado de las noticias de actualidad más populares, las que tienen más clics
+         y más menciones en las redes sociales.';
+   }
 }
 
 ?>

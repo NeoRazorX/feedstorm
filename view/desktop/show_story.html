@@ -43,7 +43,7 @@
       <tr>
          <td>{$value->timesince()}</td>
          <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
-         <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+         <td><a href="{$path}/{$value->feed_url()}">{$value->feed_name()}</a></td>
       </tr>
       {else}
       <tr>
@@ -70,14 +70,14 @@
       {/loop}
       <tr>
          <td colspan="3">
-            <a href="{$fsc->story->edit_url()}" class="add_line">Editar esta noticia</a>
+            <a href="{$path}/{$fsc->story->edit_url()}" class="add_line">Editar esta noticia</a>
          </td>
       </tr>
    </table>
 </div>
 <div class="comments">
    <div class="comment">
-      <form name="f_comment2" action="{$fsc->url()}" method="post">
+      <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
          <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>
          <div id="new_comment_controls" class="hidden">
             <input type="submit" value="enviar"/>
@@ -91,7 +91,11 @@
    {loop="$fsc->comments"}
    <div class="comment">
       <div>
+         {if condition="$fsc->visitor->nick==$value->nick"}
+         <b>Tú</b> dices:
+         {else}
          <u>{$value->nick}</u> dice:
+         {/if}
          <span class="pull-right">{$value->timesince()}</span>
       </div>
       <p>{$value->text}</p>

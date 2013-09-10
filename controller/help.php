@@ -30,6 +30,11 @@ class help extends fs_controller
       $this->feed = new feed();
    }
    
+   public function get_description()
+   {
+      return 'Ayuda de '.FS_NAME.'. Qué es, cómo funciona qué hay de nuevo, truqitos, etc...';
+   }
+   
    public function show_max_age()
    {
       $time = FS_MAX_AGE;

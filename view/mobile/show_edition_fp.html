@@ -5,7 +5,7 @@
    <p>
       <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
       <a class="btn btn-info btn-small" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
-      <a class="btn btn-success btn-small" href="#" onclick="fs_go2url('{$fsc->edition->vote_url()}'); return false;">+1</a>
+      <a class="btn btn-success btn-small" href="#" onclick="fs_go2url('{$path}/{$fsc->edition->vote_url()}'); return false;">+1</a>
       <span class="label label-success">{$fsc->edition->votes} votos</span>
    </p>
    <h3>{$fsc->edition->title}</h3>
@@ -16,7 +16,7 @@
    {/if}
    <p>{$fsc->edition->description}</p>
    <p>
-      <a href="{$fsc->edition->story->edit_url()}" class="btn btn-success">Editar</a>
+      <a href="{$path}/{$fsc->edition->story->edit_url()}" class="btn btn-success">Editar</a>
       <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="btn btn-primary pull-right">Abrir enlace</a>
    </p>
 </div>

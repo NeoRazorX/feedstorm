@@ -6,7 +6,7 @@
       <h4 class="list-group-item-heading">Tus suscripciones:</h4>
    </div>
    {loop="$fsc->suscriptions"}
-   <a class="list-group-item" href="{$value->url()}">
+   <a class="list-group-item" href="{$path}/{$value->url()}">
       {$value->name()} <span class="badge">{$value->num_stories()}</span>
    </a>
    {/loop}

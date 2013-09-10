@@ -8,9 +8,9 @@
    <p>{$fsc->feed->description}</p>
    {if condition="$fsc->visitor->human()"}
       {if condition="$fsc->unsuscribe"}
-      <a class="btn btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+      <a class="btn btn-danger" href="{$path}/{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
       {else}
-      <a class="btn btn-success" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+      <a class="btn btn-success" href="{$path}/{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
       {/if}
    {/if}
 </div>

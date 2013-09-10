@@ -12,7 +12,7 @@
       </tr>
       {loop="$fsc->suscriptions"}
       <tr>
-         <td><a href="{$value->url()}">{$value->name()}</a> {$value->description()}</td>
+         <td><a href="{$path}/{$value->url()}">{$value->name()}</a> {$value->description()}</td>
          <td align="right">{$value->num_stories()}</td>
          <td align="right">{$value->last_update_timesince()}</td>
       </tr>

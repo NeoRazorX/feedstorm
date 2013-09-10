@@ -37,6 +37,9 @@ abstract class fs_controller
       if( !defined('FS_MASTER_KEY') )
          define('FS_MASTER_KEY', '');
       
+      if( !defined('FS_MOD_REWRITE') )
+         define('FS_MOD_REWRITE', FALSE);
+      
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
@@ -61,12 +64,15 @@ abstract class fs_controller
       
       if($this->visitor->noob)
       {
-         $this->new_message('Oye, que esta web <a href="index.php?page=help#cookies">usa cookies</a> y tal, que lo sepas!');
+         $this->new_message(FS_NAME.' usa cookies propias y de terceros para
+            mejorar tu experiencia de navegación y realizar tareas de análisis.
+            Al continuar con tu navegación entendemos que das tu consentimiento
+            a nuestra <a target="_blank" href="index.php?page=help#cookies">política de cookies</a>.');
       }
       
       if( $this->visitor->save() )
       {
-         setcookie('key', $this->visitor->get_id(), time()+FS_MAX_AGE);
+         setcookie('key', $this->visitor->get_id(), time()+FS_MAX_AGE, FS_PATH);
       }
       
       $this->set_template($template);
@@ -79,7 +85,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.0b10';
+      return '1.0b11';
    }
    
    public function php_version()
@@ -140,7 +146,10 @@ abstract class fs_controller
    
    public function url()
    {
-      return 'index.php?page='.$this->page;
+      if(FS_MOD_REWRITE)
+         return FS_PATH.'/'.$this->page;
+      else
+         return FS_PATH.'/index.php?page='.$this->page;
    }
    
    public function domain()
@@ -149,6 +158,14 @@ abstract class fs_controller
          return 'http://'.$_SERVER["SERVER_NAME"].FS_PATH;
       else
          return 'http://www.'.$_SERVER["SERVER_NAME"].FS_PATH;
+   }
+   
+   public function page_url($name='')
+   {
+      if(FS_MOD_REWRITE)
+         return FS_PATH.'/'.$name;
+      else
+         return FS_PATH.'/index.php?page='.$name;
    }
 }
 

@@ -11,13 +11,13 @@
       });
       $('#b_change_lang').click(function() {
          {if condition="$fsc->feed->native_lang"}
-         window.location.href = "{$fsc->feed->url(FALSE)}&native_lang=FALSE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$path}/{$fsc->feed->url(FALSE)}&native_lang=FALSE&mkey="+prompt('Clave maestra:');
          {else}
-         window.location.href = "{$fsc->feed->url(FALSE)}&native_lang=TRUE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$path}/{$fsc->feed->url(FALSE)}&native_lang=TRUE&mkey="+prompt('Clave maestra:');
          {/if}
       });
       $('#b_remove_feed').click(function() {
-         window.location.href = "{$fsc->feed->url(FALSE)}&delete=TRUE&mkey="+prompt('Clave maestra:');
+         window.location.href = "{$path}/{$fsc->feed->url(FALSE)}&delete=TRUE&mkey="+prompt('Clave maestra:');
       });
    });
 </script>
@@ -31,9 +31,9 @@
          {if condition="$fsc->visitor->human()"}
          <td align="right">
             {if condition="$fsc->unsuscribe"}
-            <a class="button_remove" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            <a class="button_remove" href="{$path}/{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
             {else}
-            <a class="button" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+            <a class="button" href="{$path}/{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
             {/if}
          </td>
          {/if}

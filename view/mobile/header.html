@@ -68,43 +68,38 @@
                {/if}
                {if condition="$fsc->visitor->num_suscriptions > 0"}
                   {if condition="$fsc->page=='popular_stories'"}
-                     <li class="active"><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                     <li class="active"><a href="{$fsc->page_url('popular_stories')}">Populares</a></li>
                   {else}
-                     <li><a href="{$path}/index.php?page=popular_stories">Populares</a></li>
+                     <li><a href="{$fsc->page_url('popular_stories')}">Populares</a></li>
                   {/if}
                {/if}
                {if condition="$fsc->page=='discover_stories'"}
-                  <li class="active"><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
+                  <li class="active"><a href="{$fsc->page_url('discover_stories')}">Descubrir</a></li>
                {else}
-                  <li><a href="{$path}/index.php?page=discover_stories">Descubrir</a></li>
-               {/if}
-               {if condition="$fsc->page=='last_editions'"}
-                  <li class="active"><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
-               {else}
-                  <li><a href="{$path}/index.php?page=last_editions">Ediciones</a></li>
+                  <li><a href="{$fsc->page_url('discover_stories')}">Descubrir</a></li>
                {/if}
                {if condition="$fsc->page=='comments'"}
-                  <li class="active"><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
+                  <li class="active"><a href="{$fsc->page_url('comments')}">¡Habla!</a></li>
                {else}
-                  <li><a href="{$path}/index.php?page=comments">¡Habla!</a></li>
+                  <li><a href="{$fsc->page_url('comments')}">¡Habla!</a></li>
                {/if}
                {if condition="$fsc->page=='feed_list'"}
-                  <li class="active"><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+                  <li class="active"><a href="{$fsc->page_url('feed_list')}">Fuentes</a></li>
                {else}
-                  <li><a href="{$path}/index.php?page=feed_list">Fuentes</a></li>
+                  <li><a href="{$fsc->page_url('feed_list')}">Fuentes</a></li>
                {/if}
                {if condition="$fsc->page=='suscriptions'"}
-                  <li class="active"><a href="{$path}/index.php?page=suscriptions">Tu perfil</a></li>
+                  <li class="active"><a href="{$fsc->page_url('suscriptions')}">Tu perfil</a></li>
                {else}
-                  <li><a href="{$path}/index.php?page=suscriptions">Tu perfil</a></li>
+                  <li><a href="{$fsc->page_url('suscriptions')}">Tu perfil</a></li>
                {/if}
                {if condition="$fsc->page=='help'"}
-                  <li class="active"><a href="{$path}/index.php?page=help">¿?</a></li>
+                  <li class="active"><a href="{$fsc->page_url('help')}">¿?</a></li>
                {else}
-                  <li><a href="{$path}/index.php?page=help">¿?</a></li>
+                  <li><a href="{$fsc->page_url('help')}">¿?</a></li>
                {/if}
                <li>
-                  <form class="navbar-form" action="{$path}/index.php?page=search" method="post">
+                  <form class="navbar-form" action="{$fsc->page_url('search')}" method="post">
                      <input type="text" name="query" class="form-control" style="width: 200px;">
                      <button type="submit" class="btn btn-primary">Buscar</button>
                   </form>

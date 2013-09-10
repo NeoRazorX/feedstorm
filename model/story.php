@@ -24,6 +24,12 @@ require_once 'model/story_edition.php';
 
 class story extends fs_model
 {
+   /*
+    * Google prefiere urls del tipo:
+    * http://www.locierto.es/story/titulo-de-la-noticia.html
+    * así que $name = 'titulo-de-la-noticia.html'
+    */
+   public $name;
    public $date;
    public $title;
    public $description;
@@ -35,7 +41,7 @@ class story extends fs_model
    public $likes;
    public $plusones;
    public $popularity;
-   public $native_lang;
+   public $native_lang; /// ¿La historia está en español?
    
    private static $mi0;
    private $media_items;
@@ -47,17 +53,19 @@ class story extends fs_model
       if($item)
       {
          $this->id = $item['_id'];
+         
+         if( isset($item['name']) )
+            $this->name = $item['name'];
+         else
+            $this->name = '';
+         
          $this->date = $item['date'];
          $this->title = $item['title'];
          $this->description = $item['description'];
          $this->link = $item['link'];
          $this->media_id = $item['media_id'];
          $this->clics = $item['clics'];
-         
-         if( isset($item['tweets']) )
-            $this->tweets = $item['tweets'];
-         else
-            $this->tweets = 0;
+         $this->tweets = $item['tweets'];
          
          if( isset($item['meneos']) )
             $this->meneos = $item['meneos'];
@@ -94,6 +102,7 @@ class story extends fs_model
       else
       {
          $this->id = NULL;
+         $this->name = '';
          $this->date = time();
          $this->title = NULL;
          $this->description = NULL;
@@ -116,12 +125,15 @@ class story extends fs_model
       $this->collection->ensureIndex( array('popularity' => -1) );
       $this->collection->ensureIndex( array('date' => -1) );
       $this->collection->ensureIndex('link');
+      $this->collection->ensureIndex('name');
    }
    
-   public function url($w3c=TRUE)
+   public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
          return 'index.php';
+      else if(FS_MOD_REWRITE AND $this->name != '')
+         return 'show_story/'.$this->name;
       else if($w3c)
          return 'index.php?page=show_story&amp;id='.$this->id;
       else
@@ -250,13 +262,13 @@ class story extends fs_model
                   break;
                else if( substr($k, 0, 2) == 's_' )
                {
-                  setcookie($k, $value, time()-86400);
+                  setcookie($k, $value, time()-86400, FS_PATH);
                   $num--;
                }
             }
          }
          
-         setcookie('s_'.$this->id, $this->id, time()+86400);
+         setcookie('s_'.$this->id, $this->id, time()+86400, FS_PATH);
       }
    }
    
@@ -344,7 +356,11 @@ class story extends fs_model
       
       try
       {
-         $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         if( substr($id, -5) == '.html' )
+            $data = $this->collection->findone( array('name' => $id) );
+         else
+            $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         
          if($data)
             return new story($data);
          else
@@ -390,6 +406,7 @@ class story extends fs_model
       $this->calculate_popularity();
       
       $data = array(
+          'name' => $this->name,
           'date' => $this->date,
           'title' => $this->title,
           'description' => $this->description,
@@ -413,9 +430,34 @@ class story extends fs_model
       else
       {
          $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
+         $this->new_name();
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
+   }
+   
+   private function new_name()
+   {
+      $this->name = strtolower( $this->true_text_break($this->title, 85) );
+      $changes = array('/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
+          '/å/' => 'a', '/æ/' => 'ae', '/ç/' => 'c', '/è/' => 'e', '/é/' => 'e', '/ê/' => 'e',
+          '/ë/' => 'e', '/ì/' => 'i', '/í/' => 'i', '/î/' => 'i', '/ï/' => 'i', '/ð/' => 'd',
+          '/ñ/' => 'n', '/ò/' => 'o', '/ó/' => 'o', '/ô/' => 'o', '/õ/' => 'o', '/ö/' => 'o',
+          '/ő/' => 'o', '/ø/' => 'o', '/ù/' => 'u', '/ú/' => 'u', '/û/' => 'u', '/ü/' => 'u',
+          '/ű/' => 'u', '/ý/' => 'y', '/þ/' => 'th', '/ÿ/' => 'y', '/ñ/' => 'ny',
+          '/&quot;/' => '-'
+      );
+      $this->name = preg_replace(array_keys($changes), $changes, $this->name);
+      $this->name = preg_replace('/[^a-z0-9]/i', '-', $this->name);
+      $this->name = preg_replace('/-+/', '-', $this->name);
+      
+      if( substr($this->name, 0, 1) == '-' )
+         $this->name = substr($this->name, 1);
+      
+      if( substr($this->name, -1) == '-' )
+         $this->name = substr($this->name, 0, -1);
+      
+      $this->name .= '-'.mt_rand(0, 999).'.html';
    }
    
    public function delete()

@@ -33,6 +33,11 @@ class not_found extends fs_controller
       $this->stories = $story->popular_stories();
    }
    
+   public function get_description()
+   {
+      return 'Historia no encontrada en '.FS_NAME.'. ¡Usa el buscador! A Ver si tienes más suerte.';
+   }
+   
    public function show_usual_visitor_add()
    {
       return FALSE;

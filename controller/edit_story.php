@@ -70,7 +70,10 @@ class edit_story extends fs_controller
                else
                   $this->story_edition->media_id = $_POST['media_id'];
                
-               if( $_POST['human'] != 'POZI' )
+               /// otra comprobación más para evitar el spam
+               if( strstr($_POST['description'], '<a href=') )
+                  $this->new_error_msg('De eso nada, aquí no se permite HTML.');
+               else if( $_POST['human'] != 'POZI' )
                   $this->new_error_msg('Has contestado que no eres humano, y si no eres
                      humano no puedes editar historias. Y si, ya sé que esto es nazismo puro,
                      pero es una forma sencilla de atajar el SPAM.');

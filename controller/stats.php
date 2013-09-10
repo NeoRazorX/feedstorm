@@ -171,6 +171,12 @@ class stats extends fs_controller
          $this->showing = $_GET['showing'];
    }
    
+   public function get_description()
+   {
+      return 'Estadísticas de '.FS_NAME.'. Número de fuentes, de historias, visitas, usuarios
+         y un largo etcétera.';
+   }
+   
    public function tmp_size($path='tmp', $show_units=TRUE)
    {
       $total_size = 0;

@@ -36,3 +36,8 @@ Por último dale permisos de ejecución:
 
 Y listo. Si tienes algún problema no dudes en informar:
 https://github.com/NeoRazorX/feedstorm/issues
+
+
+Ejemplos de webs creadas con FeedStorm:
+http://www.locierto.es
+http://www.kelinux.net

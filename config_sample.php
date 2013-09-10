@@ -62,4 +62,7 @@ define('FS_MASTER_KEY', '');
  */
 define('FS_DEBUG', FALSE);
 
+/// ¿Tienes activado el mod_rewrite de apache?
+define('FS_MOD_REWRITE', FALSE);
+
 ?>

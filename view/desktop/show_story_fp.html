@@ -26,9 +26,10 @@
 <div class="popup_container">
    <div class="popup2">
       <div class="story_info">
-         <div class="right">
-            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
-            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+         <div style="text-align: center;">
+            <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
+            <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
+            <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
             {if condition="!$fsc->story->native_lang"}
             <span class="label" title="esta historia no está en español"><s>español</s></span>
             {/if}
@@ -146,7 +147,7 @@
 
 <div id="stories">
    {loop="$fsc->popular"}
-      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
+      <div class="story{if condition="$value->readed()"} story_readed{/if}" onclick="fs_go2url('{$path}/{$value->url()}');return false;">
             {if condition="$value->media_item"}
                <div class="image">
                   <a href="{$path}/{$value->url(TRUE)}">

@@ -50,8 +50,11 @@ function fs_popup_story(url)
             });
          });
          $("#new_comment_textarea").click(function() {
-            $("#new_comment_controls").show();
-            $(this).select();
+            if( $(this).val() == '¡Escribe algo!' )
+            {
+               $("#new_comment_controls").show();
+               $(this).val('');
+            }
          });
       }
    });

@@ -234,7 +234,7 @@ class story extends fs_model
       }
       
       $dias = 1 + intval( (time() - $this->date) / 86400 );
-      $semanas = 1 + intval($dias / 7);
+      $semanas = pow(2, intval($dias/7));
       if($tclics > 0)
          $this->popularity = $tclics / ($dias * $semanas);
       else
@@ -430,7 +430,7 @@ class story extends fs_model
       else
       {
          $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
-         $this->new_name();
+         $data['name'] = $this->new_name();
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
@@ -458,6 +458,8 @@ class story extends fs_model
          $this->name = substr($this->name, 0, -1);
       
       $this->name .= '-'.mt_rand(0, 999).'.html';
+      
+      return $this->name;
    }
    
    public function delete()

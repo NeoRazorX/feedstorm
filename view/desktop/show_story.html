@@ -1,14 +1,16 @@
 {if condition="$fsc->story"}
 <div class="story_info">
-   <div class="right">
-      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="{$fsc->story->tweets} tweets">Twitter</a>
-      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="{$fsc->story->likes} likes">Facebook</a>
+   <div style="text-align: center;">
+      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
+      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
+      <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
       {if condition="!$fsc->story->native_lang"}
       <span class="label" title="esta historia no está en español"><s>español</s></span>
       {/if}
       <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
          Popularidad: {$fsc->story->popularity()}
       </span>
+      <a href="{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br/>
    {if condition="$fsc->story->media_item"}

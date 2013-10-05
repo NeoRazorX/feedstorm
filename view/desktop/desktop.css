@@ -458,6 +458,30 @@ div#media_items label div.media_item_show {
    text-align: center;
 }
 
+table.comments {
+   width: 95%;
+   margin-left: auto;
+   margin-right: auto;
+   background-color: white;
+   border-radius: 5px;
+   border: 1px solid #bbbbbb;
+   box-shadow: 0px 0px 3px #999;
+}
+
+table.comments td {
+   vertical-align: top;
+   width: 50%;
+   padding: 5px;
+}
+
+table.comments td.right {
+   border-left: 1px solid #bbbbbb;
+}
+
+table.comments td h1 {
+   text-align: center;
+}
+
 div.footer {
    margin-top: 20px;
    margin-left: 50px;
@@ -571,22 +595,35 @@ a.twitter {
    padding: 3px;
    padding-left: 5px;
    padding-right: 5px;
-   background-color: #2592BD;
+   background-color: #00C4FC;
    border-radius: 3px;
    color: white;
    font-weight: bold;
+   text-decoration: none;
 }
 
 a.facebook {
    display: inline-block;
-   padding: 2px;
+   padding: 3px;
    padding-left: 5px;
    padding-right: 5px;
-   background-color: #EEF1F8;
-   border: 1px solid #A8B6CA;
+   background-color: #3350AE;
    border-radius: 3px;
-   color: #364B8B;
+   color: white;
    font-weight: bold;
+   text-decoration: none;
+}
+
+a.plusone {
+   display: inline-block;
+   padding: 3px;
+   padding-left: 5px;
+   padding-right: 5px;
+   background-color: #CD3C2A;
+   border-radius: 3px;
+   color: white;
+   font-weight: bold;
+   text-decoration: none;
 }
 
 a.add_line {
@@ -680,6 +717,10 @@ div.comments {
 div.comment {
    padding: 5px;
    border-bottom: 1px dashed silver;
+}
+
+div.comment:hover {
+   background-color: #E2EDF0;
 }
 
 div.right {

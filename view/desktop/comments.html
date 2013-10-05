@@ -1,66 +1,61 @@
 {include="desktop/header"}
 
-<div class="popup_container">
-   <table width="100%">
-      <tr>
-         <td valign="top">
-            <div class="popup2">
-               <div class="story_info">
-                  <h2>Chat general:</h2>
-               </div>
-               <div class="comments">
-                  <div class="comment">
-                     <form name="f_comment2" action="{$fsc->url()}" method="post">
-                        <textarea name="comment" rows="6">{$fsc->txt_comment}</textarea>
-                        <input type="submit" value="enviar"/>
-                        <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-                        <label for="r_human_yes">Soy humano</label>
-                        <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-                        <label for="r_human_no">No no soy humano, no me dejes comentar XD</label>
-                     </form>
-                  </div>
-                  {loop="$fsc->comment->all4thread()"}
-                  <div class="comment">
-                     <div>
-                        {if condition="$fsc->visitor->nick==$value->nick"}
-                        <b>Tú</b> dices:
-                        {else}
-                        <u>{$value->nick}</u> dice:
-                        {/if}
-                        <span class="pull-right">{$value->timesince()}</span>
-                     </div>
-                     <p>{$value->text}</p>
-                  </div>
-                  {/loop}
-               </div>
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#new_comm2").click(function() {
+         if( $(this).val() == '¡Escribe algo!' )
+            $(this).val('');
+      });
+   });
+</script>
+
+<table class="comments">
+   <tr>
+      <td>
+         <h1>Chat general:</h1>
+         <div class="comment">
+            <form name="f_comment2" action="{$fsc->url()}" method="post">
+               <textarea id="new_comm2" name="comment" rows="6">{$fsc->txt_comment}</textarea>
+               <input type="submit" value="enviar"/>
+               <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+               <label for="r_human_yes">Soy humano</label>
+               <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+               <label for="r_human_no">No no soy humano, no me dejes comentar XD</label>
+            </form>
+         </div>
+         {loop="$fsc->comment->all4thread()"}
+         <div class="comment">
+            <div>
+               {if condition="$fsc->visitor->nick==$value->nick"}
+               <b>Tú</b> dices:
+               {else}
+               <u>@{$value->nick}</u> dice:
+               {/if}
+               <span class="pull-right">{$value->timesince()}</span>
             </div>
-         </td>
-         <td valign="top">
-            <div class="popup2">
-               <div class="story_info">
-                  <h2>Otras conversaciones:</h2>
+            <p>{$value->text}</p>
+         </div>
+         {/loop}
+      </td>
+      <td class="right">
+         <h1>Otras conversaciones:</h1>
+         {loop="$fsc->comment->all()"}
+            {if condition="$value->thread"}
+            <div class="comment link" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
+               <div>
+                  {if condition="$fsc->visitor->nick==$value->nick"}
+                  <b>Tú</b> dices:
+                  {else}
+                  <u>@{$value->nick}</u> dice:
+                  {/if}
+                  <span class="pull-right">{$value->timesince()}</span>
                </div>
-               <div class="comments">
-                  {loop="$fsc->comment->all()"}
-                     {if condition="$value->thread"}
-                     <div class="comment link" onclick="fs_popup_story('{$path}/{$value->url()}');return false;">
-                        <div>
-                           {if condition="$fsc->visitor->nick==$value->nick"}
-                           <b>Tú</b> dices:
-                           {else}
-                           <u>{$value->nick}</u> dice:
-                           {/if}
-                           <span class="pull-right">{$value->timesince()}</span>
-                        </div>
-                        <p>{$value->text}</p>
-                     </div>
-                     {/if}
-                  {/loop}
-               </div>
+               <p>{$value->text}</p>
             </div>
-         </td>
-      </tr>
-   </table>
-</div>
+            {/if}
+         {/loop}
+      </td>
+   </tr>
+</table>
 
 {include="desktop/footer"}

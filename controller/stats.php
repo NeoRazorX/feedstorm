@@ -226,9 +226,14 @@ class stats extends fs_controller
       foreach($visits as $i => $value)
       {
          if( array_key_exists($value->story_id, $aux) )
-            $aux[$value->story_id]++;
+            $aux[$value->story_id]['visits']++;
          else
-            $aux[$value->story_id] = 1;
+         {
+            $aux[$value->story_id] = array(
+                'visits' => 1,
+                'date' => $value->timesince()
+            );
+         }
       }
       
       arsort($aux);
@@ -237,11 +242,12 @@ class stats extends fs_controller
       $n = 0;
       foreach($aux as $i => $value)
       {
-         if($n < FS_MAX_STORIES AND $value > 1)
+         if($n < FS_MAX_STORIES AND $value['visits'] > 1)
          {
             $stlist[] = array(
                 'story' => $this->story->get($i),
-                'visits' => $value
+                'visits' => $value['visits'],
+                'date' => $value['date']
             );
          }
          else

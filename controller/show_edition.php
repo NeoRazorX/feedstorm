@@ -36,11 +36,21 @@ class show_edition extends fs_controller
       $se = new story_edition();
       
       if( isset($_GET['id']) )
-         $this->edition = $se->get($_GET['id']);
+      {
+         $se2 = $se->get($_GET['id']);
+         if($se2)
+         {
+            /// si la historia ya no existe, borramos la edición
+            if($se2->story)
+               $this->edition = $se2;
+            else
+               $se2->delete();
+         }
+      }
       else
          $this->edition = FALSE;
       
-      if($this->edition AND $this->edition->story)
+      if($this->edition)
       {
          $this->title = $this->edition->title . ' (edición)';
          
@@ -100,7 +110,7 @@ class show_edition extends fs_controller
    public function url()
    {
       if($this->edition)
-         return $this->edition->edit_url();
+         return $this->edition->url();
       else
          return parent::url();
    }
@@ -129,6 +139,14 @@ class show_edition extends fs_controller
               '&amp;p[url]='.urlencode( $this->domain().'/'.$this->edition->url(FALSE) );
       else
          return 'http://www.facebook.com/sharer.php';
+   }
+   
+   public function plusone_url()
+   {
+      if($this->edition)
+         return 'https://plus.google.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url(FALSE) );
+      else
+         return 'https://plus.google.com/share';
    }
 }
 

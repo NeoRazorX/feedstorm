@@ -73,7 +73,7 @@ class show_story extends fs_controller
          $this->popular = array();
       else
       {
-         $this->popular = $story->popular_stories(20);
+         $this->popular = $story->popular_stories();
          
          if($this->story)
          {
@@ -95,7 +95,7 @@ class show_story extends fs_controller
          return parent::url();
    }
    
-   private function full_url()
+   public function full_url()
    {
       if( isset($this->story) )
          return $this->domain().'/'.$this->story->url(FALSE);
@@ -115,12 +115,12 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         if( mt_rand(0, 2) == 0 )
+         if(mt_rand(0, 1) == 0)
             return 'https://twitter.com/share?url='.urlencode($this->full_url()).
-                 '&amp;text='.urlencode($this->story->title);
+               '&amp;text='.urlencode($this->story->title);
          else
             return 'https://twitter.com/share?url='.urlencode($this->story->link).
-                 '&amp;text='.urlencode($this->story->title);
+               '&amp;text='.urlencode($this->story->title);
       }
       else
          return 'https://twitter.com/share';
@@ -130,15 +130,28 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         if( mt_rand(0, 2) == 0 )
+         if(mt_rand(0, 1) == 0)
             return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
-                 '&amp;p[url]='.urlencode($this->full_url());
+               '&amp;p[url]='.urlencode($this->full_url());
          else
             return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
-                 '&amp;p[url]='.urlencode($this->story->link);
+               '&amp;p[url]='.urlencode($this->story->link);
       }
       else
          return 'http://www.facebook.com/sharer.php';
+   }
+   
+   public function plusone_url()
+   {
+      if($this->story)
+      {
+         if(mt_rand(0, 1) == 0)
+            return 'https://plus.google.com/share?url='.urlencode($this->full_url());
+         else
+            return 'https://plus.google.com/share?url='.urlencode($this->story->link);
+      }
+      else
+         return 'https://plus.google.com/share';
    }
    
    private function comments()

@@ -65,7 +65,11 @@ class visitor extends fs_model
          else
             $this->num_suscriptions = 0;
          
-         $this->age = $this->last_login_date - $this->first_login_date;
+         if( isset($k['age']) )
+            $this->age = $k['age'];
+         else
+            $this->age = 0;
+         
          $this->noob = FALSE;
          $this->need_save = FALSE;
       }
@@ -102,9 +106,12 @@ class visitor extends fs_model
       return $this->time2timesince($this->last_login_date);
    }
    
-   public function age()
+   public function age($real = FALSE)
    {
-      $time = $this->last_login_date - $this->first_login_date;
+      if($real)
+         $time = $this->age;
+      else
+         $time = $this->last_login_date - $this->first_login_date;
       
       if($time <= 60)
          return $time.' segundos';
@@ -191,6 +198,11 @@ class visitor extends fs_model
       return $this->suscriptions;
    }
    
+   public function browser()
+   {
+      return $this->true_text_break($this->user_agent, 70);
+   }
+   
    public function last_stories()
    {
       if( $this->suscriptions() )
@@ -252,6 +264,8 @@ class visitor extends fs_model
    {
       if( $this->need_save AND $this->human() )
       {
+         $age = $this->last_login_date - $this->first_login_date;
+         
          $data = array(
              'nick' => $this->nick,
              'user_agent' => $this->user_agent,
@@ -331,8 +345,12 @@ class visitor extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
-      foreach($this->collection->find( array('age' => array('$gt'=>300)) )->limit(FS_MAX_STORIES) as $v)
-         $vlist[] = new visitor($v);
+      $sort = array('age' => -1);
+      foreach($this->collection->find()->sort($sort)->limit(FS_MAX_STORIES) as $v)
+      {
+         if($v['age'] >= 300)
+            $vlist[] = new visitor($v);
+      }
       return $vlist;
    }
    

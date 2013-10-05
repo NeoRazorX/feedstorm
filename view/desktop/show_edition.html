@@ -1,12 +1,10 @@
 {if condition="$fsc->edition"}
 <div class="story_info">
-   <div class="right">
-      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}">Twitter</a>
-      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}">Facebook</a>
-      <span class="label">{$fsc->edition->votes} votos</span>
-      <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;">+1</a>
-      &nbsp;
-      <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>
+   <div style="text-align: center;">
+      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
+      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
+      <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
+      <a href="{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br>
    {if condition="$fsc->edition->media_item"}
@@ -14,17 +12,24 @@
       <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
       <h1>{$fsc->edition->title}</h1>
       <p>{$fsc->edition->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
-      </div>
    </div>
    {else}
       <h2>{$fsc->edition->title}</h2>
       <p>{$fsc->edition->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
-      </div>
    {/if}
+   <table width="100%">
+      <tr>
+         <td>
+            <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
+            <span class="label">{$fsc->edition->votes} votos</span>
+            &nbsp;
+            <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>
+         </td>
+         <td align="right">
+            <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}" class="button">Abrir enlace</a>
+         </td>
+      </tr>
+   </table>
 </div>
 <ul class="pestanyas">
    <li id="b_show_editions" class="activa">Otras Ediciones</li>

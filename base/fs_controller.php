@@ -85,7 +85,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.0';
+      return '1.1';
    }
    
    public function php_version()
@@ -166,6 +166,11 @@ abstract class fs_controller
          return FS_PATH.'/'.$name;
       else
          return FS_PATH.'/index.php?page='.$name;
+   }
+   
+   public function random($num)
+   {
+      return mt_rand(0, $num) == 0;
    }
 }
 

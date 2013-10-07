@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/comment.php';
+require_once 'model/story.php';
+
 class chan
 {
    public $nick;
@@ -53,7 +56,7 @@ class chan
                else
                   $answer = '¿Sabías que...? '.$this->random_from_file('chan_a_datos', $nick);
             }
-            else if( mt_rand(0, 19) == 0 )
+            else
             {
                $this->valid_comment = TRUE;
                $answer = $this->random_from_file('chan_a_paridas', $nick);
@@ -84,7 +87,7 @@ class chan
          return FALSE;
    }
    
-   private function random_from_file($filename, $nick = 'anónimo')
+   protected function random_from_file($filename, $nick = 'anónimo')
    {
       if( file_exists('data/'.$filename) )
       {
@@ -128,7 +131,7 @@ class chan
          return '¡Me he roto!';
    }
    
-   private function search_from_file($filename, $word)
+   protected function search_from_file($filename, $word)
    {
       if( file_exists('data/'.$filename) )
       {
@@ -160,7 +163,7 @@ class chan
          return '¡Me he roto!';
    }
    
-   private function answer_from_dictionary($txt, &$answer)
+   protected function answer_from_dictionary($txt, &$answer)
    {
       $found = FALSE;
       
@@ -193,9 +196,81 @@ class chan
       return $found;
    }
    
+   protected function answer_from_file($filename, $txt)
+   {
+      if( file_exists('data/'.$filename) )
+      {
+         $file = fopen('data/'.$filename, 'r');
+         if($file)
+         {
+            $answer = 'No se me ocurre nada :-(';
+            $data = array();
+            while( !feof($file) )
+               $data[] = trim( fgets($file) );
+            fclose($file);
+            
+            foreach($data as $d)
+            {
+               $aux = explode(';', $d);
+               
+               if( strstr($txt, $aux[0]) )
+               {
+                  $answer = $aux[1];
+                  $this->valid_comment = TRUE;
+                  break;
+               }
+            }
+            
+            return $answer;
+         }
+      }
+   }
+   
    public function cron_job()
    {
+      /// comentamos alguna noticia aleatoria
+      $story = new story();
+      foreach($story->random_stories() as $s)
+      {
+         if( mt_rand(0, FS_MAX_STORIES) == 0 )
+         {
+            $com = new comment();
+            $com->thread = $s->get_id();
+            $com->nick = $this->nick;
+            $com->text = $this->answer($s->description);
+            
+            if( $this->save_answer() )
+            {
+               echo "\nChan ha añadido un comentario.";
+               $com->save();
+               break;
+            }
+         }
+      }
       
+      /// respondemos a los últimos comentarios
+      $comment = new comment();
+      $threads = array();
+      foreach($comment->all() as $com2)
+      {
+         if($com2->nick == $this->nick)
+            $threads[] = $com2->thread;
+         else
+         {
+            $com3 = new comment();
+            $com3->text = $this->personal_answer($com2->text, $com2->nick);
+            
+            if( $this->save_answer() AND !in_array($com2->thread, $threads) AND $com3->date > $com2->date )
+            {
+               echo "\nChan ha contestado a un comentario.";
+               $com3->nick = $this->nick;
+               $com3->thread = $com2->thread;
+               $com3->save();
+               
+               $threads[] = $com2->thread;
+            }
+         }
+      }
    }
 }
 

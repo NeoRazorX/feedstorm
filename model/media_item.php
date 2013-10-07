@@ -33,6 +33,8 @@ class media_item extends fs_model
    public $thumbnail_url;
    public $date;
    
+   public $description; /// para sacar la descripción de la noticia cuando se escanea el link
+   
    public function __construct($m = FALSE)
    {
       parent::__construct('media_items');
@@ -62,6 +64,8 @@ class media_item extends fs_model
          $this->thumbnail_url = NULL;
          $this->date = time();
       }
+      
+      $this->description = '';
    }
    
    public function install_indexes()
@@ -262,6 +266,13 @@ class media_item extends fs_model
                if( !in_array($url, $urls) )
                   $urls[] = $url;
             }
+            
+            /// sacamos la descripción del html por si la noticia la necesita
+            $descs = array();
+            if(preg_match_all('#<meta name=\"description\" content=\"([^\"]*)\"#', $html, $descs) )
+            {
+               $this->description = $this->remove_bad_utf8($descs[1][0]);
+            }
          }
          
          foreach($urls as $url)
@@ -367,22 +378,20 @@ class media_item extends fs_model
       else if( mb_substr($link, 0, 17) == 'http://imgur.com/' )
       {
          $status = FALSE;
-         $aux = explode('/', $link);
          $html = $this->curl_download($link);
-         foreach($this->find_urls($html) as $url)
+         $links = array();
+         if( preg_match_all('#<link rel=\"image_src\" href=\"([^\"]*)\"#', $html, $links) )
          {
-            if( $this->is_valid_image_url($url) )
-            {
-               if( strstr($url, $aux[3]) )
-               {
-                  $mi = new media_item();
-                  $mi->url = $url;
-                  $mi->type = 'imgur';
-                  $mlist[] = $mi;
-                  $status = TRUE;
-                  break;
-               }
-            }
+            $mi = new media_item();
+            
+            if( mb_substr($links[1][0], 0, 2) == '//' )
+               $mi->url = 'http:'.$links[1][0];
+            else
+               $mi->url = $links[1][0];
+            
+            $mi->type = 'imgur';
+            $mlist[] = $mi;
+            $status = TRUE;
          }
          return $status;
       }
@@ -410,14 +419,14 @@ class media_item extends fs_model
       $text = html_entity_decode($text);
       $found = array();
       $urls = array();
-      if( preg_match_all("#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#", $text, $urls) )
+      if( preg_match_all("#//[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#", $text, $urls) )
       {
          foreach($urls as $url)
          {
             foreach($url as $u)
             {
-               if( !in_array($u, $found) )
-                  $found[] = $u;
+               if( !in_array('http:'.$u, $found) )
+                  $found[] = 'http:'.$u;
             }
          }
       }
@@ -427,7 +436,7 @@ class media_item extends fs_model
    private function is_valid_image_url($url)
    {
       $status = TRUE;
-      $extensions = array('.png', '.jpg', 'jpeg', '.gif');
+      $extensions = array('.png', '.jpg', 'jpeg', '.gif', 'webp');
       
       if( mb_substr($url, 0, 4) != 'http' )
          $status = FALSE;

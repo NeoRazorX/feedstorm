@@ -15,6 +15,7 @@
          <h1>Chat general:</h1>
          <div class="comment">
             <form name="f_comment2" action="{$fsc->url()}" method="post">
+               <b>Tú</b> (@{$fsc->visitor->nick}) dices:
                <textarea id="new_comm2" name="comment" rows="6">{$fsc->txt_comment}</textarea>
                <input type="submit" value="enviar"/>
                <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
@@ -35,6 +36,10 @@
             </div>
             <p>{$value->text}</p>
          </div>
+         {else}
+         <div class="comment">
+            <p>Nadie ha comentado nada todavía ... aquí pasa algo raro, ten cuidado :S</p>
+         </div>
          {/loop}
       </td>
       <td class="right">
@@ -53,6 +58,10 @@
                <p>{$value->text}</p>
             </div>
             {/if}
+         {else}
+         <div class="comment">
+            <p>Esto está desierto ... no quiero ser alarmista, pero ... ¡Esto es una conspiración!</p>
+         </div>
          {/loop}
       </td>
    </tr>

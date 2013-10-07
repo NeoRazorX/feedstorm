@@ -1,16 +1,12 @@
 {include="desktop/header"}
 
-{if condition="$fsc->show_usual_visitor_add()"}
+{if condition="$fsc->random(9)"}
 <div class="info">
    <h1>¿Tienes un minuto?</h1>
    <p>
-      Oye, que como parece que eres un visitante habitual ¿Qué opinas de esta web?
-      ¿Hay algo que te gustaría que cambiara?
-      <a href="{$path}/index.php?page=comments">¡Cuéntamelo!</a>
-      Y si crees que esta web es interesante, puedes compartirla con tus amigos.
-      <br/><br/>
-      <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
-      <g:plusone></g:plusone>
+      Hola, soy <a target="_blank" href="{$fsc->page_url('blog_chan2')}">@chan2</a>,
+      y me han dejado a cargo de esta web, así que si hay algo
+      que no te guste ... ¡La culpa es de la herencia!
    </p>
 </div>
 {/if}

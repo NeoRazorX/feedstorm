@@ -283,12 +283,12 @@ abstract class fs_model
    public function remove_bad_utf8($str)
    {
       /// Reemplazamos las putas comillas
-      $str = str_replace('“', '"', $str);
-      $str = str_replace('”', '"', $str);
-      $str = str_replace('‘', "'", $str);
-      $str = str_replace('’', "'", $str);
-      $str = str_replace('&#8220;', '"', $str);
-      $str = str_replace('&#8221;', '"', $str);
+      $str = str_replace('“', '&quot;', $str);
+      $str = str_replace('”', '&quot;', $str);
+      $str = str_replace('‘', '&#39;', $str);
+      $str = str_replace('’', '&#39;', $str);
+      $str = str_replace('&#8220;', '&quot;', $str);
+      $str = str_replace('&#8221;', '&quot;', $str);
       
       /// convertimos a utf8
       ini_set('mbstring.substitute_character', "none");

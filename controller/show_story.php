@@ -183,7 +183,7 @@ class show_story extends fs_controller
          }
       }
       
-      return $all_comments;
+      return array_reverse($all_comments);
    }
 }
 

@@ -10,7 +10,7 @@
       <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
          Popularidad: {$fsc->story->popularity()}
       </span>
-      <a href="{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
+      <a href="{$path}/{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br/>
    {if condition="$fsc->story->media_item"}
@@ -78,8 +78,22 @@
    </table>
 </div>
 <div class="comments">
+   {loop="$fsc->comments"}
+   <div class="comment">
+      <div>
+         {if condition="$fsc->visitor->nick==$value->nick"}
+         <b>Tú</b> dices:
+         {else}
+         <u>@{$value->nick}</u> dice:
+         {/if}
+         <span class="pull-right">{$value->timesince()}</span>
+      </div>
+      <p>{$value->text}</p>
+   </div>
+   {/loop}
    <div class="comment">
       <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
+         <b>Tú</b> (@{$fsc->visitor->nick}) dices:
          <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>
          <div id="new_comment_controls" class="hidden">
             <input type="submit" value="enviar"/>
@@ -90,19 +104,6 @@
          </div>
       </form>
    </div>
-   {loop="$fsc->comments"}
-   <div class="comment">
-      <div>
-         {if condition="$fsc->visitor->nick==$value->nick"}
-         <b>Tú</b> dices:
-         {else}
-         <u>{$value->nick}</u> dice:
-         {/if}
-         <span class="pull-right">{$value->timesince()}</span>
-      </div>
-      <p>{$value->text}</p>
-   </div>
-   {/loop}
 </div>
 {/if}
 

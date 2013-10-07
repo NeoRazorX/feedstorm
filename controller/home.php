@@ -27,11 +27,6 @@ class home extends fs_controller
       
       $this->stories = $this->visitor->last_stories();
    }
-   
-   public function show_usual_visitor_add()
-   {
-      return ( $this->visitor->age > 300 AND mt_rand(0, 19) == 0 );
-   }
 }
 
 ?>

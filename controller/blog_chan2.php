@@ -17,25 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story.php';
-
-class not_found extends fs_controller
+class blog_chan2 extends fs_controller
 {
-   public $stories;
-   
    public function __construct()
    {
-      parent::__construct('not_found', '404', '¡Página no encontrada en '.FS_NAME.'!', 'home');
-      
-      $this->new_error_msg('¡Página no encontrada! <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
-      
-      $story = new story();
-      $this->stories = $story->popular_stories();
+      parent::__construct('blog_chan2', '@chan2', 'El blog de @chan2', 'chan2/home');
    }
    
    public function get_description()
    {
-      return 'Historia no encontrada en '.FS_NAME.'. ¡Usa el buscador! A Ver si tienes más suerte.';
+      return 'Este es blog de @chan2.';
    }
 }
 

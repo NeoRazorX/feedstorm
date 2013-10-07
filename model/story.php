@@ -606,6 +606,10 @@ class story extends fs_model
             echo 'I';
       }
       
+      /// Si la descripción obtenida es más larga, la usamos
+      if( mb_strlen($media_item->description) > mb_strlen($this->description) )
+         $this->description = $media_item->description;
+      
       echo "F\n";
       $this->save();
    }

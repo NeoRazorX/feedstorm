@@ -130,4 +130,11 @@ $(document).ready(function() {
    $("#shadow_box").click(function() {
       fs_close_popups();
    });
+   $("#new_comment_textarea").click(function() {
+      if( $(this).val() == '¡Escribe algo!' )
+      {
+         $("#new_comment_controls").show();
+         $(this).val('');
+      }
+   });
 });

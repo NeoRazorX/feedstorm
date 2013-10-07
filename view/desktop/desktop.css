@@ -685,27 +685,9 @@ ul.horizontal2 li {
    border: 1px solid silver;
 }
 
-img.face, img.face_left, img.face_right {
+img.face {
    border: 1px solid #888888;
    border-radius: 5px;
-}
-
-img.face_left {
-   float: left;
-   clear: both;
-   margin-right: 10px;
-   margin-bottom: 10px;
-}
-
-img.face_right {
-   float: right;
-   clear: both;
-   margin-left: 10px;
-   margin-bottom: 10px;
-}
-
-.link:hover {
-   cursor: pointer;
 }
 
 div.comments {
@@ -730,6 +712,19 @@ div.right {
 .pull-right {
    float: right;
    clear: both;
+   margin-left: 10px;
+   margin-bottom: 10px;
+}
+
+.pull-left {
+   float: left;
+   clear: both;
+   margin-right: 10px;
+   margin-bottom: 10px;
+}
+
+.link:hover {
+   cursor: pointer;
 }
 
 .hidden {

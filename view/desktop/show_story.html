@@ -13,21 +13,28 @@
       <a href="{$path}/{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br/>
-   {if condition="$fsc->story->media_item"}
-   <div style="min-height: {$fsc->story->media_item->min_height()}px">
+   {if condition="!$fsc->story->media_item"}
+      <h2>{$fsc->story->title}</h2>
+      <p>{$fsc->story->description}</p>
+      <div class="right">
+         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+      </div>
+   {elseif condition="$fsc->story->media_item->is_video()"}
+      <h2>{$fsc->story->title}</h2>
       <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
+      <p>{$fsc->story->description}</p>
+      <div class="right">
+         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
+      </div>
+   {else}
+   <div style="min-height: {$fsc->story->media_item->min_height()}px">
+      <div class="media_item pull-left">{$fsc->story->media_item->show($fsc->story->link())}</div>
       <h1>{$fsc->story->title}</h1>
       <p>{$fsc->story->description}</p>
       <div class="right">
          <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
       </div>
    </div>
-   {else}
-      <h2>{$fsc->story->title}</h2>
-      <p>{$fsc->story->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-      </div>
    {/if}
 </div>
 <ul class="pestanyas">
@@ -56,7 +63,7 @@
       {/loop}
    </table>
 </div>
-<div class="pestanya_content" id="story_editions">
+<div class="pestanya_content" id="story_editions" style="display: none;">
    <table class="lista">
       <tr>
          <th align="left">Fecha</th>
@@ -72,7 +79,7 @@
       {/loop}
       <tr>
          <td colspan="3">
-            <a href="{$path}/{$fsc->story->edit_url()}" class="add_line">Editar esta noticia</a>
+            <a class="add_line" target="_blank" href="{$path}/{$fsc->story->edit_url()}">Editar esta historia</a>
          </td>
       </tr>
    </table>

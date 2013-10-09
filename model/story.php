@@ -42,6 +42,9 @@ class story extends fs_model
    public $plusones;
    public $popularity;
    public $native_lang; /// ¿La historia está en español?
+   public $noimages;
+   public $keywords;
+   public $related_id;
    
    private static $mi0;
    private $media_items;
@@ -89,6 +92,21 @@ class story extends fs_model
          else
             $this->native_lang = TRUE;
          
+         if( isset($item['noimages']) )
+            $this->noimages = $item['noimages'];
+         else
+            $this->noimages = FALSE;
+         
+         if( isset($item['keywords']) )
+            $this->keywords = $item['keywords'];
+         else
+            $this->keywords = '';
+         
+         if( isset($item['related_id']) )
+            $this->related_id = $item['related_id'];
+         else
+            $this->related_id = NULL;
+         
          if( is_null($this->media_id) )
             $this->media_item = NULL;
          else
@@ -115,7 +133,9 @@ class story extends fs_model
          $this->plusones = 0;
          $this->popularity = 0;
          $this->native_lang = TRUE;
-         
+         $this->noimages = FALSE;
+         $this->keywords = '';
+         $this->related_id = NULL;
          $this->media_item = NULL;
       }
    }
@@ -182,7 +202,11 @@ class story extends fs_model
    
    public function media_items()
    {
-      if( !isset($this->media_items) )
+      if($this->noimages)
+      {
+         $this->media_items = array();
+      }
+      else if( !isset($this->media_items) )
       {
          $this->media_items = array();
          $story_media = new story_media();
@@ -196,6 +220,22 @@ class story extends fs_model
    {
       $edition = new story_edition();
       return $edition->all4story( $this->id );
+   }
+   
+   public function related_story()
+   {
+      if( isset($this->related_id) )
+         return $this->get($this->related_id);
+      else
+         return FALSE;
+   }
+   
+   public function add_keyword($key)
+   {
+      if($this->keywords == '')
+         $this->keywords = $key;
+      else if( strstr($this->keywords, $key) === FALSE )
+         $this->keywords .= ', '.$key;
    }
    
    public function description($width=300)
@@ -403,6 +443,7 @@ class story extends fs_model
       $this->title = $this->true_text_break($this->title, 149, 18);
       $this->description = $this->true_text_break($this->description, 499, 25);
       $this->media_id = $this->var2str($this->media_id);
+      $this->related_id = $this->var2str($this->related_id);
       $this->calculate_popularity();
       
       $data = array(
@@ -418,7 +459,10 @@ class story extends fs_model
           'likes' => $this->likes,
           'plusones' => $this->plusones,
           'popularity' => $this->popularity,
-          'native_lang' => $this->native_lang
+          'native_lang' => $this->native_lang,
+          'noimages' => $this->noimages,
+          'keywords' => $this->keywords,
+          'related_id' => $this->related_id
       );
       
       if( $this->exists() )
@@ -529,7 +573,7 @@ class story extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      $search = array( 'title' => new MongoRegex('/'.$query.'/i') );
+      $search = array( 'title' => new MongoRegex("/\b".$query."\b/i") );
       foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
          $stlist[] = new story($s);
       return $stlist;
@@ -537,81 +581,84 @@ class story extends fs_model
    
    public function add_media_items($item=FALSE, $search_link=TRUE)
    {
-      $num_downloads = 0;
-      $width = 0;
-      $height = 0;
-      $first_forced = FALSE;
-      $media_item = new media_item();
-      foreach($media_item->find_media($item, $this->link, $search_link) as $mi)
+      if(!$this->noimages)
       {
-         $story_media = new story_media();
-         $story_media->story_id = $this->id;
-         
-         if( !$media_item->get_by_url($mi->url) )
+         $num_downloads = 0;
+         $width = 0;
+         $height = 0;
+         $first_forced = FALSE;
+         $media_item = new media_item();
+         foreach($media_item->find_media($item, $this->link, $search_link) as $mi)
          {
-            if( $mi->download() )
+            $story_media = new story_media();
+            $story_media->story_id = $this->id;
+            
+            if( !$media_item->get_by_url($mi->url) )
             {
-               echo 'D';
-               $num_downloads++;
-               
-               $mi->save();
-               $story_media->media_id = $mi->get_id();
-               $story_media->save();
-               
-               if($this->link == $mi->url)
+               if( $mi->download() )
                {
-                  echo 'S';
+                  echo 'D';
+                  $num_downloads++;
                   
-                  $this->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  break;
-               }
-               else if($num_downloads == 1)
-               {
-                  echo 'S';
+                  $mi->save();
+                  $story_media->media_id = $mi->get_id();
+                  $story_media->save();
                   
-                  $this->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-                  
-                  if($mi->ratio() < 1 OR $mi->ratio() > 2)
-                     $first_forced = TRUE;
+                  if($this->link == $mi->url)
+                  {
+                     echo 'S';
+                     
+                     $this->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                     break;
+                  }
+                  else if($num_downloads == 1)
+                  {
+                     echo 'S';
+                     
+                     $this->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                     
+                     if($mi->ratio() < 1 OR $mi->ratio() > 2)
+                        $first_forced = TRUE;
+                  }
+                  else if($num_downloads > FS_MAX_DOWNLOADS)
+                  {
+                     break;
+                  }
+                  else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
+                  {
+                     echo 'S';
+                     
+                     $this->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                  }
+                  else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
+                  {
+                     echo 'S';
+                     
+                     $this->media_id = $mi->get_id();
+                     $width = $mi->original_width;
+                     $height = $mi->original_height;
+                  }
                }
-               else if($num_downloads > FS_MAX_DOWNLOADS)
-               {
-                  break;
-               }
-               else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
-               {
-                  echo 'S';
-                  
-                  $this->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-               }
-               else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
-               {
-                  echo 'S';
-                  
-                  $this->media_id = $mi->get_id();
-                  $width = $mi->original_width;
-                  $height = $mi->original_height;
-               }
+               else
+                  echo 'E';
             }
             else
-               echo 'E';
+               echo 'I';
          }
-         else
-            echo 'I';
+         
+         /// Si la descripción obtenida es más larga, la usamos
+         if( mb_strlen($media_item->description) > mb_strlen($this->description) )
+            $this->description = $media_item->description;
+         
+         echo "F\n";
+         $this->save();
       }
-      
-      /// Si la descripción obtenida es más larga, la usamos
-      if( mb_strlen($media_item->description) > mb_strlen($this->description) )
-         $this->description = $media_item->description;
-      
-      echo "F\n";
-      $this->save();
    }
    
    public function cron_job()
@@ -627,6 +674,8 @@ class story extends fs_model
       
       echo "\nActualizamos las historias populares...\n";
       $i = 0;
+      $keywords = array();
+      $keywords2 = array();
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones de la historia
@@ -643,8 +692,69 @@ class story extends fs_model
          else
             echo '.';
          
+         /// extraemos las keywords
+         if($ps->keywords != '')
+         {
+            $aux = explode(',', $ps->keywords);
+            $keyword = trim($aux[0]);
+            if( !in_array($keyword, $keywords) )
+               $keywords[] = $keyword;
+            
+            for($i = 1; $i < count($aux); $i++)
+            {
+               $keyword = trim($aux[$i]);
+               if( !in_array($keyword, $keywords2) )
+                  $keywords2[] = $keyword;
+            }
+         }
+         
          $ps->save();
          $i++;
+      }
+      
+      /// necesitamos más keywords
+      foreach($this->random_stories(FS_MAX_STORIES * 4) as $rs)
+      {
+         if($rs->keywords != '')
+         {
+            $aux = explode(',', $rs->keywords);
+            $keyword = trim($aux[0]);
+            if( !in_array($keyword, $keywords) )
+               $keywords[] = $keyword;
+            
+            for($i = 1; $i < count($aux); $i++)
+            {
+               $keyword = trim($aux[$i]);
+               if( !in_array($keyword, $keywords2) )
+                  $keywords2[] = $keyword;
+            }
+         }
+      }
+      
+      echo "\nInterconectamos las historias...\n";
+      foreach( array_merge($keywords, $keywords2) as $keyword )
+      {
+         if($keyword != '')
+         {
+            $relateds = $this->search($keyword);
+            for($i = 0; $i < count($relateds); $i++)
+            {
+               $relateds[$i]->add_keyword($keyword);
+               
+               for($j = 0; $j < count($relateds); $j++)
+               {
+                  if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                  {
+                     $relateds[$i]->related_id = $relateds[$j]->get_id();
+                     break;
+                  }
+               }
+               
+               $relateds[$i]->save();
+            }
+         }
+         
+         echo '.';
       }
    }
    

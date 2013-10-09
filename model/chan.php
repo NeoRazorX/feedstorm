@@ -56,7 +56,7 @@ class chan
                else
                   $answer = '¿Sabías que...? '.$this->random_from_file('chan_a_datos', $nick);
             }
-            else
+            else if( mt_rand(0, 14) == 0 )
             {
                $this->valid_comment = TRUE;
                $answer = $this->random_from_file('chan_a_paridas', $nick);
@@ -232,7 +232,7 @@ class chan
       $story = new story();
       foreach($story->random_stories() as $s)
       {
-         if( mt_rand(0, FS_MAX_STORIES) == 0 )
+         if( mt_rand(0, FS_MAX_STORIES) == 0 AND $s->native_lang )
          {
             $com = new comment();
             $com->thread = $s->get_id();

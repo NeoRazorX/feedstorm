@@ -263,6 +263,38 @@ div.story_readed div.timesince {
    background-color: #FFECCD;
 }
 
+div.story_info {
+   padding: 5px;
+}
+
+div.story_info h1 {
+   margin: 0px;
+   padding-bottom: 5px;
+   font-size: 24px;
+}
+
+div.story_info h2 {
+   margin: 0px;
+   padding-bottom: 5px;
+   font-size: 24px;
+   text-align: center;
+}
+
+div.story_info div.media_item {
+   text-align: center;
+}
+
+div.story_info div.media_item img {
+   box-shadow: 2px 2px 2px #666;
+   border: 0px solid white;
+}
+
+div.story_info p {
+   padding-left: 5px;
+   padding-right: 5px;
+   text-align: justify;
+}
+
 table.lista {
    width: 100%;
 }
@@ -333,63 +365,6 @@ div.popup a.close_popup {
 
 div.popup a.close_popup:hover {
    background-color: #F59C99;
-}
-
-div.popup_container {
-   margin: 10px;
-   padding: 20px;
-   background-color: #A8AEB3;
-   border-radius: 5px;
-   box-shadow: inset 2px 2px 2px #888;
-}
-
-div.popup2 {
-   min-width: 300px;
-   max-width: 900px;
-   margin-left: auto;
-   margin-right: auto;
-   background-color: #EEEEEE;
-   border: 2px solid #cccccc;
-   border-radius: 5px;
-   box-shadow: 5px 5px 5px #777;
-   color: #333333;
-}
-
-div.story_info {
-   padding: 5px;
-}
-
-div.story_info h1 {
-   margin: 0px;
-   padding-bottom: 5px;
-   font-size: 24px;
-}
-
-div.story_info h2 {
-   margin: 0px;
-   padding-bottom: 5px;
-   font-size: 24px;
-   text-align: center;
-}
-
-div.story_info div.media_item {
-   padding-top: 0px;
-   padding-left: 0px;
-   padding-right: 10px;
-   padding-bottom: 2px;
-   float: left;
-   clear: both;
-}
-
-div.story_info div.media_item img {
-   box-shadow: 2px 2px 2px #666;
-   border: 0px solid white;
-}
-
-div.story_info p {
-   padding-left: 5px;
-   padding-right: 5px;
-   text-align: justify;
 }
 
 ul.pestanyas {
@@ -480,6 +455,32 @@ table.comments td.right {
 
 table.comments td h1 {
    text-align: center;
+}
+
+div.full_page {
+   max-width: 1100px;
+   margin-left: auto;
+   margin-right: auto;
+   padding: 8px;
+   background-color: white;
+   box-shadow: 0px 0px 3px #aaa;
+   font-size: 14px;
+   text-align: justify;
+}
+
+div.full_page h1 {
+   margin: 0px;
+   padding: 5px;
+   font-size: 20px;
+}
+
+div.full_page hr {
+    border: 0;
+    height: 1px;
+    background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0)); 
+    background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0)); 
+    background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0)); 
+    background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0)); 
 }
 
 div.footer {

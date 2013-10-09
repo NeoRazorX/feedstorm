@@ -24,7 +24,6 @@ require_once 'model/story_visit.php';
 class show_story extends fs_controller
 {
    public $comments;
-   public $popular;
    public $story;
    public $txt_comment;
    
@@ -68,23 +67,6 @@ class show_story extends fs_controller
       }
       else
          $this->new_error_msg('Historia no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
-      
-      if( isset($_POST['popup']) OR $this->visitor->mobile() )
-         $this->popular = array();
-      else
-      {
-         $this->popular = $story->popular_stories();
-         
-         if($this->story)
-         {
-            /// excluimos la historia actual
-            foreach($this->popular as $i => $value)
-            {
-               if( $value->get_id() == $this->story->get_id() )
-                  unset($this->popular[$i]);
-            }
-         }
-      }
    }
    
    public function url()
@@ -109,6 +91,14 @@ class show_story extends fs_controller
          return $this->story->description;
       else
          return parent::get_description();
+   }
+   
+   public function get_keywords()
+   {
+      if($this->story)
+         return $this->story->keywords;
+      else
+         return parent::get_keywords();
    }
    
    public function twitter_url()
@@ -184,6 +174,27 @@ class show_story extends fs_controller
       }
       
       return array_reverse($all_comments);
+   }
+   
+   public function related_stories()
+   {
+      $stories = array();
+      
+      $story = $this->story->related_story();
+      $max_stories = 5;
+      while($max_stories > 0)
+      {
+         if($story)
+         {
+            $stories[] = $story;
+            $story = $story->related_story();
+            $max_stories--;
+         }
+         else
+            break;
+      }
+      
+      return $stories;
    }
 }
 

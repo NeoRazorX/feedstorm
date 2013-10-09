@@ -85,7 +85,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.1';
+      return '1.2';
    }
    
    public function php_version()
@@ -136,6 +136,11 @@ abstract class fs_controller
    public function get_description()
    {
       return FS_DESCRIPTION.' Exploramos la web para mostrarte los temas de actualidad.';
+   }
+   
+   public function get_keywords()
+   {
+      return '';
    }
    
    public function duration()

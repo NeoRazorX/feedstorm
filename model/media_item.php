@@ -216,6 +216,11 @@ class media_item extends fs_model
          return $this->height;
    }
    
+   public function is_video()
+   {
+      return in_array($this->type, array('youtube', 'vimeo', 'video'));
+   }
+   
    public function find_media($item, $link, $search_link=TRUE)
    {
       $mlist = array();
@@ -585,21 +590,39 @@ class media_item extends fs_model
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('_id' => new MongoId($id)) );
-      if($data)
-         return new media_item($data);
-      else
+      
+      try
+      {
+         $data = $this->collection->findone( array('_id' => new MongoId($id)) );
+         if($data)
+            return new media_item($data);
+         else
+            return FALSE;
+      }
+      catch(Exception $e)
+      {
+         $this->new_error($e);
          return FALSE;
+      }
    }
    
    public function get_by_url($url)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('url' => $url) );
-      if($data)
-         return new media_item($data);
-      else
+      
+      try
+      {
+         $data = $this->collection->findone( array('url' => $url) );
+         if($data)
+            return new media_item($data);
+         else
+            return FALSE;
+      }
+      catch(Exception $e)
+      {
+         $this->new_error($e);
          return FALSE;
+      }
    }
    
    public function exists()
@@ -652,10 +675,6 @@ class media_item extends fs_model
       
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
-      
-      $story_media = new story_media();
-      foreach($story_media->all4media($this->get_id()) as $sm)
-         $sm->delete();
    }
    
    public function all()

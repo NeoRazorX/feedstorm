@@ -93,7 +93,7 @@ class show_edition extends fs_controller
          $this->editions = array();
       else
       {
-         $this->editions = $se->last_editions();
+         $this->editions = $se->last_editions(5);
          
          if($this->edition)
          {

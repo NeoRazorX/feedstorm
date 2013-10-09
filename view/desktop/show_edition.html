@@ -7,14 +7,18 @@
       <a href="{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br>
-   {if condition="$fsc->edition->media_item"}
+   {if condition="!$fsc->edition->media_item"}
+      <h2>{$fsc->edition->title}</h2>
+      <p>{$fsc->edition->description}</p>
+   {elseif condition="$fsc->edition->media_item->is_video()"}
    <div style="min-height: {$fsc->edition->media_item->min_height()}px">
+      <h1 style="text-align: center;">{$fsc->edition->title}</h1>
       <div class="media_item">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
-      <h1>{$fsc->edition->title}</h1>
       <p>{$fsc->edition->description}</p>
    </div>
    {else}
-      <h2>{$fsc->edition->title}</h2>
+      <div class="media_item pull-left">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
+      <h1>{$fsc->edition->title}</h1>
       <p>{$fsc->edition->description}</p>
    {/if}
    <table width="100%">

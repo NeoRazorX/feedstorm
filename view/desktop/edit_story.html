@@ -12,69 +12,75 @@
    });
 </script>
 
-<div class="bloque">
-   <h1>Editar historia:</h1>
-   <p>
-      Desde aquí puedes editar la historia para seleccionar una imágen más apropiada,
-      corregir faltas de ortografía, mejorar la redacción, etc ... pero no te
-      emociones porque no sustituye a la historia original. Esta versión corregida
-      aparecerá en la sección <b>ediciones</b>.
-   </p>
-   
-   <br/><br/>
-   
-   <form action="{$fsc->url()}" method="post">
-      <table width="100%">
-         <tr>
-            <td width="130" align="right"><b>Historia original:</b> &nbsp;</td>
-            <td>
-               <a href="{$fsc->story->link}" target="_blank" rel="nofollow">{$fsc->story->title}</a>
-            </td>
-         </tr>
-         <tr>
-            <td align="right"><b>¿Eres humano?</b> &nbsp;</td>
-            <td>
-               <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-               <label for="r_human_yes">Si</label>
-               <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-               <label for="r_human_no">No</label>
-            </td>
-            <td width="100" align="center"><input type="submit" value="Guardar"/></td>
-         </tr>
-         <tr>
-            <td width="110" align="right"><b>Nuevo título:</b> &nbsp;</td>
-            <td><input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60" autocomplete="off"/></td>
-         </tr>
-         <tr>
-            <td align="right" valign='top'><b>Descripción:</b> &nbsp;</td>
-            <td><textarea name="description" rows="6">{$fsc->story_edition->description}</textarea></td>
-         </tr>
-         <tr>
-            <td align="right" valign='top'>
-               <br/>
-               <b>Imagen:</b> &nbsp;
-            </td>
-            <td>
-               <div id="media_items">
-                  <label>
-                     <input type="radio" name="media_id" value="none"{if condition="!$fsc->story_edition->media_id"} checked="checked"{/if}/>
-                     Ninguna
-                  </label>
-                  {loop="$fsc->story->media_items()"}
-                  <label>
-                     <input type="radio" name="media_id" value="{$value->get_id()}"{if condition="$value->get_id()==$fsc->story_edition->media_id"} checked="checked"{/if}/>
-                     Seleccionar
-                     <div class="media_item_show" title="{$value->url}">
-                        {$value->show_image()}<br/>{$value->type}
-                     </div>
-                  </label>
-                  {/loop}
+<form action="{$fsc->url()}" method="post">
+   <div class="bloque">
+      <h1>
+         Editar historia:
+         <a href="{$fsc->story->url()}" target="_blank">{$fsc->story->title}</a>
+      </h1>
+      <p>
+         Desde aquí puedes editar la historia para seleccionar una imágen más apropiada,
+         corregir faltas de ortografía, mejorar la redacción, etc ...
+      </p>
+      <div>
+         <input class="pull-right" type="submit" value="Guardar"/>
+         <b>¿Eres humano?</b> &nbsp;
+         <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
+         <label for="r_human_yes">Si</label>
+         <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
+         <label for="r_human_no">No</label>
+      </div>
+      <div>
+         <input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60" autocomplete="off" placeholder="nuevo título"/>
+         <textarea name="description" rows="6">{$fsc->story_edition->description}</textarea>
+      </div>
+      <br/>
+      <div>
+         <h2>Selecciona la imágen o vídeo más representativo de la historia:</h2>
+         <div id="media_items">
+            <label>
+               <input type="radio" name="media_id" value="none"{if condition="!$fsc->story_edition->media_id"} checked="checked"{/if}/>
+               Ninguna
+            </label>
+            {loop="$fsc->story->media_items()"}
+            <label>
+               <input type="radio" name="media_id" value="{$value->get_id()}"{if condition="$value->get_id()==$fsc->story_edition->media_id"} checked="checked"{/if}/>
+               Seleccionar
+               <div class="media_item_show" title="{$value->url}">
+                  {$value->show_image()}<br/>{$value->type}
                </div>
-            </td>
-         </tr>
-      </table>
-   </form>
-</div>
+            </label>
+            {/loop}
+         </div>
+      </div>
+   </div>
+   <div class="info">
+      <div>
+         <h2>Área de administración:</h2>
+         <p>
+            Si eres el administrador, además de los cambios de arriva puedes hacer cambios más profundos.
+         </p>
+         <label>
+            <input type="checkbox" name="noimages" value="TRUE"{if condition="$fsc->story->noimages"} checked="checked"{/if}>
+            he examinado la historia original y esta no tiene ninguna imágen representativa.
+         </label>
+         <br/><br/>
+      </div>
+      <div>
+         <input class="full" type="text" name="keywords" value="{$fsc->story->keywords}" size="60" autocomplete="off" placeholder="etiquetas (la primera es la dominante)"/>
+         <input class="full" type="text" name="related" value="{$fsc->story->related_id}" size="60" autocomplete="off" placeholder="ID o URL de la historia relacionada"/>
+         <label>
+            <input type="checkbox" name="norelated" value="TRUE">
+            quitar la historia relacionada.
+         </label>
+         <br/><br/>
+      </div>
+      <div>
+         <input type="password" name="masterkey" size="25" placeholder="contraseña de administrador"/>
+         <input type="submit" value="Guardar"/>
+      </div>
+   </div>
+</form>
 
 <div class="bloque">
    <h1>Otras ediciones:</h1>

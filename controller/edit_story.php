@@ -19,6 +19,7 @@
 
 require_once 'model/story.php';
 require_once 'model/story_edition.php';
+require_once 'model/story_media.php';
 require_once 'model/story_visit.php';
 
 class edit_story extends fs_controller
@@ -65,7 +66,7 @@ class edit_story extends fs_controller
                
                if( !isset($_POST['media_id']) )
                   $this->story_edition->media_id = NULL;
-               else if($_POST['media_id'] == 'none')
+               else if($_POST['media_id'] == 'none' OR isset($_POST['noimages']) )
                   $this->story_edition->media_id = NULL;
                else
                   $this->story_edition->media_id = $_POST['media_id'];
@@ -83,6 +84,72 @@ class edit_story extends fs_controller
                   $this->new_message('Historia editada correctamente. Hac clic <a href="'.
                      $this->story_edition->url().'">aquí</a> para verla. Recuerda que
                         aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
+                  
+                  if($_POST['masterkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+                  {
+                     $this->story->title = $this->story_edition->title;
+                     $this->story->description = $this->story_edition->description;
+                     $this->story->native_lang = TRUE;
+                     
+                     if( isset($_POST['noimages']) )
+                     {
+                        $this->story->noimages = TRUE;
+                        $this->story->media_id = NULL;
+                        
+                        $sm = new story_media();
+                        foreach($sm->all4story($this->story->get_id()) as $sm0)
+                        {
+                           $sm0->delete();
+                           $mi = $sm0->media_item();
+                           if($mi)
+                              $mi->delete();
+                        }
+                     }
+                     else
+                        $this->story->noimages = FALSE;
+                     
+                     $this->story->keywords = strtolower($_POST['keywords']);
+                     
+                     if( substr($_POST['related'], 0, 7) == 'http://' )
+                     {
+                        $aux = explode('/', $_POST['related']);
+                        $related = $this->story->get($aux[ count($aux)-1 ]);
+                        if($related)
+                           $this->story->related_id = $related->get_id();
+                     }
+                     else if( isset($_POST['norelated']) )
+                     {
+                        $this->story->related_id = NULL;
+                     }
+                     else if( !isset($this->story->related_id) )
+                     {
+                        $aux = explode(',', $this->story->keywords);
+                        $keyword = trim($aux[0]);
+                        $relateds = $this->story->search($keyword);
+                        
+                        for($i = 0; $i < count($relateds); $i++)
+                        {
+                           $relateds[$i]->add_keyword($keyword);
+                           
+                           for($j = 0; $j < count($relateds); $j++)
+                           {
+                              if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                              {
+                                 if( $relateds[$i]->get_id() == $this->story->get_id() )
+                                    $this->story->related_id = $relateds[$j]->get_id();
+                                 else
+                                    $relateds[$i]->related_id = $relateds[$j]->get_id();
+                                 
+                                 break;
+                              }
+                           }
+                           
+                           $relateds[$i]->save();
+                        }
+                     }
+                     
+                     $this->story->save();
+                  }
                   
                   $this->select_best_image4story();
                   
@@ -140,17 +207,20 @@ class edit_story extends fs_controller
    
    private function select_best_image4story()
    {
-      /// Elegimos la foto de la edición más votada de esta historia
-      $maxvotes = 0;
-      foreach($this->story->editions() as $edi)
+      if( !$this->story->noimages )
       {
-         if($edi->votes > $maxvotes)
+         /// Elegimos la foto de la edición más votada de esta historia
+         $maxvotes = 0;
+         foreach($this->story->editions() as $edi)
          {
-            $maxvotes = $edi->votes;
-            $this->story->media_id = $edi->media_id;
+            if($edi->votes > $maxvotes)
+            {
+               $maxvotes = $edi->votes;
+               $this->story->media_id = $edi->media_id;
+            }
          }
+         $this->story->save();
       }
-      $this->story->save();
    }
 }
 

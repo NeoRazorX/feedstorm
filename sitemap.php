@@ -31,8 +31,11 @@ $mongo = new fs_mongo();
 $story = new story();
 foreach($story->popular_stories(FS_MAX_STORIES * 4) as $s)
 {
-   echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
-           Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+   if($s->native_lang)
+   {
+      echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
+         Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
+   }
 }
 $mongo->close();
 

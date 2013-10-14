@@ -226,12 +226,15 @@ class stats extends fs_controller
       foreach($visits as $i => $value)
       {
          if( array_key_exists($value->story_id, $aux) )
+         {
             $aux[$value->story_id]['visits']++;
+            $aux[$value->story_id]['date'] = $value->date;
+         }
          else
          {
             $aux[$value->story_id] = array(
                 'visits' => 1,
-                'date' => $value->timesince()
+                'date' => $value->date
             );
          }
       }
@@ -247,7 +250,8 @@ class stats extends fs_controller
             $stlist[] = array(
                 'story' => $this->story->get($i),
                 'visits' => $value['visits'],
-                'date' => $value['date']
+                'date' => $value['date'],
+                'spc' => ( time()-$value['date'] )/$value['visits']
             );
          }
          else

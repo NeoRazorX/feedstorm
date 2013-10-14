@@ -4,12 +4,12 @@
       <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
       <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
       <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
-      <a href="{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
+      <a class="pull-right" href="{$path}/{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br>
    {if condition="!$fsc->edition->media_item"}
-      <h2>{$fsc->edition->title}</h2>
-      <p>{$fsc->edition->description}</p>
+      <h1 style="text-align: center;">{$fsc->edition->title}</h1>
+      <div>{$fsc->edition->description}</div>
    {elseif condition="$fsc->edition->media_item->is_video()"}
    <div style="min-height: {$fsc->edition->media_item->min_height()}px">
       <h1 style="text-align: center;">{$fsc->edition->title}</h1>
@@ -19,7 +19,7 @@
    {else}
       <div class="media_item pull-left">{$fsc->edition->media_item->show($fsc->edition->story->link())}</div>
       <h1>{$fsc->edition->title}</h1>
-      <p>{$fsc->edition->description}</p>
+      <div>{$fsc->edition->description}</div>
    {/if}
    <table width="100%">
       <tr>

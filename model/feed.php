@@ -566,6 +566,9 @@ class feed extends fs_model
          $this->new_error('URL no válida.');
          return FALSE;
       }
+      
+      if($this->name == '')
+         $this->name = 'sin nombre';
    }
    
    public function save()

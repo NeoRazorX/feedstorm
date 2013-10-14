@@ -27,6 +27,7 @@ class edit_story extends fs_controller
    public $story;
    public $story_edition;
    public $story_visit;
+   public $masterkey;
    
    public function __construct()
    {
@@ -34,6 +35,16 @@ class edit_story extends fs_controller
       
       $this->story_edition = new story_edition();
       $this->story_visit = new story_visit();
+      
+      if( isset($_COOKIE['masterkey']) )
+         $this->masterkey = $_COOKIE['masterkey'];
+      else if( isset($_POST['masterkey']) )
+      {
+         $this->masterkey = $_POST['masterkey'];
+         setcookie('masterkey', $this->masterkey, time()+86400, FS_PATH);
+      }
+      else
+         $this->masterkey = '';
       
       if( isset($_GET['id']) )
       {
@@ -121,7 +132,7 @@ class edit_story extends fs_controller
                      {
                         $this->story->related_id = NULL;
                      }
-                     else if( !isset($this->story->related_id) )
+                     else if( !isset($this->story->related_id) AND $this->story->keywords != '' )
                      {
                         $aux = explode(',', $this->story->keywords);
                         $keyword = trim($aux[0]);
@@ -129,27 +140,31 @@ class edit_story extends fs_controller
                         
                         for($i = 0; $i < count($relateds); $i++)
                         {
-                           $relateds[$i]->add_keyword($keyword);
+                           if( !isset($this->story->related_id) AND $relateds[$i]->date < $this->story->date AND $relateds[$i]->native_lang )
+                              $this->story->related_id = $relateds[$i]->get_id();
                            
-                           for($j = 0; $j < count($relateds); $j++)
+                           if( $relateds[$i]->get_id() != $this->story->get_id() )
                            {
-                              if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                              $relateds[$i]->add_keyword($keyword);
+                              
+                              for($j = 0; $j < count($relateds); $j++)
                               {
-                                 if( $relateds[$i]->get_id() == $this->story->get_id() )
-                                    $this->story->related_id = $relateds[$j]->get_id();
-                                 else
+                                 if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                                 {
                                     $relateds[$i]->related_id = $relateds[$j]->get_id();
-                                 
-                                 break;
+                                    break;
+                                 }
                               }
+                              
+                              $relateds[$i]->save();
                            }
-                           
-                           $relateds[$i]->save();
                         }
                      }
                      
                      $this->story->save();
                   }
+                  else if($_POST['masterkey'])
+                     $this->new_error_msg('Contraseña incorrecta.');
                   
                   $this->select_best_image4story();
                   

@@ -35,22 +35,32 @@
       <h1 style="text-align: center;">
          <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
       </h1>
-      <p>
+      <div>
          {$fsc->story->description}<br/>
          <span style="font-size: 12px;">Publicado {$fsc->story->timesince()}.</span>
-      </p>
+      </div>
    {else}
    <div style="min-height: {$fsc->story->media_item->min_height()}px">
       <div class="media_item pull-left">{$fsc->story->media_item->show($fsc->story->link())}</div>
       <h1>
          <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
       </h1>
-      <p>
+      <div>
          {$fsc->story->description}<br/>
          <span style="font-size: 12px;">Publicado {$fsc->story->timesince()}.</span>
-      </p>
+      </div>
    </div>
    {/if}
+   <div style="text-align: right;">
+      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
+      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
+      <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
+      {if condition="!$fsc->story->native_lang"}
+      <span class="label" title="esta historia no está en español"><s>español</s></span>
+      {/if}
+      <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
+         Popularidad: {$fsc->story->popularity()}</span>
+   </div>
    <ul class="pestanyas">
       <li id="b_show_comments2" class="activa">Comentarios</li>
       <li id="b_show_feeds2">Fuentes</li>
@@ -127,20 +137,6 @@
          </tr>
       </table>
    </div>
-   <br/>
-   <div>
-      <div class="pull-right">
-         {if condition="!$fsc->story->native_lang"}
-         <span class="label" title="esta historia no está en español"><s>español</s></span>
-         {/if}
-         <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
-            Popularidad: {$fsc->story->popularity()}
-         </span>
-      </div>
-      <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
-      <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
-      <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
-   </div>
    
    {loop="$fsc->related_stories()"}
       <br/><hr/><br/>
@@ -148,31 +144,31 @@
          <h1 style="text-align: center;">
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       {elseif condition="$counter%2!=0"}
       <div style="min-height: {$value->media_item->min_height()}px">
-         <div class="media_item pull-left">{$value->media_item->show($value->url())}</div>
+         <div class="pull-left">{$value->media_item->show()}</div>
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       </div>
       {else}
       <div style="min-height: {$value->media_item->min_height()}px">
-         <div class="media_item pull-right">{$value->media_item->show($value->url())}</div>
+         <div class="pull-right">{$value->media_item->show()}</div>
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       </div>
       {/if}
    {/loop}

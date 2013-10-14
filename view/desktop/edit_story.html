@@ -17,6 +17,7 @@
       <h1>
          Editar historia:
          <a href="{$fsc->story->url()}" target="_blank">{$fsc->story->title}</a>
+         (<a href="{$fsc->story->link}" target="_blank">original</a>)
       </h1>
       <p>
          Desde aquí puedes editar la historia para seleccionar una imágen más apropiada,
@@ -76,7 +77,7 @@
          <br/><br/>
       </div>
       <div>
-         <input type="password" name="masterkey" size="25" placeholder="contraseña de administrador"/>
+         <input type="password" name="masterkey" size="25" value="{$fsc->masterkey}" placeholder="contraseña de administrador"/>
          <input type="submit" value="Guardar"/>
       </div>
    </div>

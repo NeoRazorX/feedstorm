@@ -65,7 +65,7 @@
    <table class="lista">
       <tr>
          <th align='left'>Historia</th>
-         <th align="right">Desde</th>
+         <th align="right">S/C</th>
          <th align="right">Visitas</th>
       </tr>
       {loop="$fsc->analyze_visits()"}
@@ -75,7 +75,7 @@
                {$value['story']->title}
             </a>
          </td>
-         <td align="right">{$value['date']}</td>
+         <td align="right">{$value['spc']}</td>
          <td align="right">{$value['visits']}</td>
       </tr>
       {else}

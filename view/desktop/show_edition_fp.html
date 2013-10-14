@@ -25,21 +25,22 @@
       <h1>
          <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}">{$fsc->edition->title}</a>
       </h1>
-      <p>{$fsc->edition->description}</p>
-   </div>
    {else}
+   <div>
       <h1 style="text-align: center;">
          <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}">{$fsc->edition->title}</a>
       </h1>
-      <p>{$fsc->edition->description}</p>
    {/if}
+   <div>{$fsc->edition->description}</div>
+   <br/>
    <div>
-      <div class="pull-right">
-         <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
-         <span class="label">{$fsc->edition->votes} votos</span>
-         &nbsp;
-         <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>
-      </div>
+      <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
+      <span class="label">{$fsc->edition->votes} votos</span>
+      &nbsp;
+      <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>
+   </div>
+   </div>
+   <div style="text-align: right;">
       <a class="twitter" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter</a>
       <a class="facebook" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook</a>
       <a class="plusone" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+</a>
@@ -106,31 +107,31 @@
          <h1 style="text-align: center;">
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       {elseif condition="$counter%2!=0"}
       <div style="min-height: {$value->media_item->min_height()}px">
-         <div class="media_item pull-left">{$value->media_item->show($value->url())}</div>
+         <div class="media_item pull-left">{$value->media_item->show()}</div>
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       </div>
       {else}
       <div style="min-height: {$value->media_item->min_height()}px">
-         <div class="media_item pull-right">{$value->media_item->show($value->url())}</div>
+         <div class="media_item pull-right">{$value->media_item->show()}</div>
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <p>
+         <div>
             {$value->description}<br/>
             <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
-         </p>
+         </div>
       </div>
       {/if}
    {/loop}

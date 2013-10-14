@@ -232,10 +232,13 @@ class story extends fs_model
    
    public function add_keyword($key)
    {
-      if($this->keywords == '')
-         $this->keywords = $key;
-      else if( strstr($this->keywords, $key) === FALSE )
-         $this->keywords .= ', '.$key;
+      if($key != '')
+      {
+         if($this->keywords == '')
+            $this->keywords = $key;
+         else if( strstr($this->keywords, $key) === FALSE )
+            $this->keywords .= ', '.$key;
+      }
    }
    
    public function description($width=300)

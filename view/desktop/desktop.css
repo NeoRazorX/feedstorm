@@ -224,10 +224,6 @@ div.story h1 {
    line-height: normal;
 }
 
-div.story h1 a {
-   color: #333333;
-}
-
 div.story p {
    margin: 0px;
    padding: 5px;
@@ -273,20 +269,12 @@ div.story_info h1 {
    font-size: 24px;
 }
 
-div.story_info h2 {
-   margin: 0px;
-   padding-bottom: 5px;
-   font-size: 24px;
-   text-align: center;
-}
-
 div.story_info div.media_item {
    text-align: center;
 }
 
 div.story_info div.media_item img {
    box-shadow: 2px 2px 2px #666;
-   border: 0px solid white;
 }
 
 div.story_info p {
@@ -726,6 +714,10 @@ div.right {
 
 .link:hover {
    cursor: pointer;
+}
+
+.media_item img {
+   border: 0px solid white;
 }
 
 .hidden {

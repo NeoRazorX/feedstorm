@@ -10,30 +10,25 @@
       <span class="label" title="Clics: {$fsc->story->clics}, twitter: {$fsc->story->tweets}, facebook: {$fsc->story->likes}, meneame: {$fsc->story->meneos}, g+: {$fsc->story->plusones}">
          Popularidad: {$fsc->story->popularity()}
       </span>
-      <a href="{$path}/{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
+      <a class="pull-right" href="{$path}/{$fsc->url()}" target="_blank" title="abrir en una nueva pestaña"><span class="label">+</span></a>
    </div>
    <br/>
    {if condition="!$fsc->story->media_item"}
-      <h2>{$fsc->story->title}</h2>
-      <p>{$fsc->story->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-      </div>
+      <h1 style="text-align: center;">
+         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
+      </h1>
+      <div>{$fsc->story->description}</div>
    {elseif condition="$fsc->story->media_item->is_video()"}
-      <h2>{$fsc->story->title}</h2>
+      <h1 style="text-align: center;">
+         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
+      </h1>
       <div class="media_item">{$fsc->story->media_item->show($fsc->story->link())}</div>
       <p>{$fsc->story->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-      </div>
    {else}
    <div style="min-height: {$fsc->story->media_item->min_height()}px">
       <div class="media_item pull-left">{$fsc->story->media_item->show($fsc->story->link())}</div>
-      <h1>{$fsc->story->title}</h1>
-      <p>{$fsc->story->description}</p>
-      <div class="right">
-         <a rel="nofollow" target="_blank" href="{$fsc->story->link()}" class="button">Abrir enlace</a>
-      </div>
+      <h1><a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a></h1>
+      <div>{$fsc->story->description}</div>
    </div>
    {/if}
 </div>

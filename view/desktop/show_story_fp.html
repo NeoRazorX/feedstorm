@@ -35,9 +35,9 @@
       <h1 style="text-align: center;">
          <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
       </h1>
-      <div>
+      <div class="text">
          {$fsc->story->description}<br/>
-         <span style="font-size: 12px;">Publicado {$fsc->story->timesince()}.</span>
+         <span class="footer">Publicado {$fsc->story->timesince()}.</span>
       </div>
    {else}
    <div style="min-height: {$fsc->story->media_item->min_height()}px">
@@ -45,9 +45,9 @@
       <h1>
          <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
       </h1>
-      <div>
+      <div class="text">
          {$fsc->story->description}<br/>
-         <span style="font-size: 12px;">Publicado {$fsc->story->timesince()}.</span>
+         <span class="footer">Publicado {$fsc->story->timesince()}.</span>
       </div>
    </div>
    {/if}
@@ -144,9 +144,9 @@
          <h1 style="text-align: center;">
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       {elseif condition="$counter%2!=0"}
       <div style="min-height: {$value->media_item->min_height()}px">
@@ -154,9 +154,9 @@
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       </div>
       {else}
@@ -165,9 +165,9 @@
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       </div>
       {/if}

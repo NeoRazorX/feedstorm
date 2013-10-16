@@ -133,7 +133,6 @@ div.messages, div.errors {
    margin: 10px;
    padding: 10px;
    border-radius: 5px;
-   box-shadow: inset 1px 1px 1px #999;
    color: #333333;
    font-size: 16px;
 }
@@ -451,15 +450,18 @@ div.full_page {
    margin-right: auto;
    padding: 8px;
    background-color: white;
-   box-shadow: 0px 0px 3px #aaa;
-   font-size: 14px;
-   text-align: justify;
+   box-shadow: 0px 0px 3px #777;
 }
 
 div.full_page h1 {
    margin: 0px;
    padding: 5px;
-   font-size: 20px;
+   font-size: 18px;
+}
+
+div.full_page h1 a {
+   color: #424242;
+   text-decoration: none;
 }
 
 div.full_page hr {
@@ -471,14 +473,27 @@ div.full_page hr {
     background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0)); 
 }
 
+div.text {
+   padding-left: 5px;
+   color: #505050;
+   text-align: justify;
+   font-size: 14px;
+}
+
+div.text span.footer {
+   display: block;
+   margin-top: 5px;
+   color: #707070;
+   font-size: 12px;
+}
+
 div.footer {
    margin-top: 20px;
    margin-left: 50px;
    margin-right: 50px;
    margin-bottom: 10px;
    padding: 10px;
-   border: 1px dashed #666666;
-   border-radius: 5px;
+   border-top: 1px dashed #888888;
    font-size: 14px;
    text-align: center;
 }

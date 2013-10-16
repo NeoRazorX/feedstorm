@@ -93,7 +93,7 @@
       <p>{$value->text}</p>
    </div>
    {/loop}
-   <div class="comment">
+   <div>
       <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
          <b>Tú</b> (@{$fsc->visitor->nick}) dices:
          <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>

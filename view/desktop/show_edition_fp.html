@@ -31,7 +31,7 @@
          <a rel="nofollow" target="_blank" href="{$fsc->edition->story->link()}">{$fsc->edition->title}</a>
       </h1>
    {/if}
-   <div>{$fsc->edition->description}</div>
+   <div class="text">{$fsc->edition->description}</div>
    <br/>
    <div>
       <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
@@ -107,9 +107,9 @@
          <h1 style="text-align: center;">
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       {elseif condition="$counter%2!=0"}
       <div style="min-height: {$value->media_item->min_height()}px">
@@ -117,9 +117,9 @@
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       </div>
       {else}
@@ -128,9 +128,9 @@
          <h1>
             <a rel="nofollow" href="{$path}/{$value->url()}">{$value->title}</a>
          </h1>
-         <div>
+         <div class="text">
             {$value->description}<br/>
-            <span style="font-size: 12px;">Publicado {$value->timesince()}.</span>
+            <span class="footer">Publicado {$value->timesince()}.</span>
          </div>
       </div>
       {/if}

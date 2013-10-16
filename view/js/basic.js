@@ -133,8 +133,9 @@ $(document).ready(function() {
    $("#new_comment_textarea").click(function() {
       if( $(this).val() == '¡Escribe algo!' )
       {
-         $("#new_comment_controls").show();
          $(this).val('');
       }
+      
+      $("#new_comment_controls").show();
    });
 });

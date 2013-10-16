@@ -251,7 +251,7 @@ class stats extends fs_controller
                 'story' => $this->story->get($i),
                 'visits' => $value['visits'],
                 'date' => $value['date'],
-                'spc' => ( time()-$value['date'] )/$value['visits']
+                'spc' => intval( (time()-$value['date'])/$value['visits'] )
             );
          }
          else

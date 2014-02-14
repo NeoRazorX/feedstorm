@@ -33,7 +33,7 @@ class comments extends fs_controller
       
       if( isset($_POST['comment']) )
       {
-         if($this->visitor->human() AND $_POST['human'] == 'POZI' )
+         if($this->visitor->human() AND $_POST['human'] == '' )
          {
             $comment2 = new comment();
             $comment2->nick = $this->visitor->nick;
@@ -42,7 +42,7 @@ class comments extends fs_controller
          }
          else
          {
-            $this->new_error_msg('Ahhh, se siente. Has dicho que no eras humano.');
+            $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
             $this->txt_comment = $_POST['comment'];
          }
       }

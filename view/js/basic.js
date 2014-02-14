@@ -18,7 +18,6 @@ function fs_popup_story(url)
       success: function(datos) {
          $("#shadow_box").fadeIn();
          $("#popups").html("<div id='popup2url' class='popup'>"+datos+"</div>");
-         $("#story_editions").hide();
          $("#popup2url").css({
             top: $(window).scrollTop()+65,
             left: ($(window).width() - $("#popup2url").outerWidth())/2
@@ -29,32 +28,32 @@ function fs_popup_story(url)
             left: $("#popup2url").position().left - 15,
             display: 'block'
          });
-         $('#b_show_feeds').click(function () {
+         $('#b_show_comments').click(function () {
             $("#b_show_editions").removeClass('activa');
+            $("#b_show_feeds").removeClass('activa');
+            $('#b_show_comments').addClass('activa');
             $("#story_editions").hide();
-            $('#b_show_feeds').addClass('activa');
-            $("#story_feeds").show();
-            $("#popup2url").css({
-               top: $(window).scrollTop()+65,
-               left: ($(window).width() - $("#popup2url").outerWidth())/2
-            });
+            $("#story_feeds").hide();
+            $("#story_comments").show();
          });
          $('#b_show_editions').click(function () {
+            $('#b_show_comments').removeClass('activa');
             $('#b_show_feeds').removeClass('activa');
-            $("#story_feeds").hide();
             $("#b_show_editions").addClass('activa');
+            $("#story_comments").hide();
+            $("#story_feeds").hide();
             $("#story_editions").show();
-            $("#popup2url").css({
-               top: $(window).scrollTop()+65,
-               left: ($(window).width() - $("#popup2url").outerWidth())/2
-            });
+         });
+         $('#b_show_feeds').click(function () {
+            $("#b_show_comments").removeClass('activa');
+            $("#b_show_editions").removeClass('activa');
+            $('#b_show_feeds').addClass('activa');
+            $("#story_comments").hide();
+            $("#story_editions").hide();
+            $("#story_feeds").show();
          });
          $("#new_comment_textarea").click(function() {
-            if( $(this).val() == '¡Escribe algo!' )
-            {
-               $("#new_comment_controls").show();
-               $(this).val('');
-            }
+            $("#new_comment_controls").show();
          });
       }
    });
@@ -108,22 +107,6 @@ function fs_popup_edition(url)
 function fs_go2url(url)
 {
    window.location.href = url;
-}
-
-function fs_popup_iframe(url)
-{
-   $("#shadow_box").fadeIn();
-   $("#popups").html("<div id='popup2url' class='popup'><iframe src='"+url+"' width='700' height='800' frameborder='0'></iframe></div>");
-   $("#popup2url").css({
-      top: $(window).scrollTop()+65,
-      left: ($(window).width() - $("#popup2url").outerWidth())/2
-   });
-   $("#popup2url").show();
-   $("#b_close_popup").css({
-      top: $(window).scrollTop()+55,
-      left: $("#popup2url").position().left - 15,
-      display: 'block'
-   });
 }
 
 $(document).ready(function() {

@@ -3,59 +3,59 @@
 {if condition="$fsc->story"}
 <script type="text/javascript">
    $(document).ready(function() {
-      var container = document.querySelector('#media_items');
-      var msnry = new Masonry( container, {
-         itemSelector: 'label',
-         isFitWidth: true,
-         isAnimated: true
+      $("#b_advanced_edit").click(function(event) {
+         event.preventDefault();
+         $("#div_advanced_edit").show();
+         document.f_edit.keywords.focus();
       });
    });
 </script>
 
-<form action="{$fsc->url()}" method="post">
+<div class="messages">
+   Desde aquí puedes editar <a href="{$fsc->story->url()}">la historia</a> para seleccionar una imágen más apropiada,
+   corregir faltas de ortografía, mejorar la redacción, etc ... Y para facilitarte las cosas,
+   esta es la <a href="{$fsc->story->link}" target="_blank">historia original</a>.
+</div>
+
+<form name="f_edit" action="{$fsc->url()}" method="post">
    <div class="bloque">
-      <h1>
-         Editar historia:
-         <a href="{$fsc->story->url()}" target="_blank">{$fsc->story->title}</a>
-         (<a href="{$fsc->story->link}" target="_blank">original</a>)
-      </h1>
-      <p>
-         Desde aquí puedes editar la historia para seleccionar una imágen más apropiada,
-         corregir faltas de ortografía, mejorar la redacción, etc ...
-      </p>
-      <div>
-         <input class="pull-right" type="submit" value="Guardar"/>
-         <b>¿Eres humano?</b> &nbsp;
-         <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-         <label for="r_human_yes">Si</label>
-         <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-         <label for="r_human_no">No</label>
-      </div>
       <div>
          <input class="full" type="text" name="title" value="{$fsc->story_edition->title}" size="60" autocomplete="off" placeholder="nuevo título"/>
          <textarea name="description" rows="6">{$fsc->story_edition->description}</textarea>
       </div>
-      <br/>
-      <div>
+      <div class="media_items">
          <h2>Selecciona la imágen o vídeo más representativo de la historia:</h2>
-         <div id="media_items">
-            <label>
-               <input type="radio" name="media_id" value="none"{if condition="!$fsc->story_edition->media_id"} checked="checked"{/if}/>
-               Ninguna
-            </label>
-            {loop="$fsc->story->media_items()"}
-            <label>
-               <input type="radio" name="media_id" value="{$value->get_id()}"{if condition="$value->get_id()==$fsc->story_edition->media_id"} checked="checked"{/if}/>
-               Seleccionar
-               <div class="media_item_show" title="{$value->url}">
-                  {$value->show_image()}<br/>{$value->type}
-               </div>
-            </label>
-            {/loop}
+         <table>
+            <tr>
+               <td valign="top">
+                  <label>
+                     <input type="radio" name="media_id" value="none"{if condition="!$fsc->story_edition->media_id"} checked="checked"{/if}/>
+                     Ninguna
+                  </label>
+               </td>
+               {loop="$fsc->story->media_items()"}
+               <td valign="top">
+                  <label>
+                     <input type="radio" name="media_id" value="{$value->get_id()}"{if condition="$value->get_id()==$fsc->story_edition->media_id"} checked="checked"{/if}/>
+                     Seleccionar
+                     {$value->show_image()}
+                     {$value->type}
+                  </label>
+               </td>
+               {/loop}
+            </tr>
+         </table>
+      </div>
+      <div style="text-align: right;">
+         <div class="pull-left">
+            <a href="#" id="b_advanced_edit">Avanzado...</a>
          </div>
+         <b>Borra el número para demostrar que eres humano</b>
+         <input type="text" name="human" value='{function="mt_rand(0, 999)"}' size="3"/> &nbsp;
+         <input type="submit" value="Guardar"/>
       </div>
    </div>
-   <div class="info">
+   <div class="info hidden" id="div_advanced_edit">
       <div>
          <h2>Área de administración:</h2>
          <p>
@@ -76,34 +76,12 @@
          </label>
          <br/><br/>
       </div>
-      <div>
+      <div style="text-align: right;">
          <input type="password" name="masterkey" size="25" value="{$fsc->masterkey}" placeholder="contraseña de administrador"/>
          <input type="submit" value="Guardar"/>
       </div>
    </div>
 </form>
-
-<div class="bloque">
-   <h1>Otras ediciones:</h1>
-   <table class="lista">
-      <tr>
-         <th align="left">Fecha</th>
-         <th align="left">Título</th>
-         <th align="right">Votos</th>
-      </tr>
-      {loop="$fsc->story->editions()"}
-         <tr>
-            <td>{$value->timesince()}</td>
-            <td><a href="#" onclick="fs_popup_edition('{$path}/{$value->url()}'); return false;">{$value->title}</a></td>
-            <td align="right">{$value->votes}</td>
-         </tr>
-      {else}
-      <tr>
-         <td colspan="3">No hay ediciones de esta historia.</td>
-      </tr>
-      {/loop}
-   </table>
-</div>
 {/if}
 
 {include="desktop/footer"}

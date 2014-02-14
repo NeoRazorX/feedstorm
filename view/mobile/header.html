@@ -79,24 +79,14 @@
                   <li><a href="{$fsc->page_url('discover_stories')}">Descubrir</a></li>
                {/if}
                {if condition="$fsc->page=='comments'"}
-                  <li class="active"><a href="{$fsc->page_url('comments')}">¡Habla!</a></li>
+                  <li class="active"><a href="{$fsc->page_url('comments')}">Foro</a></li>
                {else}
-                  <li><a href="{$fsc->page_url('comments')}">¡Habla!</a></li>
-               {/if}
-               {if condition="$fsc->page=='feed_list'"}
-                  <li class="active"><a href="{$fsc->page_url('feed_list')}">Fuentes</a></li>
-               {else}
-                  <li><a href="{$fsc->page_url('feed_list')}">Fuentes</a></li>
+                  <li><a href="{$fsc->page_url('comments')}">Foro</a></li>
                {/if}
                {if condition="$fsc->page=='suscriptions'"}
                   <li class="active"><a href="{$fsc->page_url('suscriptions')}">Tu perfil</a></li>
                {else}
                   <li><a href="{$fsc->page_url('suscriptions')}">Tu perfil</a></li>
-               {/if}
-               {if condition="$fsc->page=='help'"}
-                  <li class="active"><a href="{$fsc->page_url('help')}">¿?</a></li>
-               {else}
-                  <li><a href="{$fsc->page_url('help')}">¿?</a></li>
                {/if}
                <li>
                   <form class="navbar-form" action="{$fsc->page_url('search')}" method="post">

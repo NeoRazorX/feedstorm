@@ -43,14 +43,15 @@ class feed_list extends fs_controller
             $suscription->visitor_id = $this->visitor->get_id();
             $suscription->feed_id = $feed0->get_id();
             $suscription->save();
-            $this->new_message('Además te has suscrito a dicha fuente.');
+            $this->new_message('Además te has suscrito a dicha fuente y por tanto
+               sus noticias aparecerán en tu portada.');
             
             /// actualizamos el número de suscriptores
             $feed0->suscriptors++;
             $feed0->save();
          }
-         else if( $_POST['human'] != 'POZI' )
-            $this->new_error_msg('Has contestado que no eres humano, y si no eres
+         else if( $_POST['human'] != '' )
+            $this->new_error_msg('No has borrado el número para demostrar que eres humano, y si no eres
                humano no puedes añadir fuentes. Y si, ya sé que esto es nazismo puro,
                pero es una forma sencilla de atajar el SPAM.');
          else

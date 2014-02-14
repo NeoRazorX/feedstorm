@@ -57,36 +57,25 @@
                <a href="{$fsc->page_url('discover_stories')}">Descubrir</a>
                {/if}
                {if condition="$fsc->page=='comments'"}
-               <a class="selected" href="{$fsc->page_url('comments')}">¡Habla!</a>
+               <a class="selected" href="{$fsc->page_url('comments')}">Foro</a>
                {else}
-               <a href="{$fsc->page_url('comments')}">¡Habla!</a>
-               {/if}
-               {if condition="$fsc->page=='feed_list'"}
-               <a class="selected" href="{$fsc->page_url('feed_list')}">Fuentes</a>
-               {else}
-               <a href="{$fsc->page_url('feed_list')}">Fuentes</a>
+               <a href="{$fsc->page_url('comments')}">Foro</a>
                {/if}
                {if condition="$fsc->page=='suscriptions'"}
                <a class="selected" href="{$fsc->page_url('suscriptions')}">Tu perfil</a>
                {else}
                <a href="{$fsc->page_url('suscriptions')}">Tu perfil</a>
                {/if}
-               {if condition="$fsc->page=='help'"}
-               <a class="selected" href="{$fsc->page_url('help')}">¿?</a>
-               {else}
-               <a href="{$fsc->page_url('help')}">¿?</a>
-               {/if}
-               {if condition="$fsc->page=='search'"}
-                  <img class="selected" src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$fsc->page_url('search')}')"/>
-               {else}
-                  <img src="{$path}/view/img/search.png" alt="search" onclick="fs_go2url('{$fsc->page_url('search')}')"/>
-               {/if}
+               <form action="{$fsc->page_url('search')}" method="post">
+                  <input type="text" name="query" size="15" placeholder=" Buscar..."/>
+               </form>
             </div>
             <div class="lat2"></div>
          </div>
       </div>
    </div>
    
+   <div class="main_div">
    {if condition="$fsc->get_errors()"}
    <div class="errors">
       <ul>{loop="$fsc->get_errors()"}<li>{$value}</li>{/loop}</ul>

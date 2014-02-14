@@ -36,15 +36,19 @@ class edit_story extends fs_controller
       $this->story_edition = new story_edition();
       $this->story_visit = new story_visit();
       
+      $this->masterkey = '';
       if( isset($_COOKIE['masterkey']) )
+      {
          $this->masterkey = $_COOKIE['masterkey'];
+      }
       else if( isset($_POST['masterkey']) )
       {
-         $this->masterkey = $_POST['masterkey'];
-         setcookie('masterkey', $this->masterkey, time()+86400, FS_PATH);
+         if($_POST['masterkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+         {
+            $this->masterkey = $_POST['masterkey'];
+            setcookie('masterkey', $this->masterkey, time()+86400, FS_PATH);
+         }
       }
-      else
-         $this->masterkey = '';
       
       if( isset($_GET['id']) )
       {
@@ -56,7 +60,7 @@ class edit_story extends fs_controller
       
       if($this->story)
       {
-         if( $this->visitor->human() AND isset($_SERVER['REMOTE_ADDR']) )
+         if( $this->masterkey != '' OR $this->visitor->human() )
          {
             $se0 = $this->story_edition->get_by_params($this->story->get_id(), $this->visitor->get_id());
             if( $se0 )
@@ -85,8 +89,8 @@ class edit_story extends fs_controller
                /// otra comprobación más para evitar el spam
                if( strstr($_POST['description'], '<a href=') )
                   $this->new_error_msg('De eso nada, aquí no se permite HTML.');
-               else if( $_POST['human'] != 'POZI' )
-                  $this->new_error_msg('Has contestado que no eres humano, y si no eres
+               else if( $this->masterkey == '' AND $_POST['human'] != '' )
+                  $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano, y si no eres
                      humano no puedes editar historias. Y si, ya sé que esto es nazismo puro,
                      pero es una forma sencilla de atajar el SPAM.');
                else
@@ -96,7 +100,7 @@ class edit_story extends fs_controller
                      $this->story_edition->url().'">aquí</a> para verla. Recuerda que
                         aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
                   
-                  if($_POST['masterkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+                  if($this->masterkey != '')
                   {
                      $this->story->title = $this->story_edition->title;
                      $this->story->description = $this->story_edition->description;

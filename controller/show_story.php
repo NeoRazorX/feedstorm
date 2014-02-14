@@ -147,12 +147,12 @@ class show_story extends fs_controller
    private function comments()
    {
       $comment = new comment();
-      $this->txt_comment = '¡Escribe algo!';
+      $this->txt_comment = '';
       $all_comments = $comment->all4thread( $this->story->get_id() );
       
       if( isset($_POST['comment']) )
       {
-         if($this->visitor->human() AND $_POST['human'] == 'POZI' )
+         if($this->visitor->human() AND $_POST['human'] == '' )
          {
             $comment = new comment();
             $comment->thread = $this->story->get_id();
@@ -168,7 +168,7 @@ class show_story extends fs_controller
          }
          else
          {
-            $this->new_error_msg('Ahhh, se siente. Has dicho que no eras humano.');
+            $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
             $this->txt_comment = $_POST['comment'];
          }
       }

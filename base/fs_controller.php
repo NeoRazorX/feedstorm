@@ -85,7 +85,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.3.1';
+      return '1.4';
    }
    
    public function php_version()
@@ -100,7 +100,7 @@ abstract class fs_controller
    
    protected function set_template($tpl='main')
    {
-      if( $this->visitor->mobile() )
+      if( !$this->visitor->mobile() )
          $this->template = 'mobile/'.$tpl;
       else
          $this->template = 'desktop/'.$tpl;

@@ -1,16 +1,5 @@
 {include="desktop/header"}
 
-{if condition="$fsc->random(19)"}
-<div class="info">
-   <h1>¿Tienes un minuto?</h1>
-   <p>
-      Hola, soy <a target="_blank" href="{$fsc->page_url('blog_chan2')}">@chan2</a>,
-      y me han dejado a cargo de esta web, así que si hay algo
-      que no te guste ... ¡La culpa es de la herencia!
-   </p>
-</div>
-{/if}
-
 {if condition="$fsc->stories"}
    <script type="text/javascript">
       $(document).ready(function() {

@@ -24,7 +24,7 @@
    <table width="100%">
       <tr>
          <td>
-            <a class="button" href="#" onclick="fs_popup_edition('{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
+            <a class="button" href="#" onclick="fs_popup_edition('{$path}/{$fsc->edition->vote_url()}'); return false;" title="dale tu voto a esta edición">+1</a>
             <span class="label">{$fsc->edition->votes} votos</span>
             &nbsp;
             <a href="{$fsc->edition->story->edit_url()}" class="button_edit">Editar</a>

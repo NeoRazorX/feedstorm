@@ -63,10 +63,20 @@
    </div>
    <ul class="pestanyas">
       <li id="b_show_comments2" class="activa">Comentarios</li>
+      <li id="b_show_editions2">Editar</li>
       <li id="b_show_feeds2">Fuentes</li>
-      <li id="b_show_editions2">Ediciones</li>
    </ul>
    <div id="comments" class="pestanya_content">
+      <div style="padding: 5px;">
+         <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
+            <textarea id="new_comment_textarea" name="comment" rows="4" placeholder="Rápido, di lo primero que piensas.">{$fsc->txt_comment}</textarea>
+            <div id="new_comment_controls" class="hidden">
+               <b>Borra el número para demostrar que eres humano</b>
+               <input type="text" name="human" value='{function="mt_rand(0, 999)"}' size="3"/> &nbsp;
+               <input type="submit" value="enviar"/>
+            </div>
+         </form>
+      </div>
       {loop="$fsc->comments"}
       <div class="comment">
          <div>
@@ -79,20 +89,19 @@
          </div>
          <p>{$value->text}</p>
       </div>
-      {/loop}
-      <div style="padding-top: 10px;">
-         <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
-            <b>Tú</b> (@{$fsc->visitor->nick}) dices:
-            <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>
-            <div id="new_comment_controls" class="hidden">
-               <input type="submit" value="enviar"/>
-               <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-               <label for="r_human_yes">Soy humano</label>
-               <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-               <label for="r_human_no">No no soy humano, no me dejes comentar XD</label>
-            </div>
-         </form>
+      {else}
+      <div class="comment">
+         <div><u>Ayuda:</u></div>
+         <p>
+            {if condition="!$fsc->story->native_lang"}
+            Puedes traducir la noticia pulsando en la pensaña <b>editar</b>.
+            {else}
+            Si la imágen es incorrecta o tienes más información y quieres editar la noticia,
+            simplemente pulsa en la pensaña <b>editar</b>.
+         {/if}
+         </p>
       </div>
+      {/loop}
    </div>
    <div class="pestanya_content" style="display: none;" id="feeds">
       <table class="lista">

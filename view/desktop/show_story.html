@@ -33,10 +33,48 @@
    {/if}
 </div>
 <ul class="pestanyas">
-   <li id="b_show_feeds" class="activa">Fuentes</li>
-   <li id="b_show_editions">Ediciones</li>
+   <li id="b_show_comments" class="activa">Comentarios</li>
+   <li id="b_show_editions">Editar</li>
+   <li id="b_show_feeds">Fuentes</li>
 </ul>
-<div class="pestanya_content" id="story_feeds">
+<div class="pestanya_content" id="story_comments">
+   <div style="padding: 5px;">
+      <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
+         <textarea id="new_comment_textarea" name="comment" rows="4" placeholder=" Rápido, di lo primero que piensas.">{$fsc->txt_comment}</textarea>
+         <div id="new_comment_controls" class="hidden">
+            <b>Borra el número para demostrar que eres humano</b>
+            <input type="text" name="human" value='{function="mt_rand(0, 999)"}' size="3"/> &nbsp;
+            <input type="submit" value="enviar"/>
+         </div>
+      </form>
+   </div>
+   {loop="$fsc->comments"}
+   <div class="comment">
+      <div>
+         {if condition="$fsc->visitor->nick==$value->nick"}
+         <b>Tú</b> dices:
+         {else}
+         <u>@{$value->nick}</u> dice:
+         {/if}
+         <span class="pull-right">{$value->timesince()}</span>
+      </div>
+      <p>{$value->text}</p>
+   </div>
+   {else}
+   <div class="comment">
+      <div><u>Ayuda:</u></div>
+      <p>
+         {if condition="!$fsc->story->native_lang"}
+         Puedes traducir la noticia pulsando en la pensaña <b>editar</b>.
+         {else}
+         Si la imágen es incorrecta o tienes más información y quieres editar la noticia,
+         simplemente pulsa en la pensaña <b>editar</b>.
+         {/if}
+      </p>
+   </div>
+   {/loop}
+</div>
+<div class="pestanya_content" id="story_feeds" style="display: none;">
    <table class="lista">
       <tr>
          <th align="left">Fecha</th>
@@ -78,34 +116,6 @@
          </td>
       </tr>
    </table>
-</div>
-<div class="comments">
-   {loop="$fsc->comments"}
-   <div class="comment">
-      <div>
-         {if condition="$fsc->visitor->nick==$value->nick"}
-         <b>Tú</b> dices:
-         {else}
-         <u>@{$value->nick}</u> dice:
-         {/if}
-         <span class="pull-right">{$value->timesince()}</span>
-      </div>
-      <p>{$value->text}</p>
-   </div>
-   {/loop}
-   <div>
-      <form name="f_comment2" action="{$path}/{$fsc->url()}" method="post">
-         <b>Tú</b> (@{$fsc->visitor->nick}) dices:
-         <textarea id="new_comment_textarea" name="comment" rows="3">{$fsc->txt_comment}</textarea>
-         <div id="new_comment_controls" class="hidden">
-            <input type="submit" value="enviar"/>
-            <input id="r_human_yes" type="radio" name="human" value="POZI"{if condition="$fsc->visitor->human"} checked="checked"{/if}/>
-            <label for="r_human_yes">Soy humano</label>
-            <input id="r_human_no" type="radio" name="human" value="PONO"{if condition="!$fsc->visitor->human"} checked="checked"{/if}/>
-            <label for="r_human_no">No no soy humano, no me dejes comentar XD</label>
-         </div>
-      </form>
-   </div>
 </div>
 {/if}
 

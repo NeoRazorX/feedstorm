@@ -32,8 +32,6 @@ else
    
    require_once 'config.php';
    require_once 'base/fs_mongo.php';
-   require_once 'model/chan.php';
-   require_once 'model/chan2.php';
    require_once 'model/comment.php';
    require_once 'model/feed.php';
    require_once 'model/feed_story.php';
@@ -46,8 +44,6 @@ else
    require_once 'model/visitor.php';
    
    $mongo = new fs_mongo();
-   $chan = new chan();
-   $chan2 = new chan2();
    $comment = new comment();
    $feed = new feed();
    $feed_story = new feed_story();
@@ -85,8 +81,6 @@ else
    else
    {
       echo "\nComprobamos los modelos... ";
-      $chan->cron_job();
-      $chan2->cron_job();
       $comment->cron_job();
       $feed->cron_job();
       $feed_story->cron_job();

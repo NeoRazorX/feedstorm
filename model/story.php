@@ -252,24 +252,26 @@ class story extends fs_model
       
       if($this->native_lang)
       {
-         if($this->tweets > 10000)
-            $tclics += min( array($this->tweets, 20 + 2*$this->clics) );
-         else if($this->tweets > 1000)
-            $tclics += min( array($this->tweets, 10 + 2*$this->clics) );
+         $points = 1 + count( explode(',', $this->keywords) );
+         if($this->media_id)
+            $points++;
+         if($this->related_id)
+            $points++;
+         if( mb_strlen($this->description) > 250 )
+            $points++;
+         
+         if($this->tweets > 1000)
+            $tclics += min( array($this->tweets, 10 + $points*$this->clics) );
          else
             $tclics += min( array($this->tweets, 1 + $this->clics) );
          
-         if($this->likes > 10000)
-            $tclics += min( array($this->likes, 20 + 2*$this->clics) );
-         else if($this->likes > 1000)
-            $tclics += min( array($this->likes, 10 + 2*$this->clics) );
+         if($this->likes > 1000)
+            $tclics += min( array($this->likes, 10 + $points*$this->clics) );
          else
             $tclics += min( array($this->likes, 1 + $this->clics) );
          
-         if($this->meneos > 1000)
-            $tclics += min( array($this->meneos, 20 + 2*$this->clics) );
-         else if($this->meneos > 200)
-            $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
+         if($this->meneos > 150)
+            $tclics += min( array($this->meneos, 10 + $points*$this->clics) );
          else
             $tclics += min( array($this->meneos, 1 + $this->clics) );
          

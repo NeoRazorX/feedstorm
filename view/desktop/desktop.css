@@ -6,8 +6,6 @@
         Purpose of the stylesheet follows.
 */
 
-@import url('http://fonts.googleapis.com/css?family=Grand+Hotel');
-
 body {
    margin: 0px;
    padding: 0px;
@@ -83,8 +81,7 @@ div.header3 a.logo {
    display: inline-block;
    vertical-align: middle;
    padding-right: 20px;
-   font-family: 'Grand Hotel', cursive;
-   font-size: 35px;
+   font-size: 30px;
    color: white;
    text-decoration: none;
 }
@@ -111,22 +108,19 @@ div.header3 div.buttons a.selected {
    background-color: #2283A6;
 }
 
-div.header3 div.buttons img {
+div.header3 div.buttons form {
    display: inline-block;
    vertical-align: middle;
-   padding: 12px;
-   color: white;
-   font-size: 16px;
-   text-decoration: none;
 }
 
-div.header3 div.buttons img:hover {
-   background-color: #54B4D6;
-   cursor: pointer;
+div.header3 div.buttons form input[type='text'] {
+   padding: 5px;
+   border: 1px solid #1A6580;
 }
 
-div.header3 div.buttons img.selected {
-   background-color: #2283A6;
+div.main_div {
+   max-width: 1300px;
+   margin: 5px auto 5px auto;
 }
 
 div.messages, div.errors {
@@ -397,51 +391,33 @@ div.popup_info h2 {
    margin-top: 0px;
 }
 
-div#media_items {
-   margin: 0 auto;
-}
-
-div#media_items label {
-   display: inline-block;
-   min-width: 240px;
-   min-height: 40px;
-   margin: 5px;
-   padding: 5px;
-   background-color: white;
-   border: 1px solid #666;
-   box-shadow: 2px 2px 2px #666;
-}
-
-div#media_items label div.media_item_show {
-   min-width: 80px;
-   min-height: 80px;
-   margin-top: 5px;
-   padding: 3px;
+div.media_items {
+   margin: 10px 0px 10px 0px;
+   background-color: #424242;
+   color: white;
+   overflow: auto;
    text-align: center;
 }
 
-table.comments {
-   width: 95%;
-   margin-left: auto;
-   margin-right: auto;
-   background-color: white;
-   border-radius: 5px;
-   border: 1px solid #bbbbbb;
-   box-shadow: 0px 0px 3px #999;
-}
-
-table.comments td {
-   vertical-align: top;
-   width: 50%;
+div.media_items h2 {
    padding: 5px;
+   color: white;
+   font-size: 15px;
 }
 
-table.comments td.right {
-   border-left: 1px solid #bbbbbb;
+div.media_items label {
+   display: block;
+   min-width: 100px;
+   min-height: 200px;
+   padding: 5px;
+   background-color: #a1a1a1;
+   border: 1px outset #a1a1a1;
+   color: black;
 }
 
-table.comments td h1 {
-   text-align: center;
+div.media_items label img {
+   display: block;
+   margin: 5px 0px 5px 0px;
 }
 
 div.full_page {
@@ -662,6 +638,7 @@ input.full, textarea {
    -webkit-box-sizing: border-box;
    -moz-box-sizing: border-box;
    -ms-box-sizing: border-box;
+   border: 1px solid #999;
 }
 
 ul.horizontal, ul.horizontal2 {
@@ -694,15 +671,9 @@ img.face {
    border-radius: 5px;
 }
 
-div.comments {
-   padding: 5px;
-   background-color: #EEEEEE;
-   border-top: 1px solid silver;
-}
-
 div.comment {
    padding: 5px;
-   border-bottom: 1px dashed silver;
+   border-top: 1px dashed silver;
 }
 
 div.comment:hover {

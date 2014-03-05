@@ -73,7 +73,7 @@ class show_story extends fs_controller
    
    public function url()
    {
-      if( isset($this->story) )
+      if($this->story)
          return $this->story->url();
       else
          return parent::url();
@@ -81,7 +81,7 @@ class show_story extends fs_controller
    
    public function full_url()
    {
-      if( isset($this->story) )
+      if($this->story)
          return $this->domain().'/'.$this->story->url(FALSE);
       else
          return $this->domain();

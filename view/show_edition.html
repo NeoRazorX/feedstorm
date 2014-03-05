@@ -1,0 +1,43 @@
+{include="header"}
+
+{if condition="$fsc->edition"}
+<div class="container">
+   <ul class="nav nav-tabs">
+      <li class="active"><a href="{$fsc->edition->url()}">Edición</a></li>
+      <li><a href="{$fsc->story->url()}">Artículo</a></li>
+   </ul>
+   <div class="full_story">
+      <div class="row">
+         <div class="col-md-12">
+            <h1>
+               <a rel="nofollow" target="_blank" href="{$fsc->story->link()}">{$fsc->edition->title}</a>
+            </h1>
+            <p>
+               {$fsc->edition->description}
+               <br/><br/>
+               <span class="label label-primary">{$fsc->edition->points} puntos</span>
+               <span class="small">
+                  Creada por <b>@{$fsc->edition->nick}</b> {$fsc->edition->timesince()}.
+               </span>
+            </p>
+         </div>
+      </div>
+   </div>
+   {if condition="$fsc->visitor->admin"}
+   <div class="row">
+      <div class="col-md-12">
+         <div class="well well-sm">
+            <h3 style="margin: 5px 0px 5px 0px;">¿Deseas eliminar esta <u>edición</u> del artículo?</h3>
+            <p>Piensatelo bien, porque no hay vuelta atrás.</p>
+            <form action="{$fsc->url()}" method="post">
+               <input type="hidden" name="delete" value="TRUE"/>
+               <input class="btn btn-sm btn-danger" type="submit" value="eliminar"/>
+            </form>
+         </div>
+      </div>
+   </div>
+   {/if}
+</div>
+{/if}
+
+{include="footer"}

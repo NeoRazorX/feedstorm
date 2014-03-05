@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,20 +21,11 @@ require_once 'model/story_edition.php';
 
 class last_editions extends fs_controller
 {
-   public $show_info;
    public $editions;
    
    public function __construct()
    {
-      parent::__construct('last_editions', 'Ediciones', 'Ediciones &lsaquo; '.FS_NAME, 'last_editions');
-      
-      if( isset($_GET['show_info']) )
-      {
-         $this->show_info = FALSE;
-         setcookie('editions_info', 'FALSE', time()+315360000, FS_PATH);
-      }
-      else
-         $this->show_info = !isset($_COOKIE['editions_info']);
+      parent::__construct('last_editions', 'Ediciones &lsaquo; '.FS_NAME);
       
       $se = new story_edition();
       $this->editions = $se->last_editions();
@@ -42,7 +33,7 @@ class last_editions extends fs_controller
    
    public function get_description()
    {
-      return 'Últimas modificaciones realizadas por los usuarios. Historias corregidas o mejoradas.';
+      return 'Últimas modificaciones realizadas por los usuarios. Artículos corregidos o mejorados.';
    }
 }
 

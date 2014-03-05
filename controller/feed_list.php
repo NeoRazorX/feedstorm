@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,9 @@ class feed_list extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('feed_list', 'Fuentes', 'Fuentes &lsaquo; '.FS_NAME, 'feed_list');
+      parent::__construct('feed_list', 'Fuentes &lsaquo; '.FS_NAME);
       
+      $this->noindex = FALSE;
       $this->feed = new feed();
       
       if( isset($_POST['feed_url']) AND $this->visitor->human() )
@@ -51,9 +52,11 @@ class feed_list extends fs_controller
             $feed0->save();
          }
          else if( $_POST['human'] != '' )
+         {
             $this->new_error_msg('No has borrado el número para demostrar que eres humano, y si no eres
                humano no puedes añadir fuentes. Y si, ya sé que esto es nazismo puro,
                pero es una forma sencilla de atajar el SPAM.');
+         }
          else
          {
             $this->feed->url = $_POST['feed_url'];
@@ -76,11 +79,6 @@ class feed_list extends fs_controller
                /// actualizamos el número de suscriptores
                $this->feed->suscriptors++;
                $this->feed->save();
-               
-               /// actualizamos al visitante
-               $this->visitor->human = TRUE;
-               $this->visitor->need_save = TRUE;
-               $this->visitor->save();
             }
          }
       }

@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,11 +26,23 @@ class suscriptions extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('suscriptions', 'Tu perfil', 'Tu perfil &lsaquo; '.FS_NAME, 'suscriptions');
+      parent::__construct('suscriptions', 'Tu perfil &lsaquo; '.FS_NAME);
       
       $suscription = new suscription();
       
-      if( isset($_GET['suscribe']) AND $this->visitor->human() )
+      if( isset($_POST['admin_ps']) )
+      {
+         if($_POST['admin_ps'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
+         {
+            $this->visitor->admin = TRUE;
+            $this->visitor->need_save = TRUE;
+            $this->visitor->save();
+            $this->new_message('Ahora eres Dios. Alabado seas tú.');
+         }
+         else
+            $this->new_error_msg('Contraseña incorrecta.');
+      }
+      else if( isset($_GET['suscribe']) AND $this->visitor->human() )
       {
          $suscription->visitor_id = $this->visitor->get_id();
          $suscription->feed_id = $_GET['suscribe'];

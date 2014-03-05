@@ -1,0 +1,41 @@
+{include="header"}
+
+<script type="text/javascript">
+   $(document).ready(function() {
+      document.f_new_story.title.focus();
+   });
+</script>
+
+<div class="container">
+   <div class="row">
+      <div class="col-md-12">
+         <form name="f_new_story" action="{$fsc->url()}" method="post">
+            <div class="panel panel-primary">
+               <div class="panel-heading">
+                  <h3 class="panel-title">Escribe tu artículo...</h3>
+               </div>
+               <div class="panel-body">
+                  <div>
+                     <input class="form-control" type="text" name="title" value="{$fsc->s_title}" placeholder="Titular" autocomplete="off"/>
+                  </div>
+                  <div>
+                     <textarea class="form-control" name="description" rows="10" placeholder="Escribe aquí el texto.">{$fsc->s_description}</textarea>
+                  </div>
+                  <div>
+                     <input class="form-control" type="text" name="link" value="{$fsc->s_link}" placeholder="Enlace (opcional)" autocomplete="off"/>
+                  </div>
+                  <div>
+                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  </div>
+               </div>
+               <div class="panel-footer small" style="text-align: right;">
+                  Borra el número para demostrar que eres humano
+                  <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+{include="footer"}

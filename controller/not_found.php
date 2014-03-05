@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,9 @@ class not_found extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('not_found', '404', '¡Página no encontrada en '.FS_NAME.'!', 'home');
+      parent::__construct('not_found', '¡Página no encontrada en '.FS_NAME.'!');
       
+      $this->template = 'home';
       $this->new_error_msg('¡Página no encontrada! <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
       
       $story = new story();
@@ -35,7 +36,7 @@ class not_found extends fs_controller
    
    public function get_description()
    {
-      return 'Historia no encontrada en '.FS_NAME.'. ¡Usa el buscador! A Ver si tienes más suerte.';
+      return 'Artículo no encontrado en '.FS_NAME.'. ¡Usa el buscador! A Ver si tienes más suerte.';
    }
 }
 

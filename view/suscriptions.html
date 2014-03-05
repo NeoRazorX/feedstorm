@@ -1,0 +1,106 @@
+{include="header"}
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-md-3">
+         <div class="panel panel-info">
+            <div class="panel-heading">
+               <h3 class="panel-title">Hola @{$fsc->visitor->nick}</h3>
+            </div>
+            <div class="panel-body">
+               <p>Si, ya sé que no te llamas @{$fsc->visitor->nick}, pero
+               esta es una web anónima y no necesito, ni quiero saber
+               cómo te llamas en realidad.</p>
+               <p>Tus estadísticas:</p>
+               <ul>
+                  <li>{$fsc->visitor->num_stories} artículos</li>
+                  <li>{$fsc->visitor->num_editions} ediciones.</li>
+                  <li>{$fsc->visitor->num_comments} comentarios</li>
+                  <li>{$fsc->visitor->num_visits} visitas.</li>
+                  <li>{$fsc->visitor->points} puntos.</li>
+               </ul>
+            </div>
+            <div class="panel-footer small">
+               Usuario creado hace {$fsc->visitor->age()}.
+            </div>
+         </div>
+         {if condition="!$fsc->visitor->admin"}
+         <form action="{$fsc->url()}" method="post">
+            <div class="panel panel-danger">
+               <div class="panel-heading">
+                  <h3 class="panel-title">¿Eres el todopoderoso Admin?</h3>
+               </div>
+               <div class="panel-body">
+                  <input class="form-control" type="password" name="admin_ps" placeholder=" una contraseña para controlarlo todo..."/>
+               </div>
+               <div class="panel-footer">
+                  <input class="btn btn-danger btn-sm" type="submit" value="¡Arrodillate ante mí!"/>
+               </div>
+            </div>
+         </form>
+         {else}
+         <div class="panel panel-danger">
+               <div class="panel-heading">
+                  <h3 class="panel-title">Eres el todopoderoso Admin</h3>
+               </div>
+               <div class="panel-body">
+                  Alabado seas tú.
+               </div>
+               <div class="panel-footer small">
+                  Protégenos del mal.
+               </div>
+         </div>
+         {/if}
+      </div>
+      <div class="col-md-9">
+         <div class="panel panel-primary">
+            <div class="panel-heading">
+               <h3 class="panel-title">Tus suscripciones</h3>
+            </div>
+            <div class="panel-body">
+               <ul>
+               {loop="$fsc->suscriptions"}
+                  <li><a href='{$value->url()}'>{$value->name()}</a> {$value->description()}</li>
+               {else}
+                  <li>
+                     Por defecto <b>{$name}</b> te muestra en portada las historias más populares,
+                     pero si quieres puedes elegir que te muestre solamente las historias de tus fuentes favoritas.
+                     Lo único que tienes que hacer es ir a la sección <a href="{$path}/feed_list">fuentes</a>,
+                     hacer clic sobre las que te gusten y pulsar el <b>botón suscribir</b>.
+                  </li>
+               {/loop}
+                  <li><a href="{$path}/feed_list">Todas las fuentes</a>.</li>
+               </ul>
+            </div>
+         </div>
+         <div class="panel panel-success">
+            <div class="panel-heading">
+               <h3 class="panel-title">Tu historial</h3>
+            </div>
+            <div class="panel-body">
+               <table class="table table-hover">
+                  <tbody>
+                  {loop="$fsc->last_visits"}
+                     {if condition="$value->url()!='#'"}
+                     <tr>
+                        <td><a href="{$value->url()}">{$value->title()}</a></td>
+                        <td align="center">
+                           {if condition="$value->edition_id"}
+                           <a href="{$value->edition_url()}">edición</a>
+                           {/if}
+                        </td>
+                        <td class="small" style="text-align: right;">{$value->timesince()}</td>
+                     </tr>
+                     {/if}
+                  {else}
+                     <tr><td colspan="2">Sin resultados.</td></tr>
+                  {/loop}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+
+{include="footer"}

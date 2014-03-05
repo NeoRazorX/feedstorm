@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 
 require_once 'model/story.php';
 require_once 'model/story_edition.php';
-require_once 'model/story_media.php';
 require_once 'model/story_visit.php';
 
 class edit_story extends fs_controller
@@ -27,28 +26,13 @@ class edit_story extends fs_controller
    public $story;
    public $story_edition;
    public $story_visit;
-   public $masterkey;
    
    public function __construct()
    {
-      parent::__construct('edit_story', 'Editar historia', 'Editar historia', 'edit_story');
+      parent::__construct('edit_story', 'Editar artículo');
       
       $this->story_edition = new story_edition();
       $this->story_visit = new story_visit();
-      
-      $this->masterkey = '';
-      if( isset($_COOKIE['masterkey']) )
-      {
-         $this->masterkey = $_COOKIE['masterkey'];
-      }
-      else if( isset($_POST['masterkey']) )
-      {
-         if($_POST['masterkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
-         {
-            $this->masterkey = $_POST['masterkey'];
-            setcookie('masterkey', $this->masterkey, time()+86400, FS_PATH);
-         }
-      }
       
       if( isset($_GET['id']) )
       {
@@ -58,133 +42,127 @@ class edit_story extends fs_controller
       else
          $this->story = FALSE;
       
-      if($this->story)
+      
+      if($this->story AND isset($_POST['delete']) AND $this->visitor->admin)
       {
-         if( $this->masterkey != '' OR $this->visitor->human() )
+         $this->story->delete();
+         $this->story = FALSE;
+         $this->new_message('Artículo eliminado correctamente.');
+      }
+      else if($this->story)
+      {
+         if( $this->visitor->human() )
          {
+            $new_edition = FALSE;
+            $fake_edition = TRUE;
+            
             $se0 = $this->story_edition->get_by_params($this->story->get_id(), $this->visitor->get_id());
             if( $se0 )
                $this->story_edition = $se0;
             else
             {
+               $this->story_edition->nick = $this->visitor->nick;
                $this->story_edition->description = $this->story->description;
+               $this->story_edition->points = $this->visitor->points;
                $this->story_edition->story_id = $this->story->get_id();
-               $this->story_edition->media_id = $this->story->media_id;
                $this->story_edition->title = $this->story->title;
                $this->story_edition->visitor_id = $this->visitor->get_id();
+               $new_edition = TRUE;
             }
             
             if( isset($_POST['title']) AND isset($_POST['description']) AND isset($_POST['human']) )
             {
+               if($_POST['title'] != $this->story_edition->title AND $_POST['description'] != $this->story_edition->description)
+                  $fake_edition = FALSE;
+               
                $this->story_edition->title = $_POST['title'];
                $this->story_edition->description = $_POST['description'];
-               
-               if( !isset($_POST['media_id']) )
-                  $this->story_edition->media_id = NULL;
-               else if($_POST['media_id'] == 'none' OR isset($_POST['noimages']) )
-                  $this->story_edition->media_id = NULL;
-               else
-                  $this->story_edition->media_id = $_POST['media_id'];
                
                /// otra comprobación más para evitar el spam
                if( strstr($_POST['description'], '<a href=') )
                   $this->new_error_msg('De eso nada, aquí no se permite HTML.');
-               else if( $this->masterkey == '' AND $_POST['human'] != '' )
+               else if( $_POST['human'] != '' AND !$this->visitor->admin )
                   $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano, y si no eres
-                     humano no puedes editar historias. Y si, ya sé que esto es nazismo puro,
+                     humano no puedes editar artículos. Y si, ya sé que esto es nazismo puro,
                      pero es una forma sencilla de atajar el SPAM.');
                else
                {
                   $this->story_edition->save();
-                  $this->new_message('Historia editada correctamente. Hac clic <a href="'.
-                     $this->story_edition->url().'">aquí</a> para verla. Recuerda que
-                        aparecerá en la sección <a href="'.FS_PATH.'/index.php?page=last_editions">ediciones</a>.');
+                  $this->new_message('Artículo editado correctamente.');
                   
-                  if($this->masterkey != '')
+                  if($this->visitor->admin)
                   {
+                     $this->story->edition_id = $this->story_edition->get_id();
                      $this->story->title = $this->story_edition->title;
                      $this->story->description = $this->story_edition->description;
-                     $this->story->native_lang = TRUE;
                      
-                     if( isset($_POST['noimages']) )
+                     $nkeywords = mb_strtolower( trim($_POST['keywords']), 'utf8' );
+                     if($nkeywords != $this->story->keywords)
                      {
-                        $this->story->noimages = TRUE;
-                        $this->story->media_id = NULL;
-                        
-                        $sm = new story_media();
-                        foreach($sm->all4story($this->story->get_id()) as $sm0)
+                        $this->story->keywords = $nkeywords;
+                        if($this->story->keywords != '')
                         {
-                           $sm0->delete();
-                           $mi = $sm0->media_item();
-                           if($mi)
-                              $mi->delete();
-                        }
-                     }
-                     else
-                        $this->story->noimages = FALSE;
-                     
-                     $this->story->keywords = strtolower($_POST['keywords']);
-                     
-                     if( substr($_POST['related'], 0, 7) == 'http://' )
-                     {
-                        $aux = explode('/', $_POST['related']);
-                        $related = $this->story->get($aux[ count($aux)-1 ]);
-                        if($related)
-                           $this->story->related_id = $related->get_id();
-                     }
-                     else if( isset($_POST['norelated']) )
-                     {
-                        $this->story->related_id = NULL;
-                     }
-                     else if( !isset($this->story->related_id) AND $this->story->keywords != '' )
-                     {
-                        $aux = explode(',', $this->story->keywords);
-                        $keyword = trim($aux[0]);
-                        $relateds = $this->story->search($keyword);
-                        
-                        for($i = 0; $i < count($relateds); $i++)
-                        {
-                           if( !isset($this->story->related_id) AND $relateds[$i]->date < $this->story->date AND $relateds[$i]->native_lang )
-                              $this->story->related_id = $relateds[$i]->get_id();
-                           
-                           if( $relateds[$i]->get_id() != $this->story->get_id() )
+                           /// añadimos las keyword a todas las noticias de la búsqueda
+                           $kwlist = explode(',', $this->story->keywords);
+                           $relateds = $this->story->search($kwlist[0]);
+                           for($i = 0; $i < count($relateds); $i++)
                            {
-                              $relateds[$i]->add_keyword($keyword);
-                              
-                              for($j = 0; $j < count($relateds); $j++)
+                              if( $relateds[$i]->get_id() != $this->story->get_id() )
                               {
-                                 if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                                 foreach($kwlist as $kw)
                                  {
-                                    $relateds[$i]->related_id = $relateds[$j]->get_id();
-                                    break;
+                                    if( preg_match('/\b'.$kw.'\b/iu', $relateds[$i]->title) )
+                                       $relateds[$i]->add_keyword($kw);
                                  }
+                                 
+                                 $relateds[$i]->save();
                               }
-                              
-                              $relateds[$i]->save();
                            }
                         }
                      }
                      
+                     $this->story->native_lang = isset($_POST['native_lang']);
+                     $this->story->parody = isset($_POST['parody']);
+                     
+                     if( isset($_POST['featured']) )
+                     {
+                        $this->story->featured = TRUE;
+                        $this->story->penalize = FALSE;
+                        $this->story->published = time();
+                     }
+                     else if( isset($_POST['penalize']) )
+                     {
+                        $this->story->penalize = TRUE;
+                        $this->story->featured = FALSE;
+                     }
+                     
+                     if($new_edition)
+                        $this->story->num_editions++;
+                     
                      $this->story->save();
                   }
-                  else if($_POST['masterkey'])
-                     $this->new_error_msg('Contraseña incorrecta.');
-                  
-                  $this->select_best_image4story();
-                  
-                  /// ¿La noticia está en otro idioma?
-                  if( !$this->story->native_lang )
+                  else if( !$this->story->native_lang AND !$fake_edition ) /// ¿La noticia está en otro idioma?
                   {
+                     $this->story->edition_id = $this->story_edition->get_id();
                      $this->story->title = $this->story_edition->title;
                      $this->story->description = $this->story_edition->description;
                      $this->story->native_lang = TRUE;
+                     
+                     if($new_edition)
+                        $this->story->num_editions++;
+                     
                      $this->story->save();
                   }
+                  else
+                     $this->set_best_edition();
                   
                   /// actualizamos al visitante
-                  $this->visitor->human = TRUE;
-                  $this->visitor->need_save = TRUE;
-                  $this->visitor->save();
+                  if($new_edition)
+                  {
+                     $this->visitor->num_editions++;
+                     $this->visitor->need_save = TRUE;
+                     $this->visitor->save();
+                  }
                }
             }
             
@@ -205,7 +183,7 @@ class edit_story extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Historia no encontrada.');
+         $this->new_error_msg('Artículo no encontrado.');
    }
    
    public function url()
@@ -224,20 +202,27 @@ class edit_story extends fs_controller
          return parent::get_description();
    }
    
-   private function select_best_image4story()
+   private function set_best_edition()
    {
-      if( !$this->story->noimages )
+      $edition = NULL;
+      $num_editions = 0;
+      
+      foreach($this->story->editions() as $edi)
       {
-         /// Elegimos la foto de la edición más votada de esta historia
-         $maxvotes = 0;
-         foreach($this->story->editions() as $edi)
-         {
-            if($edi->votes > $maxvotes)
-            {
-               $maxvotes = $edi->votes;
-               $this->story->media_id = $edi->media_id;
-            }
-         }
+         if( is_null($edition) )
+            $edition = $edi;
+         else if($edi->points > $edition->points)
+            $edition = $edi;
+         
+         $num_editions++;
+      }
+      
+      if( isset($edition) )
+      {
+         $this->story->edition_id = $edition->get_id();
+         $this->story->title = $edition->title;
+         $this->story->description = $edition->description;
+         $this->story->num_editions = $num_editions;
          $this->story->save();
       }
    }

@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,23 +27,16 @@ abstract class fs_controller
    private $messages;
    private $mongo;
    public $page;
-   public $page_title;
    public $title;
-   public $template;
    public $visitor;
+   public $template;
+   public $noindex;
    
-   public function __construct($name, $ptitle, $title, $template)
+   public function __construct($name, $title)
    {
-      if( !defined('FS_MASTER_KEY') )
-         define('FS_MASTER_KEY', '');
-      
-      if( !defined('FS_MOD_REWRITE') )
-         define('FS_MOD_REWRITE', FALSE);
-      
       $tiempo = explode(' ', microtime());
       $this->uptime = $tiempo[1] + $tiempo[0];
       $this->page = $name;
-      $this->page_title = $ptitle;
       $this->title = $title;
       $this->errors = array();
       $this->messages = array();
@@ -54,10 +47,7 @@ abstract class fs_controller
       {
          $visitor = $this->visitor->get($_COOKIE['key']);
          if($visitor)
-         {
             $this->visitor = $visitor;
-            $this->visitor->login();
-         }
          else
             $this->new_error_msg('No se encuentra el usuario.');
       }
@@ -67,15 +57,15 @@ abstract class fs_controller
          $this->new_message(FS_NAME.' usa cookies propias y de terceros para
             mejorar tu experiencia de navegación y realizar tareas de análisis.
             Al continuar con tu navegación entendemos que das tu consentimiento
-            a nuestra <a target="_blank" href="index.php?page=help#cookies">política de cookies</a>.');
+            a nuestra política de cookies.');
       }
       
+      $this->visitor->login();
       if( $this->visitor->save() )
-      {
          setcookie('key', $this->visitor->get_id(), time()+FS_MAX_AGE, FS_PATH);
-      }
       
-      $this->set_template($template);
+      $this->template = $name;
+      $this->noindex = TRUE;
    }
    
    public function __destruct()
@@ -85,7 +75,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '1.4';
+      return '2.0b1';
    }
    
    public function php_version()
@@ -96,14 +86,6 @@ abstract class fs_controller
    public function mongo_version()
    {
       return $this->mongo->version();
-   }
-   
-   protected function set_template($tpl='main')
-   {
-      if( !$this->visitor->mobile() )
-         $this->template = 'mobile/'.$tpl;
-      else
-         $this->template = 'desktop/'.$tpl;
    }
    
    public function new_error_msg($msg)
@@ -151,31 +133,35 @@ abstract class fs_controller
    
    public function url()
    {
-      if(FS_MOD_REWRITE)
-         return FS_PATH.'/'.$this->page;
-      else
-         return FS_PATH.'/index.php?page='.$this->page;
+      return FS_PATH.'/'.$this->page;
    }
    
    public function domain()
    {
       if( mb_substr($_SERVER["SERVER_NAME"], 0, 4) == 'www.')
-         return 'http://'.$_SERVER["SERVER_NAME"].FS_PATH;
+         return 'http://'.$_SERVER["SERVER_NAME"];
       else
-         return 'http://www.'.$_SERVER["SERVER_NAME"].FS_PATH;
+         return 'http://www.'.$_SERVER["SERVER_NAME"];
    }
    
-   public function page_url($name='')
-   {
-      if(FS_MOD_REWRITE)
-         return FS_PATH.'/'.$name;
-      else
-         return FS_PATH.'/index.php?page='.$name;
-   }
-   
-   public function random($num)
+   /// devulve TRUE si el número aleatorio es igual a 0
+   public function random($num=9)
    {
       return mt_rand(0, $num) == 0;
+   }
+   
+   public function split_stories(&$stories, $cols=3, $col=1)
+   {
+      $cut = max( array(1, ceil( count($stories)/$cols) ) );
+      $list = array();
+      
+      foreach($stories as $i => $value)
+      {
+         if($i >= $cut*($col-1) AND $i < $cut*$col)
+            $list[] = $value;
+      }
+      
+      return $list;
    }
 }
 

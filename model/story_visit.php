@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,12 +36,7 @@ class story_visit extends fs_model
       if($sv)
       {
          $this->id = $sv['_id'];
-         
-         if( isset($sv['visitor_id']) )
-            $this->visitor_id = $sv['visitor_id'];
-         else
-            $this->visitor_id = NULL;
-         
+         $this->visitor_id = $sv['visitor_id'];
          $this->story_id = $sv['story_id'];
          $this->edition_id = $sv['edition_id'];
          $this->ip = $sv['ip'];
@@ -90,9 +85,8 @@ class story_visit extends fs_model
    public function url()
    {
       $s = $this->story();
-      
       if($s)
-         return 'index.php?page=show_story&id='.$this->story_id;
+         return $s->url();
       else
          return '#';
    }
@@ -100,9 +94,8 @@ class story_visit extends fs_model
    public function edition_url()
    {
       $s = $this->story();
-      
       if($s)
-         return 'index.php?page=show_edition&id='.$this->edition_id;
+         return $s->edit_url();
       else
          return '#';
    }
@@ -110,9 +103,8 @@ class story_visit extends fs_model
    public function title()
    {
       $s = $this->story();
-      
       if($s)
-         return $this->story->title;
+         return $s->title;
       else
          return 'Noticia no encontrada.';
    }
@@ -233,12 +225,9 @@ class story_visit extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 2) == 0 )
-      {
-         echo "\nEliminamos visitas antiguas...";
-         /// eliminamos los registros más antiguos que FS_MAX_AGE
-         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
-      }
+      echo "\nEliminamos visitas antiguas...";
+      /// eliminamos los registros de más de 7 días
+      $this->collection->remove( array('date' => array('$lt'=>time()-604800)) );
    }
 }
 

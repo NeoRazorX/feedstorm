@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ class comment extends fs_model
    public $date;
    public $text;
    public $nick;
+   public $ip;
    
    public function __construct($c = FALSE)
    {
@@ -37,6 +38,7 @@ class comment extends fs_model
          $this->date = $c['date'];
          $this->text = $c['text'];
          $this->nick = $c['nick'];
+         $this->ip = $c['ip'];
       }
       else
       {
@@ -45,13 +47,18 @@ class comment extends fs_model
          $this->date = time();
          $this->text = '';
          $this->nick = 'anónimo';
+         
+         if( isset($_SERVER['REMOTE_ADDR']) )
+            $this->ip = $_SERVER['REMOTE_ADDR'];
+         else
+            $this->ip = 'unknown';
       }
    }
    
    public function install_indexes()
    {
       $this->collection->ensureIndex( array('date' => -1) );
-      $this->collection->ensureIndex( array('thread' => 1, 'date' => -1) );
+      $this->collection->ensureIndex( array('thread' => 1, 'date' => 1) );
    }
    
    public function timesince()
@@ -68,10 +75,10 @@ class comment extends fs_model
          if($story2)
             return $story2->url();
          else
-            return $story->url();
+            return FS_PATH.'/index.php?page=comments';
       }
       else
-         return 'index.php?page=comments';
+         return FS_PATH.'/index.php?page=comments';
    }
    
    public function get($id)
@@ -108,7 +115,8 @@ class comment extends fs_model
           'thread' => $this->thread,
           'date' => $this->date,
           'text' => $this->text,
-          'nick' => $this->nick
+          'nick' => $this->nick,
+          'ip' => $this->ip
       );
       
       if( $this->exists() )
@@ -146,7 +154,7 @@ class comment extends fs_model
       
       $find = array('thread' => $this->var2str($thread));
       $comlist = array();
-      foreach($this->collection->find($find)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
+      foreach($this->collection->find($find)->sort(array('date'=>1)) as $c)
          $comlist[] = new comment($c);
       
       return $comlist;
@@ -154,12 +162,7 @@ class comment extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 2) == 0 )
-      {
-         echo "\nEliminamos comentarios antiguos...";
-         /// eliminamos los registros más antiguos que FS_MAX_AGE
-         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
-      }
+      
    }
 }
 

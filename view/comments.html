@@ -1,0 +1,31 @@
+{include="header"}
+
+<div class="container-fluid">
+   <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+         {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
+            {if condition="$value2->thread"}
+            <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+               <div style="margin-bottom: 5px;">
+                  {if condition="$fsc->visitor->nick==$value2->nick"}
+                  <b>Tú</b> dices:
+                  {else}
+                  <u>@{$value2->nick}</u> dice:
+                  {/if}
+                  <span class="pull-right small">{$value2->timesince()}</span>
+               </div>
+               <p>
+                  {$value2->text}
+                  <a href='{$value2->url()}'>leer más</a>.
+               </p>
+            </div>
+            {/if}
+         {/loop}
+         </div>
+      {/loop}
+   </div>
+</div>
+
+{include="footer"}

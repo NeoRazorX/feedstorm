@@ -23,16 +23,11 @@ define('FS_ANALYTICS', '');
 define('FS_MONGO_HOST', 'localhost');
 define('FS_MONGO_DBNAME', 'ponme_un_nombre');
 
-/// Número de historias máximo para cada feed y para la portada.
+/// Número de artículos en portada, búsquedas, etc...
 define('FS_MAX_STORIES', 50);
 
 /*
  * Caducidad de los elementos, en segundos.
- * Se eliminarán:
- *  - los usuarios que no hayan vuelto en un máximo de FS_MAX_AGE segundos.
- *  - las historias con una edad superior a FS_MAX_AGE segundos.
- *  - las ediciones con una edad superior a FS_MAX_AGE segundos.
- *  - los elementos multimedia con una edad superior a FS_MAX_AGE segundos.
  */
 define('FS_MAX_AGE', 5184000);
 
@@ -44,14 +39,6 @@ define('FS_MAX_AGE', 5184000);
 define('FS_TIMEOUT', 10);
 
 /*
- * Cuando se comprueba una fuente, se extraen las historias, y para
- * cada una se buscan imáganes asociadas. Pues esta constante
- * define el número máximo de imáganes descargadas de una sóla vez.
- * Cuanto mayor el número, más tarda.
- */
-define('FS_MAX_DOWNLOADS', 10);
-
-/*
  * Contraseña maestra, necesaria para tareas como eliminar fuentes.
  */
 define('FS_MASTER_KEY', '');
@@ -61,8 +48,5 @@ define('FS_MASTER_KEY', '');
  * Sólo para tareas de desarrollo.
  */
 define('FS_DEBUG', FALSE);
-
-/// ¿Tienes activado el mod_rewrite de apache?
-define('FS_MOD_REWRITE', FALSE);
 
 ?>

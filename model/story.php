@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,8 +18,8 @@
  */
 
 require_once 'base/fs_model.php';
+require_once 'model/comment.php';
 require_once 'model/feed_story.php';
-require_once 'model/story_media.php';
 require_once 'model/story_edition.php';
 
 class story extends fs_model
@@ -31,24 +31,26 @@ class story extends fs_model
     */
    public $name;
    public $date;
+   public $published; /// sólo para las publicadas
    public $title;
    public $description;
    public $link;
-   public $media_id;
    public $clics;
    public $tweets;
    public $meneos;
    public $likes;
    public $plusones;
    public $popularity;
-   public $native_lang; /// ¿La historia está en español?
-   public $noimages;
+   public $native_lang; /// ¿El artículo está en español?
+   public $parody;
+   public $penalize;
+   public $featured;
    public $keywords;
    public $related_id;
-   
-   private static $mi0;
-   private $media_items;
-   public $media_item;
+   public $edition_id;
+   public $num_editions;
+   public $num_feeds;
+   public $num_comments;
    
    public function __construct($item=FALSE)
    {
@@ -56,76 +58,42 @@ class story extends fs_model
       if($item)
       {
          $this->id = $item['_id'];
-         
-         if( isset($item['name']) )
-            $this->name = $item['name'];
-         else
-            $this->name = '';
-         
+         $this->name = $item['name'];
          $this->date = $item['date'];
+         $this->published = $item['published'];
          $this->title = $item['title'];
          $this->description = $item['description'];
          $this->link = $item['link'];
-         $this->media_id = $item['media_id'];
          $this->clics = $item['clics'];
          $this->tweets = $item['tweets'];
-         
-         if( isset($item['meneos']) )
-            $this->meneos = $item['meneos'];
-         else
-            $this->meneos = 0;
-         
-         if( isset($item['likes']) )
-            $this->likes = $item['likes'];
-         else
-            $this->likes = 0;
-         
-         if( isset($item['plusones']) )
-            $this->plusones = $item['plusones'];
-         else
-            $this->plusones = 0;
-         
+         $this->meneos = $item['meneos'];
+         $this->likes = $item['likes'];
+         $this->plusones = $item['plusones'];
          $this->popularity = $item['popularity'];
+         $this->native_lang = $item['native_lang'];
+         $this->parody = $item['parody'];
+         $this->penalize = $item['penalize'];
+         $this->featured = $item['featured'];
          
-         if( isset($item['native_lang']) )
-            $this->native_lang = $item['native_lang'];
-         else
-            $this->native_lang = TRUE;
+         $this->keywords = '';
+         foreach( explode(',', $item['keywords']) as $kw )
+            $this->add_keyword($kw);
          
-         if( isset($item['noimages']) )
-            $this->noimages = $item['noimages'];
-         else
-            $this->noimages = FALSE;
-         
-         if( isset($item['keywords']) )
-            $this->keywords = $item['keywords'];
-         else
-            $this->keywords = '';
-         
-         if( isset($item['related_id']) )
-            $this->related_id = $item['related_id'];
-         else
-            $this->related_id = NULL;
-         
-         if( is_null($this->media_id) )
-            $this->media_item = NULL;
-         else
-         {
-            if( !isset(self::$mi0) )
-               self::$mi0 = new media_item();
-            
-            $this->media_item = self::$mi0->get($this->media_id);
-         }
+         $this->related_id = $item['related_id'];
+         $this->edition_id = $item['edition_id'];
+         $this->num_editions = $item['num_editions'];
+         $this->num_feeds = $item['num_feeds'];
+         $this->num_comments = $item['num_comments'];
       }
       else
       {
          $this->id = NULL;
          $this->name = '';
          $this->date = time();
+         $this->published = NULL;
          $this->title = NULL;
          $this->description = NULL;
          $this->link = NULL;
-         $this->media_id = NULL;
          $this->clics = 0;
          $this->tweets = 0;
          $this->meneos = 0;
@@ -133,10 +101,15 @@ class story extends fs_model
          $this->plusones = 0;
          $this->popularity = 0;
          $this->native_lang = TRUE;
-         $this->noimages = FALSE;
+         $this->parody = FALSE;
+         $this->penalize = FALSE;
+         $this->featured = FALSE;
          $this->keywords = '';
          $this->related_id = NULL;
-         $this->media_item = NULL;
+         $this->edition_id = NULL;
+         $this->num_editions = 0;
+         $this->num_feeds = 0;
+         $this->num_comments = 0;
       }
    }
    
@@ -144,6 +117,7 @@ class story extends fs_model
    {
       $this->collection->ensureIndex( array('popularity' => -1) );
       $this->collection->ensureIndex( array('date' => -1) );
+      $this->collection->ensureIndex( array('published' => -1) );
       $this->collection->ensureIndex('link');
       $this->collection->ensureIndex('name');
    }
@@ -151,19 +125,19 @@ class story extends fs_model
    public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
-         return 'index.php';
-      else if(FS_MOD_REWRITE AND $this->name != '')
-         return 'show_story/'.$this->name;
+         return FS_PATH.'/index.php';
+      else if($this->name != '')
+         return FS_PATH.'/show_story/'.$this->name;
       else if($w3c)
-         return 'index.php?page=show_story&amp;id='.$this->id;
+         return FS_PATH.'/index.php?page=show_story&amp;id='.$this->id;
       else
-         return 'index.php?page=show_story&id='.$this->id;
+         return FS_PATH.'/index.php?page=show_story&id='.$this->id;
    }
    
    public function link()
    {
       if( is_null($this->id) )
-         return 'index.php';
+         return $this->url();
       else
          return $this->link;
    }
@@ -171,9 +145,9 @@ class story extends fs_model
    public function edit_url()
    {
       if( is_null($this->id) )
-         return 'index.php';
+         return FS_PATH.'/index.php';
       else
-         return 'index.php?page=edit_story&id='.$this->id;
+         return FS_PATH.'/index.php?page=edit_story&id='.$this->id;
    }
    
    public function show_date($iso=FALSE)
@@ -184,9 +158,12 @@ class story extends fs_model
          return Date('Y-m-d H:m', $this->date);
    }
    
-   public function timesince()
+   public function timesince($published=FALSE)
    {
-      return $this->time2timesince($this->date);
+      if($published)
+         return $this->time2timesince($this->published);
+      else
+         return $this->time2timesince($this->date);
    }
    
    public function popularity()
@@ -197,29 +174,43 @@ class story extends fs_model
    public function feed_links()
    {
       $feed_story = new feed_story();
-      return $feed_story->all4story( $this->id );
-   }
-   
-   public function media_items()
-   {
-      if($this->noimages)
+      $feed_links = $feed_story->all4story($this->id);
+      
+      if($this->num_feeds != count($feed_links))
       {
-         $this->media_items = array();
+         $this->num_feeds = count($feed_links);
+         $this->save();
       }
-      else if( !isset($this->media_items) )
-      {
-         $this->media_items = array();
-         $story_media = new story_media();
-         foreach($story_media->all4story($this->id) as $sm)
-            $this->media_items[] = $sm->media_item();
-      }
-      return $this->media_items;
+      
+      return $feed_links;
    }
    
    public function editions()
    {
       $edition = new story_edition();
-      return $edition->all4story( $this->id );
+      $editions = $edition->all4story($this->id);
+      
+      if($this->num_editions != count($editions))
+      {
+         $this->num_editions = count($editions);
+         $this->save();
+      }
+      
+      return $editions;
+   }
+   
+   public function comments()
+   {
+      $comment = new comment();
+      $comments = $comment->all4thread($this->id);
+      
+      if($this->num_comments != count($comments))
+      {
+         $this->num_comments = count($comments);
+         $this->save();
+      }
+      
+      return $comments;
    }
    
    public function related_story()
@@ -230,18 +221,30 @@ class story extends fs_model
          return FALSE;
    }
    
+   public function pre_related_story()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $data = $this->collection->findone( array('related_id' => $this->var2str($this->id)) );
+      if($data)
+         return new story($data);
+      else
+         return FALSE;
+   }
+   
    public function add_keyword($key)
    {
-      if($key != '')
+      $nkey = trim($key);
+      
+      if($nkey != '')
       {
          if($this->keywords == '')
-            $this->keywords = $key;
-         else if( strstr($this->keywords, $key) === FALSE )
-            $this->keywords .= ', '.$key;
+            $this->keywords = $nkey;
+         else if( strstr($this->keywords, $nkey) === FALSE )
+            $this->keywords .= ', '.$nkey;
       }
    }
    
-   public function description($width=300)
+   public function description($width=250)
    {
       return $this->true_text_break($this->description, $width);
    }
@@ -250,15 +253,17 @@ class story extends fs_model
    {
       $tclics = $this->clics;
       
-      if($this->native_lang)
+      if($this->native_lang AND !$this->penalize AND mb_strlen($this->description) > 0)
       {
-         $points = 1 + count( explode(',', $this->keywords) );
-         if($this->media_id)
-            $points++;
+         $points = 1 + $this->num_editions + $this->num_feeds + $this->num_comments;
+         
          if($this->related_id)
             $points++;
+         
          if( mb_strlen($this->description) > 250 )
             $points++;
+         else if( mb_strlen($this->description) < 150 )
+            $points -= 2;
          
          if($this->tweets > 1000)
             $tclics += min( array($this->tweets, 10 + $points*$this->clics) );
@@ -365,9 +370,9 @@ class story extends fs_model
    
    public function random_count($meneame = TRUE)
    {
-      if($this->native_lang)
+      if( isset($this->link) AND $this->native_lang AND !$this->penalize )
       {
-         switch( mt_rand(0, 3) )
+         switch( mt_rand(0, 4) )
          {
             case 0:
                $this->tweet_count();
@@ -387,7 +392,10 @@ class story extends fs_model
                else
                   $this->plusones_count();
                break;
-               
+            
+            case 3:
+               break;
+            
             default:
                $this->plusones_count();
                break;
@@ -447,17 +455,17 @@ class story extends fs_model
    {
       $this->title = $this->true_text_break($this->title, 149, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
-      $this->media_id = $this->var2str($this->media_id);
       $this->related_id = $this->var2str($this->related_id);
+      $this->edition_id = $this->var2str($this->edition_id);
       $this->calculate_popularity();
       
       $data = array(
           'name' => $this->name,
           'date' => $this->date,
+          'published' => $this->published,
           'title' => $this->title,
           'description' => $this->description,
           'link' => $this->link,
-          'media_id' => $this->media_id,
           'clics' => $this->clics,
           'tweets' => $this->tweets,
           'meneos' => $this->meneos,
@@ -465,9 +473,15 @@ class story extends fs_model
           'plusones' => $this->plusones,
           'popularity' => $this->popularity,
           'native_lang' => $this->native_lang,
-          'noimages' => $this->noimages,
+          'parody' => $this->parody,
+          'penalize' => $this->penalize,
+          'featured' => $this->featured,
           'keywords' => $this->keywords,
-          'related_id' => $this->related_id
+          'related_id' => $this->related_id,
+          'edition_id' => $this->edition_id,
+          'num_editions' => $this->num_editions,
+          'num_feeds' => $this->num_feeds,
+          'num_comments' => $this->num_comments
       );
       
       if( $this->exists() )
@@ -515,6 +529,15 @@ class story extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('_id' => $this->id) );
+      
+      foreach($this->editions() as $edi)
+         $edi->delete();
+      
+      foreach($this->feed_links() as $fs)
+         $fs->delete();
+      
+      foreach($this->comments() as $com)
+         $com->delete();
    }
    
    public function all()
@@ -556,6 +579,18 @@ class story extends fs_model
       return $stlist;
    }
    
+   public function published_stories()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $stlist = array();
+      foreach($this->collection->find()->sort(array('published'=>-1))->limit(FS_MAX_STORIES) as $s)
+      {
+         if( isset($s['published']) )
+            $stlist[] = new story($s);
+      }
+      return $stlist;
+   }
+   
    public function random_stories($limit=FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
@@ -578,124 +613,27 @@ class story extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      $search = array( 'title' => new MongoRegex("/\b".$query."\b/i") );
+      $search = array( 'title' => new MongoRegex('/'.$query.'/iu') );
       foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
-         $stlist[] = new story($s);
-      return $stlist;
-   }
-   
-   public function add_media_items($item=FALSE, $search_link=TRUE)
-   {
-      if(!$this->noimages)
       {
-         $num_downloads = 0;
-         $width = 0;
-         $height = 0;
-         $first_forced = FALSE;
-         $media_item = new media_item();
-         foreach($media_item->find_media($item, $this->link, $search_link) as $mi)
-         {
-            $story_media = new story_media();
-            $story_media->story_id = $this->id;
-            
-            if( !$media_item->get_by_url($mi->url) )
-            {
-               if( $mi->download() )
-               {
-                  echo 'D';
-                  $num_downloads++;
-                  
-                  $mi->save();
-                  $story_media->media_id = $mi->get_id();
-                  $story_media->save();
-                  
-                  if($this->link == $mi->url)
-                  {
-                     echo 'S';
-                     
-                     $this->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                     break;
-                  }
-                  else if($num_downloads == 1)
-                  {
-                     echo 'S';
-                     
-                     $this->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                     
-                     if($mi->ratio() < 1 OR $mi->ratio() > 2)
-                        $first_forced = TRUE;
-                  }
-                  else if($num_downloads > FS_MAX_DOWNLOADS)
-                  {
-                     break;
-                  }
-                  else if($first_forced AND $mi->ratio() >= 1 AND $mi->ratio() <= 2)
-                  {
-                     echo 'S';
-                     
-                     $this->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                  }
-                  else if($mi->ratio() >= 1 AND $mi->ratio() <= 2 AND $mi->width > $width AND $mi->height > $height)
-                  {
-                     echo 'S';
-                     
-                     $this->media_id = $mi->get_id();
-                     $width = $mi->original_width;
-                     $height = $mi->original_height;
-                  }
-               }
-               else
-                  echo 'E';
-            }
-            else
-               echo 'I';
-         }
-         
-         /// Si la descripción obtenida es más larga, la usamos
-         if( mb_strlen($media_item->description) > mb_strlen($this->description) )
-            $this->description = $media_item->description;
-         
-         echo "F\n";
-         $this->save();
+         /// parece ser que las expresiones regulares no funciona muy bien en mongodb
+         if( preg_match('/\b'.$query.'\b/iu', $s['title']) )
+            $stlist[] = new story($s);
       }
+      return $stlist;
    }
    
    public function cron_job()
    {
-      if( mt_rand(0, 2) == 0 )
-      {
-         echo "\nEliminamos historias antiguas...";
-         /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
-         $this->collection->remove(
-            array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
-         );
-      }
-      
-      echo "\nActualizamos las historias populares...\n";
-      $i = 0;
+      echo "\nActualizamos los artículos populares y publicamos...";
+      $j = 0;
       $keywords = array();
       $keywords2 = array();
+      $publish = 2; /// máximo de artículos publicados cada vez
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
-         /// obtenemos las menciones de la historia
+         /// obtenemos las menciones del artículo
          $ps->random_count();
-         
-         if($i < FS_MAX_STORIES)
-         {
-            /// si no hay imagen, buscamos más
-            if( !$ps->media_item AND mt_rand(0, 2) == 0 )
-               $ps->add_media_items();
-            else
-               echo '.';
-         }
-         else
-            echo '.';
          
          /// extraemos las keywords
          if($ps->keywords != '')
@@ -713,8 +651,17 @@ class story extends fs_model
             }
          }
          
+         /// si la noticia alcanza el TOP FS_MAX_STORIES, entonces la publicamos
+         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $publish > 0 AND $ps->popularity > 0)
+         {
+            $ps->published = time();
+            $publish--;
+         }
+         
          $ps->save();
-         $i++;
+         $j++;
+         
+         echo '.';
       }
       
       /// necesitamos más keywords
@@ -736,7 +683,7 @@ class story extends fs_model
          }
       }
       
-      echo "\nInterconectamos las historias...\n";
+      echo "\nInterconectamos los artículos...\n";
       foreach( array_merge($keywords, $keywords2) as $keyword )
       {
          if($keyword != '')
@@ -760,27 +707,6 @@ class story extends fs_model
          }
          
          echo '.';
-      }
-   }
-   
-   public function full_redownload()
-   {
-      echo "\nEliminamos historias antiguas...";
-      /// eliminamos los registros más antiguos que FS_MAX_AGE y con menos de 100 clics
-      $this->collection->remove(
-         array('date' => array('$lt' => time()-FS_MAX_AGE), 'clics' => array('$lt' => 100))
-      );
-      
-      echo "\nComprobamos TODAS las historias...";
-      foreach($this->all() as $s)
-      {
-         if($s->media_item)
-         {
-            $s->media_item->redownload();
-            echo 'D';
-         }
-         else
-            echo '.';
       }
    }
 }

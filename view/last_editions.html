@@ -1,0 +1,26 @@
+{include="header"}
+
+{if condition="$fsc->editions"}
+   <div class="container-fluid">
+      <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+            {loop="$fsc->split_stories($fsc->editions, 3, $value1)"}
+            <div class="story{if condition="$value2->visitor_id==$fsc->visitor->get_id()"} story_readed{/if}">
+               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+               <p>{$value2->description()}</p>
+               <div class="small">
+                  {$value2->points}
+                  <span class="pull-right">{$value2->timesince()}</span>
+               </div>
+            </div>
+            {/loop}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{/if}
+
+
+{include="footer"}

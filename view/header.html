@@ -1,0 +1,131 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es" >
+<head>
+   <title>{$fsc->title}</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+   <meta name="description" content="{$fsc->get_description()}" />
+   <meta name="keywords" content="{$fsc->get_keywords()}" />
+   <meta name="robots" content="{if condition="$fsc->noindex"}noindex, nofollow{else}all{/if}" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+   <link rel="stylesheet" href="{$path}/view/css/bootstrap.min.css" />
+   <link rel="stylesheet" href="{$path}/view/css/custom.css" />
+   <script src="{$path}/view/js/jquery.min.js"></script>
+   <script src="{$path}/view/js/bootstrap.min.js"></script>
+   {if condition="$analytics"}
+   <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '{$analytics}']);
+      _gaq.push(['_trackPageview']);
+      (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+   </script>
+   {/if}
+</head>
+<body>
+   <div class="fs_top_menu">
+   <div class="container-fluid">
+      {if condition="$fsc->visitor->mobile()"}
+      <div class="row">
+         <div class="col-xs-12 col-sm-6">
+            <h3 style="margin: 0px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
+         </div>
+         <div class="col-xs-12 col-sm-6" style="text-align: right;">
+            <div class="btn-group">
+               <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}/">
+                  <span class="glyphicon glyphicon-home" title="tu portada"></span>
+               </a>
+               {if condition="$fsc->visitor->num_suscriptions > 0"}
+               <a class="btn btn-default{if condition="$fsc->page=='popular_stories'"} active{/if}" href="{$path}/popular_stories">
+                  <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
+               </a>
+               {/if}
+               <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}/discover_stories">
+                  <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
+               </a>
+               <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}/new_story">
+                  <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+               </a>
+               <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}/search">
+                  <span class="glyphicon glyphicon-search"></span>
+               </a>
+               <div class="btn-group" style="text-align: left;">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                     Más
+                     <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
+                     <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}/last_editions">Ediciones</a></li>
+                  </ul>
+               </div>
+               <a class="btn btn-default{if condition="$fsc->page=='comments'"} active{/if}" href="{$path}/comments">Foro</a>
+               <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}/suscriptions">Tu perfil</a>
+            </div>
+         </div>
+      </div>
+      {else}
+      <div class="row">
+         <div class="col-md-4 col-xs-4">
+            <div class="btn-group">
+               <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}/">
+                  <span class="glyphicon glyphicon-home" title="tu portada"></span>
+               </a>
+               {if condition="$fsc->visitor->num_suscriptions > 0"}
+               <a class="btn btn-default{if condition="$fsc->page=='popular_stories'"} active{/if}" href="{$path}/popular_stories">
+                  <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
+               </a>
+               {/if}
+               <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}/discover_stories">
+                  <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
+               </a>
+               <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}/new_story">
+                  <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+               </a>
+               <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}/search">
+                  <span class="glyphicon glyphicon-search"></span>
+               </a>
+            </div>
+         </div>
+         <div class="col-md-4 col-xs-4" style="text-align: center;">
+            <h3 style="margin: 0px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
+         </div>
+         <div class="col-md-4 col-xs-4" style="text-align: right;">
+            <div class="btn-group">
+               <div class="btn-group" style="text-align: left;">
+                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                     Más
+                     <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu">
+                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
+                     <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}/last_editions">Ediciones</a></li>
+                  </ul>
+               </div>
+               <a class="btn btn-default{if condition="$fsc->page=='comments'"} active{/if}" href="{$path}/comments">Foro</a>
+               <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}/suscriptions">Tu perfil</a>
+            </div>
+         </div>
+      </div>
+      {/if}
+   </div>
+   </div>
+   
+   <div class="container-fluid">
+      <div class="row">
+         <div class="col-md-12">
+            {if condition="$fsc->get_errors()"}
+            <div class="alert alert-danger">
+               <ul>{loop="$fsc->get_errors()"}<li>{$value}</li>{/loop}</ul>
+            </div>
+            {/if}
+            {if condition="$fsc->get_messages()"}
+            <div class="alert alert-info">
+               <ul>{loop="$fsc->get_messages()"}<li>{$value}</li>{/loop}</ul>
+            </div>
+            {/if}
+         </div>
+      </div>
+   </div>

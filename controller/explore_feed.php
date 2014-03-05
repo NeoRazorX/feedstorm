@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,40 +30,33 @@ class explore_feed extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('explore_feed', 'Fuente', FS_NAME, 'explore_feed');
+      parent::__construct('explore_feed', FS_NAME);
       
       $feed = new feed();
       $this->stories = array();
       
-      if( isset($_GET['id']) )
+      if( isset($_POST['modify']) AND $this->visitor->admin )
       {
          $this->feed = $feed->get($_GET['id']);
-         
-         if( isset($_GET['mkey']) )
-         {
-            if($_GET['mkey'] == FS_MASTER_KEY AND FS_MASTER_KEY != '')
-            {
-               if( isset($_GET['delete']) )
-               {
-                  $this->feed->delete();
-                  $this->new_message('Fuente eliminada correctamente.');
-                  $this->feed = FALSE;
-               }
-               else if( isset($_GET['native_lang']) )
-               {
-                  $this->feed->native_lang = ($_GET['native_lang'] == 'TRUE');
-                  $this->feed->save();
-                  $this->new_message("Fuente modificada correctamente.");
-               }
-            }
-            else
-               $this->new_error_msg('Clave incorrecta.');
-         }
+         $this->feed->native_lang = isset($_POST['native_lang']);
+         $this->feed->parody = isset($_POST['parody']);
+         $this->feed->penalize = isset($_POST['penalize']);
+         $this->feed->save();
+         $this->new_message('Fuente modificada correctamente.');
       }
+      else if( isset($_GET['id']) )
+         $this->feed = $feed->get($_GET['id']);
       else
          $this->feed = FALSE;
       
-      if($this->feed)
+      
+      if($this->feed AND isset($_POST['delete']) AND $this->visitor->admin)
+      {
+         $this->feed->delete();
+         $this->feed = FALSE;
+         $this->new_message('Fuente eliminada correctamente.');
+      }
+      else if($this->feed)
       {
          $this->title = $this->feed->name.' &lsaquo; '.FS_NAME;
          $this->stories = $this->feed->stories();
@@ -73,13 +66,13 @@ class explore_feed extends fs_controller
          $suscription->feed_id = $this->feed->get_id();
          if( $suscription->exists() )
          {
-            $this->suscribe_url = 'index.php?page=suscriptions&unsuscribe='.$suscription->get_id();
+            $this->suscribe_url = FS_PATH.'/index.php?page=suscriptions&unsuscribe='.$suscription->get_id();
             $this->suscribe_text = 'Anular suscripción';
             $this->unsuscribe = TRUE;
          }
          else
          {
-            $this->suscribe_url = 'index.php?page=suscriptions&suscribe='.$this->feed->get_id();
+            $this->suscribe_url = FS_PATH.'/index.php?page=suscriptions&suscribe='.$this->feed->get_id();
             $this->suscribe_text = 'Suscribirse';
             $this->unsuscribe = FALSE;
          }
@@ -102,24 +95,6 @@ class explore_feed extends fs_controller
          return $this->feed->description;
       else
          return parent::get_description();
-   }
-   
-   public function twitter_url()
-   {
-      if($this->feed)
-         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->feed->url() ).
-              '&amp;text='.urlencode($this->feed->name);
-      else
-         return 'https://twitter.com/share';
-   }
-   
-   public function facebook_url()
-   {
-      if($this->feed)
-         return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->feed->name).
-              '&amp;p[url]='.urlencode( $this->domain().'/'.$this->feed->url() );
-      else
-         return 'http://www.facebook.com/sharer.php';
    }
 }
 

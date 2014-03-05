@@ -1,0 +1,58 @@
+{include="header"}
+
+{if condition="$fsc->visitor->admin"}
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-md-12">
+         {loop="$fsc->comments"}
+            <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+               <div style="margin-bottom: 5px;">
+                  <u>{$value->nick}</u> dice:
+                  <span class="pull-right small">{$value->timesince()}</span>
+               </div>
+               <p>{$value->text}</p>
+            </div>
+         {else}
+            <div class="alert alert-info">Sin mensaje.</div>
+         {/loop}
+      </div>
+   </div>
+</div>
+{else}
+<script type="text/javascript">
+   $(document).ready(function() {
+      document.f_feedback.comment.focus();
+   });
+</script>
+
+<div class="container">
+   <div class="row">
+      <div class="col-md-12">
+         <form name="f_feedback" action="{$fsc->url()}" method="post">
+            <div class="panel panel-primary">
+               <div class="panel-heading">
+                  <h3 class="panel-title">Escribe tu problema o sugerencia...</h3>
+               </div>
+               <div class="panel-body">
+                  <div>
+                     <textarea class="form-control" name="comment" rows="10" placeholder="Escribe aquí.">{$fsc->txt_comment}</textarea>
+                  </div>
+                  <div>
+                     <input class="form-control" type="text" name="email" value="{$fsc->email}" placeholder="Tu email (opcional)" autocomplete="off"/>
+                  </div>
+                  <div>
+                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  </div>
+               </div>
+               <div class="panel-footer small" style="text-align: right;">
+                  Borra el número para demostrar que eres humano
+                  <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}

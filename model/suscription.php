@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -193,6 +193,12 @@ class suscription extends fs_model
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->remove( array('visitor_id' => $this->var2str($vid)) );
+   }
+   
+   public function delete4feed($fid)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $this->collection->remove( array('feed_id' => $this->var2str($fid)) );
    }
    
    public function all()

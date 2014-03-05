@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,19 +42,25 @@ else
       {
          $visitor = new visitor();
          $feed = new feed();
+         $feeds = array();
          
          foreach($xml->item as $item)
          {
-            $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
-            if( !$f0 )
+            if( !in_array(base64_decode( (string)$item->feed ), $feeds) )
             {
-               $f0 = new feed();
-               $f0->url = base64_decode( (string)$item->feed );
+               $feeds[] = base64_decode( (string)$item->feed );
                
-               if( $f0->reddit() )
-                  $f0->native_lang = FALSE;
-               
-               $f0->save();
+               $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
+               if( !$f0 )
+               {
+                  $f0 = new feed();
+                  $f0->url = base64_decode( (string)$item->feed );
+                  
+                  if( $f0->reddit() )
+                     $f0->native_lang = FALSE;
+                  
+                  $f0->save();
+               }
             }
             
             if( (string)$item->user != '-' )

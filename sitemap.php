@@ -29,7 +29,7 @@ echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
 $mongo = new fs_mongo();
 $story = new story();
-foreach($story->popular_stories(FS_MAX_STORIES * 4) as $s)
+foreach($story->published_stories() as $s)
 {
    if($s->native_lang)
    {

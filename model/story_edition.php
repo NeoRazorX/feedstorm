@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,25 +18,18 @@
  */
 
 require_once 'base/fs_model.php';
-require_once 'model/media_item.php';
 require_once 'model/story.php';
 
 class story_edition extends fs_model
 {
-   public $story_id;
-   public $visitor_id;
-   public $ip;
    public $date;
-   public $title;
    public $description;
-   public $media_id;
-   public $votes;
-   
-   private static $mi0;
-   public $media_item;
-   
-   private static $st0;
-   public $story;
+   public $ip;
+   public $nick;
+   public $points;
+   public $story_id;
+   public $title;
+   public $visitor_id;
    
    public function __construct($se = FALSE)
    {
@@ -44,54 +37,31 @@ class story_edition extends fs_model
       if($se)
       {
          $this->id = $se['_id'];
-         $this->story_id = $se['story_id'];
-         $this->visitor_id = $se['visitor_id'];
-         $this->ip = $se['ip'];
          $this->date = $se['date'];
-         $this->title = $se['title'];
          $this->description = $se['description'];
-         $this->media_id = $se['media_id'];
-         $this->votes = $se['votes'];
-         
-         if( is_null($this->story_id) )
-            $this->story = NULL;
-         else
-         {
-            if( !isset(self::$st0) )
-               self::$st0 = new story();
-            
-            $this->story = self::$st0->get($this->story_id);
-         }
-         
-         if( is_null($this->media_id) )
-            $this->media_item = NULL;
-         else
-         {
-            if( !isset(self::$mi0) )
-               self::$mi0 = new media_item();
-            
-            $this->media_item = self::$mi0->get($this->media_id);
-         }
+         $this->ip = $se['ip'];
+         $this->nick = $se['nick'];
+         $this->points = $se['points'];
+         $this->story_id = $se['story_id'];
+         $this->title = $se['title'];
+         $this->visitor_id = $se['visitor_id'];
       }
       else
       {
          $this->id = NULL;
-         $this->story_id = NULL;
-         $this->visitor_id = NULL;
+         $this->date = time();
+         $this->description = '';
          
          if( isset($_SERVER['REMOTE_ADDR']) )
             $this->ip = $_SERVER['REMOTE_ADDR'];
          else
             $this->ip = 'unknown';
          
-         $this->date = time();
+         $this->nick = 'anonymous';
+         $this->points = 0;
+         $this->story_id = NULL;
          $this->title = '';
-         $this->description = '';
-         $this->media_id = NULL;
-         $this->votes = 1;
-         
-         $this->story = NULL;
-         $this->media_item = NULL;
+         $this->visitor_id = NULL;
       }
    }
    
@@ -114,27 +84,19 @@ class story_edition extends fs_model
    public function url($sitemap=TRUE)
    {
       if( is_null($this->id) )
-         return 'index.php';
+         return FS_PATH.'/index.php';
       else if($sitemap)
-         return 'index.php?page=show_edition&amp;id='.$this->id;
+         return FS_PATH.'/index.php?page=show_edition&amp;id='.$this->id;
       else
-         return 'index.php?page=show_edition&id='.$this->id;
+         return FS_PATH.'/index.php?page=show_edition&id='.$this->id;
    }
    
    public function edit_url()
    {
       if( is_null($this->id) )
-         return 'index.php';
+         return FS_PATH.'/index.php';
       else
-         return 'index.php?page=edit_story&amp;id='.$this->id;
-   }
-   
-   public function vote_url()
-   {
-      if( is_null($this->id) )
-         return 'index.php';
-      else
-         return 'index.php?page=show_edition&amp;id='.$this->id.'&amp;vote=TRUE';
+         return FS_PATH.'/index.php?page=edit_story&amp;id='.$this->id;
    }
    
    public function description($width=300)
@@ -142,9 +104,10 @@ class story_edition extends fs_model
       return $this->true_text_break($this->description, $width);
    }
    
-   public function editions()
+   public function story()
    {
-      return $this->all4story( $this->story_id );
+      $story = new story();
+      return $story->get($this->story_id);
    }
    
    public function get($id)
@@ -199,17 +162,16 @@ class story_edition extends fs_model
       $this->visitor_id = $this->var2str($this->visitor_id);
       $this->title = $this->true_text_break($this->title, 149, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
-      $this->media_id = $this->var2str($this->media_id);
       
       $data = array(
-          'story_id' => $this->story_id,
-          'visitor_id' => $this->visitor_id,
-          'ip' => $this->ip,
           'date' => $this->date,
-          'title' => $this->title,
           'description' => $this->description,
-          'media_id' => $this->media_id,
-          'votes' => $this->votes
+          'ip' => $this->ip,
+          'nick' => $this->nick,
+          'points' => $this->points,
+          'story_id' => $this->story_id,
+          'title' => $this->title,
+          'visitor_id' => $this->visitor_id
       );
       
       if( $this->exists() )
@@ -270,12 +232,7 @@ class story_edition extends fs_model
    
    public function cron_job()
    {
-      if( mt_rand(0, 2) == 0 )
-      {
-         echo "\nEliminamos ediciones antiguas...";
-         /// eliminamos los registros más antiguos que FS_MAX_AGE
-         $this->collection->remove( array('date' => array('$lt'=>time()-FS_MAX_AGE)) );
-      }
+      
    }
 }
 

@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,93 +18,49 @@
  */
 
 require_once 'model/story.php';
+require_once 'model/story_edition.php';
 require_once 'model/story_visit.php';
 
 class show_edition extends fs_controller
 {
+   public $story;
    public $edition;
-   public $editions;
    
    public function __construct()
    {
-      parent::__construct('show_edition', 'edición...', 'Edición...', 'show_edition');
-      
-      /// seleccionamos la plantilla adecuada
-      if( !isset($_POST['popup']) )
-         $this->set_template('show_edition_fp');
+      parent::__construct('show_edition', 'Edición...');
       
       $se = new story_edition();
-      
+      $this->edition = FALSE;
       if( isset($_GET['id']) )
       {
-         $se2 = $se->get($_GET['id']);
-         if($se2)
+         $this->edition = $se->get($_GET['id']);
+         if($this->edition)
          {
-            /// si la historia ya no existe, borramos la edición
-            if($se2->story)
-               $this->edition = $se2;
-            else
-               $se2->delete();
+            $this->story = $this->edition->story();
+            if(!$this->story)
+            {
+               $this->edition->delete();
+               $this->edition = FALSE;
+            }
          }
       }
-      else
-         $this->edition = FALSE;
       
-      if($this->edition)
+      if($this->edition AND isset($_POST['delete']) AND $this->visitor->admin)
+      {
+         $this->edition->delete();
+         $this->edition = FALSE;
+         $this->new_message('Edición eliminada correctamente.');
+      }
+      else if($this->edition)
       {
          $this->title = $this->edition->title . ' (edición)';
          
-         if( !$this->edition->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
-         {
-            $this->edition->story->read();
-            
-            if( isset($_GET['vote']) )
-            {
-               $story_visit = new story_visit();
-               $sv0 = $story_visit->get_by_params($this->edition->story_id, $_SERVER['REMOTE_ADDR']);
-               if( $sv0 )
-               {
-                  if( is_null($sv0->edition_id) )
-                  {
-                     $sv0->edition_id = $this->edition->get_id();
-                     $sv0->save();
-                     $this->edition->votes++;
-                     $this->edition->save();
-                  }
-               }
-               else
-               {
-                  $story_visit->visitor_id = $this->visitor->get_id();
-                  $story_visit->story_id = $this->edition->story_id;
-                  $story_visit->edition_id = $this->edition->get_id();
-                  $story_visit->save();
-                  $this->edition->story->clics++;
-                  $this->edition->story->save();
-                  $this->edition->votes++;
-                  $this->edition->save();
-               }
-            }
-         }
+         if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
+            $this->story->read();
       }
       else
          $this->new_error_msg('Edición no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
-      
-      if( isset($_POST['popup']) OR $this->visitor->mobile() )
-         $this->editions = array();
-      else
-      {
-         $this->editions = $se->last_editions(5);
-         
-         if($this->edition)
-         {
-            /// excluimos la edición actual
-            foreach($this->editions as $i => $value)
-            {
-               if( $value->get_id() == $this->edition->get_id() )
-                  unset($this->editions[$i]);
-            }
-         }
-      }
    }
    
    public function url()
@@ -121,32 +77,6 @@ class show_edition extends fs_controller
          return $this->edition->description;
       else
          return parent::get_description();
-   }
-   
-   public function twitter_url()
-   {
-      if($this->edition)
-         return 'https://twitter.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url(FALSE) ).
-              '&amp;text='.urlencode($this->edition->title);
-      else
-         return 'https://twitter.com/share';
-   }
-   
-   public function facebook_url()
-   {
-      if($this->edition)
-         return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->edition->title).
-              '&amp;p[url]='.urlencode( $this->domain().'/'.$this->edition->url(FALSE) );
-      else
-         return 'http://www.facebook.com/sharer.php';
-   }
-   
-   public function plusone_url()
-   {
-      if($this->edition)
-         return 'https://plus.google.com/share?url='.urlencode( $this->domain().'/'.$this->edition->url(FALSE) );
-      else
-         return 'https://plus.google.com/share';
    }
 }
 

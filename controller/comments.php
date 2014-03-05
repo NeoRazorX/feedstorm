@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,31 +21,17 @@ require_once 'model/comment.php';
 
 class comments extends fs_controller
 {
-   public $comment;
-   public $txt_comment;
+   public $comments;
    
    public function __construct()
    {
-      parent::__construct('comments', 'Comentarios', 'Comentarios &lsaquo; '.FS_NAME, 'comments');
+      parent::__construct('comments', 'Foro &lsaquo; '.FS_NAME);
       
-      $this->comment = new comment();
-      $this->txt_comment = '¡Escribe algo!';
+      $comment = new comment();
+      $this->comments = $comment->all();
       
-      if( isset($_POST['comment']) )
-      {
-         if($this->visitor->human() AND $_POST['human'] == '' )
-         {
-            $comment2 = new comment();
-            $comment2->nick = $this->visitor->nick;
-            $comment2->text = $_POST['comment'];
-            $comment2->save();
-         }
-         else
-         {
-            $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
-            $this->txt_comment = $_POST['comment'];
-         }
-      }
+      if( count($this->comments) == 0 )
+         $this->new_message('Aun no hay comentarios :-(');
    }
    
    public function get_description()

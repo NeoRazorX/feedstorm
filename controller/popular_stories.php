@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,11 @@ class popular_stories extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('popular_stories', 'Populares', 'Populares &lsaquo; '.FS_NAME, 'popular');
+      parent::__construct('popular_stories', 'Populares &lsaquo; '.FS_NAME);
       
+      $this->noindex = FALSE;
       $story = new story();
-      $this->stories = $story->popular_stories();
+      $this->stories = $story->published_stories();
    }
    
    public function get_description()

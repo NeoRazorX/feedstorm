@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,8 @@
 
 require_once 'base/fs_model.php';
 require_once 'model/feed_story.php';
-require_once 'model/media_item.php';
 require_once 'model/suscription.php';
 require_once 'model/story.php';
-require_once 'model/story_media.php';
 
 class feed extends fs_model
 {
@@ -35,6 +33,8 @@ class feed extends fs_model
    public $strikes;
    public $num_stories;
    public $native_lang;
+   public $parody;
+   public $penalize;
    
    public function __construct($f=FALSE)
    {
@@ -49,29 +49,25 @@ class feed extends fs_model
          $this->last_update = $f['last_update'];
          $this->suscriptors = $f['suscriptors'];
          $this->strikes = $f['strikes'];
-         
-         if( isset($f['num_stories']) )
-            $this->num_stories = $f['num_stories'];
-         else
-            $this->num_stories = 0;
-         
-         if( isset($f['native_lang']) )
-            $this->native_lang = $f['native_lang'];
-         else
-            $this->native_lang = TRUE;
+         $this->num_stories = $f['num_stories'];
+         $this->native_lang = $f['native_lang'];
+         $this->parody = $f['parody'];
+         $this->penalize = $f['penalize'];
       }
       else
       {
          $this->id = NULL;
          $this->url = NULL;
          $this->name = $this->random_string(15);
-         $this->description = 'Sin descriptión';
+         $this->description = 'Sin descripción.';
          $this->last_check_date = 0;
          $this->last_update = 0;
          $this->suscriptors = 0;
          $this->strikes = 0;
          $this->num_stories = 0;
          $this->native_lang = TRUE;
+         $this->parody = FALSE;
+         $this->penalize = FALSE;
       }
    }
    
@@ -84,13 +80,9 @@ class feed extends fs_model
    public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
-         return 'index.php';
-      else if(FS_MOD_REWRITE)
-         return 'explore_feed/'.$this->id;
-      else if($w3c)
-         return 'index.php?page=explore_feed&amp;id='.$this->id;
+         return FS_PATH.'/index.php';
       else
-         return 'index.php?page=explore_feed&id='.$this->id;
+         return FS_PATH.'/explore_feed/'.$this->id;
    }
    
    public function show_url($size=60)
@@ -183,58 +175,25 @@ class feed extends fs_model
             if($xml)
             {
                /// intentamos leer las noticias
-               $i = 0;
                if( $xml->channel->item )
                {
                   foreach($xml->channel->item as $item)
-                  {
-                     if($i < FS_MAX_STORIES)
-                     {
-                        $this->new_story($item);
-                        $i++;
-                     }
-                     else
-                        break;
-                  }
+                     $this->new_story($item);
                }
                else if( $xml->item )
                {
                   foreach($xml->item as $item)
-                  {
-                     if($i < FS_MAX_STORIES)
-                     {
-                        $this->new_story($item);
-                        $i++;
-                     }
-                     else
-                        break;
-                  }
+                     $this->new_story($item);
                }
                else if( $xml->feed->entry )
                {
                   foreach($xml->feed->entry as $item)
-                  {
-                     if($i < FS_MAX_STORIES)
-                     {
-                        $this->new_story($item);
-                        $i++;
-                     }
-                     else
-                        break;
-                  }
+                     $this->new_story($item);
                }
                else if( $xml->entry )
                {
                   foreach($xml->entry as $item)
-                  {
-                     if($i < FS_MAX_STORIES)
-                     {
-                        $this->new_story($item);
-                        $i++;
-                     }
-                     else
-                        break;
-                  }
+                     $this->new_story($item);
                }
                else
                {
@@ -421,41 +380,6 @@ class feed extends fs_model
       $description = preg_replace("/<\s*style.+?<\s*\/\s*style.*?>/si", '', html_entity_decode($description, ENT_QUOTES, 'UTF-8') );
       $story->description = $this->remove_bad_utf8( strip_tags($description) );
       
-      /// si la descripción de la noticia es demasiado corta, incluimos información adicional.
-      if( mb_strlen($story->description) < 250 )
-      {
-         $dado = mt_rand(0, 4);
-         switch ($dado)
-         {
-            case 0:
-               $story->description .= ' Historia original de "'.$this->name.'" y publicada '.$story->timesince().
-                    ' ¿Y tú qué opinas?';
-               break;
-            
-            case 1:
-               $story->description .= ' Escrito '.$story->timesince().' desde la fuente "'.$this->name.
-                    '" ¿Tienes más información? Escribe un comentario ;-)';
-               break;
-            
-            case 2:
-               $story->description .= ' ¿Y tú qué opinas? Deja un comentario ¡Que es gratis!';
-               break;
-            
-            case 3:
-               $story->description .= ' No sé tú como lo ves ... ¿Por qué no dejas un comentario? ¡Es gratis!';
-               break;
-            
-            default:
-               $story->description .= ' Historia indexada el '.Date('d/m/Y').' desde "'.$this->name.'".';
-               if( !$this->native_lang )
-               {
-                  $story->description .= ' Esta historia no está e español,
-                     pero puedes traducirla pulsando el botón editar.';
-               }
-               break;
-         }
-      }
-      
       /// ¿story ya existe?
       $story2 = $story->get_by_link($story->link);
       if($story2)
@@ -483,30 +407,29 @@ class feed extends fs_model
                $story2->description = $story->description;
             }
             
+            /// ¿La noticia está penalizada pero la fuente no?
+            if($story2->penalize AND !$this->penalize)
+               $story2->penalize = FALSE;
+            
             /// actualizamos la noticia
             if($meneos > $story2->meneos)
                $story2->meneos = $meneos;
             $story2->random_count( !$this->meneame() );
+            $story2->num_feeds++;
             $story2->save();
          }
-         
-         /* 
-          * Si la historia no tiene asociado un elemento multimedia,
-          * tiramos un dado y buscamos más elementos multimedia.
-          */
-         if( is_null($story2->media_id) AND mt_rand(0, 2) == 0 )
-            $story2->add_media_items($item);
       }
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
          $story->meneos = $meneos;
          $story->random_count( !$this->meneame() );
          $story->native_lang = $this->native_lang;
+         $story->parody = $this->parody;
+         $story->penalize = $this->penalize;
+         $story->num_feeds = 1;
          $story->save(); /// hay que guardar para tener un ID
          $feed_story->story_id = $story->get_id();
          $feed_story->save();
-         
-         $story->add_media_items($item, FALSE); /// ya se encarga de guardar
       }
    }
    
@@ -584,7 +507,9 @@ class feed extends fs_model
              'suscriptors' => $this->suscriptors,
              'strikes' => $this->strikes,
              'num_stories' => $this->num_stories,
-             'native_lang' => $this->native_lang
+             'native_lang' => $this->native_lang,
+             'parody' => $this->parody,
+             'penalize' => $this->penalize
          );
          
          if( $this->exists() )
@@ -611,12 +536,10 @@ class feed extends fs_model
       $this->collection->remove( array('_id' => $this->id) );
       
       $suscription = new suscription();
-      foreach($suscription->all4feed($this->id) as $sus)
-         $sus->delete();
+      $suscription->delete4feed($this->id);
       
       $feed_story = new feed_story();
-      foreach($feed_story->all4feed($this->id) as $fs)
-         $fs->delete();
+      $feed_story->delete4feed($this->id);
    }
    
    public function all()

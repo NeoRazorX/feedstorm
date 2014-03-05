@@ -1,0 +1,81 @@
+body {
+   background-color: #E9EAED;
+}
+
+.fs_top_menu {
+   margin: 0px 0px 15px 0px;
+   padding: 5px 0px 5px 0px;
+   background-color: #555555;
+   border-top: 2px solid #333333;
+   border-bottom: 1px solid #333333;
+   box-shadow: 1px 1px 1px #666;
+}
+
+#fs_brand {
+   color: white;
+   font-size: 30px;
+   text-shadow: 2px 2px 2px #333333;
+}
+
+#fs_brand:hover {
+   text-decoration: none;
+}
+
+.story {
+   margin-bottom: 10px;
+   background-color: white;
+   border: 1px solid #D5D6D9;
+   border-left: 2px solid #428BCA;
+}
+
+.story h4 {
+   margin: 0px;
+   padding: 5px 2px 0px 8px;
+}
+
+.story p {
+   margin: 0px;
+   padding: 3px 3px 2px 8px;
+   text-align: justify;
+}
+
+.story .small {
+   padding: 2px 5px 2px 5px;
+   background-color: #E7EEF3;
+   color: #333333;
+}
+
+.story a {
+   color: #333333;
+}
+
+.story_readed {
+   border-left: 2px solid #5CB85C;
+}
+
+.story_readed .small {
+   background-color: #EAF4EA;
+   color: #444444;
+}
+
+.story_readed a {
+   color: #444444;
+}
+
+.full_story {
+   margin-bottom: 15px;
+   background-color: white;
+   border-left: 1px solid #dddddd;
+   border-right: 1px solid #dddddd;
+   border-bottom: 1px solid #dddddd;
+}
+
+.full_story h1 {
+   margin: 0px;
+   padding: 5px 5px 3px 5px;
+}
+
+.full_story p {
+   padding: 0px 5px 0px 5px;
+   text-align: justify
+}

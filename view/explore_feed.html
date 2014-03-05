@@ -1,0 +1,97 @@
+{include="header"}
+
+{if condition="$fsc->feed"}
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-md-4">
+         <div class="panel panel-primary">
+            <div class="panel-heading">
+               <h3 class="panel-title">{$fsc->feed->name}</h3>
+            </div>
+            <div class="panel-body">
+               <p>
+                  {$fsc->feed->description}<br/>Fuente: {$fsc->feed->url}
+               </p>
+               {if condition="$fsc->visitor->human()"}
+               <div>
+               {if condition="$fsc->unsuscribe"}
+                  <a class="btn btn-sm btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+               {else}
+                  <a class="btn btn-sm btn-success" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
+               {/if}
+               </div>
+               {/if}
+            </div>
+            <div class="panel-footer small">
+               {$fsc->feed->num_stories} artículos,
+               {$fsc->feed->suscriptors} suscriptores.
+               Última actualización {$fsc->feed->last_update_timesince()}.
+            </div>
+         </div>
+         {if condition="$fsc->visitor->admin"}
+         <div class="panel panel-info">
+            <div class="panel-heading">
+               <h3 class="panel-title">Editar</h3>
+            </div>
+            <div class="panel-body">
+               <form action="{$fsc->url()}" method="post">
+                  <input type="hidden" name="modify" value="TRUE"/>
+                  <div>
+                     <label>
+                        <input type="checkbox" name="native_lang" value="TRUE"{if condition="$fsc->feed->native_lang"} checked="checked"{/if}/>
+                        Está en español.
+                     </label>
+                  </div>
+                  <div>
+                     <label>
+                        <input type="checkbox" name="parody" value="TRUE"{if condition="$fsc->feed->parody"} checked="checked"{/if}/>
+                        Es una fuente de parodia o de contenido humoristico o sarcástico.
+                     </label>
+                  </div>
+                  <div>
+                     <label>
+                        <input type="checkbox" name="penalize" value="TRUE"{if condition="$fsc->feed->penalize"} checked="checked"{/if}/>
+                        Penalizar esta fuente.
+                     </label>
+                  </div>
+                  <input class="btn btn-info btn-sm" type="submit" value="Guardar"/>
+               </form>
+            </div>
+            <div class="panel-footer small">
+               Última comprobación {$fsc->feed->last_check_timesince()},
+               {$fsc->feed->strikes} errores.
+            </div>
+         </div>
+         <div class="panel panel-danger">
+            <div class="panel-heading">
+               <h3 class="panel-title">Borrar</h3>
+            </div>
+            <div class="panel-body">
+               <p>Si realmente deseas eliminar esta fuente, pulsa borrar.</p>
+               <form action="{$fsc->url()}" method="post">
+                  <input type="hidden" name="delete" value="TRUE"/>
+                  <input class="btn btn-danger btn-sm" type="submit" value="Eliminar"/>
+               </form>
+            </div>
+         </div>
+         {/if}
+      </div>
+      <div class="col-md-8">
+         {loop="$fsc->stories"}
+         <div class="story{if condition="$value->readed()"} story_readed{/if}">
+               <h4>
+                  <a href='{$value->url()}'>{$value->title}</a>
+               </h4>
+               <p>{$value->description()}</p>
+               <div class="small">
+                  {$value->popularity()}
+                  <span class="pull-right">{$value->timesince()}</span>
+               </div>
+         </div>
+         {/loop}
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}

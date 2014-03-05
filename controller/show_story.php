@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,7 @@ class show_story extends fs_controller
    
    public function __construct()
    {
-      parent::__construct('show_story', 'historia...', 'Historia...', 'show_story');
-      
-      /// seleccionamos la plantilla adecuada
-      if( isset($_GET['redir']) )
-         $this->template = 'redir';
-      else if( !isset($_POST['popup']) )
-         $this->set_template('show_story_fp');
+      parent::__construct('show_story', 'Artículo...');
       
       $story = new story();
       
@@ -48,6 +42,9 @@ class show_story extends fs_controller
       {
          $this->title = $this->story->title;
          $this->comments = $this->comments();
+         
+         if($this->story->published)
+            $this->noindex = FALSE;
          
          if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
@@ -64,9 +61,14 @@ class show_story extends fs_controller
                $this->story->save();
             }
          }
+         
+         if(count($this->get_errors()) + count($this->get_errors()) == 0 AND mt_rand(0, 3) == 0)
+         {
+            $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
+         }
       }
       else
-         $this->new_error_msg('Historia no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
+         $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
    }
    
    public function url()
@@ -88,7 +90,7 @@ class show_story extends fs_controller
    public function get_description()
    {
       if($this->story)
-         return $this->story->description;
+         return $this->story->description();
       else
          return parent::get_description();
    }
@@ -105,12 +107,14 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         if(mt_rand(0, 1) == 0)
-            return 'https://twitter.com/share?url='.urlencode($this->full_url()).
+         $url = 'https://twitter.com/share?url='.urlencode( $this->full_url() ).
+            '&amp;text='.urlencode($this->story->title);
+         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         {
+            $url = 'https://twitter.com/share?url='.urlencode($this->story->link).
                '&amp;text='.urlencode($this->story->title);
-         else
-            return 'https://twitter.com/share?url='.urlencode($this->story->link).
-               '&amp;text='.urlencode($this->story->title);
+         }
+         return $url;
       }
       else
          return 'https://twitter.com/share';
@@ -120,12 +124,14 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         if(mt_rand(0, 1) == 0)
-            return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
-               '&amp;p[url]='.urlencode($this->full_url());
-         else
-            return 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+         $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+            '&amp;p[url]='.urlencode( $this->full_url() );
+         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         {
+            $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
                '&amp;p[url]='.urlencode($this->story->link);
+         }
+         return $url;
       }
       else
          return 'http://www.facebook.com/sharer.php';
@@ -135,10 +141,12 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         if(mt_rand(0, 1) == 0)
-            return 'https://plus.google.com/share?url='.urlencode($this->full_url());
-         else
-            return 'https://plus.google.com/share?url='.urlencode($this->story->link);
+         $url = 'https://plus.google.com/share?url='.urlencode( $this->full_url() );
+         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         {
+            $url = 'https://plus.google.com/share?url='.urlencode($this->story->link);
+         }
+         return $url;
       }
       else
          return 'https://plus.google.com/share';
@@ -148,21 +156,21 @@ class show_story extends fs_controller
    {
       $comment = new comment();
       $this->txt_comment = '';
-      $all_comments = $comment->all4thread( $this->story->get_id() );
+      $all_comments = $this->story->comments();
       
       if( isset($_POST['comment']) )
       {
-         if($this->visitor->human() AND $_POST['human'] == '' )
+         if($this->visitor->human() AND ($_POST['human'] == '' OR $this->visitor->admin) )
          {
             $comment = new comment();
             $comment->thread = $this->story->get_id();
             $comment->nick = $this->visitor->nick;
             $comment->text = $_POST['comment'];
             $comment->save();
-            array_unshift($all_comments, $comment);
+            $all_comments[] = $comment;
             
             /// actualizamos al visitante
-            $this->visitor->human = TRUE;
+            $this->visitor->num_comments++;
             $this->visitor->need_save = TRUE;
             $this->visitor->save();
          }
@@ -173,7 +181,7 @@ class show_story extends fs_controller
          }
       }
       
-      return array_reverse($all_comments);
+      return $all_comments;
    }
    
    public function related_stories()
@@ -192,6 +200,13 @@ class show_story extends fs_controller
          }
          else
             break;
+      }
+      
+      if( count($stories) == 0 )
+      {
+         $story = $this->story->pre_related_story();
+         if($story)
+            $stories[] = $story;
       }
       
       return $stories;

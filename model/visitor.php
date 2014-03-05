@@ -1,7 +1,7 @@
 <?php
 /*
  * This file is part of FeedStorm
- * Copyright (C) 2013  Carlos Garcia Gomez  neorazorx@gmail.com
+ * Copyright (C) 2014  Carlos Garcia Gomez  neorazorx@gmail.com
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,17 +26,21 @@ require_once 'model/suscription.php';
 class visitor extends fs_model
 {
    public $nick;
+   public $ip;
    public $user_agent;
    public $first_login_date;
    public $last_login_date;
-   public $human; /// humano confirmado (ha contenstado que si es humano)
+   public $admin;
    public $num_suscriptions;
-   public $age;
+   public $num_stories;
+   public $num_editions;
+   public $num_comments;
+   public $num_visits;
+   public $points;
+   public $extra_points;
    
    public $noob;
    public $need_save;
-   
-   private static $sus0;
    private $suscriptions;
    
    public function __construct($k=FALSE)
@@ -46,54 +50,45 @@ class visitor extends fs_model
       {
          $this->id = $k['_id'];
          $this->nick = $k['nick'];
+         $this->ip = $k['ip'];
          $this->user_agent = $k['user_agent'];
-         
-         if( isset($k['first_login_date']) )
-            $this->first_login_date = $k['first_login_date'];
-         else
-            $this->first_login_date = $k['last_login_date'];
-         
+         $this->first_login_date = $k['first_login_date'];
          $this->last_login_date = $k['last_login_date'];
-         
-         if( isset($k['human']) )
-            $this->human = $k['human'];
-         else
-            $this->human = FALSE;
-         
-         if( isset($k['num_suscriptions']) )
-            $this->num_suscriptions = $k['num_suscriptions'];
-         else
-            $this->num_suscriptions = 0;
-         
-         if( isset($k['age']) )
-            $this->age = $k['age'];
-         else
-            $this->age = 0;
-         
+         $this->admin = $k['admin'];
+         $this->num_suscriptions = $k['num_suscriptions'];
+         $this->num_stories = $k['num_stories'];
+         $this->num_editions = $k['num_editions'];
+         $this->num_comments = $k['num_comments'];
+         $this->num_visits = $k['num_visits'];
+         $this->points = $k['points'];
+         $this->extra_points = $k['extra_points'];
          $this->noob = FALSE;
-         $this->need_save = FALSE;
       }
       else
       {
          $this->id = NULL;
          $this->nick = $this->random_string(12);
+         $this->ip = 'unknown';
+         $this->user_agent = 'unknown';
          $this->first_login_date = time();
-         $this->human = FALSE;
+         $this->last_login_date = 0;
+         $this->admin = FALSE;
          $this->num_suscriptions = 0;
-         $this->login();
-         $this->age = 0;
+         $this->num_stories = 0;
+         $this->num_editions = 0;
+         $this->num_comments = 0;
+         $this->num_visits = 0;
+         $this->points = 0;
+         $this->extra_points = 0;
          $this->noob = TRUE;
-         $this->need_save = TRUE;
       }
       
-      if( !isset(self::$sus0) )
-         self::$sus0 = new suscription();
+      $this->need_save = FALSE;
    }
    
    public function install_indexes()
    {
       $this->collection->ensureIndex('last_login_date');
-      $this->collection->ensureIndex( array('age' => -1) );
    }
    
    public function login_date()
@@ -106,12 +101,9 @@ class visitor extends fs_model
       return $this->time2timesince($this->last_login_date);
    }
    
-   public function age($real = FALSE)
+   public function age()
    {
-      if($real)
-         $time = $this->age;
-      else
-         $time = $this->last_login_date - $this->first_login_date;
+      $time = $this->last_login_date - $this->first_login_date;
       
       if($time <= 60)
          return $time.' segundos';
@@ -158,6 +150,11 @@ class visitor extends fs_model
    
    public function login()
    {
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $this->ip = $_SERVER['REMOTE_ADDR'];
+      else
+         $this->ip = 'unknown';
+      
       if( isset($_SERVER['HTTP_USER_AGENT']) )
          $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
       else
@@ -168,17 +165,25 @@ class visitor extends fs_model
          $this->last_login_date = time();
          $this->need_save = TRUE;
       }
-   }
-   
-   public function num_visits()
-   {
-      $sv = new story_visit();
-      return $sv->count4visitor($this->id);
+      
+      if( $this->num_editions < (2*$this->num_visits) AND $this->num_stories < (2*$this->num_visits) )
+         $this->points = intval( ($this->num_comments+$this->num_editions+$this->num_stories)/3 ) + $this->extra_points;
+      else
+         $this->points = 0;
    }
    
    public function last_visits()
    {
       $sv = new story_visit();
+      
+      $num_visits = $sv->count4visitor($this->id);
+      if($this->num_visits != $num_visits)
+      {
+         $this->num_visits = $num_visits;
+         $this->need_save = TRUE;
+         $this->save();
+      }
+      
       return $sv->all4visitor($this->id);
    }
    
@@ -186,9 +191,10 @@ class visitor extends fs_model
    {
       if( !isset($this->suscriptions) )
       {
-         $this->suscriptions = self::$sus0->all4visitor($this->id);
+         $sus0 = new suscription();
+         $this->suscriptions = $sus0->all4visitor($this->id);
          
-         if( $this->num_suscriptions != count($this->suscriptions) )
+         if($this->num_suscriptions != count($this->suscriptions) )
          {
             $this->num_suscriptions = count($this->suscriptions);
             $this->need_save = TRUE;
@@ -222,7 +228,7 @@ class visitor extends fs_model
       else
       {
          $story = new story();
-         return $story->popular_stories();
+         return $story->published_stories();
       }
    }
    
@@ -264,17 +270,20 @@ class visitor extends fs_model
    {
       if( $this->need_save AND $this->human() )
       {
-         $age = $this->last_login_date - $this->first_login_date;
-         
          $data = array(
              'nick' => $this->nick,
+             'ip' => $this->ip,
              'user_agent' => $this->user_agent,
              'first_login_date' => $this->first_login_date,
              'last_login_date' => $this->last_login_date,
-             'human' => $this->human,
+             'admin' => $this->admin,
              'num_suscriptions' => $this->num_suscriptions,
-             'mobile' => $this->mobile(),
-             'age' => $this->age
+             'num_stories' => $this->num_stories,
+             'num_editions' => $this->num_editions,
+             'num_comments' => $this->num_comments,
+             'num_visits' => $this->num_visits,
+             'points' => $this->points,
+             'extra_points' => $this->extra_points
          );
          
          if( $this->exists() )
@@ -302,15 +311,20 @@ class visitor extends fs_model
       $data = array(
           '_id' => $this->id,
           'nick' => $this->nick,
+          'ip' => $this->ip,
           'user_agent' => $this->user_agent,
           'first_login_date' => $this->first_login_date,
           'last_login_date' => $this->last_login_date,
-          'human' => $this->human,
+          'admin' => $this->admin,
           'num_suscriptions' => $this->num_suscriptions,
-          'mobile' => $this->mobile(),
-          'age' => $this->age
+          'num_stories' => $this->num_stories,
+          'num_editions' => $this->num_editions,
+          'num_comments' => $this->num_comments,
+          'num_visits' => $this->num_visits,
+          'points' => $this->points,
+          'extra_points' => $this->extra_points
       );
-      $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $this->collection->insert($data);
    }
    
@@ -320,7 +334,8 @@ class visitor extends fs_model
       $this->collection->remove( array('_id' => $this->id) );
       
       /// eliminamos las suscripciones
-      self::$sus0->delete4visitor($this->id);
+      $sus0 = new suscription();
+      $sus0->delete4visitor($this->id);
    }
    
    public function all()
@@ -339,30 +354,6 @@ class visitor extends fs_model
       foreach($this->collection->find()->sort(array('last_login_date'=>-1))->limit(FS_MAX_STORIES) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
-   }
-   
-   public function usuals()
-   {
-      $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $vlist = array();
-      $sort = array('age' => -1);
-      foreach($this->collection->find()->sort($sort)->limit(FS_MAX_STORIES) as $v)
-      {
-         if($v['age'] >= 300)
-            $vlist[] = new visitor($v);
-      }
-      return $vlist;
-   }
-   
-   public function count_usuals()
-   {
-      $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      return $this->collection->find( array('age' => array('$gt'=>300)) )->count();
-   }
-   
-   public function show_count_usuals()
-   {
-      return number_format($this->count_usuals(), 0, ',', '.');
    }
    
    public function cron_job()

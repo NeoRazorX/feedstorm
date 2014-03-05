@@ -1,0 +1,41 @@
+{include="header"}
+
+{if condition="$fsc->stories"}
+   <div class="container-fluid">
+      <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
+            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
+               {if condition="$value2->featured"}
+               <div class="pull-right"><span class="label label-success" title="este artículo está destacado">destacada</span></div>
+               {/if}
+               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+               <p>{$value2->description()}</p>
+               <div class="small">
+                  {$value2->popularity()}
+                  <span class="pull-right">{$value2->timesince()}</span>
+               </div>
+            </div>
+            {/loop}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{else}
+<div class="container">
+   <div class="row">
+      <div class="col-md-12">
+         <div class="well">
+            <h1>Ha habido un problema :s</h1>
+            <p>
+               Por desgracia no tengo ningún artículo para mostrarte.
+            </p>
+         </div>
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}

@@ -1,0 +1,70 @@
+{include="header"}
+
+{if condition="$fsc->stories"}
+   <div class="container-fluid">
+      <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
+            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
+               {if condition="$value2->featured"}
+               <div class="pull-right"><span class="label label-success" title="este artículo está destacado">destacado</span></div>
+               {/if}
+               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+               <p>{$value2->description()}</p>
+               <div class="small">
+                  {$value2->popularity()}
+                  <span class="pull-right">{$value2->timesince()}</span>
+               </div>
+            </div>
+            {/loop}
+         </div>
+      {/loop}
+      </div>
+   </div>
+{else}
+<div class="container">
+   <div class="row">
+      <div class="col-md-12">
+         <div class="well">
+            <h1>¡Hola!</h1>
+            <div>
+               <p>No tengo ningún artículo para mostrarte. Esto puede significar varias cosas:</p>
+               <ul>
+                  <li>
+                     Acabas de instalar FeedStorm.
+                     <ul>
+                        <li>
+                           <b>Solución:</b> <a href="{$path}/new_story">escribe un artículo</a> o
+                           <a href="{$path}/feed_list">añade alguna fuente</a>.
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     Te has suscrito a fuentes que no tienen artículos.
+                     <ul>
+                        <li>
+                            <b>Solución:</b> comprueba <a href="{$path}/suscriptions">tus suscriptiones</a>.
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     La civilización ha colapsado (casi seguro). @chan2 ya me avisó de que esto podía pasar.
+                     <ul>
+                        <li>
+                            <b>Solución:</b> construye una nueva civilización. Me he visto unos cuantos videotutoriales
+                            y creo que puedo ayudarte, pero lo primero es que <a href="{$path}/new_story">escribas un artículo</a>
+                            informando a todo el mundo.
+                        </li>
+                     </ul>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{/if}
+
+{include="footer"}

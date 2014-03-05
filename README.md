@@ -1,5 +1,4 @@
-__FeedStorm__ es un hibrido entre Google Reader y Pinterest,
-pero anónimo y software libre.
+__FeedStorm__ es un lector/editor de noticias colaborativo, anónimo y software libre.
 
 FeedStorm usa RainTPL, MongoDB, php-curl y php-gd.
 Para instalar MongoDB sigue estos tutoriales:

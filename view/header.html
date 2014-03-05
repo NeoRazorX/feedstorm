@@ -57,11 +57,11 @@
                      <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
                      <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}/last_editions">Ediciones</a></li>
+                     <li{if condition="$fsc->page=='comments'"} class="active"{/if}><a href="{$path}/comments">Foro</a></li>
+                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
                   </ul>
                </div>
-               <a class="btn btn-default{if condition="$fsc->page=='comments'"} active{/if}" href="{$path}/comments">Foro</a>
                <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}/suscriptions">Tu perfil</a>
             </div>
          </div>
@@ -100,8 +100,8 @@
                      <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
                      <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}/last_editions">Ediciones</a></li>
+                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}/feed_list">Fuentes</a></li>
                   </ul>
                </div>
                <a class="btn btn-default{if condition="$fsc->page=='comments'"} active{/if}" href="{$path}/comments">Foro</a>

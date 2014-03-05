@@ -33,7 +33,7 @@ foreach($story->published_stories() as $s)
 {
    if($s->native_lang)
    {
-      echo '<url><loc>http://',$_SERVER["SERVER_NAME"],FS_PATH,'/',$s->url(TRUE),'</loc><lastmod>',
+      echo '<url><loc>http://',$_SERVER["SERVER_NAME"],$s->url(TRUE),'</loc><lastmod>',
          Date('Y-m-d', $s->date),'</lastmod><changefreq>always</changefreq><priority>0.8</priority></url>';
    }
 }

@@ -75,10 +75,10 @@ class comment extends fs_model
          if($story2)
             return $story2->url();
          else
-            return FS_PATH.'/index.php?page=comments';
+            return FS_PATH.'index.php?page=comments';
       }
       else
-         return FS_PATH.'/index.php?page=comments';
+         return FS_PATH.'index.php?page=comments';
    }
    
    public function get($id)

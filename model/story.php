@@ -125,13 +125,13 @@ class story extends fs_model
    public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
-         return FS_PATH.'/index.php';
+         return FS_PATH.'index.php';
       else if($this->name != '')
-         return FS_PATH.'/show_story/'.$this->name;
+         return FS_PATH.'show_story/'.$this->name;
       else if($w3c)
-         return FS_PATH.'/index.php?page=show_story&amp;id='.$this->id;
+         return FS_PATH.'index.php?page=show_story&amp;id='.$this->id;
       else
-         return FS_PATH.'/index.php?page=show_story&id='.$this->id;
+         return FS_PATH.'index.php?page=show_story&id='.$this->id;
    }
    
    public function link()
@@ -145,9 +145,9 @@ class story extends fs_model
    public function edit_url()
    {
       if( is_null($this->id) )
-         return FS_PATH.'/index.php';
+         return FS_PATH.'index.php';
       else
-         return FS_PATH.'/index.php?page=edit_story&id='.$this->id;
+         return FS_PATH.'edit_story/'.$this->id;
    }
    
    public function show_date($iso=FALSE)

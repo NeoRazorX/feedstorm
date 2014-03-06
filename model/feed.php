@@ -80,9 +80,9 @@ class feed extends fs_model
    public function url($w3c = TRUE)
    {
       if( is_null($this->id) )
-         return FS_PATH.'/index.php';
+         return FS_PATH.'index.php';
       else
-         return FS_PATH.'/explore_feed/'.$this->id;
+         return FS_PATH.'explore_feed/'.$this->id;
    }
    
    public function show_url($size=60)

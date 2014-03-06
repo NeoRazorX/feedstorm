@@ -68,7 +68,7 @@ class show_story extends fs_controller
          }
       }
       else
-         $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
+         $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'index.php?page=search">Usa el buscador</a>.');
    }
    
    public function url()

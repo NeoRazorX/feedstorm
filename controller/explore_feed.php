@@ -66,13 +66,13 @@ class explore_feed extends fs_controller
          $suscription->feed_id = $this->feed->get_id();
          if( $suscription->exists() )
          {
-            $this->suscribe_url = FS_PATH.'/index.php?page=suscriptions&unsuscribe='.$suscription->get_id();
+            $this->suscribe_url = FS_PATH.'index.php?page=suscriptions&unsuscribe='.$suscription->get_id();
             $this->suscribe_text = 'Anular suscripción';
             $this->unsuscribe = TRUE;
          }
          else
          {
-            $this->suscribe_url = FS_PATH.'/index.php?page=suscriptions&suscribe='.$this->feed->get_id();
+            $this->suscribe_url = FS_PATH.'index.php?page=suscriptions&suscribe='.$this->feed->get_id();
             $this->suscribe_text = 'Suscribirse';
             $this->unsuscribe = FALSE;
          }

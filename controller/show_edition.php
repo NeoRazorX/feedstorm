@@ -60,7 +60,7 @@ class show_edition extends fs_controller
             $this->story->read();
       }
       else
-         $this->new_error_msg('Edición no encontrada. <a href="'.FS_PATH.'/index.php?page=search">Usa el buscador</a>.');
+         $this->new_error_msg('Edición no encontrada. <a href="'.FS_PATH.'search">Usa el buscador</a>.');
    }
    
    public function url()

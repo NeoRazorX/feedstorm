@@ -8,11 +8,11 @@ define('FS_DESCRIPTION', '');
 
 /* Directorio de la web.
  * Ejemplos:
- * - Si tienes esta web en /var/www, entonces el FS_PATH debe ser ''.
+ * - Si tienes esta web en /var/www, entonces el FS_PATH debe ser '/'.
  * - Si tienes esta web en /var/www/feedstorm,
- *   entonces el FS_PATH debe ser '/feedstorm'.
+ *   entonces el FS_PATH debe ser '/feedstorm/'.
  */
-define('FS_PATH', '');
+define('FS_PATH', '/');
 
 /// ¿Usas Google analytics? Pon aquí el identificador
 define('FS_ANALYTICS', '');

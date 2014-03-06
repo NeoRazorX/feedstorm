@@ -81,22 +81,20 @@ class story_edition extends fs_model
       return $this->time2timesince($this->date);
    }
    
-   public function url($sitemap=TRUE)
+   public function url()
    {
       if( is_null($this->id) )
-         return FS_PATH.'/index.php';
-      else if($sitemap)
-         return FS_PATH.'/index.php?page=show_edition&amp;id='.$this->id;
+         return FS_PATH.'index.php';
       else
-         return FS_PATH.'/index.php?page=show_edition&id='.$this->id;
+         return FS_PATH.'show_edition/'.$this->id;
    }
    
    public function edit_url()
    {
       if( is_null($this->id) )
-         return FS_PATH.'/index.php';
+         return FS_PATH.'index.php';
       else
-         return FS_PATH.'/index.php?page=edit_story&amp;id='.$this->id;
+         return FS_PATH.'edit_story/'.$this->id;
    }
    
    public function description($width=300)

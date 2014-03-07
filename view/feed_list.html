@@ -15,12 +15,18 @@
                   <div>
                      <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog"/>
                   </div>
+                  {if condition="$fsc->visitor->admin"}
+                  <input type="hidden" name="human" value=""/>
+                  {else}
                   <div>
                      <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
                   </div>
+                  {/if}
                </div>
                <div class="panel-footer small" style="text-align: right;">
+                  {if condition="!$fsc->visitor->admin"}
                   Borra el número para demostrar que eres humano
+                  {/if}
                   <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
                </div>
             </div>

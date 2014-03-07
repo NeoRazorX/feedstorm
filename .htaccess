@@ -2,7 +2,7 @@
    RewriteEngine On
    RewriteRule ^view/  -  [L]
    RewriteRule ^tmp/images/  -  [L]
-   RewriteRule ^(.*)/(.*)$ index.php?page=$1&id=$2 [L]
+   RewriteRule ^(.*)/(.*)$ index.php?page=$1&id=$2&%{QUERY_STRING} [L]
    RewriteRule ^(.*)/$ index.php?page=$1 [L]
    RewriteRule ^([^/.]+)$ index.php?page=$1 [L]
 </IfModule>

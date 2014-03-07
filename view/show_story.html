@@ -2,6 +2,11 @@
 
 {if condition="$fsc->story"}
 <script type="text/javascript">
+   function remove_comment(id)
+   {
+      if( confirm("¿Realmente desea eliminar este comentario?") )
+         window.location.href = '{$fsc->url()}?delete_comment='+id;
+   }
    $(document).ready(function() {
       window.onpopstate = function(){ 
          if(window.location.hash.substring(1) == 'sources')
@@ -76,17 +81,26 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-md-1">
-               <div style="padding: 5px;">
-                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+            {if condition="$fsc->visitor->admin"}
+            <div class="col-md-12">
+               <div class="small" style="padding: 5px; text-align: right;">
+                  <input type="hidden" name="human" value=""/>
+                  <input class="btn btn-sm btn-primary" type="submit" value="comentar"/>
                </div>
             </div>
-            <div class="col-md-11">
+            {else}
+            <div class="col-md-2 col-xs-3">
+               <div style="padding: 5px;">
+                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" size="3" maxlength="3" autocomplete="off"/>
+               </div>
+            </div>
+            <div class="col-md-10 col-xs-9">
                <div class="small" style="padding: 5px; text-align: right;">
                   Borra el número para demostrar que eres humano
                   <input class="btn btn-sm btn-primary" type="submit" value="comentar"/>
                </div>
             </div>
+            {/if}
          </div>
       </form>
    </div>
@@ -124,13 +138,15 @@
    <div class="row">
       <div class="col-md-12">
          <div class="well well-sm" style="background-color: white;">
-            {if condition="$fsc->visitor->nick==$value->nick"}
-            <b>Tú</b> dices:
-            {else}
-            <u>@{$value->nick}</u> dice:
-            {/if}
-            <span class="pull-right small">{$value->timesince()}</span>
-            <p style="margin: 5px 0px 0px 0px;">{$value->text}</p>
+            <span class="glyphicon glyphicon-user"></span>
+            {if condition="$fsc->visitor->nick==$value->nick"}<b>Tú</b>{else}<u>@{$value->nick}</u>{/if}
+            <span class="pull-right small">
+               {$value->timesince()} &nbsp;
+               {if condition="$fsc->visitor->admin"}
+               <span class="glyphicon glyphicon-floppy-remove" title="eliminar comentario" onclick="remove_comment('{$value->get_id()}')"></span>
+               {/if}
+            </span>
+            <p style="margin: 5px 0px 0px 0px;">{$value->text()}</p>
          </div>
       </div>
    </div>
@@ -140,6 +156,7 @@
    <div class="row">
       <div class="col-md-12">
          <div class="well well-sm" style="background-color: white;">
+            <div class="pull-right"><span class="glyphicon glyphicon-paperclip" title="artículo relacionado"></span></div>
             <h3 style="margin: 0px;">
                <a rel="nofollow" href="{$value->url()}">{$value->title}</a>
             </h3>

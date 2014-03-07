@@ -8,9 +8,20 @@
          <div class="col-lg-4 col-sm-6">
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
             <div class="story{if condition="$value2->readed()"} story_readed{/if}">
-               {if condition="$value2->featured"}
-               <div class="pull-right"><span class="label label-success" title="este artículo está destacado">destacada</span></div>
-               {/if}
+               <div class="pull-right" style="text-align: right;">
+                  {if condition="$value2->penalize"}
+                  <span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>
+                  {/if}
+                  {if condition="$value2->featured"}
+                  <span class="label label-success" title="este artículo está destacado">destacada</span><br/>
+                  {/if}
+                  {if condition="!$value2->native_lang"}
+                  <span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>
+                  {/if}
+                  {if condition="$value2->parody"}
+                  <span class="label label-default" title="este artículo es una parodia o sátira">parodia</span>
+                  {/if}
+               </div>
                <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
                <p>{$value2->description()}</p>
                <div class="small">

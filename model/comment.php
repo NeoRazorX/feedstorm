@@ -66,6 +66,18 @@ class comment extends fs_model
       return $this->time2timesince($this->date);
    }
    
+   public function text()
+   {
+      $urlize_protocols = "http|https|ftp";
+      if( preg_match("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#]([?!,.])?(?:$|\s))/i", $this->text) )
+      {
+         $text = preg_replace("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#])([?!,.])?(?=$|\s)/i", " <a rel=\"nofollow\" target=\"_blank\" href=\"\\1\">\\1</a>\\3 ", $this->text);
+         return trim($text);
+      }
+      else
+         return $this->text;
+   }
+   
    public function url()
    {
       if( isset($this->thread) )

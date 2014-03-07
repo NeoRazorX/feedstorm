@@ -24,13 +24,19 @@
                   <div>
                      <input class="form-control" type="text" name="link" value="{$fsc->s_link}" placeholder="Enlace (opcional)" autocomplete="off"/>
                   </div>
-                  <div>
-                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
-                  </div>
+                  
                </div>
                <div class="panel-footer small" style="text-align: right;">
+               {if condition="$fsc->visitor->admin"}
+                  <input type="hidden" name="human" value=""/>
+                  <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+               {else}
+                  <div class="pull-left">
+                     <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  </div>
                   Borra el número para demostrar que eres humano
                   <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+               {/if}
                </div>
             </div>
          </form>

@@ -75,20 +75,29 @@
                </div>
             </div>
          </div>
-         {/if}
          <div class="row">
-            <div class="col-md-1">
-               <div style="padding: 5px;">
-                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+            <div class="col-md-12">
+               <div class="small" style="padding: 5px; text-align: right;">
+                  <input type="hidden" name="human" value=""/>
+                  <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
                </div>
             </div>
-            <div class="col-md-11">
+         </div>
+         {else}
+         <div class="row">
+            <div class="col-md-2 col-xs-3">
+               <div style="padding: 5px;">
+                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" size="3" maxlength="3" autocomplete="off"/>
+               </div>
+            </div>
+            <div class="col-md-10 col-xs-9">
                <div class="small" style="padding: 5px; text-align: right;">
                   Borra el número para demostrar que eres humano
                   <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
                </div>
             </div>
          </div>
+         {/if}
       </form>
       </div>
       <div id="s_delete" style="display: none;">
@@ -124,7 +133,13 @@
                   {loop="$fsc->story->editions()"}
                   <tr>
                      <td>{$value->timesince()}</td>
-                     <td><a href="{$value->url()}">@{$value->nick}</a></td>
+                     <td>
+                        {if condition="$value->visitor_id==$fsc->visitor->get_id()"}
+                        <a href="{$value->url()}">Tú</a>
+                        {else}
+                        <a href="{$value->url()}">@{$value->nick}</a>
+                        {/if}
+                     </td>
                      <td>{$value->points}</td>
                      <td>
                         {if condition="$value->get_id()==$fsc->story->edition_id"}

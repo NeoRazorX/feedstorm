@@ -7,13 +7,14 @@
          {loop="$fsc->comments"}
             <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
                <div style="margin-bottom: 5px;">
-                  <u>{$value->nick}</u> dice:
+                  <span class="glyphicon glyphicon-user"></span>
+                  <u>{$value->nick}</u>
                   <span class="pull-right small">{$value->timesince()}</span>
                </div>
                <p>{$value->text}</p>
             </div>
          {else}
-            <div class="alert alert-info">Sin mensaje.</div>
+            <div class="alert alert-info">Sin mensajes.</div>
          {/loop}
       </div>
    </div>

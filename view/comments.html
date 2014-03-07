@@ -9,11 +9,8 @@
             {if condition="$value2->thread"}
             <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
                <div style="margin-bottom: 5px;">
-                  {if condition="$fsc->visitor->nick==$value2->nick"}
-                  <b>Tú</b> dices:
-                  {else}
-                  <u>@{$value2->nick}</u> dice:
-                  {/if}
+                  <span class="glyphicon glyphicon-user"></span>
+                  {if condition="$fsc->visitor->nick==$value2->nick"}<b>Tú</b>{else}<u>@{$value2->nick}</u>{/if}
                   <span class="pull-right small">{$value2->timesince()}</span>
                </div>
                <p>

@@ -51,7 +51,7 @@ class feed_list extends fs_controller
             $feed0->suscriptors++;
             $feed0->save();
          }
-         else if( $_POST['human'] != '' )
+         else if( $_POST['human'] != '' AND !$this->visitor->admin )
          {
             $this->new_error_msg('No has borrado el número para demostrar que eres humano, y si no eres
                humano no puedes añadir fuentes. Y si, ya sé que esto es nazismo puro,

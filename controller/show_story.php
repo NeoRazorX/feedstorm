@@ -62,7 +62,7 @@ class show_story extends fs_controller
             }
          }
          
-         if(count($this->get_errors()) + count($this->get_errors()) == 0 AND mt_rand(0, 3) == 0)
+         if(count($this->get_errors()) + count($this->get_messages()) == 0 AND mt_rand(0, 9) == 0)
          {
             $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
          }
@@ -82,7 +82,7 @@ class show_story extends fs_controller
    public function full_url()
    {
       if($this->story)
-         return $this->domain().'/'.$this->story->url(FALSE);
+         return $this->domain().$this->story->url(FALSE);
       else
          return $this->domain();
    }
@@ -108,11 +108,11 @@ class show_story extends fs_controller
       if($this->story)
       {
          $url = 'https://twitter.com/share?url='.urlencode( $this->full_url() ).
-            '&amp;text='.urlencode($this->story->title);
+            '&amp;text='.urlencode( html_entity_decode($this->story->title) );
          if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
          {
             $url = 'https://twitter.com/share?url='.urlencode($this->story->link).
-               '&amp;text='.urlencode($this->story->title);
+               '&amp;text='.urlencode( html_entity_decode($this->story->title) );
          }
          return $url;
       }
@@ -124,11 +124,11 @@ class show_story extends fs_controller
    {
       if($this->story)
       {
-         $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+         $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode( html_entity_decode($this->story->title) ).
             '&amp;p[url]='.urlencode( $this->full_url() );
          if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
          {
-            $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode($this->story->title).
+            $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode( html_entity_decode($this->story->title) ).
                '&amp;p[url]='.urlencode($this->story->link);
          }
          return $url;
@@ -155,6 +155,19 @@ class show_story extends fs_controller
    private function comments()
    {
       $comment = new comment();
+      
+      if( isset($_GET['delete_comment']) )
+      {
+         $com0 = $comment->get($_GET['delete_comment']);
+         if($com0)
+         {
+            $com0->delete();
+            $this->new_message('Comentario eliminado correctamente.');
+         }
+         else
+            $this->new_error_msg('Comentario no encontrado.');
+      }
+      
       $this->txt_comment = '';
       $all_comments = $this->story->comments();
       

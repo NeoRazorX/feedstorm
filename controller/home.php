@@ -27,6 +27,11 @@ class home extends fs_controller
       
       $this->noindex = FALSE;
       $this->stories = $this->visitor->last_stories();
+      
+      if(count($this->get_errors()) + count($this->get_messages()) == 0 AND mt_rand(0, 19) == 0)
+      {
+         $this->new_message('Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el <a href="'.FS_PATH.'feedback">formulario de contacto</a>.');
+      }
    }
 }
 

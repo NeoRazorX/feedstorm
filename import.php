@@ -40,27 +40,26 @@ else
    {
       if( $xml->item )
       {
+         echo "Procesando...";
+         
          $visitor = new visitor();
          $feed = new feed();
          $feeds = array();
          
          foreach($xml->item as $item)
          {
-            if( !in_array(base64_decode( (string)$item->feed ), $feeds) )
+            echo '.';
+            
+            $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
+            if( !$f0 )
             {
-               $feeds[] = base64_decode( (string)$item->feed );
+               $f0 = new feed();
+               $f0->url = base64_decode( (string)$item->feed );
                
-               $f0 = $feed->get_by_url( base64_decode( (string)$item->feed ) );
-               if( !$f0 )
-               {
-                  $f0 = new feed();
-                  $f0->url = base64_decode( (string)$item->feed );
-                  
-                  if( $f0->reddit() )
-                     $f0->native_lang = FALSE;
-                  
-                  $f0->save();
-               }
+               if( $f0->reddit() )
+                  $f0->native_lang = FALSE;
+               
+               $f0->save();
             }
             
             if( (string)$item->user != '-' )

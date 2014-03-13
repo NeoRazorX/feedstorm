@@ -19,12 +19,16 @@
 
 class stats extends fs_controller
 {
+   public $visits;
+   
    public function __construct()
    {
       parent::__construct('stats', 'Estadísticas &lsaquo; '.FS_NAME);
+      
+      $this->visits = $this->analyze_visits();
    }
    
-   public function analyze_visits()
+   private function analyze_visits()
    {
       if( isset($_SERVER['REMOTE_ADDR']) )
          $ip = $_SERVER['REMOTE_ADDR'];

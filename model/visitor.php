@@ -314,7 +314,7 @@ class visitor extends fs_model
           'ip' => $this->ip,
           'user_agent' => $this->user_agent,
           'first_login_date' => $this->first_login_date,
-          'last_login_date' => $this->last_login_date,
+          'last_login_date' => time(),
           'admin' => $this->admin,
           'num_suscriptions' => $this->num_suscriptions,
           'num_stories' => $this->num_stories,
@@ -324,8 +324,18 @@ class visitor extends fs_model
           'points' => $this->points,
           'extra_points' => $this->extra_points
       );
-      $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $this->collection->insert($data);
+      
+      if( $this->exists() )
+      {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@update');
+         $filter = array('_id' => $this->id);
+         $this->collection->update($filter, $data);
+      }
+      else
+      {
+         $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
+         $this->collection->insert($data);
+      }
    }
    
    public function delete()

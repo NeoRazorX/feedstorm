@@ -255,28 +255,28 @@ class story extends fs_model
       
       if($this->native_lang AND !$this->penalize AND mb_strlen($this->description) > 0)
       {
-         $points = 1 + $this->num_editions + $this->num_feeds + $this->num_comments;
+         $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count( explode(',', $this->keywords) );
          
          if($this->related_id)
-            $points++;
+            $tclics++;
          
          if( mb_strlen($this->description) > 250 )
-            $points++;
+            $tclics++;
          else if( mb_strlen($this->description) < 150 )
-            $points -= 2;
+            $tclics -= 2;
          
          if($this->tweets > 1000)
-            $tclics += min( array($this->tweets, 10 + $points*$this->clics) );
+            $tclics += min( array($this->tweets, 10 + $this->clics) );
          else
             $tclics += min( array($this->tweets, 1 + $this->clics) );
          
          if($this->likes > 1000)
-            $tclics += min( array($this->likes, 10 + $points*$this->clics) );
+            $tclics += min( array($this->likes, 10 + $this->clics) );
          else
             $tclics += min( array($this->likes, 1 + $this->clics) );
          
          if($this->meneos > 150)
-            $tclics += min( array($this->meneos, 10 + $points*$this->clics) );
+            $tclics += min( array($this->meneos, 10 + $this->clics) );
          else
             $tclics += min( array($this->meneos, 1 + $this->clics) );
          
@@ -629,7 +629,7 @@ class story extends fs_model
       $j = 0;
       $keywords = array();
       $keywords2 = array();
-      $publish = 2; /// máximo de artículos publicados cada vez
+      $publish = 1; /// máximo de artículos publicados cada vez
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones del artículo
@@ -652,7 +652,7 @@ class story extends fs_model
          }
          
          /// si la noticia alcanza el TOP FS_MAX_STORIES, entonces la publicamos
-         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $publish > 0 AND $ps->popularity > 0)
+         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $publish > 0 AND $ps->popularity > 1)
          {
             $ps->published = time();
             $publish--;

@@ -2,18 +2,21 @@
 
 <div class="container-fluid">
    <div class="row">
-      {loop="$fsc->analyze_visits()"}
-      <div class="col-md-4">
-         <div class="well well-sm" style="background-color: white;">
-            <h4 style="margin: 0px;">
-               <a href="{$value['story']->url()}">{$value['story']->title}</a>
-            </h4>
-            <p style="margin: 3px 0px 2px 0px;">
-               <span class="badge">{$value['spc']}</span> segundos entre clics,
-               <span class="badge">{$value['visits']}</span> visitas.
-            </p>
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+         {loop="$fsc->split_stories($fsc->visits, 3, $value1)"}
+            <div class="well well-sm" style="background-color: white;">
+               <h4 style="margin: 0px;">
+                  <a href="{$value2['story']->url()}">{$value2['story']->title}</a>
+               </h4>
+               <p style="margin: 3px 0px 2px 0px;">
+                  <span class="badge">{$value2['spc']}</span> segundos entre clics,
+                  <span class="badge">{$value2['visits']}</span> visitas.
+               </p>
+            </div>
+         {/loop}
          </div>
-      </div>
       {/loop}
    </div>
 </div>

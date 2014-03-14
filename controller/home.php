@@ -50,7 +50,7 @@ class home extends fs_controller
             else
             {
                setcookie('last_feedback', $feedbacks[0]->get_id(), time()+FS_MAX_AGE, FS_PATH);
-               $this->new_message('Tienes comentarios de feedback por leer.');
+               $this->new_message('Tienes comentarios de feedback por <a href="'.FS_PATH.'feedback">leer</a>.');
             }
          }
       }

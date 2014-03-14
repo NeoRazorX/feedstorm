@@ -156,7 +156,7 @@ class comment extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       
       $comlist = array();
-      foreach($this->collection->find(array('thread' => array('$ne'=>'')))->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
+      foreach($this->collection->find(array('thread' => array('$ne'=>NULL)))->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
          $comlist[] = new comment($c);
       
       return $comlist;

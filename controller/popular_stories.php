@@ -18,16 +18,20 @@
  */
 
 require_once 'model/story.php';
+require_once 'model/story_preview.php';
 
 class popular_stories extends fs_controller
 {
+   public $preview;
    public $stories;
    
    public function __construct()
    {
       parent::__construct('popular_stories', 'Populares &lsaquo; '.FS_NAME);
+      $this->template = 'discover_stories';
       
       $this->noindex = FALSE;
+      $this->preview = new story_preview();
       $story = new story();
       $this->stories = $story->published_stories();
    }

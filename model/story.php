@@ -202,7 +202,7 @@ class story extends fs_model
    public function comments()
    {
       $comment = new comment();
-      $comments = $comment->all4thread($this->id);
+      $comments = array_reverse($comment->all4thread($this->id));
       
       if($this->num_comments != count($comments))
       {
@@ -410,14 +410,33 @@ class story extends fs_model
       try
       {
          if( substr($id, -5) == '.html' )
+         {
             $data = $this->collection->findone( array('name' => $id) );
+            if($data)
+               return new story($data);
+            else
+            {
+               /// buscamos la raiz
+               $parts = explode('-', substr($id, 0, -5));
+               $new_name = '';
+               for($i = 0; $i < count($parts)-1; $i++)
+                  $new_name .= $parts[$i].'-';
+               
+               $data = $this->collection->findone( array('name' => new MongoRegex('/'.$new_name.'/')) );
+               if($data)
+                  return new story($data);
+               else
+                  return FALSE;
+            }
+         }
          else
+         {
             $data = $this->collection->findone( array('_id' => new MongoId($id)) );
-         
-         if($data)
-            return new story($data);
-         else
-            return FALSE;
+            if($data)
+               return new story($data);
+            else
+               return FALSE;
+         }
       }
       catch(Exception $e)
       {
@@ -493,13 +512,16 @@ class story extends fs_model
       else
       {
          $this->add2history(__CLASS__.'::'.__FUNCTION__.'@insert');
-         $data['name'] = $this->new_name();
+         
+         if($this->name == '')
+            $data['name'] = $this->new_name();
+         
          $this->collection->insert($data);
          $this->id = $data['_id'];
       }
    }
    
-   private function new_name()
+   public function new_name()
    {
       $this->name = strtolower( $this->true_text_break($this->title, 85) );
       $changes = array('/à/' => 'a', '/á/' => 'a', '/â/' => 'a', '/ã/' => 'a', '/ä/' => 'a',
@@ -695,7 +717,7 @@ class story extends fs_model
                
                for($j = 0; $j < count($relateds); $j++)
                {
-                  if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang )
+                  if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang AND !$relateds[$j]->penalize AND !$relateds[$j]->parody )
                   {
                      $relateds[$i]->related_id = $relateds[$j]->get_id();
                      break;

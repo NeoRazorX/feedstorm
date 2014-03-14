@@ -19,15 +19,18 @@
 
 require_once 'model/feed.php';
 require_once 'model/story.php';
+require_once 'model/story_preview.php';
 
 class discover_stories extends fs_controller
 {
+   public $preview;
    public $stories;
    
    public function __construct()
    {
       parent::__construct('discover_stories', 'Descubrir &lsaquo; '.FS_NAME);
       
+      $this->preview = new story_preview();
       $this->stories = array();
       
       if( mt_rand(0, 1) == 0 )

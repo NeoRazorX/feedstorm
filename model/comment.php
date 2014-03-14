@@ -58,7 +58,7 @@ class comment extends fs_model
    public function install_indexes()
    {
       $this->collection->ensureIndex( array('date' => -1) );
-      $this->collection->ensureIndex( array('thread' => 1, 'date' => 1) );
+      $this->collection->ensureIndex( array('thread' => 1, 'date' => -1) );
    }
    
    public function timesince()
@@ -154,9 +154,11 @@ class comment extends fs_model
    public function all($limit = FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      
       $comlist = array();
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
+      foreach($this->collection->find(array('thread' => array('$ne'=>'')))->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
          $comlist[] = new comment($c);
+      
       return $comlist;
    }
    
@@ -166,7 +168,7 @@ class comment extends fs_model
       
       $find = array('thread' => $this->var2str($thread));
       $comlist = array();
-      foreach($this->collection->find($find)->sort(array('date'=>1)) as $c)
+      foreach($this->collection->find($find)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
          $comlist[] = new comment($c);
       
       return $comlist;

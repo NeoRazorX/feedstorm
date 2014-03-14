@@ -19,18 +19,22 @@
 
 require_once 'model/comment.php';
 require_once 'model/story.php';
+require_once 'model/story_preview.php';
 require_once 'model/story_visit.php';
 
 class show_story extends fs_controller
 {
    public $comments;
+   public $preview;
    public $story;
+   public $stories;
    public $txt_comment;
    
    public function __construct()
    {
       parent::__construct('show_story', 'Artículo...');
-      
+      $this->preview = new story_preview();
+      $this->stories = array();
       $story = new story();
       
       if( isset($_GET['id']) )
@@ -62,13 +66,19 @@ class show_story extends fs_controller
             }
          }
          
-         if(count($this->get_errors()) + count($this->get_messages()) == 0 AND mt_rand(0, 9) == 0)
+         if(count($this->get_errors()) + count($this->get_messages()) == 0)
          {
-            $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
+            if( !$this->story->native_lang )
+               $this->new_message('¿Te atreves a traducir este artículo? Haz clic en la pestaña <b>editar</b>.');
+            else if(mt_rand(0, 9) == 0)
+               $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
          }
       }
       else
+      {
          $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'index.php?page=search">Usa el buscador</a>.');
+         $this->stories = $story->popular_stories();
+      }
    }
    
    public function url()

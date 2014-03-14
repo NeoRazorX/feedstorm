@@ -134,6 +134,7 @@ class edit_story extends fs_controller
                      {
                         $this->story->penalize = TRUE;
                         $this->story->featured = FALSE;
+                        $this->story->published = NULL;
                      }
                      
                      if($new_edition)

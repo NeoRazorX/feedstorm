@@ -18,11 +18,13 @@
  */
 
 require_once 'model/feed.php';
+require_once 'model/story_preview.php';
 require_once 'model/suscription.php';
 
 class explore_feed extends fs_controller
 {
    public $feed;
+   public $preview;
    public $stories;
    public $suscribe_url;
    public $suscribe_text;
@@ -33,6 +35,7 @@ class explore_feed extends fs_controller
       parent::__construct('explore_feed', FS_NAME);
       
       $feed = new feed();
+      $this->preview = new story_preview();
       $this->stories = array();
       
       if( isset($_POST['modify']) AND $this->visitor->admin )

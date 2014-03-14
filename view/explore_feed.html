@@ -78,25 +78,31 @@
       </div>
       <div class="col-md-8">
          {loop="$fsc->stories"}
+         <!--{$fsc->preview->load($value->link)}-->
          <div class="story{if condition="$value->readed()"} story_readed{/if}">
-               <div class="pull-right" style="text-align: right;">
-                  {if condition="$value->penalize"}
-                  <span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>
-                  {/if}
-                  {if condition="$value->featured"}
-                  <span class="label label-success" title="este artículo está destacado">destacada</span><br/>
-                  {/if}
-                  {if condition="!$value->native_lang"}
-                  <span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>
-                  {/if}
-                  {if condition="$value->parody"}
-                  <span class="label label-default" title="este artículo es una parodia o sátira">parodia</span>
-                  {/if}
+               {if condition="$fsc->preview->type"}
+               <div class="pull-left" style="padding: 2px; text-align: right;">
+                  <a href='{$value->url()}'><img src="{$fsc->preview->preview()}" alt="{$value->title}" width="120"/></a>
                </div>
-               <h4>
-                  <a href='{$value->url()}'>{$value->title}</a>
-               </h4>
-               <p>{$value->description()}</p>
+               {/if}
+               <div class="pull-right" style="padding: 2px; text-align: right;">
+                     {if condition="$value->penalize"}
+                     <span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>
+                     {/if}
+                     {if condition="$value->featured"}
+                     <span class="label label-success" title="este artículo está destacado">destacada</span><br/>
+                     {/if}
+                     {if condition="!$value->native_lang"}
+                     <span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>
+                     {/if}
+                     {if condition="$value->parody"}
+                     <span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>
+                     {/if}
+               </div>
+               <div{if condition="$fsc->preview->type"} style="min-height: {$fsc->preview->min_height()}px;"{/if}>
+                  <h4><a href='{$value->url()}'>{$value->title}</a></h4>
+                  <p>{$value->description()}</p>
+               </div>
                <div class="small">
                   {$value->popularity()}
                   <span class="pull-right">{$value->timesince()}</span>

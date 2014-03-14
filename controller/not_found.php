@@ -18,9 +18,11 @@
  */
 
 require_once 'model/story.php';
+require_once 'model/story_preview.php';
 
 class not_found extends fs_controller
 {
+   public $preview;
    public $stories;
    
    public function __construct()
@@ -30,6 +32,7 @@ class not_found extends fs_controller
       $this->template = 'home';
       $this->new_error_msg('¡Página no encontrada! <a href="'.FS_PATH.'search">Usa el buscador</a>.');
       
+      $this->preview = new story_preview();
       $story = new story();
       $this->stories = $story->popular_stories();
    }

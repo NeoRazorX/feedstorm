@@ -382,6 +382,14 @@ class feed extends fs_model
       
       /// ¿story ya existe?
       $story2 = $story->get_by_link($story->link);
+      
+      /// ¿seguro que no existe?
+      if(!$story2)
+      {
+         $story->new_name();
+         $story2 = $story->get($story->name);
+      }
+      
       if($story2)
       {
          /// ¿la noticia ya está enlazada con esta fuente?

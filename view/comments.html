@@ -6,7 +6,6 @@
       {loop="$cols"}
          <div class="col-lg-4 col-sm-6">
          {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
-            {if condition="$value2->thread"}
             <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
                <div style="margin-bottom: 5px;">
                   <span class="glyphicon glyphicon-user"></span>
@@ -18,7 +17,6 @@
                   <a href='{$value2->url()}'>leer más</a>.
                </p>
             </div>
-            {/if}
          {/loop}
          </div>
       {/loop}

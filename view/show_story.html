@@ -42,7 +42,7 @@
                   <span class="label label-default" title="este artículos no está en español"><s>español</s></span><br/>
                {/if}
                {if condition="$fsc->story->parody"}
-                  <span class="label label-default" title="este artículo es una parodia o sátira">parodia</span>
+                  <span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>
                {/if}
             </div>
             <h1>
@@ -55,20 +55,33 @@
                   Creada {$fsc->story->timesince()}{if condition="$fsc->story->published"}, publicada {$fsc->story->timesince(TRUE)}.{else}.{/if}
                </span>
             </p>
+            <!--{$fsc->preview->load($fsc->story->link)}-->
+            {if condition="$fsc->preview->type=='youtube'"}
+            <div style="text-align: center; margin-bottom: 10px;">
+               {if condition="$fsc->visitor->mobile()"}
+               <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+               {else}
+               <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+               {/if}
+            </div>
+            {elseif condition="$fsc->preview->type=='imgur'"}
+            <div style="text-align: center; margin-bottom: 10px;">
+               {if condition="$fsc->visitor->mobile()"}
+               <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
+               {else}
+               <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
+               {/if}
+            </div>
+            {/if}
          </div>
       </div>
       <div class="row">
          <div class="col-md-12">
             <div style="padding: 5px;">
-               <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span> =
-               <span class="label label-default">Clics: {$fsc->story->clics}</span>
+               <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span>
                <a class="label label-info" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter: {$fsc->story->tweets}</a>
                <a class="label label-primary" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook: {$fsc->story->likes}</a>
                <a class="label label-danger" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+: {$fsc->story->plusones}</a>
-               <span class="label label-warning">Menéame: {$fsc->story->meneos}</span>
-               <span class="label label-default">Fuentes: {$fsc->story->num_feeds}</span>
-               <span class="label label-default">Ediciones: {$fsc->story->num_editions}</span>
-               <span class="label label-default">Comentarios: {$fsc->story->num_comments}</span>
             </div>
          </div>
       </div>
@@ -106,30 +119,41 @@
    </div>
    <div class="row" id="s_sources" style="display: none;">
       <div class="col-md-12">
-            <table class="table table-hover">
-               <thead>
-                  <tr>
-                     <th>Fecha</th>
-                     <th>Enlace</th>
-                     <th>Fuente</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {loop="$fsc->story->feed_links()"}
-                  <tr>
-                     <td>{$value->timesince()}</td>
-                     <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
-                     <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-                  </tr>
-                  {else}
-                  <tr>
-                     <td>{$fsc->story->timesince()}</td>
-                     <td>-</td>
-                     <td>-</td>
-                  </tr>
-                  {/loop}
-               </tbody>
-            </table>
+         <table class="table table-hover">
+            <thead>
+               <tr>
+                  <th>Fecha</th>
+                  <th>Enlace</th>
+                  <th>Fuente</th>
+               </tr>
+            </thead>
+            <tbody>
+               {loop="$fsc->story->feed_links()"}
+               <tr>
+                  <td>{$value->timesince()}</td>
+                  <td><a rel="nofollow" target="_blank" href="{$value->link()}">{$value->title}</a></td>
+                  <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+               </tr>
+               {else}
+               <tr>
+                  <td>{$fsc->story->timesince()}</td>
+                  <td>-</td>
+                  <td>-</td>
+               </tr>
+               {/loop}
+            </tbody>
+         </table>
+         <div style="padding: 5px;">
+            <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span> =
+            <span class="label label-default">Clics: {$fsc->story->clics}</span>
+            <a class="label label-info" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter: {$fsc->story->tweets}</a>
+            <a class="label label-primary" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook: {$fsc->story->likes}</a>
+            <a class="label label-danger" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+: {$fsc->story->plusones}</a>
+            <span class="label label-warning">Menéame: {$fsc->story->meneos}</span>
+            <span class="label label-default">Fuentes: {$fsc->story->num_feeds}</span>
+            <span class="label label-default">Ediciones: {$fsc->story->num_editions}</span>
+            <span class="label label-default">Comentarios: {$fsc->story->num_comments}</span>
+         </div>
       </div>
    </div>
    </div>
@@ -169,6 +193,48 @@
    </div>
    {/loop}
 </div>
+{else}
+   <div class="container-fluid">
+      <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
+            <!--{$fsc->preview->load($value2->link)}-->
+            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
+               {if condition="$fsc->preview->type"}
+               <div class="pull-left" style="padding: 2px; text-align: right;">
+                  <a href='{$value2->url()}'><img src="{$fsc->preview->preview()}" alt="{$value2->title}" width="120"/></a>
+               </div>
+               {/if}
+               <div class="pull-right" style="padding: 2px; text-align: right;">
+                     {if condition="$value2->penalize"}
+                     <span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>
+                     {/if}
+                     {if condition="$value2->featured"}
+                     <span class="label label-success" title="este artículo está destacado">destacada</span><br/>
+                     {/if}
+                     {if condition="!$value2->native_lang"}
+                     <span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>
+                     {/if}
+                     {if condition="$value2->parody"}
+                     <span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>
+                     {/if}
+               </div>
+               <div{if condition="$fsc->preview->type"} style="min-height: {$fsc->preview->min_height()}px;"{/if}>
+                  <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+                  <p>{$value2->description()}</p>
+               </div>
+               <div class="small">
+                  {$value2->popularity()}
+                  <span class="pull-right">{$value2->timesince()}</span>
+               </div>
+            </div>
+            {/loop}
+         </div>
+      {/loop}
+      </div>
+   </div>
 {/if}
 
 {include="footer"}

@@ -183,25 +183,29 @@ class show_story extends fs_controller
       
       if( isset($_POST['comment']) )
       {
+         $this->txt_comment = trim($_POST['comment']);
+         
          if($this->visitor->human() AND ($_POST['human'] == '' OR $this->visitor->admin) )
          {
-            $comment = new comment();
-            $comment->thread = $this->story->get_id();
-            $comment->nick = $this->visitor->nick;
-            $comment->text = $_POST['comment'];
-            $comment->save();
-            $all_comments[] = $comment;
-            
-            /// actualizamos al visitante
-            $this->visitor->num_comments++;
-            $this->visitor->need_save = TRUE;
-            $this->visitor->save();
+            if( mb_strlen($this->txt_comment) > 1 )
+            {
+               $comment = new comment();
+               $comment->thread = $this->story->get_id();
+               $comment->nick = $this->visitor->nick;
+               $comment->text = $_POST['comment'];
+               $comment->save();
+               $all_comments[] = $comment;
+               
+               /// actualizamos al visitante
+               $this->visitor->num_comments++;
+               $this->visitor->need_save = TRUE;
+               $this->visitor->save();
+            }
+            else
+               $this->new_error_msg('Tienes que escribir más.');
          }
          else
-         {
             $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
-            $this->txt_comment = $_POST['comment'];
-         }
       }
       
       return $all_comments;

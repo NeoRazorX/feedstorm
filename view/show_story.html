@@ -72,6 +72,14 @@
                <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
                {/if}
             </div>
+            {elseif condition="$fsc->preview->type=='image'"}
+            <div style="text-align: center; margin-bottom: 10px;">
+               {if condition="$fsc->visitor->mobile()"}
+               <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
+               {else}
+               <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
+               {/if}
+            </div>
             {/if}
          </div>
       </div>

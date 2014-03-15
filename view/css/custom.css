@@ -5,16 +5,16 @@ body {
 .fs_top_menu {
    margin: 0px 0px 15px 0px;
    padding: 5px 0px 5px 0px;
-   background-color: #555555;
-   border-top: 2px solid #333333;
-   border-bottom: 1px solid #333333;
+   background-color: #466380;
+   border-top: 2px solid #2A3B4D;
+   border-bottom: 1px solid #2A3B4D;
    box-shadow: 1px 1px 1px #666;
 }
 
 #fs_brand {
    color: white;
    font-size: 30px;
-   text-shadow: 2px 2px 2px #333333;
+   text-shadow: 2px 2px 2px #2A3B4D;
 }
 
 #fs_brand:hover {
@@ -76,6 +76,7 @@ body {
 
 .storyp .preview img {
    display: block;
+   max-height: 120px;
    border-radius: 5px;
 }
 

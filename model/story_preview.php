@@ -33,7 +33,12 @@ class story_preview
       $this->link = $link;
       $this->type = FALSE;
       
-      if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
+      if( $this->is_valid_image_url($link) )
+      {
+         $this->filename = $link;
+         $this->type = 'image';
+      }
+      else if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
       {
          $parts = explode('/', $link);
          $this->filename = $parts[3];
@@ -84,6 +89,10 @@ class story_preview
       
       switch ($this->type)
       {
+         case 'image':
+            $thumbnail = $this->filename;
+            break;
+         
          case 'imgur':
             $parts2 = explode('.', $this->filename);
             $thumbnail = 'http://i.imgur.com/'.$parts2[0].'s.'.$parts2[1];
@@ -110,5 +119,34 @@ class story_preview
             break;
       }
       return $new_yid;
+   }
+   
+   private function is_valid_image_url($url)
+   {
+      $status = TRUE;
+      $extensions = array('.png', '.jpg', 'jpeg', '.gif', 'webp');
+      
+      if( mb_substr($url, 0, 4) != 'http' )
+         $status = FALSE;
+      else if( mb_strlen($url) > 200 )
+         $status = FALSE;
+      else if( mb_strstr($url, '/favicon.') )
+         $status = FALSE;
+      else if( mb_strstr($url, 'doubleclick.net') )
+         $status = FALSE;
+      else if( mb_substr($url, 0, 10) == 'http://ad.' )
+         $status = FALSE;
+      else if( mb_strstr($url, '/avatar') OR mb_strstr($url, 'banner') )
+         $status = FALSE;
+      else if( mb_substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
+         $status = FALSE;
+      else if( mb_substr($url, 0, 26) == 'http://publicidadinternet.' )
+         $status = FALSE;
+      else if( !in_array( mb_strtolower( mb_substr($url, -4) ), $extensions) )
+         $status = FALSE;
+      else if( mb_substr($url, -19) == 'vpreview_center.png' )
+         $status = FALSE;
+      
+      return $status;
    }
 }

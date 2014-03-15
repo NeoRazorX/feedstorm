@@ -31,9 +31,12 @@
       {if condition="$fsc->visitor->mobile()"}
       <div class="row">
          <div class="col-xs-12 col-sm-6">
-            <h3 style="margin: 0px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
+            <h3 style="margin: 0px 0px 5px 0px; text-align: center;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
          </div>
-         <div class="col-xs-12 col-sm-6" style="text-align: right;">
+         <div class="col-xs-12 col-sm-6" style="text-align: center;">
+            <a class="btn btn-info{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
+               <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+            </a>
             <div class="btn-group">
                <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}">
                   <span class="glyphicon glyphicon-home" title="tu portada"></span>
@@ -45,9 +48,6 @@
                {/if}
                <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}discover_stories">
                   <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
-               </a>
-               <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
-                  <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
                </a>
                <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}search">
                   <span class="glyphicon glyphicon-search"></span>
@@ -89,7 +89,7 @@
                   <span class="glyphicon glyphicon-search"></span>
                </a>
             </div>
-            <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
+            <a class="btn btn-info{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
                <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
             </a>
          </div>

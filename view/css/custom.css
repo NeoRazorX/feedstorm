@@ -33,6 +33,10 @@ body {
    padding: 5px 2px 0px 8px;
 }
 
+.story a {
+   color: #333333;
+}
+
 .story p {
    margin: 0px;
    padding: 3px 3px 2px 8px;
@@ -42,10 +46,6 @@ body {
 .story .small {
    padding: 2px 5px 2px 5px;
    background-color: #E7EEF3;
-   color: #333333;
-}
-
-.story a {
    color: #333333;
 }
 
@@ -60,6 +60,49 @@ body {
 
 .story_readed a {
    color: #444444;
+}
+
+.storyp {
+   margin-bottom: 10px;
+   background-color: white;
+   border: 1px solid #D5D6D9;
+}
+
+.storyp .preview {
+   width: 130px;
+   padding: 5px;
+   background-color: #428BCA;
+}
+
+.storyp .preview img {
+   display: block;
+   border-radius: 5px;
+}
+
+.storyp .preview_txt {
+   vertical-align: top;
+   padding: 0px 0px 0px 5px;
+}
+
+.storyp .preview_txt h4 {
+   margin: 2px 0px 2px 0px;
+}
+
+.storyp .preview_txt p {
+   margin: 0px;
+}
+
+.storyp_readed .preview {
+   background-color: #5CB85C;
+}
+
+.storyp_readed .preview_txt a {
+   color: #444444;
+}
+
+.story_tags {
+   padding: 0px 1px 2px 5px;
+   text-align: right;
 }
 
 .full_story {

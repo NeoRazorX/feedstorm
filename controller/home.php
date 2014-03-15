@@ -43,21 +43,20 @@ class home extends fs_controller
             {
                if($feedbacks[0]->get_id() != $_COOKIE['last_feedback'])
                {
-                  setcookie('last_feedback', $feedbacks[0]->get_id(), time()+FS_MAX_AGE, FS_PATH);
-                  $this->new_message('Tienes comentarios de feedback por <a href="'.FS_PATH.'feedback">leer</a>.');
+                  $this->new_message('Tienes comentarios de feedback por <a class="btn btn-sm btn-default" href="'.FS_PATH.'feedback">leer</a>');
                }
             }
             else
             {
-               setcookie('last_feedback', $feedbacks[0]->get_id(), time()+FS_MAX_AGE, FS_PATH);
-               $this->new_message('Tienes comentarios de feedback por <a href="'.FS_PATH.'feedback">leer</a>.');
+               $this->new_message('Tienes comentarios de feedback por <a class="btn btn-sm btn-default" href="'.FS_PATH.'feedback">leer</a>');
             }
          }
       }
       
       if(count($this->get_errors()) + count($this->get_messages()) == 0 AND mt_rand(0, 19) == 0)
       {
-         $this->new_message('Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el <a href="'.FS_PATH.'feedback">formulario de contacto</a>.');
+         $this->new_message('Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el <a class="btn btn-sm btn-default" href="'
+            .FS_PATH.'feedback">formulario de contacto</a>');
       }
    }
 }

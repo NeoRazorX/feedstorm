@@ -18,16 +18,18 @@
  */
 
 require_once 'model/story.php';
+require_once 'model/story_preview.php';
 
 class search extends fs_controller
 {
+   public $preview;
    public $query;
    public $stories;
    
    public function __construct()
    {
       parent::__construct('search', 'Buscar &lsaquo; '.FS_NAME);
-      
+      $this->preview = new story_preview();
       $this->query = '';
       $this->stories = array();
       

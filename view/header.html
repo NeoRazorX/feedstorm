@@ -85,13 +85,13 @@
                <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}discover_stories">
                   <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
                </a>
-               <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
-                  <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
-               </a>
                <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}search">
                   <span class="glyphicon glyphicon-search"></span>
                </a>
             </div>
+            <a class="btn btn-default{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
+               <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+            </a>
          </div>
          <div class="col-md-4 col-xs-4" style="text-align: center;">
             <h3 style="margin: 0px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>

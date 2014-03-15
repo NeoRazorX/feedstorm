@@ -158,7 +158,7 @@ class story_edition extends fs_model
    {
       $this->story_id = $this->var2str($this->story_id);
       $this->visitor_id = $this->var2str($this->visitor_id);
-      $this->title = $this->true_text_break($this->title, 149, 18);
+      $this->title = $this->true_text_break($this->title, 99, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       
       $data = array(

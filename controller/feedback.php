@@ -28,37 +28,44 @@ class feedback extends fs_controller
    public function __construct()
    {
       parent::__construct('feedback', 'Feedback &lsaquo; '.FS_NAME);
-      
       $comment = new comment();
-      $this->comments = $comment->all4thread();
       
-      if( isset($_POST['comment']) )
-         $this->txt_comment = $_POST['comment'];
-      else
-         $this->txt_comment = '';
-      
-      if( isset($_POST['email']) )
-         $this->email = $_POST['email'];
-      else
-         $this->email = '';
-      
-      if( isset($_POST['human']) )
+      if($this->visitor->admin)
       {
-         if($_POST['human'] == '')
-         {
-            if($this->email == '')
-               $comment->nick = $this->visitor->nick;
-            else
-               $comment->nick = $this->email;
-            $comment->text = $this->txt_comment;
-            $comment->save();
-            
-            $this->new_message('Mensaje enviado correctamente.');
-            $this->txt_comment = '';
-            $this->email = '';
-         }
+         $this->comments = $comment->all4thread();
+         if( count($this->comments) > 0 )
+            setcookie('last_feedback', $this->comments[0]->get_id(), time()+FS_MAX_AGE, FS_PATH);
+      }
+      else
+      {
+         if( isset($_POST['comment']) )
+            $this->txt_comment = $_POST['comment'];
          else
-            $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
+            $this->txt_comment = '';
+         
+         if( isset($_POST['email']) )
+            $this->email = $_POST['email'];
+         else
+            $this->email = '';
+         
+         if( isset($_POST['human']) )
+         {
+            if($_POST['human'] == '')
+            {
+               if($this->email == '')
+                  $comment->nick = $this->visitor->nick;
+               else
+                  $comment->nick = $this->email;
+               $comment->text = $this->txt_comment;
+               $comment->save();
+               
+               $this->new_message('Mensaje enviado correctamente.');
+               $this->txt_comment = '';
+               $this->email = '';
+            }
+            else
+               $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
+         }
       }
    }
    

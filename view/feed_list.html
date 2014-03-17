@@ -61,6 +61,10 @@
                      <td>{$value->last_update_timesince()}</td>
                      {/if}
                   </tr>
+                  {else}
+                  <tr>
+                     <td colspan="5">No hay fuentes guardadas ¿Por qué no añades una? Usa el formulario de la izquierda.</td>
+                  </tr>
                   {/loop}
                </tbody>
             </table>

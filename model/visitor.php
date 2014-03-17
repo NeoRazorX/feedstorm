@@ -150,15 +150,13 @@ class visitor extends fs_model
    
    public function login()
    {
+      $this->ip = 'unknown';
       if( isset($_SERVER['REMOTE_ADDR']) )
          $this->ip = $_SERVER['REMOTE_ADDR'];
-      else
-         $this->ip = 'unknown';
       
+      $this->user_agent = 'unknown';
       if( isset($_SERVER['HTTP_USER_AGENT']) )
          $this->user_agent = $_SERVER['HTTP_USER_AGENT'];
-      else
-         $this->user_agent = 'unknown';
       
       if( time() > $this->last_login_date + 300 )
       {

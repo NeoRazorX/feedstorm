@@ -62,7 +62,7 @@ class stats extends fs_controller
       $n = 0;
       foreach($aux as $i => $value)
       {
-         if($n < FS_MAX_STORIES AND $value['visits'] > 0)
+         if($n < FS_MAX_STORIES AND $value['visits'] > 1)
          {
             $stlist[] = array(
                 'story' => $story0->get($i),

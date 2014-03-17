@@ -9,7 +9,11 @@
             <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
                <div style="margin-bottom: 5px;">
                   <span class="glyphicon glyphicon-user"></span>
-                  {if condition="$fsc->visitor->nick==$value2->nick"}<b>Tú</b>{else}<u>@{$value2->nick}</u>{/if}
+                  {if condition="$fsc->visitor->get_id()==$value2->visitor_id"}
+                     <b>Tú</b>
+                  {else}
+                     <a href="{$path}messages?to={$value2->visitor_id}">@{$value2->nick}</a>
+                  {/if}
                   <span class="pull-right small">{$value2->timesince()}</span>
                </div>
                <p>

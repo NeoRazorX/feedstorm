@@ -18,53 +18,49 @@
  */
 
 require_once 'base/fs_model.php';
-require_once 'model/story.php';
 
-class comment extends fs_model
+class message extends fs_model
 {
-   public $thread;
+   public $from;
+   public $from_nick;
+   public $to;
+   public $to_nick;
    public $date;
-   public $text;
-   public $visitor_id;
-   public $nick;
    public $ip;
+   public $text;
+   public $readed;
    
-   public function __construct($c = FALSE)
+   public function __construct($m = FALSE)
    {
-      parent::__construct('comments');
-      if($c)
+      parent::__construct('messages');
+      if($m)
       {
-         $this->id = $c['_id'];
-         $this->thread = $c['thread'];
-         $this->date = $c['date'];
-         $this->text = $c['text'];
-         
-         $this->visitor_id = NULL;
-         if( isset($c['visitor_id']) )
-            $this->visitor_id = $c['visitor_id'];
-         
-         $this->nick = $c['nick'];
-         $this->ip = $c['ip'];
+         $this->id = $m['_id'];
+         $this->from = $m['from'];
+         $this->from_nick = $m['from_nick'];
+         $this->to = $m['to'];
+         $this->to_nick = $m['to_nick'];
+         $this->date = $m['date'];
+         $this->ip = $m['ip'];
+         $this->text = $m['text'];
+         $this->readed = $m['readed'];
       }
       else
       {
          $this->id = NULL;
-         $this->thread = NULL;
+         $this->from = NULL;
+         $this->from_nick = 'anonymous';
+         $this->to = NULL;
+         $this->to_nick = 'anonymous';
          $this->date = time();
-         $this->text = '';
-         $this->visitor_id = NULL;
-         $this->nick = 'anonymous';
          
          $this->ip = 'unknown';
          if( isset($_SERVER['REMOTE_ADDR']) )
             $this->ip = $_SERVER['REMOTE_ADDR'];
+         
+         $this->text = '';
+         $this->readed = FALSE;
       }
-   }
-   
-   public function install_indexes()
-   {
-      $this->collection->ensureIndex( array('date' => -1) );
-      $this->collection->ensureIndex( array('thread' => 1, 'date' => -1) );
    }
    
    public function timesince()
@@ -72,31 +68,9 @@ class comment extends fs_model
       return $this->time2timesince($this->date);
    }
    
-   public function text()
+   public function install_indexes()
    {
-      $urlize_protocols = "http|https|ftp";
-      if( preg_match("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#]([?!,.])?(?:$|\s))/i", $this->text) )
-      {
-         $text = preg_replace("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#])([?!,.])?(?=$|\s)/i", " <a rel=\"nofollow\" target=\"_blank\" href=\"\\1\">\\1</a>\\3 ", $this->text);
-         return trim($text);
-      }
-      else
-         return $this->text;
-   }
-   
-   public function url()
-   {
-      if( isset($this->thread) )
-      {
-         $story = new story();
-         $story2 = $story->get($this->thread);
-         if($story2)
-            return $story2->url();
-         else
-            return FS_PATH.'index.php?page=comments';
-      }
-      else
-         return FS_PATH.'index.php?page=comments';
+      
    }
    
    public function get($id)
@@ -104,7 +78,7 @@ class comment extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
-         return new comment($data);
+         return new message($data);
       else
          return FALSE;
    }
@@ -126,17 +100,19 @@ class comment extends fs_model
    
    public function save()
    {
-      $this->thread = $this->var2str($this->thread);
-      $this->visitor_id = $this->var2str($this->visitor_id);
+      $this->from = $this->var2str($this->from);
+      $this->to = $this->var2str($this->to);
       $this->text = $this->true_text_break($this->text, 999);
       
       $data = array(
-          'thread' => $this->thread,
+          'from' => $this->from,
+          'from_nick' => $this->from_nick,
+          'to' => $this->to,
+          'to_nick' => $this->to_nick,
           'date' => $this->date,
+          'ip' => $this->ip,
           'text' => $this->text,
-          'visitor_id' => $this->visitor_id,
-          'nick' => $this->nick,
-          'ip' => $this->ip
+          'readed' => $this->readed
       );
       
       if( $this->exists() )
@@ -159,27 +135,27 @@ class comment extends fs_model
       $this->collection->remove( array('_id' => $this->id) );
    }
    
-   public function all($limit = FS_MAX_STORIES)
+   public function all()
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       
-      $comlist = array();
-      foreach($this->collection->find(array('thread' => array('$ne'=>NULL)))->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
-         $comlist[] = new comment($c);
+      $mlist = array();
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $m)
+         $mlist[] = new message($m);
       
-      return $comlist;
+      return $mlist;
    }
    
-   public function all4thread($thread = NULL)
+   public function all2visitor($vid)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       
-      $find = array('thread' => $this->var2str($thread));
-      $comlist = array();
-      foreach($this->collection->find($find)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $c)
-         $comlist[] = new comment($c);
+      $mlist = array();
+      $search = array( 'to' => $this->var2str($vid) );
+      foreach($this->collection->find($search)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $m)
+         $mlist[] = new message($m);
       
-      return $comlist;
+      return $mlist;
    }
    
    public function cron_job()
@@ -187,5 +163,3 @@ class comment extends fs_model
       
    }
 }
-
-?>

@@ -52,10 +52,9 @@ class story_edition extends fs_model
          $this->date = time();
          $this->description = '';
          
+         $this->ip = 'unknown';
          if( isset($_SERVER['REMOTE_ADDR']) )
             $this->ip = $_SERVER['REMOTE_ADDR'];
-         else
-            $this->ip = 'unknown';
          
          $this->nick = 'anonymous';
          $this->points = 0;
@@ -158,7 +157,7 @@ class story_edition extends fs_model
    {
       $this->story_id = $this->var2str($this->story_id);
       $this->visitor_id = $this->var2str($this->visitor_id);
-      $this->title = $this->true_text_break($this->title, 99, 18);
+      $this->title = $this->true_text_break($this->title, 120, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       
       $data = array(

@@ -75,7 +75,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '2.0b7';
+      return '2.0b8';
    }
    
    public function php_version()
@@ -142,12 +142,6 @@ abstract class fs_controller
          return 'http://'.$_SERVER["SERVER_NAME"];
       else
          return 'http://www.'.$_SERVER["SERVER_NAME"];
-   }
-   
-   /// devulve TRUE si el número aleatorio es igual a 0
-   public function random($num=9)
-   {
-      return mt_rand(0, $num) == 0;
    }
    
    public function split_stories(&$stories, $cols=3, $col=1)

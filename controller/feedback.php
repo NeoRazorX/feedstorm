@@ -52,6 +52,7 @@ class feedback extends fs_controller
          {
             if($_POST['human'] == '')
             {
+               $comment->visitor_id = $this->visitor->get_id();
                if($this->email == '')
                   $comment->nick = $this->visitor->nick;
                else

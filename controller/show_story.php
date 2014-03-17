@@ -47,7 +47,12 @@ class show_story extends fs_controller
          $this->title = $this->story->title;
          $this->comments = $this->comments();
          
-         if($this->story->published)
+         if($this->aede($this->story->link))
+         {
+            $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
+               . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
+         }
+         else if($this->story->published)
             $this->noindex = FALSE;
          
          if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
@@ -191,6 +196,7 @@ class show_story extends fs_controller
             {
                $comment = new comment();
                $comment->thread = $this->story->get_id();
+               $comment->visitor_id = $this->visitor->get_id();
                $comment->nick = $this->visitor->nick;
                $comment->text = $_POST['comment'];
                $comment->save();
@@ -237,6 +243,37 @@ class show_story extends fs_controller
       }
       
       return $stories;
+   }
+   
+   /// devuelve TRUE si el enlace pertenece a un medio de AEDE
+   private function aede($link)
+   {
+      $aede_domains = array(
+          'abc.es', 'aede.es', 'as.com', 'canarias7.es', 'cincodias.com', 'deia.com', 'diaridegirona.cat',
+          'diaridetarragona.com', 'diarideterrassa.es', 'diariocordoba.com', 'diariodeavila.es', 'diariodeavisos.com',
+          'diariodecadiz.es', 'diariodeibiza.es', 'diariodejerez.es', 'diariodelaltoaragon.es', 'diariodeleon.es',
+          'diariodemallorca.es', 'diariodenavarra.es', 'diariodenoticias.org', 'diariodesevilla.es', 'diarioinformacion.com',
+          'diariojaen.es', 'diariopalentino.es', 'diariovasco.com', 'diariovasco.com', 'eladelantado.com', 'elalmeria.es',
+          'elcomercio.es', 'elcorreo.com', 'elcorreoweb.es', 'eldiadecordoba.es', 'eldiariomontanes.es', 'eleconomista.es',
+          'elmundo.es', 'elpais.com', 'elpais.es', 'elperiodico.com', 'elperiodicodearagon.com', 'elperiodicoextremadura.com',
+          'elperiodicomediterraneo.com', 'elprogreso.es', 'europasur.es', 'expansion.com', 'farodevigo.es', 'granadahoy.com',
+          'heraldo.es', 'heraldodesoria.es', 'hoy.es', 'ideal.es', 'intereconomia.com/la-gaceta', 'lagacetadesalamanca.es',
+          'laopinion.es', 'laopinioncoruna.es', 'laopiniondemalaga.es', 'laopiniondemurcia.es', 'laopiniondezamora.es',
+          'laprovincia.es', 'larazon.es', 'larioja.com', 'lasprovincias.es', 'latribunadealbacete.es', 'latribunadeciudadreal.es',
+          'latribunadetalavera.es', 'latribunadetoledo.es', 'lavanguardia.com', 'laverdad.es', 'laverdad.es', 'lavozdealmeria.es',
+          'lavozdegalicia.es', 'lavozdigital.es', 'levante-emv.com', 'lne.es', 'majorcadailybulletin.es', 'malagahoy.es',
+          'marca.com', 'mundodeportivo.com', 'noticiasdealava.com', 'noticiasdegipuzkoa.com', 'regio7.cat', 'sport.es',
+          'superdeporte.es', 'ultimahora.es'
+      );
+      
+      $parts = explode('/', $link);
+      if( count($parts) >= 3 )
+      {
+         $link_domain = str_replace('www.', '', $parts[2]);
+         return in_array($link_domain, $aede_domains);
+      }
+      else
+         return FALSE;
    }
 }
 

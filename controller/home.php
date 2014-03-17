@@ -18,6 +18,7 @@
  */
 
 require_once 'model/comment.php';
+require_once 'model/message.php';
 require_once 'model/story_preview.php';
 
 class home extends fs_controller
@@ -56,6 +57,23 @@ class home extends fs_controller
       {
          $this->new_message('Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el <a class="btn btn-sm btn-default" href="'
             .FS_PATH.'feedback">formulario de contacto</a>');
+      }
+      
+      if( count($this->get_errors()) + count($this->get_messages()) == 0 )
+      {
+         $msg = new message();
+         $num_msgs = 0;
+         $messages = $msg->all2visitor( $this->visitor->get_id() );
+         foreach($messages as $m)
+         {
+            if( !$m->readed )
+               $num_msgs++;
+         }
+         if( $num_msgs > 0 )
+         {
+            $this->new_message('Tienes '.$num_msgs.' mensaje(s) nuevo(s). <a class="btn btn-sm btn-default" href="'
+               .FS_PATH.'messages">ver mensaje(s)</a>');
+         }
       }
    }
 }

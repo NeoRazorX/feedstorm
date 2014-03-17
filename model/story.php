@@ -472,7 +472,7 @@ class story extends fs_model
    
    public function save()
    {
-      $this->title = $this->true_text_break($this->title, 99, 18);
+      $this->title = $this->true_text_break($this->title, 120, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       $this->related_id = $this->var2str($this->related_id);
       $this->edition_id = $this->var2str($this->edition_id);

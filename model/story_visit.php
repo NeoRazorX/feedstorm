@@ -49,10 +49,9 @@ class story_visit extends fs_model
          $this->story_id = NULL;
          $this->edition_id = NULL;
          
+         $this->ip = 'unknown';
          if( isset($_SERVER['REMOTE_ADDR']) )
             $this->ip = $_SERVER['REMOTE_ADDR'];
-         else
-            $this->ip = 'unknown';
          
          $this->date = time();
       }

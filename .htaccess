@@ -3,8 +3,8 @@
    RewriteRule ^view/  -  [L]
    RewriteRule ^tmp/images/  -  [L]
    RewriteRule ^(.*)/(.*)$ index.php?page=$1&id=$2&%{QUERY_STRING} [L]
-   RewriteRule ^(.*)/$ index.php?page=$1 [L]
-   RewriteRule ^([^/.]+)$ index.php?page=$1 [L]
+   RewriteRule ^(.*)/$ index.php?page=$1&%{QUERY_STRING} [L]
+   RewriteRule ^([^/.]+)$ index.php?page=$1&%{QUERY_STRING} [L]
 </IfModule>
 
 <IfModule mod_expires.c>

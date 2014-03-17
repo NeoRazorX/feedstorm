@@ -1,0 +1,66 @@
+{include="header"}
+
+{if condition="$fsc->msg_to_nick"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      document.f_new_msg.text.focus();
+   });
+</script>
+{/if}
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-md-4">
+         <div class="panel panel-primary">
+            <div class="panel-heading">
+               <h3 class="panel-title">Nuevo mensaje:</h3>
+            </div>
+            <div class="panel-body">
+               <form name="f_new_msg" action="{$fsc->url()}" method="post">
+                  <input type="hidden" name="to" value="{$fsc->msg_to}"/>
+                  <div>
+                     <input class="form-control" type="text" name="to_nick" value="{$fsc->msg_to_nick}" placeholder="enviar a:"/>
+                  </div>
+                  <div>
+                     <textarea class="form-control" name="text" rows="10" placeholder="Escribe aquí el mensaje.">{$fsc->msg_txt}</textarea>
+                  </div>
+                  {if condition="$fsc->visitor->admin"}
+                  <div style="margin-top: 5px; text-align: right;">
+                     <input type="hidden" name="human" value=""/>
+                     <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+                  </div>
+                  {else}
+                  <div style="margin-top: 5px; text-align: right;">
+                     <div class="pull-left">
+                        <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                     </div>
+                     Borra el número para demostrar que eres humano
+                     <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+                  </div>
+                  {/if}
+               </form>
+            </div>
+         </div>
+      </div>
+      <div class="col-md-8">
+         {loop="$fsc->messages"}
+         <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+            <div style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-user"></span>
+               {if condition="$fsc->visitor->nick==$value->from_nick"}
+                  <b>Tú</b>
+               {else}
+                  <a href="{$path}messages?to={$value->from}">@{$value->from_nick}</a>
+               {/if}
+               <span class="pull-right small">{$value->timesince()}</span>
+            </div>
+            <p>{$value->text}</p>
+         </div>
+         {else}
+         <div class="alert alert-info">No tienes mensajes.</div>
+         {/loop}
+      </div>
+   </div>
+</div>
+
+{include="footer"}

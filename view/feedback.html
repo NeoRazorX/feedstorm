@@ -3,20 +3,21 @@
 {if condition="$fsc->visitor->admin"}
 <div class="container-fluid">
    <div class="row">
-      <div class="col-md-12">
-         {loop="$fsc->comments"}
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+         {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
             <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
                <div style="margin-bottom: 5px;">
                   <span class="glyphicon glyphicon-user"></span>
-                  <u>{$value->nick}</u>
-                  <span class="pull-right small">{$value->timesince()}</span>
+                  <a href="{$path}messages?to={$value2->visitor_id}">{$value2->nick}</a>
+                  <span class="pull-right small">{$value2->timesince()}</span>
                </div>
-               <p>{$value->text}</p>
+               <p>{$value2->text}</p>
             </div>
-         {else}
-            <div class="alert alert-info">Sin mensajes.</div>
          {/loop}
-      </div>
+         </div>
+      {/loop}
    </div>
 </div>
 {else}

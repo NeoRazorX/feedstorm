@@ -51,8 +51,12 @@ class feed extends fs_model
          $this->strikes = $f['strikes'];
          $this->num_stories = $f['num_stories'];
          $this->native_lang = $f['native_lang'];
-         $this->parody = $f['parody'];
-         $this->penalize = $f['penalize'];
+         
+         if( isset($f['parody']) )
+            $this->parody = $f['parody'];
+         
+         if( isset($f['penalize']) )
+            $this->penalize = $f['penalize'];
       }
       else
       {
@@ -426,6 +430,11 @@ class feed extends fs_model
             $story2->num_feeds++;
             $story2->save();
          }
+         else if( mt_rand(0, 4) == 0 )
+         {
+            $story2->random_count( !$this->meneame() );
+            $story2->save();
+         }
       }
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
@@ -436,6 +445,7 @@ class feed extends fs_model
          $story->penalize = $this->penalize;
          $story->num_feeds = 1;
          $story->save(); /// hay que guardar para tener un ID
+         
          $feed_story->story_id = $story->get_id();
          $feed_story->save();
       }

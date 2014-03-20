@@ -68,8 +68,8 @@ class messages extends fs_controller
             $msg->to = $this->msg_to;
             $msg->to_nick = str_replace('@', '', $this->msg_to_nick);
             $msg->save();
-            $this->new_message('Mensaje enviado correctamente.');
             
+            $this->new_message('Mensaje enviado correctamente.');
             $this->msg_to = NULL;
             $this->msg_to_nick = NULL;
             $this->msg_txt = '';

@@ -22,6 +22,7 @@ date_default_timezone_set('Europe/Madrid');
 require_once 'config.php';
 require_once 'base/fs_mongo.php';
 require_once 'model/feed.php';
+require_once 'model/story.php';
 require_once 'model/suscription.php';
 
 header("Content-type: text/xml");
@@ -40,6 +41,19 @@ $feed = new feed();
 foreach($feed->all() as $f)
 {
    echo '<item><user>-</user><feed>'.base64_encode($f->url).'</feed></item>';
+}
+
+$story = new story();
+foreach($story->popular_stories(1000, TRUE) as $ps)
+{
+   $native = 'TRUE';
+   if( !$ps->native_lang )
+      $native = 'FALSE';
+   
+   echo '<story><title>'.base64_encode($ps->title).'</title><description>'.base64_encode($ps->description).'</description>'
+      . '<date>'.$ps->date.'</date><link>'.base64_encode($ps->link).'</link><clics>'.$ps->clics.'</clics>'
+      . '<keywords>'.base64_encode($ps->keywords).'</keywords><native>'.$native.'</native>'
+      . '<name>'.base64_encode($ps->name).'</name></story>';
 }
 
 $mongo->close();

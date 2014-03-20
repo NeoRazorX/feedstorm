@@ -25,7 +25,10 @@ require_once 'model/story_visit.php';
 class show_story extends fs_controller
 {
    public $comments;
+   public $feed_links;
+   public $meneame_link;
    public $preview;
+   public $reddit_link;
    public $story;
    public $stories;
    public $txt_comment;
@@ -46,6 +49,18 @@ class show_story extends fs_controller
       {
          $this->title = $this->story->title;
          $this->comments = $this->comments();
+         
+         /// cargamos y analizamos las fuentes
+         $this->meneame_link = FALSE;
+         $this->reddit_link = FALSE;
+         $this->feed_links = $this->story->feed_links();
+         foreach($this->feed_links as $fl)
+         {
+            if( $fl->meneame() )
+               $this->meneame_link = $fl->link;
+            else if( $fl->reddit() )
+               $this->reddit_link = $fl->link;
+         }
          
          if($this->aede($this->story->link))
          {
@@ -198,7 +213,7 @@ class show_story extends fs_controller
                $comment->thread = $this->story->get_id();
                $comment->visitor_id = $this->visitor->get_id();
                $comment->nick = $this->visitor->nick;
-               $comment->text = $_POST['comment'];
+               $comment->text = $this->txt_comment;
                $comment->save();
                $all_comments[] = $comment;
                
@@ -206,6 +221,9 @@ class show_story extends fs_controller
                $this->visitor->num_comments++;
                $this->visitor->need_save = TRUE;
                $this->visitor->save();
+               
+               $this->new_message('Comentario enviado correctamente.');
+               $this->txt_comment = '';
             }
             else
                $this->new_error_msg('Tienes que escribir más.');
@@ -233,13 +251,6 @@ class show_story extends fs_controller
          }
          else
             break;
-      }
-      
-      if( count($stories) == 0 )
-      {
-         $story = $this->story->pre_related_story();
-         if($story)
-            $stories[] = $story;
       }
       
       return $stories;

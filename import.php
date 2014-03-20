@@ -22,6 +22,7 @@ date_default_timezone_set('Europe/Madrid');
 require_once 'config.php';
 require_once 'base/fs_mongo.php';
 require_once 'model/feed.php';
+require_once 'model/story.php';
 require_once 'model/suscription.php';
 require_once 'model/visitor.php';
 
@@ -46,6 +47,7 @@ else
          $feed = new feed();
          $feeds = array();
          
+         /// importamos fuentes, usuarios y suscripciones
          foreach($xml->item as $item)
          {
             echo '.';
@@ -75,6 +77,29 @@ else
                $suscription->visitor_id = $vis0->get_id();
                $suscription->feed_id = $f0->get_id();
                $suscription->save();
+            }
+         }
+         
+         /// importamos los artículos más populares
+         $story = new story();
+         foreach($xml->story as $item)
+         {
+            echo '+';
+            
+            $story2 = $story->get_by_link( base64_decode( (string)$item->link ) );
+            if(!$story2)
+            {
+               $st0 = new story;
+               $st0->title = base64_decode( (string)$item->title );
+               $st0->description = base64_decode( (string)$item->description );
+               $st0->link = base64_decode( (string)$item->link );
+               $st0->date = intval( (string)$item->date );
+               $st0->published = $st0->date;
+               $st0->clics = intval( (string)$item->clics );
+               $st0->keywords = base64_decode( (string)$item->keywords );
+               $st0->native_lang = ( (string)$item->native == 'TRUE' );
+               $st0->name = base64_decode( (string)$item->name );
+               $st0->save();
             }
          }
       }

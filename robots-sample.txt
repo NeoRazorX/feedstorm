@@ -1,7 +1,6 @@
 User-agent: *
 Disallow: /base/
 Disallow: /controller/
-Disallow: /data/
 Disallow: /model/
 Disallow: /raintpl/
 Disallow: /tmp/

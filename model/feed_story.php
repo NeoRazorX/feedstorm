@@ -126,6 +126,16 @@ class feed_story extends fs_model
          return '#';
    }
    
+   public function meneame()
+   {
+      return ( mb_substr($this->link, 0, 23) == 'http://www.meneame.net/' );
+   }
+   
+   public function reddit()
+   {
+      return ( mb_substr($this->link, 0, 22) == 'http://www.reddit.com/' );
+   }
+   
    public function get($id)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);

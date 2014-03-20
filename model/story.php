@@ -58,9 +58,15 @@ class story extends fs_model
       if($item)
       {
          $this->id = $item['_id'];
-         $this->name = $item['name'];
+         
+         if( isset($item['name']) )
+            $this->name = $item['name'];
+         
          $this->date = $item['date'];
-         $this->published = $item['published'];
+         
+         if( isset($item['published']) )
+            $this->published = $item['published'];
+         
          $this->title = $item['title'];
          $this->description = $item['description'];
          $this->link = $item['link'];
@@ -71,19 +77,37 @@ class story extends fs_model
          $this->plusones = $item['plusones'];
          $this->popularity = $item['popularity'];
          $this->native_lang = $item['native_lang'];
-         $this->parody = $item['parody'];
-         $this->penalize = $item['penalize'];
-         $this->featured = $item['featured'];
+         
+         if( isset($item['parody']) )
+            $this->parody = $item['parody'];
+         
+         if( isset($item['penalize']) )
+            $this->penalize = $item['penalize'];
+         
+         if( isset($item['featured']) )
+            $this->featured = $item['featured'];
          
          $this->keywords = '';
-         foreach( explode(',', $item['keywords']) as $kw )
-            $this->add_keyword($kw);
+         if( isset($item['keywords']) )
+         {
+            foreach( explode(',', $item['keywords']) as $kw )
+               $this->add_keyword($kw);
+         }
          
-         $this->related_id = $item['related_id'];
-         $this->edition_id = $item['edition_id'];
-         $this->num_editions = $item['num_editions'];
-         $this->num_feeds = $item['num_feeds'];
-         $this->num_comments = $item['num_comments'];
+         if( isset($item['related_id']) )
+            $this->related_id = $item['related_id'];
+         
+         if( isset($item['edition_id']) )
+            $this->edition_id = $item['edition_id'];
+         
+         if( isset($item['num_editions']) )
+            $this->num_editions = $item['num_editions'];
+         
+         if( isset($item['num_feeds']) )
+            $this->num_feeds = $item['num_feeds'];
+         
+         if( isset($item['num_comments']) )
+            $this->num_comments = $item['num_comments'];
       }
       else
       {
@@ -221,16 +245,6 @@ class story extends fs_model
          return FALSE;
    }
    
-   public function pre_related_story()
-   {
-      $this->add2history(__CLASS__.'::'.__FUNCTION__);
-      $data = $this->collection->findone( array('related_id' => $this->var2str($this->id)) );
-      if($data)
-         return new story($data);
-      else
-         return FALSE;
-   }
-   
    public function add_keyword($key)
    {
       $nkey = trim($key);
@@ -263,24 +277,24 @@ class story extends fs_model
          if( mb_strlen($this->description) > 250 )
             $tclics++;
          else if( mb_strlen($this->description) < 150 )
-            $tclics -= 2;
+            $tclics  = min( array(0, $tclics-2) );
          
          if($this->tweets > 1000)
-            $tclics += min( array($this->tweets, 10 + $this->clics) );
+            $tclics += min( array($this->tweets, 10 + 2*$this->clics) );
          else
             $tclics += min( array($this->tweets, 1 + $this->clics) );
          
          if($this->likes > 1000)
-            $tclics += min( array($this->likes, 10 + $this->clics) );
+            $tclics += min( array($this->likes, 10 + 2*$this->clics) );
          else
             $tclics += min( array($this->likes, 1 + $this->clics) );
          
          if($this->meneos > 150)
-            $tclics += min( array($this->meneos, 10 + $this->clics) );
+            $tclics += min( array($this->meneos, 10 + 2*$this->clics) );
          else
             $tclics += min( array($this->meneos, 1 + $this->clics) );
          
-         $tclics += min( array($this->plusones, 1 + $this->clics) );
+         $tclics += min( array($this->plusones, 1 + 2*$this->clics) );
       }
       
       $dias = 1 + intval( (time() - $this->date) / 86400 );
@@ -372,7 +386,7 @@ class story extends fs_model
    {
       if( isset($this->link) AND $this->native_lang AND !$this->penalize )
       {
-         switch( mt_rand(0, 4) )
+         switch( mt_rand(0, 3) )
          {
             case 0:
                $this->tweet_count();
@@ -391,9 +405,6 @@ class story extends fs_model
                   $this->tweet_count();
                else
                   $this->plusones_count();
-               break;
-            
-            case 3:
                break;
             
             default:
@@ -592,12 +603,19 @@ class story extends fs_model
       return $stlist;
    }
    
-   public function popular_stories($num = FS_MAX_STORIES)
+   public function popular_stories($num = FS_MAX_STORIES, $clicks=FALSE)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      foreach($this->collection->find()->sort(array('popularity'=>-1))->limit($num) as $s)
+      
+      if($clicks)
+         $search = array('clics'=>-1);
+      else
+         $search = array('popularity'=>-1);
+      
+      foreach($this->collection->find()->sort($search)->limit($num) as $s)
          $stlist[] = new story($s);
+      
       return $stlist;
    }
    
@@ -655,7 +673,8 @@ class story extends fs_model
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones del artículo
-         $ps->random_count();
+         if( is_null($ps->published) )
+            $ps->random_count();
          
          /// extraemos las keywords
          if($ps->keywords != '')

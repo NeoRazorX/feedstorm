@@ -31,6 +31,7 @@ else
    require_once 'model/comment.php';
    require_once 'model/feed.php';
    require_once 'model/feed_story.php';
+   require_once 'model/message.php';
    require_once 'model/story.php';
    require_once 'model/story_edition.php';
    require_once 'model/story_visit.php';
@@ -41,6 +42,7 @@ else
    $comment = new comment();
    $feed = new feed();
    $feed_story = new feed_story();
+   $message = new message();
    $story = new story();
    $story_edition = new story_edition();
    $story_visit = new story_visit();
@@ -54,6 +56,7 @@ else
          echo "\nComprobamos los modelos... ";
          $comment->cron_job();
          $feed_story->cron_job();
+         $message->cron_job();
          $story->cron_job();
          $story_edition->cron_job();
          $story_visit->cron_job();
@@ -76,6 +79,7 @@ else
       $comment->install_indexes();
       $feed->install_indexes();
       $feed_story->install_indexes();
+      $message->install_indexes();
       $story->install_indexes();
       $story_edition->install_indexes();
       $story_visit->install_indexes();

@@ -7,10 +7,7 @@
       {loop="$cols"}
          <div class="col-lg-4 col-sm-6">
             {if condition="$value1==3"}
-            <div class="alert alert-success">
-               Hay un <a target="_blank" href="http://www.youtube.com/watch?v=lrmNOofFUok&feature=share">hangout programado</a>
-               para el Sábado a las 17:30 GMT+1.
-            </div>
+               {include="advices"}
             {/if}
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
             <!--{$fsc->preview->load($value2->link)}-->

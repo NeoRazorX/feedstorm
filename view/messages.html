@@ -27,6 +27,12 @@
                   {if condition="$fsc->visitor->admin"}
                   <div style="margin-top: 5px; text-align: right;">
                      <input type="hidden" name="human" value=""/>
+                     <span class="pull-left">
+                        <label>
+                           <input type="checkbox" name="broadcast" value="TRUE"/>
+                           mensaje masivo
+                        </label>
+                     </span>
                      <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
                   </div>
                   {else}
@@ -43,6 +49,7 @@
          </div>
       </div>
       <div class="col-md-8">
+         <a name="messages"></a>
          {loop="$fsc->messages"}
          <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
             <div style="margin-bottom: 5px;">
@@ -55,6 +62,13 @@
                <span class="pull-right small">{$value->timesince()}</span>
             </div>
             <p>{$value->text}</p>
+            <div style="margin-bottom: 5px; text-align: right;">
+               {if condition="$fsc->visitor->nick!=$value->from_nick"}
+               <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">
+                  <span class="glyphicon glyphicon-share"></span>
+               </a>
+               {/if}
+            </div>
          </div>
          {else}
          <div class="alert alert-info">No tienes mensajes.</div>

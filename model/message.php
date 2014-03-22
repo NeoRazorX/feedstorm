@@ -18,6 +18,7 @@
  */
 
 require_once 'base/fs_model.php';
+require_once 'model/visitor.php';
 
 class message extends fs_model
 {
@@ -29,6 +30,7 @@ class message extends fs_model
    public $ip;
    public $text;
    public $readed;
+   public $broadcast;
    
    public function __construct($m = FALSE)
    {
@@ -44,6 +46,10 @@ class message extends fs_model
          $this->ip = $m['ip'];
          $this->text = $m['text'];
          $this->readed = $m['readed'];
+         
+         $this->broadcast = FALSE;
+         if( isset($m['broadcast']) )
+            $this->broadcast = $m['broadcast'];
       }
       else
       {
@@ -60,6 +66,7 @@ class message extends fs_model
          
          $this->text = '';
          $this->readed = FALSE;
+         $this->broadcast = FALSE;
       }
    }
    
@@ -112,7 +119,8 @@ class message extends fs_model
           'date' => $this->date,
           'ip' => $this->ip,
           'text' => $this->text,
-          'readed' => $this->readed
+          'readed' => $this->readed,
+          'broadcast' => $this->broadcast
       );
       
       if( $this->exists() )
@@ -160,6 +168,28 @@ class message extends fs_model
    
    public function cron_job()
    {
+      $visitor = new visitor();
       
+      foreach($this->collection->find( array('broadcast'=>TRUE) ) as $m)
+      {
+         $message = new message($m);
+         
+         foreach($visitor->usuals(1000) as $v)
+         {
+            if($v->num_visits > 1)
+            {
+               $msg2 = new message();
+               $msg2->from = $message->from;
+               $msg2->from_nick = $message->from_nick;
+               $msg2->ip = $message->ip;
+               $msg2->to = $v->get_id();
+               $msg2->to_nick = $v->nick;
+               $msg2->text = $message->text;
+               $msg2->save();
+            }
+         }
+         
+         $message->delete();
+      }
    }
 }

@@ -53,11 +53,6 @@ class home extends fs_controller
             }
          }
       }
-      else if(count($this->get_errors()) + count($this->get_messages()) == 0 AND mt_rand(0, 19) == 0)
-      {
-         $this->new_message('Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el <a class="btn btn-sm btn-default" href="'
-            .FS_PATH.'feedback">formulario de contacto</a>');
-      }
       
       if( count($this->get_errors()) + count($this->get_messages()) == 0 )
       {
@@ -72,7 +67,7 @@ class home extends fs_controller
          if( $num_msgs > 0 )
          {
             $this->new_message('Tienes '.$num_msgs.' mensaje(s) nuevo(s). <a class="btn btn-sm btn-default" href="'
-               .FS_PATH.'messages">ver mensaje(s)</a>');
+               .FS_PATH.'messages#messages">ver mensaje(s)</a>');
          }
       }
    }

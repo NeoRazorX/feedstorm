@@ -52,7 +52,7 @@ class messages extends fs_controller
       {
          $this->msg_txt = trim($_POST['text']);
          
-         if( is_null($this->msg_to_nick) )
+         if( is_null($this->msg_to_nick) AND !isset($_POST['broadcast']) )
          {
             $this->new_error_msg('Tienes que hacer clic sobre el nick de un usuario para enviarle un mensaje.');
          }
@@ -67,6 +67,10 @@ class messages extends fs_controller
             $msg->text = $this->msg_txt;
             $msg->to = $this->msg_to;
             $msg->to_nick = str_replace('@', '', $this->msg_to_nick);
+            
+            if($this->visitor->admin AND isset($_POST['broadcast']))
+               $msg->broadcast = TRUE;
+            
             $msg->save();
             
             $this->new_message('Mensaje enviado correctamente.');

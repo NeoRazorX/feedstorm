@@ -34,7 +34,13 @@ class feedback extends fs_controller
       {
          $this->comments = $comment->all4thread();
          if( count($this->comments) > 0 )
+         {
             setcookie('last_feedback', $this->comments[0]->get_id(), time()+FS_MAX_AGE, FS_PATH);
+         }
+         else
+         {
+            $this->new_message('Todavía no hay mensajes de feedback.');
+         }
       }
       else
       {

@@ -67,7 +67,7 @@ class show_story extends fs_controller
             $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
                . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
          }
-         else if($this->story->published)
+         else if($this->story->published OR $this->story->num_editions > 0)
             $this->noindex = FALSE;
          
          if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
@@ -139,7 +139,7 @@ class show_story extends fs_controller
       {
          $url = 'https://twitter.com/share?url='.urlencode( $this->full_url() ).
             '&amp;text='.urlencode( html_entity_decode($this->story->title) );
-         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         if( isset($this->story->link) AND $this->story->num_editions == 0 )
          {
             $url = 'https://twitter.com/share?url='.urlencode($this->story->link).
                '&amp;text='.urlencode( html_entity_decode($this->story->title) );
@@ -156,7 +156,7 @@ class show_story extends fs_controller
       {
          $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode( html_entity_decode($this->story->title) ).
             '&amp;p[url]='.urlencode( $this->full_url() );
-         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         if( isset($this->story->link) AND $this->story->num_editions == 0 )
          {
             $url = 'http://www.facebook.com/sharer.php?s=100&amp;p[title]='.urlencode( html_entity_decode($this->story->title) ).
                '&amp;p[url]='.urlencode($this->story->link);
@@ -172,7 +172,7 @@ class show_story extends fs_controller
       if($this->story)
       {
          $url = 'https://plus.google.com/share?url='.urlencode( $this->full_url() );
-         if( isset($this->story->link) AND mt_rand(0, 1) == 0 )
+         if( isset($this->story->link) AND $this->story->num_editions == 0 )
          {
             $url = 'https://plus.google.com/share?url='.urlencode($this->story->link);
          }

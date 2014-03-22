@@ -432,6 +432,9 @@ class feed extends fs_model
          }
          else if( mt_rand(0, 4) == 0 )
          {
+            /// actualizamos la noticia
+            if($meneos > $story2->meneos)
+               $story2->meneos = $meneos;
             $story2->random_count( !$this->meneame() );
             $story2->save();
          }

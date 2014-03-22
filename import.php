@@ -87,6 +87,10 @@ else
             echo '+';
             
             $story2 = $story->get_by_link( base64_decode( (string)$item->link ) );
+            
+            if(!$story2)
+               $story2 = $story->get( base64_decode( (string)$item->name ) );
+            
             if(!$story2)
             {
                $st0 = new story;

@@ -268,6 +268,9 @@ class visitor extends fs_model
    {
       if( $this->need_save AND $this->human() )
       {
+         if( mt_rand(0, 1) == 0 )
+            $this->last_visits();
+         
          $data = array(
              'nick' => $this->nick,
              'ip' => $this->ip,
@@ -355,11 +358,20 @@ class visitor extends fs_model
       return $vlist;
    }
    
-   public function last()
+   public function last($num=FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $vlist = array();
-      foreach($this->collection->find()->sort(array('last_login_date'=>-1))->limit(FS_MAX_STORIES) as $v)
+      foreach($this->collection->find()->sort(array('last_login_date'=>-1))->limit($num) as $v)
+         $vlist[] = new visitor($v);
+      return $vlist;
+   }
+   
+   public function usuals($num=FS_MAX_STORIES)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $vlist = array();
+      foreach($this->collection->find()->sort(array('num_visits'=>-1))->limit($num) as $v)
          $vlist[] = new visitor($v);
       return $vlist;
    }

@@ -26,6 +26,9 @@ class stats extends fs_controller
       parent::__construct('stats', 'Estadísticas &lsaquo; '.FS_NAME);
       
       $this->visits = $this->analyze_visits();
+      
+      if( count($this->visits) == 0 )
+         $this->new_message('No hay suficientes visitas para analizar.');
    }
    
    private function analyze_visits()

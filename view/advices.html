@@ -1,0 +1,65 @@
+<!--{$option=mt_rand(0, 6)}-->
+{if condition="$option==0"}
+<div class="alert alert-info">
+   Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el formulario de contacto.
+   <div style="text-align: right;">
+      <a class="btn btn-sm btn-default" href="{$path}feedback">formulario de contacto</a>
+   </div>
+</div>
+{elseif condition="$option==1"}
+<div class="alert alert-info">
+   <p style="margin-bottom: 5px;">¿Tienes blog? Añádelo a {$name}</p>
+   <form action="{$path}feed_list" method="post">
+      <div>
+         <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog"/>
+      </div>
+      <div>
+         <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+      </div>
+      <div class="small" style="padding-top: 5px; text-align: right;">
+         Borra el número para demostrar que eres humano
+         <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
+      </div>
+   </form>
+</div>
+{elseif condition="$option==2"}
+<div class="alert alert-info">
+   ¿Tienes un problema y quieres que nos hagamos eco?
+   <div style="text-align: right;">
+      <span class="pull-left">
+         Escribe tu historia:
+      </span>
+      <a class="btn btn-default" href="{$path}new_story">
+         <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+      </a>
+   </div>
+</div>
+{elseif condition="$option==3"}
+<div class="alert alert-info">
+   <p style="margin-bottom: 5px;">
+      ¿Quieres añadir tu canal de youtube para que tus vídeos aparezcan automáticamente aquí?
+      Tu URL es: http://gdata.youtube.com/feeds/base/users/<b>TU-USUARIO</b>/uploads
+   </p>
+   <form action="{$path}feed_list" method="post">
+      <div>
+         <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu canal de youtube"/>
+      </div>
+      <div>
+         <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+      </div>
+      <div class="small" style="padding-top: 5px; text-align: right;">
+         Borra el número para demostrar que eres humano
+         <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
+      </div>
+   </form>
+</div>
+{elseif condition="$option==4"}
+<div class="alert alert-info">
+   Si tienes más información sobre un artículo,
+   puedes editarlo haciendo clic en su pestaña <b>editar</b>.
+</div>
+{else}
+<div class="well well-sm" style="text-align: center; background-color: black;">
+   <iframe width="300" height="169" src="//www.youtube.com/embed/lrmNOofFUok" frameborder="0" allowfullscreen></iframe>
+</div>
+{/if}

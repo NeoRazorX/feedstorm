@@ -30,6 +30,7 @@ class discover_stories extends fs_controller
    {
       parent::__construct('discover_stories', 'Descubrir &lsaquo; '.FS_NAME);
       
+      $this->noindex = FALSE;
       $this->preview = new story_preview();
       $this->stories = array();
       

@@ -35,6 +35,22 @@ class message extends fs_model
    public function __construct($m = FALSE)
    {
       parent::__construct('messages');
+      
+      $this->id = NULL;
+      $this->from = NULL;
+      $this->from_nick = 'anonymous';
+      $this->to = NULL;
+      $this->to_nick = 'anonymous';
+      $this->date = time();
+      
+      $this->ip = 'unknown';
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $this->ip = $_SERVER['REMOTE_ADDR'];
+      
+      $this->text = '';
+      $this->readed = FALSE;
+      $this->broadcast = FALSE;
+      
       if($m)
       {
          $this->id = $m['_id'];
@@ -46,27 +62,7 @@ class message extends fs_model
          $this->ip = $m['ip'];
          $this->text = $m['text'];
          $this->readed = $m['readed'];
-         
-         $this->broadcast = FALSE;
-         if( isset($m['broadcast']) )
-            $this->broadcast = $m['broadcast'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->from = NULL;
-         $this->from_nick = 'anonymous';
-         $this->to = NULL;
-         $this->to_nick = 'anonymous';
-         $this->date = time();
-         
-         $this->ip = 'unknown';
-         if( isset($_SERVER['REMOTE_ADDR']) )
-            $this->ip = $_SERVER['REMOTE_ADDR'];
-         
-         $this->text = '';
-         $this->readed = FALSE;
-         $this->broadcast = FALSE;
+         $this->broadcast = $m['broadcast'];
       }
    }
    

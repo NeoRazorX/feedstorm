@@ -2,42 +2,12 @@
 
 <div class="container-fluid">
    <div class="row">
-      <div class="col-md-3">
-         <form action="{$path}feed_list" method="post">
-            <div class="panel panel-primary">
-               <div class="panel-heading">
-                  <h3 class="panel-title">Añadir una fuente...</h3>
-               </div>
-               <div class="panel-body">
-                  <b>¿Tienes blog?</b>
-                  Si quieres agregarlo a {$name},
-                  aquí tienes el formulario que necesitas:
-                  <div>
-                     <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog"/>
-                  </div>
-                  {if condition="$fsc->visitor->admin"}
-                  <input type="hidden" name="human" value=""/>
-                  {else}
-                  <div>
-                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
-                  </div>
-                  {/if}
-               </div>
-               <div class="panel-footer small" style="text-align: right;">
-                  {if condition="!$fsc->visitor->admin"}
-                  Borra el número para demostrar que eres humano
-                  {/if}
-                  <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
-               </div>
-            </div>
-         </form>
-      </div>
       <div class="col-md-9">
          <div class="well well-sm" style="background-color: white;">
             <table class="table table-hover">
                <thead>
                   <tr>
-                     <th>Nombre</th>
+                     <th>Fuente</th>
                      {if condition="$fsc->visitor->mobile()"}
                      <th>Artículos</th>
                      {else}
@@ -69,6 +39,36 @@
                </tbody>
             </table>
          </div>
+      </div>
+      <div class="col-md-3">
+         <form action="{$path}feed_list" method="post">
+            <div class="panel panel-primary">
+               <div class="panel-heading">
+                  <h3 class="panel-title">Añadir una fuente...</h3>
+               </div>
+               <div class="panel-body">
+                  <b>¿Tienes blog?</b>
+                  Si quieres agregarlo a {$name},
+                  aquí tienes el formulario que necesitas:
+                  <div>
+                     <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog"/>
+                  </div>
+                  {if condition="$fsc->visitor->admin"}
+                  <input type="hidden" name="human" value=""/>
+                  {else}
+                  <div>
+                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  </div>
+                  {/if}
+               </div>
+               <div class="panel-footer small" style="text-align: right;">
+                  {if condition="!$fsc->visitor->admin"}
+                  Borra el número para demostrar que eres humano
+                  {/if}
+                  <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
+               </div>
+            </div>
+         </form>
       </div>
    </div>
 </div>

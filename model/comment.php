@@ -32,6 +32,17 @@ class comment extends fs_model
    public function __construct($c = FALSE)
    {
       parent::__construct('comments');
+      
+      $this->id = NULL;
+      $this->thread = NULL;
+      $this->date = time();
+      $this->text = '';
+      $this->visitor_id = NULL;
+      $this->nick = 'anonymous';
+      $this->ip = 'unknown';
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $this->ip = $_SERVER['REMOTE_ADDR'];
+      
       if($c)
       {
          $this->id = $c['_id'];
@@ -39,25 +50,13 @@ class comment extends fs_model
          $this->date = $c['date'];
          $this->text = $c['text'];
          
-         $this->visitor_id = NULL;
          if( isset($c['visitor_id']) )
             $this->visitor_id = $c['visitor_id'];
          
          $this->nick = $c['nick'];
-         $this->ip = $c['ip'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->thread = NULL;
-         $this->date = time();
-         $this->text = '';
-         $this->visitor_id = NULL;
-         $this->nick = 'anonymous';
          
-         $this->ip = 'unknown';
-         if( isset($_SERVER['REMOTE_ADDR']) )
-            $this->ip = $_SERVER['REMOTE_ADDR'];
+         if( isset($c['ip']) )
+            $this->ip = $c['ip'];
       }
    }
    

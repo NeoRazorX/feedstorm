@@ -21,6 +21,7 @@ require_once 'model/comment.php';
 require_once 'model/story.php';
 require_once 'model/story_preview.php';
 require_once 'model/story_visit.php';
+require_once 'model/topic.php';
 
 class show_story extends fs_controller
 {
@@ -62,13 +63,7 @@ class show_story extends fs_controller
                $this->reddit_link = $fl->link;
          }
          
-         if($this->aede($this->story->link))
-         {
-            $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
-               . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
-         }
-         else if($this->story->published OR $this->story->num_editions > 0)
-            $this->noindex = FALSE;
+         $this->eval_quality();
          
          if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
          {
@@ -285,6 +280,66 @@ class show_story extends fs_controller
       }
       else
          return FALSE;
+   }
+   
+   /*
+    * Evaluamos la calidad del artículo para decidir si lo hacemo público o no
+    */
+   private function eval_quality()
+   {
+      /// si es de AEDE no lo publicamos
+      if( $this->aede($this->story->link) )
+      {
+         $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
+            . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
+      }
+      else if($this->story->published) /// si está en portada lo publicamos, logicamente
+      {
+         $this->noindex = FALSE;
+      }
+      else if($this->story->native_lang) /// si no está en español no lo publicamos
+      {
+         $this->noindex = TRUE;
+      }
+      else if($this->story->num_editions > 0) /// si hay alguna edición lo publicamos
+      {
+         $this->noindex = FALSE;
+      }
+      else if( isset($this->story->related_id) ) /// si tiene artículos relacionados lo publicamos
+      {
+         $this->noindex = FALSE;
+      }
+      else if($this->story->num_comments > 0)
+      {
+         $this->noindex = FALSE;
+      }
+   }
+   
+   public function topics()
+   {
+      $tlist = array();
+      $topic = new topic();
+      $topics = array();
+      
+      foreach($this->story->topics as $tid)
+         $topics[] = $topic->get($tid);
+      
+      foreach($topics as $t1)
+      {
+         $found = FALSE;
+         foreach($topics as $t2)
+         {
+            if( $t2->parent == (string)$t1->get_id() )
+            {
+               $found = TRUE;
+               break;
+            }
+         }
+         if(!$found)
+            $tlist[] = $t1;
+      }
+      
+      return $tlist;
    }
 }
 

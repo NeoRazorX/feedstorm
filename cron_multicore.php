@@ -36,6 +36,8 @@ else
    require_once 'model/story_edition.php';
    require_once 'model/story_visit.php';
    require_once 'model/suscription.php';
+   require_once 'model/topic.php';
+   require_once 'model/topic_story.php';
    require_once 'model/visitor.php';
    
    $mongo = new fs_mongo();
@@ -47,6 +49,8 @@ else
    $story_edition = new story_edition();
    $story_visit = new story_visit();
    $suscription = new suscription();
+   $topic = new topic();
+   $topic_story = new topic_story();
    $visitor = new visitor();
    
    if( count($_SERVER["argv"]) == 2 )
@@ -61,6 +65,8 @@ else
          $story_edition->cron_job();
          $story_visit->cron_job();
          $suscription->cron_job();
+         $topic->cron_job();
+         $topic_story->cron_job();
          $visitor->cron_job();
          echo "\n";
       }
@@ -84,6 +90,8 @@ else
       $story_edition->install_indexes();
       $story_visit->install_indexes();
       $suscription->install_indexes();
+      $topic->install_indexes();
+      $topic_story->install_indexes();
       $visitor->install_indexes();
       
       echo "\n";

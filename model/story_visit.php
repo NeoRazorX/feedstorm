@@ -33,6 +33,19 @@ class story_visit extends fs_model
    public function __construct($sv = FALSE)
    {
       parent::__construct('story_visits');
+      
+      $this->id = NULL;
+      $this->visitor_id = NULL;
+      $this->story_id = NULL;
+      $this->edition_id = NULL;
+      
+      $this->ip = 'unknown';
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $this->ip = $_SERVER['REMOTE_ADDR'];
+      
+      $this->date = time();
+      $this->story = NULL;
+      
       if($sv)
       {
          $this->id = $sv['_id'];
@@ -42,21 +55,6 @@ class story_visit extends fs_model
          $this->ip = $sv['ip'];
          $this->date = $sv['date'];
       }
-      else
-      {
-         $this->id = NULL;
-         $this->visitor_id = NULL;
-         $this->story_id = NULL;
-         $this->edition_id = NULL;
-         
-         $this->ip = 'unknown';
-         if( isset($_SERVER['REMOTE_ADDR']) )
-            $this->ip = $_SERVER['REMOTE_ADDR'];
-         
-         $this->date = time();
-      }
-      
-      $this->story = NULL;
    }
    
    public function install_indexes()
@@ -227,6 +225,19 @@ class story_visit extends fs_model
       echo "\nEliminamos visitas antiguas...";
       /// eliminamos los registros de más de 7 días
       $this->collection->remove( array('date' => array('$lt'=>time()-604800)) );
+      
+      echo "\nExaminamos más artículos...";
+      foreach($this->last() as $sv)
+      {
+         echo '.';
+         
+         $story = $sv->story();
+         if($story)
+         {
+            $story->random_count();
+            $story->save();
+         }
+      }
    }
 }
 

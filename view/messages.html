@@ -10,6 +10,32 @@
 
 <div class="container-fluid">
    <div class="row">
+      <div class="col-md-8">
+         <a name="messages"></a>
+         {loop="$fsc->messages"}
+         <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+            <div style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-user"></span>
+               {if condition="$fsc->visitor->nick==$value->from_nick"}
+                  <b>Tú</b>
+               {else}
+                  <a href="{$path}messages?to={$value->from}">@{$value->from_nick}</a>
+               {/if}
+               <span class="pull-right small">{$value->timesince()}</span>
+            </div>
+            <p>{$value->text}</p>
+            <div style="margin-bottom: 5px; text-align: right;">
+               {if condition="$fsc->visitor->nick!=$value->from_nick"}
+               <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">
+                  <span class="glyphicon glyphicon-share"></span>
+               </a>
+               {/if}
+            </div>
+         </div>
+         {else}
+         <div class="alert alert-info">No tienes mensajes.</div>
+         {/loop}
+      </div>
       <div class="col-md-4">
          <div class="panel panel-primary">
             <div class="panel-heading">
@@ -47,32 +73,6 @@
                </form>
             </div>
          </div>
-      </div>
-      <div class="col-md-8">
-         <a name="messages"></a>
-         {loop="$fsc->messages"}
-         <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
-            <div style="margin-bottom: 5px;">
-               <span class="glyphicon glyphicon-user"></span>
-               {if condition="$fsc->visitor->nick==$value->from_nick"}
-                  <b>Tú</b>
-               {else}
-                  <a href="{$path}messages?to={$value->from}">@{$value->from_nick}</a>
-               {/if}
-               <span class="pull-right small">{$value->timesince()}</span>
-            </div>
-            <p>{$value->text}</p>
-            <div style="margin-bottom: 5px; text-align: right;">
-               {if condition="$fsc->visitor->nick!=$value->from_nick"}
-               <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">
-                  <span class="glyphicon glyphicon-share"></span>
-               </a>
-               {/if}
-            </div>
-         </div>
-         {else}
-         <div class="alert alert-info">No tienes mensajes.</div>
-         {/loop}
       </div>
    </div>
 </div>

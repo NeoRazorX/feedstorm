@@ -35,6 +35,14 @@ class feed_story extends fs_model
    public function __construct($fs = FALSE)
    {
       parent::__construct('feed_stories');
+      
+      $this->id = NULL;
+      $this->feed_id = NULL;
+      $this->story_id = NULL;
+      $this->date = time();
+      $this->title = NULL;
+      $this->link = NULL;
+      
       if($fs)
       {
          $this->id = $fs['_id'];
@@ -43,15 +51,6 @@ class feed_story extends fs_model
          $this->date = $fs['date'];
          $this->title = $fs['title'];
          $this->link = $fs['link'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->feed_id = NULL;
-         $this->story_id = NULL;
-         $this->date = time();
-         $this->title = NULL;
-         $this->link = NULL;
       }
    }
    
@@ -142,6 +141,16 @@ class feed_story extends fs_model
       $data = $this->collection->findone( array('_id' => new MongoId($id)) );
       if($data)
          return new feed($data);
+      else
+         return FALSE;
+   }
+   
+   public function get_by_link($url)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $data = $this->collection->findone( array('link' => $url) );
+      if($data)
+         return new feed_story($data);
       else
          return FALSE;
    }

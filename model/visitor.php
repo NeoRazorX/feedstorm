@@ -46,44 +46,61 @@ class visitor extends fs_model
    public function __construct($k=FALSE)
    {
       parent::__construct('visitors');
-      if( $k )
+      
+      $this->id = NULL;
+      $this->nick = $this->random_string(12);
+      $this->ip = 'unknown';
+      $this->user_agent = 'unknown';
+      $this->first_login_date = time();
+      $this->last_login_date = 0;
+      $this->admin = FALSE;
+      $this->num_suscriptions = 0;
+      $this->num_stories = 0;
+      $this->num_editions = 0;
+      $this->num_comments = 0;
+      $this->num_visits = 0;
+      $this->points = 0;
+      $this->extra_points = 0;
+      $this->noob = TRUE;
+      $this->need_save = FALSE;
+      
+      if($k)
       {
          $this->id = $k['_id'];
          $this->nick = $k['nick'];
-         $this->ip = $k['ip'];
+         
+         if( isset($k['ip']) )
+            $this->ip = $k['ip'];
+         
          $this->user_agent = $k['user_agent'];
          $this->first_login_date = $k['first_login_date'];
          $this->last_login_date = $k['last_login_date'];
-         $this->admin = $k['admin'];
+         
+         if( isset($k['admin']) )
+            $this->admin = $k['admin'];
+         
          $this->num_suscriptions = $k['num_suscriptions'];
-         $this->num_stories = $k['num_stories'];
-         $this->num_editions = $k['num_editions'];
-         $this->num_comments = $k['num_comments'];
-         $this->num_visits = $k['num_visits'];
-         $this->points = $k['points'];
-         $this->extra_points = $k['extra_points'];
+         
+         if( isset($k['num_stories']) )
+            $this->num_stories = $k['num_stories'];
+         
+         if( isset($k['num_editions']) )
+            $this->num_editions = $k['num_editions'];
+         
+         if( isset($k['num_comments']) )
+            $this->num_comments = $k['num_comments'];
+         
+         if( isset($k['num_visits']) )
+            $this->num_visits = $k['num_visits'];
+         
+         if( isset($k['points']) )
+            $this->points = $k['points'];
+         
+         if( isset($k['extra_points']) )
+            $this->extra_points = $k['extra_points'];
+         
          $this->noob = FALSE;
       }
-      else
-      {
-         $this->id = NULL;
-         $this->nick = $this->random_string(12);
-         $this->ip = 'unknown';
-         $this->user_agent = 'unknown';
-         $this->first_login_date = time();
-         $this->last_login_date = 0;
-         $this->admin = FALSE;
-         $this->num_suscriptions = 0;
-         $this->num_stories = 0;
-         $this->num_editions = 0;
-         $this->num_comments = 0;
-         $this->num_visits = 0;
-         $this->points = 0;
-         $this->extra_points = 0;
-         $this->noob = TRUE;
-      }
-      
-      $this->need_save = FALSE;
    }
    
    public function install_indexes()

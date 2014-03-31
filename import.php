@@ -100,7 +100,6 @@ else
                $st0->date = intval( (string)$item->date );
                $st0->published = $st0->date;
                $st0->clics = intval( (string)$item->clics );
-               $st0->keywords = base64_decode( (string)$item->keywords );
                $st0->native_lang = ( (string)$item->native == 'TRUE' );
                $st0->name = base64_decode( (string)$item->name );
                $st0->save();

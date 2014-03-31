@@ -27,6 +27,7 @@ class comments extends fs_controller
    {
       parent::__construct('comments', 'Foro &lsaquo; '.FS_NAME);
       
+      $this->noindex = FALSE;
       $comment = new comment();
       $this->comments = $comment->all();
       

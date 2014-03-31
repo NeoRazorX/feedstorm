@@ -34,6 +34,21 @@ class story_edition extends fs_model
    public function __construct($se = FALSE)
    {
       parent::__construct('story_editions');
+      
+      $this->id = NULL;
+      $this->date = time();
+      $this->description = '';
+      
+      $this->ip = 'unknown';
+      if( isset($_SERVER['REMOTE_ADDR']) )
+         $this->ip = $_SERVER['REMOTE_ADDR'];
+      
+      $this->nick = 'anonymous';
+      $this->points = 0;
+      $this->story_id = NULL;
+      $this->title = '';
+      $this->visitor_id = NULL;
+      
       if($se)
       {
          $this->id = $se['_id'];
@@ -45,22 +60,6 @@ class story_edition extends fs_model
          $this->story_id = $se['story_id'];
          $this->title = $se['title'];
          $this->visitor_id = $se['visitor_id'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->date = time();
-         $this->description = '';
-         
-         $this->ip = 'unknown';
-         if( isset($_SERVER['REMOTE_ADDR']) )
-            $this->ip = $_SERVER['REMOTE_ADDR'];
-         
-         $this->nick = 'anonymous';
-         $this->points = 0;
-         $this->story_id = NULL;
-         $this->title = '';
-         $this->visitor_id = NULL;
       }
    }
    
@@ -157,7 +156,7 @@ class story_edition extends fs_model
    {
       $this->story_id = $this->var2str($this->story_id);
       $this->visitor_id = $this->var2str($this->visitor_id);
-      $this->title = $this->true_text_break($this->title, 120, 18);
+      $this->title = $this->true_text_break($this->title, 140, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       
       $data = array(

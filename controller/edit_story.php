@@ -95,32 +95,6 @@ class edit_story extends fs_controller
                      $this->story->edition_id = $this->story_edition->get_id();
                      $this->story->title = $this->story_edition->title;
                      $this->story->description = $this->story_edition->description;
-                     
-                     $nkeywords = mb_strtolower( trim($_POST['keywords']), 'utf8' );
-                     if($nkeywords != $this->story->keywords)
-                     {
-                        $this->story->keywords = $nkeywords;
-                        if($this->story->keywords != '')
-                        {
-                           /// añadimos las keyword a todas las noticias de la búsqueda
-                           $kwlist = explode(',', $this->story->keywords);
-                           $relateds = $this->story->search($kwlist[0]);
-                           for($i = 0; $i < count($relateds); $i++)
-                           {
-                              if( $relateds[$i]->get_id() != $this->story->get_id() )
-                              {
-                                 foreach($kwlist as $kw)
-                                 {
-                                    if( preg_match('/\b'.$kw.'\b/iu', $relateds[$i]->title) )
-                                       $relateds[$i]->add_keyword($kw);
-                                 }
-                                 
-                                 $relateds[$i]->save();
-                              }
-                           }
-                        }
-                     }
-                     
                      $this->story->native_lang = isset($_POST['native_lang']);
                      $this->story->parody = isset($_POST['parody']);
                      

@@ -29,6 +29,18 @@
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
          <div class="col-lg-4 col-sm-6">
+            {loop="$fsc->split_stories($fsc->topics, 3, $value1)"}
+            <div class="story">
+               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+               <p>{$value2->description()}</p>
+            </div>
+            {/loop}
+         </div>
+      {/loop}
+      </div>
+      <div class="row">
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
             <!--{$fsc->preview->load($value2->link)}-->
             {if condition="$fsc->preview->type"}

@@ -46,6 +46,7 @@ class story extends fs_model
    public $penalize;
    public $featured;
    public $keywords;
+   public $topics;
    public $related_id;
    public $edition_id;
    public $num_editions;
@@ -55,13 +56,36 @@ class story extends fs_model
    public function __construct($item=FALSE)
    {
       parent::__construct('stories');
+      
+      $this->id = NULL;
+      $this->name = '';
+      $this->date = time();
+      $this->published = NULL;
+      $this->title = NULL;
+      $this->description = NULL;
+      $this->link = NULL;
+      $this->clics = 0;
+      $this->tweets = 0;
+      $this->meneos = 0;
+      $this->likes = 0;
+      $this->plusones = 0;
+      $this->popularity = 0;
+      $this->native_lang = TRUE;
+      $this->parody = FALSE;
+      $this->penalize = FALSE;
+      $this->featured = FALSE;
+      $this->keywords = '';
+      $this->topics = array();
+      $this->related_id = NULL;
+      $this->edition_id = NULL;
+      $this->num_editions = 0;
+      $this->num_feeds = 0;
+      $this->num_comments = 0;
+      
       if($item)
       {
          $this->id = $item['_id'];
-         
-         if( isset($item['name']) )
-            $this->name = $item['name'];
-         
+         $this->name = $item['name'];
          $this->date = $item['date'];
          
          if( isset($item['published']) )
@@ -87,15 +111,12 @@ class story extends fs_model
          if( isset($item['featured']) )
             $this->featured = $item['featured'];
          
-         $this->keywords = '';
-         if( isset($item['keywords']) )
+         if( isset($item['topics']) )
          {
-            foreach( explode(',', $item['keywords']) as $kw )
-               $this->add_keyword($kw);
-         }
-         
-         if( isset($item['related_id']) )
+            $this->topics = $item['topics'];
+            $this->keywords = $item['keywords'];
             $this->related_id = $item['related_id'];
+         }
          
          if( isset($item['edition_id']) )
             $this->edition_id = $item['edition_id'];
@@ -108,32 +129,6 @@ class story extends fs_model
          
          if( isset($item['num_comments']) )
             $this->num_comments = $item['num_comments'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->name = '';
-         $this->date = time();
-         $this->published = NULL;
-         $this->title = NULL;
-         $this->description = NULL;
-         $this->link = NULL;
-         $this->clics = 0;
-         $this->tweets = 0;
-         $this->meneos = 0;
-         $this->likes = 0;
-         $this->plusones = 0;
-         $this->popularity = 0;
-         $this->native_lang = TRUE;
-         $this->parody = FALSE;
-         $this->penalize = FALSE;
-         $this->featured = FALSE;
-         $this->keywords = '';
-         $this->related_id = NULL;
-         $this->edition_id = NULL;
-         $this->num_editions = 0;
-         $this->num_feeds = 0;
-         $this->num_comments = 0;
       }
    }
    
@@ -245,22 +240,14 @@ class story extends fs_model
          return FALSE;
    }
    
-   public function add_keyword($key)
-   {
-      $nkey = trim($key);
-      
-      if($nkey != '')
-      {
-         if($this->keywords == '')
-            $this->keywords = $nkey;
-         else if( strstr($this->keywords, $nkey) === FALSE )
-            $this->keywords .= ', '.$nkey;
-      }
-   }
-   
    public function description($width=250)
    {
       return $this->true_text_break($this->description, $width);
+   }
+   
+   public function description_uncut()
+   {
+      return $this->uncut($this->description);
    }
    
    private function calculate_popularity()
@@ -269,7 +256,7 @@ class story extends fs_model
       
       if($this->native_lang AND !$this->penalize AND mb_strlen($this->description) > 0)
       {
-         $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count( explode(',', $this->keywords) );
+         $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count($this->topics);
          
          if($this->related_id)
             $tclics++;
@@ -303,6 +290,18 @@ class story extends fs_model
          $this->popularity = $tclics / ($dias * $semanas);
       else
          $this->popularity = 0;
+   }
+   
+   public function max_popularity()
+   {
+      $total = 0;
+      
+      if($this->native_lang AND !$this->penalize AND !$this->parody AND mb_strlen($this->description) > 0)
+      {
+         $total = $this->clics + $this->tweets + $this->likes + $this->meneos + $this->plusones;
+      }
+      
+      return $total;
    }
    
    public function readed()
@@ -483,7 +482,7 @@ class story extends fs_model
    
    public function save()
    {
-      $this->title = $this->true_text_break($this->title, 120, 18);
+      $this->title = $this->true_text_break($this->title, 140, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       $this->related_id = $this->var2str($this->related_id);
       $this->edition_id = $this->var2str($this->edition_id);
@@ -507,6 +506,7 @@ class story extends fs_model
           'penalize' => $this->penalize,
           'featured' => $this->featured,
           'keywords' => $this->keywords,
+          'topics' => $this->topics,
           'related_id' => $this->related_id,
           'edition_id' => $this->edition_id,
           'num_editions' => $this->num_editions,
@@ -667,85 +667,18 @@ class story extends fs_model
    {
       echo "\nActualizamos los artículos populares y publicamos...";
       $j = 0;
-      $keywords = array();
-      $keywords2 = array();
-      $publish = 1; /// máximo de artículos publicados cada vez
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones del artículo
          if( is_null($ps->published) )
             $ps->random_count();
          
-         /// extraemos las keywords
-         if($ps->keywords != '')
-         {
-            $aux = explode(',', $ps->keywords);
-            $keyword = trim($aux[0]);
-            if( !in_array($keyword, $keywords) )
-               $keywords[] = $keyword;
-            
-            for($i = 1; $i < count($aux); $i++)
-            {
-               $keyword = trim($aux[$i]);
-               if( !in_array($keyword, $keywords2) )
-                  $keywords2[] = $keyword;
-            }
-         }
-         
          /// si la noticia alcanza el TOP FS_MAX_STORIES, entonces la publicamos
-         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $publish > 0 AND $ps->popularity > 1)
-         {
+         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $ps->popularity > 1)
             $ps->published = time();
-            $publish--;
-         }
          
          $ps->save();
          $j++;
-         
-         echo '.';
-      }
-      
-      /// necesitamos más keywords
-      foreach($this->random_stories(FS_MAX_STORIES * 4) as $rs)
-      {
-         if($rs->keywords != '')
-         {
-            $aux = explode(',', $rs->keywords);
-            $keyword = trim($aux[0]);
-            if( !in_array($keyword, $keywords) )
-               $keywords[] = $keyword;
-            
-            for($i = 1; $i < count($aux); $i++)
-            {
-               $keyword = trim($aux[$i]);
-               if( !in_array($keyword, $keywords2) )
-                  $keywords2[] = $keyword;
-            }
-         }
-      }
-      
-      echo "\nInterconectamos los artículos...\n";
-      foreach( array_merge($keywords, $keywords2) as $keyword )
-      {
-         if($keyword != '')
-         {
-            $relateds = $this->search($keyword);
-            for($i = 0; $i < count($relateds); $i++)
-            {
-               $relateds[$i]->add_keyword($keyword);
-               
-               for($j = 0; $j < count($relateds); $j++)
-               {
-                  if( !isset($relateds[$i]->related_id) AND $relateds[$j]->date < $relateds[$i]->date AND $relateds[$j]->native_lang AND !$relateds[$j]->penalize AND !$relateds[$j]->parody )
-                  {
-                     $relateds[$i]->related_id = $relateds[$j]->get_id();
-                     break;
-                  }
-               }
-               
-               $relateds[$i]->save();
-            }
-         }
          
          echo '.';
       }

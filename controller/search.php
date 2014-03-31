@@ -19,12 +19,14 @@
 
 require_once 'model/story.php';
 require_once 'model/story_preview.php';
+require_once 'model/topic.php';
 
 class search extends fs_controller
 {
    public $preview;
    public $query;
    public $stories;
+   public $topics;
    
    public function __construct()
    {
@@ -32,6 +34,7 @@ class search extends fs_controller
       $this->preview = new story_preview();
       $this->query = '';
       $this->stories = array();
+      $this->topics = array();
       
       if( isset($_POST['query']) )
       {
@@ -40,6 +43,9 @@ class search extends fs_controller
          {
             $story = new story();
             $this->stories = $story->search($this->query);
+            
+            $topic = new topic();
+            $this->topics = $topic->search($this->query);
             
             if( count($this->stories) == 0 )
                $this->new_message('Sin resultados');

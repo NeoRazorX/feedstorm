@@ -38,9 +38,6 @@ abstract class fs_model
       if( !defined('FS_TIMEOUT') )
          define('FS_TIMEOUT', 3);
       
-      if( !defined('FS_MAX_DOWNLOADS') )
-         define('FS_MAX_DOWNLOADS', 5);
-      
       if( !isset(self::$mongo) )
          self::$mongo = new fs_mongo();
       
@@ -118,33 +115,33 @@ abstract class fs_model
             $time = abs($time);
             if($time <= 60)
                return $time.' segundos en el futuro WTF!';
-            else if(60 < $time && $time <= 3600)
+            else if($time <= 3600)
                return round($time/60,0).' minutos en el futuro WTF!';
-            else if(3600 < $time && $time <= 86400)
+            else if($time <= 86400)
                return round($time/3600,0).' horas en el futuro WTF!';
-            else if(86400 < $time && $time <= 604800)
+            else if($time <= 604800)
                return round($time/86400,0).' dias en el futuro WTF!';
-            else if(604800 < $time && $time <= 2592000)
+            else if($time <= 2592000)
                return round($time/604800,0).' semanas en el futuro WTF!';
-            else if(2592000 < $time && $time <= 29030400)
+            else if($time <= 29030400)
                return round($time/2592000,0).' meses en el futuro WTF!';
-            else if($time > 29030400)
+            else
                return 'más de un año en el futuro WTF!';
          }
          else if($time <= 60)
-            return 'hace '.$time.' segundos';
-         else if(60 < $time && $time <= 3600)
-            return 'hace '.round($time/60,0).' minutos';
-         else if(3600 < $time && $time <= 86400)
-            return 'hace '.round($time/3600,0).' horas';
-         else if(86400 < $time && $time <= 604800)
-            return 'hace '.round($time/86400,0).' dias';
-         else if(604800 < $time && $time <= 2592000)
-            return 'hace '.round($time/604800,0).' semanas';
-         else if(2592000 < $time && $time <= 29030400)
-            return 'hace '.round($time/2592000,0).' meses';
-         else if($time > 29030400)
-            return 'hace más de un año';
+            return 'hace '.$time.' segundo(s)';
+         else if($time <= 3600)
+            return 'hace '.round($time/60,0).' minuto(s)';
+         else if($time <= 86400)
+            return 'hace '.round($time/3600,0).' hora(s)';
+         else if($time <= 604800)
+            return 'hace '.round($time/86400,0).' dia(s)';
+         else if($time <= 2592000)
+            return 'hace '.round($time/604800,0).' semana(s)';
+         else if($time <= 29030400)
+            return 'hace '.round($time/2592000,0).' mes(es)';
+         else
+            return 'hace '.round($time/31556736,0).' año(s)';
       }
       else
          return 'fecha desconocida';
@@ -158,16 +155,21 @@ abstract class fs_model
       return mb_strtoupper($firstChar, $encoding) . $then;
    }
    
+   public function uncut($str)
+   {
+      /// Eliminamos cualquier rastro de &#8203; y del caracter de espacio raro
+      return str_replace('&#8203;', '', str_replace('​', '', $str) );
+   }
+   
    /*
     * Esta función devuelve una copia del string $str al que se le ha
     * añadido un caracter de espacio vacío &#8203; cada $max_width
     * caracteres a cada palabra de más de $max_width caracteres.
-    * Las caracteres escapados de HTML se cuentan como uno solo.
+    * Los caracteres escapados de HTML se cuentan como uno solo.
     */
    public function true_word_break($str, $max_width=30)
    {
-      /// Eliminamos cualquier rastro de &#8203;
-      $str = str_replace('&#8203;', '', $str);
+      $str = $this->uncut($str);
       
       $chrArray = preg_split('//u', $str, -1, PREG_SPLIT_NO_EMPTY);
       $pos0 = 0;
@@ -273,7 +275,8 @@ abstract class fs_model
     */
    public function no_html($t)
    {
-      $newt = trim( preg_replace('/\s+/', ' ', $t) );
+      $newt = str_replace(' ', ' ', $t); /// sustituye el caracter de espacio raro
+      $newt = trim( preg_replace('/\s+/', ' ', $newt) );
       $newt = str_replace('<', '&lt;', $newt);
       $newt = str_replace('>', '&gt;', $newt);
       $newt = str_replace('"', '&quot;', $newt);

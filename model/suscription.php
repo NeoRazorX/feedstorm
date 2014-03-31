@@ -30,17 +30,16 @@ class suscription extends fs_model
    public function __construct($s=FALSE)
    {
       parent::__construct('suscriptions');
+      
+      $this->id = NULL;
+      $this->visitor_id = NULL;
+      $this->feed_id = NULL;
+      
       if($s)
       {
          $this->id = $s['_id'];
          $this->visitor_id = $s['visitor_id'];
          $this->feed_id = $s['feed_id'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->visitor_id = NULL;
-         $this->feed_id = NULL;
       }
    }
    

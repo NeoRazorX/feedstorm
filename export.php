@@ -52,8 +52,7 @@ foreach($story->popular_stories(1000, TRUE) as $ps)
    
    echo '<story><title>'.base64_encode($ps->title).'</title><description>'.base64_encode($ps->description).'</description>'
       . '<date>'.$ps->date.'</date><link>'.base64_encode($ps->link).'</link><clics>'.$ps->clics.'</clics>'
-      . '<keywords>'.base64_encode($ps->keywords).'</keywords><native>'.$native.'</native>'
-      . '<name>'.base64_encode($ps->name).'</name></story>';
+      . '<native>'.$native.'</native><name>'.base64_encode($ps->name).'</name></story>';
 }
 
 $mongo->close();

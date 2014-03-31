@@ -4,8 +4,10 @@
    <title>{$fsc->title}</title>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
    <meta name="description" content="{$fsc->get_description()}" />
+   {if condition="$fsc->get_keywords()!=''"}
    <meta name="keywords" content="{$fsc->get_keywords()}" />
-   <meta name="robots" content="{if condition="$fsc->noindex"}noindex, nofollow{else}all{/if}" />
+   {/if}
+   <meta name="robots" content="{if condition="$fsc->noindex"}noindex{else}all{/if}" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link rel="shortcut icon" href="{$path}view/img/favicon.ico" />
    <link rel="stylesheet" href="{$path}view/css/bootstrap.min.css" />
@@ -66,6 +68,7 @@
                      <li{if condition="$fsc->page=='comments'"} class="active"{/if}><a href="{$path}comments">Foro</a></li>
                      <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}feed_list">Fuentes</a></li>
                      <li{if condition="$fsc->page=='messages'"} class="active"{/if}><a href="{$path}messages">Mensajes</a></li>
+                     <li{if condition="$fsc->page=='topic_list'"} class="active"{/if}><a href="{$path}topic_list">Temas</a></li>
                   </ul>
                </div>
                <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}suscriptions">Tu perfil</a>
@@ -113,6 +116,7 @@
                      {/if}
                      <li{if condition="$fsc->page=='comments'"} class="active"{/if}><a href="{$path}comments">Foro</a></li>
                      <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}feed_list">Fuentes</a></li>
+                     <li{if condition="$fsc->page=='topic_list'"} class="active"{/if}><a href="{$path}topic_list">Temas</a></li>
                   </ul>
                </div>
                <a class="btn btn-default{if condition="$fsc->page=='messages'"} active{/if}" href="{$path}messages">Mensajes</a>

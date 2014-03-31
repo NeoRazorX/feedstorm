@@ -39,7 +39,21 @@ class feed extends fs_model
    public function __construct($f=FALSE)
    {
       parent::__construct('feeds');
-      if( $f )
+      
+      $this->id = NULL;
+      $this->url = NULL;
+      $this->name = $this->random_string(15);
+      $this->description = 'Sin descripción.';
+      $this->last_check_date = 0;
+      $this->last_update = 0;
+      $this->suscriptors = 0;
+      $this->strikes = 0;
+      $this->num_stories = 0;
+      $this->native_lang = TRUE;
+      $this->parody = FALSE;
+      $this->penalize = FALSE;
+      
+      if($f)
       {
          $this->id = $f['_id'];
          $this->url = $f['url'];
@@ -57,21 +71,6 @@ class feed extends fs_model
          
          if( isset($f['penalize']) )
             $this->penalize = $f['penalize'];
-      }
-      else
-      {
-         $this->id = NULL;
-         $this->url = NULL;
-         $this->name = $this->random_string(15);
-         $this->description = 'Sin descripción.';
-         $this->last_check_date = 0;
-         $this->last_update = 0;
-         $this->suscriptors = 0;
-         $this->strikes = 0;
-         $this->num_stories = 0;
-         $this->native_lang = TRUE;
-         $this->parody = FALSE;
-         $this->penalize = FALSE;
       }
    }
    
@@ -279,6 +278,20 @@ class feed extends fs_model
          }
       }
       
+      /// ¿La noticia es de humor?
+      $story->parody = $this->parody;
+      if($item->category)
+      {
+         foreach($item->category as $catg)
+         {
+            if( strstr((string)$catg, 'humor') )
+            {
+               $story->parody = TRUE;
+               break;
+            }
+         }
+      }
+      
       /// ¿reddit?
       if( $this->reddit() )
       {
@@ -365,6 +378,23 @@ class feed extends fs_model
       
       if( $this->meneame() )
       {
+         /// buscamos noticias relacionadas
+         $urls = array();
+         if( preg_match_all('#<a href="http://www.meneame.net/story/(.+)" title=#', $description, $urls) )
+         {
+            foreach($urls[1] as $url)
+            {
+               $fs0 = $feed_story->get_by_link('http://www.meneame.net/story/'.$url);
+               if($fs0)
+               {
+                  $story3 = $fs0->story();
+                  if($story3)
+                     $story->related_id = $story3->get_id();
+               }
+            }
+         }
+         
+         /// quitamos el latiguillo de las noticias de menéame
          $aux = '';
          for($i = 0; $i < mb_strlen($description); $i++)
          {
@@ -444,7 +474,6 @@ class feed extends fs_model
          $story->meneos = $meneos;
          $story->random_count( !$this->meneame() );
          $story->native_lang = $this->native_lang;
-         $story->parody = $this->parody;
          $story->penalize = $this->penalize;
          $story->num_feeds = 1;
          $story->save(); /// hay que guardar para tener un ID

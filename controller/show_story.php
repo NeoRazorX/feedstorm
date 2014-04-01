@@ -290,26 +290,15 @@ class show_story extends fs_controller
       /// si es de AEDE no lo publicamos
       if( $this->aede($this->story->link) )
       {
+         $this->noindex = TRUE;
          $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
             . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
       }
-      else if($this->story->published) /// si está en portada lo publicamos, logicamente
-      {
-         $this->noindex = FALSE;
-      }
-      else if($this->story->native_lang) /// si no está en español no lo publicamos
+      else if( !$this->story->native_lang OR $this->story->penalize )
       {
          $this->noindex = TRUE;
       }
-      else if($this->story->num_editions > 0) /// si hay alguna edición lo publicamos
-      {
-         $this->noindex = FALSE;
-      }
-      else if( isset($this->story->related_id) ) /// si tiene artículos relacionados lo publicamos
-      {
-         $this->noindex = FALSE;
-      }
-      else if($this->story->num_comments > 0)
+      else
       {
          $this->noindex = FALSE;
       }
@@ -320,23 +309,39 @@ class show_story extends fs_controller
       $tlist = array();
       $topic = new topic();
       $topics = array();
+      $fatal_error = FALSE;
       
       foreach($this->story->topics as $tid)
-         $topics[] = $topic->get($tid);
-      
-      foreach($topics as $t1)
       {
-         $found = FALSE;
-         foreach($topics as $t2)
+         $t0 = $topic->get($tid);
+         if($t0)
+            $topics[] = $t0;
+         else
+            $fatal_error = TRUE;
+      }
+      
+      if($fatal_error)
+      {
+         $this->story->topics = array();
+         $this->story->keywords = '';
+         $this->story->save();
+      }
+      else
+      {
+         foreach($topics as $t1)
          {
-            if( $t2->parent == (string)$t1->get_id() )
+            $found = FALSE;
+            foreach($topics as $t2)
             {
-               $found = TRUE;
-               break;
+               if( $t2->parent == (string)$t1->get_id() )
+               {
+                  $found = TRUE;
+                  break;
+               }
             }
+            if(!$found)
+               $tlist[] = $t1;
          }
-         if(!$found)
-            $tlist[] = $t1;
       }
       
       return $tlist;

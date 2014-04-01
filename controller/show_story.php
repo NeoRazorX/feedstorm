@@ -93,6 +93,7 @@ class show_story extends fs_controller
       {
          $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'index.php?page=search">Usa el buscador</a>.');
          $this->stories = $story->popular_stories();
+         header("HTTP/1.0 404 Not Found");
       }
    }
    

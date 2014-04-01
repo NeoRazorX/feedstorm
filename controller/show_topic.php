@@ -72,7 +72,10 @@ class show_topic extends fs_controller
          $this->parent = $topic->get($this->topic->parent);
       }
       else
+      {
          $this->new_error_msg('Tema no encontrado.');
+         header("HTTP/1.0 404 Not Found");
+      }
    }
    
    public function get_description()

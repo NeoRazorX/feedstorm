@@ -81,7 +81,10 @@ class explore_feed extends fs_controller
          }
       }
       else
+      {
          $this->new_error_msg('Fuente no encontrada.');
+         header("HTTP/1.0 404 Not Found");
+      }
    }
    
    public function url()

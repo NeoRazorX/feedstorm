@@ -35,6 +35,7 @@ class not_found extends fs_controller
       $this->preview = new story_preview();
       $story = new story();
       $this->stories = $story->popular_stories();
+      header("HTTP/1.0 404 Not Found");
    }
    
    public function get_description()

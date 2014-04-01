@@ -60,7 +60,10 @@ class show_edition extends fs_controller
             $this->story->read();
       }
       else
+      {
          $this->new_error_msg('Edición no encontrada. <a href="'.FS_PATH.'search">Usa el buscador</a>.');
+         header("HTTP/1.0 404 Not Found");
+      }
    }
    
    public function url()

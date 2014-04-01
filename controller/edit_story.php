@@ -158,7 +158,10 @@ class edit_story extends fs_controller
          }
       }
       else
+      {
          $this->new_error_msg('Artículo no encontrado.');
+         header("HTTP/1.0 404 Not Found");
+      }
    }
    
    public function url()

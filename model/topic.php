@@ -391,11 +391,11 @@ class topic extends fs_model
          
          if( count($stories) > 0 )
          {
-            /// ordenamos los artículos por fecha
+            /// ordenamos los artículos por popularidad
             usort($stories, function($a, $b) {
-               if($a->date == $b->date)
+               if($a->popularity == $b->popularity)
                   return 0;
-               else if($a->date > $b->date)
+               else if($a->popularity > $b->popularity)
                   return -1;
                else
                   return 1;

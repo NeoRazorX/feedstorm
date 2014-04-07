@@ -249,6 +249,20 @@ class show_story extends fs_controller
             break;
       }
       
+      if( count($stories) == 0 AND count($this->story->topics) > 0 )
+      {
+         $topic = new topic();
+         $t0 = $topic->get($this->story->topics[0]);
+         if($t0)
+         {
+            foreach($t0->stories() as $story)
+            {
+               $stories[] = $story;
+               break;
+            }
+         }
+      }
+      
       return $stories;
    }
    

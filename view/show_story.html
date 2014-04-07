@@ -242,9 +242,61 @@
          </div>
       </div>
    </div>
+   {else}
+   <div class="row">
+      <div class="col-md-12">
+         <div class="well well-sm" style="background-color: white;">
+            <p style="margin: 3px 0px 2px 0px;">
+               <big><span class="glyphicon glyphicon-hand-right"></span> Hola,</big>
+               probablemente es la primera vez que llegas aquí y <u>me sabe mal no tener más artículos relacionados</u> para demostrarte
+               que <b>{$name}</b> es más que un agregador de noticias ¿Por qué no le echas un vistazo a estos <u>artículos populares</u>?
+               A ver si así te convenzo...
+            </p>
+            
+            {loop="$fsc->story->popular_stories(5)"}
+               {if condition="$value->title != $fsc->story->title"}
+               <hr/>
+               <div>
+                  <div class="pull-right"><span class="glyphicon glyphicon-fire" title="artículo popular"></span></div>
+                  <h3 style="margin: 0px;">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h3>
+                  <p style="margin: 3px 0px 2px 0px;">
+                     {$value->description}<br/>
+                     <span class="small">Publicado {$value->timesince()}.</span>
+                  </p>
+               </div>
+               {/if}
+            {/loop}
+         </div>
+      </div>
+   </div>
    {/loop}
 </div>
 {else}
+   <script type="text/javascript">
+      $(document).ready(function() {
+         document.f_search.query.focus();
+      });
+   </script>
+   
+   <div class="container-fluid" style="margin-bottom: 20px;">
+      <div class="row">
+         <div class="col-md-4"></div>
+         <div class="col-md-4">
+            <form name="f_search" action="{$path}search" method="post">
+               <div class="input-group">
+                  <input type="text" class="form-control" name="query" autocomplete="off">
+                  <span class="input-group-btn">
+                     <button class="btn btn-default btn-primary" type="submit">Busca!</button>
+                  </span>
+               </div>
+            </form>
+         </div>
+         <div class="col-md-4"></div>
+      </div>
+   </div>
+   
    <div class="container-fluid">
       <div class="row">
       <!--{$cols=array(1,2,3)}-->

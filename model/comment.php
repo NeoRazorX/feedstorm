@@ -76,7 +76,8 @@ class comment extends fs_model
       $urlize_protocols = "http|https|ftp";
       if( preg_match("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#]([?!,.])?(?:$|\s))/i", $this->text) )
       {
-         $text = preg_replace("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#])([?!,.])?(?=$|\s)/i", " <a rel=\"nofollow\" target=\"_blank\" href=\"\\1\">\\1</a>\\3 ", $this->text);
+         $text = preg_replace("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#])([?!,.])?(?=$|\s)/i",
+            " <a rel=\"nofollow\" target=\"_blank\" href=\"\\1\">\\1</a>\\3 ", $this->uncut($this->text));
          return trim($text);
       }
       else

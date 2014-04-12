@@ -140,26 +140,26 @@ class visitor extends fs_model
    
    public function mobile()
    {
-      return (strstr(strtolower($this->user_agent), 'mobile') || strstr(strtolower($this->user_agent), 'android'));
+      return (strpos(strtolower($this->user_agent), 'mobile') !== FALSE OR strpos(strtolower($this->user_agent), 'android') !== FALSE);
    }
    
    public function human()
    {
       if($this->user_agent == 'unknown')
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'mozilla') === FALSE AND strstr(strtolower($this->user_agent), 'opera') === FALSE )
+      else if( strpos(strtolower($this->user_agent), 'mozilla') === FALSE AND strpos(strtolower($this->user_agent), 'opera') === FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'href="http') )
+      else if( strpos(strtolower($this->user_agent), 'href="http') !== FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'bot') )
+      else if( strpos(strtolower($this->user_agent), 'bot') !== FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'spider') )
+      else if( strpos(strtolower($this->user_agent), 'spider') !== FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'wget') )
+      else if( strpos(strtolower($this->user_agent), 'wget') !== FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'curl') )
+      else if( strpos(strtolower($this->user_agent), 'curl') !== FALSE )
          return FALSE;
-      else if( strstr(strtolower($this->user_agent), 'sistrix') )
+      else if( strpos(strtolower($this->user_agent), 'sistrix') !== FALSE)
          return FALSE;
       else
          return TRUE;

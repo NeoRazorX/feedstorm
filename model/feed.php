@@ -284,7 +284,7 @@ class feed extends fs_model
       {
          foreach($item->category as $catg)
          {
-            if( strstr((string)$catg, 'humor') )
+            if( strpos((string)$catg, 'humor') !== FALSE )
             {
                $story->parody = TRUE;
                break;

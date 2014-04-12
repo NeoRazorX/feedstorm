@@ -30,7 +30,7 @@ class story_preview
    
    public function load($url, $text='')
    {
-      $this->link = $url;
+      $this->link = FALSE;
       $this->type = FALSE;
       
       $links = array($url);
@@ -47,12 +47,14 @@ class story_preview
       {
          if( $this->is_valid_image_url($link) )
          {
+            $this->link = $link;
             $this->filename = $link;
             $this->type = 'image';
             break;
          }
          else if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
          {
+            $this->link = $link;
             $parts = explode('/', $link);
             $this->filename = $parts[3];
             $this->type = 'imgur';
@@ -60,6 +62,7 @@ class story_preview
          }
          else if( mb_substr($link, 0, 29) == 'http://www.youtube.com/embed/' )
          {
+            $this->link = $link;
             $parts = explode('/', $link);
             $this->filename = $this->clean_youtube_id($parts[4]);
             $this->type = 'youtube';
@@ -71,6 +74,7 @@ class story_preview
             parse_str( parse_url($link, PHP_URL_QUERY), $my_array_of_vars);
             if( isset($my_array_of_vars['v']) )
             {
+               $this->link = $link;
                $this->filename = $this->clean_youtube_id($my_array_of_vars['v']);
                $this->type = 'youtube';
                break;
@@ -78,6 +82,7 @@ class story_preview
          }
          else if( mb_substr($link, 0, 16) == 'http://youtu.be/' )
          {
+            $this->link = $link;
             $parts = explode('/', $link);
             $this->filename = $this->clean_youtube_id($parts[3]);
             $this->type = 'youtube';
@@ -88,6 +93,7 @@ class story_preview
             if( !file_exists('tmp/vimeo') )
                mkdir('tmp/vimeo');
             
+            $this->link = $link;
             $this->type = 'vimeo';
             $parts = explode('/', $link);
             $this->filename = $this->clean_youtube_id($parts[3]);
@@ -108,7 +114,7 @@ class story_preview
                break;
             }
          }
-         else if( strstr($link, 'imgur.com/') )
+         else if( strpos($link, 'imgur.com/') !== FALSE )
          {
             if( !file_exists('tmp/imgur2') )
                mkdir('tmp/imgur2');
@@ -144,6 +150,7 @@ class story_preview
                $this->filename = file_get_contents($filename);
             }
             
+            $this->link = $link;
             $parts = explode('/', $this->filename);
             $this->filename = $parts[3];
             $this->type = 'imgur';
@@ -218,21 +225,7 @@ class story_preview
          $status = FALSE;
       else if( mb_strlen($url) > 200 )
          $status = FALSE;
-      else if( mb_strstr($url, '/favicon.') )
-         $status = FALSE;
-      else if( mb_strstr($url, 'doubleclick.net') )
-         $status = FALSE;
-      else if( mb_substr($url, 0, 10) == 'http://ad.' )
-         $status = FALSE;
-      else if( mb_strstr($url, '/avatar') OR mb_strstr($url, 'banner') )
-         $status = FALSE;
-      else if( mb_substr($url, 0, 47) == 'http://www.meneame.net/backend/vote_com_img.php' )
-         $status = FALSE;
-      else if( mb_substr($url, 0, 26) == 'http://publicidadinternet.' )
-         $status = FALSE;
       else if( !in_array( mb_strtolower( mb_substr($url, -4) ), $extensions) )
-         $status = FALSE;
-      else if( mb_substr($url, -19) == 'vpreview_center.png' )
          $status = FALSE;
       
       return $status;

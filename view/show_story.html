@@ -45,13 +45,13 @@
                   <span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>
                {/if}
             </div>
-            <h1>
             <!--{$fsc->preview->load($fsc->story->link, $fsc->story->description_uncut())}-->
-            {if condition="$fsc->preview->type"}
-               {$fsc->story->title}
-            {else}
-               <a target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
-            {/if}
+            <h1>
+               {if condition="$fsc->preview->link==$fsc->story->link"}
+                  {$fsc->story->title}
+               {else}
+                  <a target="_blank" href="{$fsc->story->link()}">{$fsc->story->title}</a>
+               {/if}
             </h1>
             <p>
                {$fsc->story->description}

@@ -79,7 +79,7 @@ class edit_story extends fs_controller
                $this->story_edition->description = $_POST['description'];
                
                /// otra comprobación más para evitar el spam
-               if( strstr($_POST['description'], '<a href=') )
+               if( strpos($_POST['description'], '<a href=') !== FALSE )
                   $this->new_error_msg('De eso nada, aquí no se permite HTML.');
                else if( $_POST['human'] != '' AND !$this->visitor->admin )
                   $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano, y si no eres

@@ -348,7 +348,7 @@ class topic extends fs_model
                {
                   if($relateds[$i]->keywords == '')
                      $relateds[$i]->keywords = $key;
-                  else if( strstr($relateds[$i]->keywords, $key) === FALSE )
+                  else if( strpos($relateds[$i]->keywords, $key) === FALSE )
                      $relateds[$i]->keywords .= ', '.$key;
                   
                   $relateds[$i]->topics[] = $topic->get_id();

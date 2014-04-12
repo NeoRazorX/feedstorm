@@ -290,8 +290,18 @@ class show_story extends fs_controller
       $parts = explode('/', $link);
       if( count($parts) >= 3 )
       {
-         $link_domain = str_replace('www.', '', $parts[2]);
-         return in_array($link_domain, $aede_domains);
+         $result = FALSE;
+         
+         foreach($aede_domains as $dom)
+         {
+            if( strpos($parts[2], $dom) !== FALSE )
+            {
+               $result = TRUE;
+               break;
+            }
+         }
+         
+         return $result;
       }
       else
          return FALSE;

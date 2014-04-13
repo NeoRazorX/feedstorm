@@ -35,12 +35,12 @@ class story_preview
       
       $links = array($url);
       
-      /// extraemos urls tipo www.youtube.com/watch?v=jhkkgkgkaa
+      /// extraemos urls del texto
       $aux = array();
-      if( preg_match_all('/www.youtube.com\/watch\?v=(\w*)/i', $text, $aux) )
+      if( preg_match_all('@((https?://)?([-\w]+\.[-\w\.]+)+\w(:\d+)?(/([-\w/_\.]*(\?\S+)?)?)*)@', $text, $aux) )
       {
          foreach($aux[0] as $a)
-            $links[] = 'http://'.$a;
+            $links[] = $a;
       }
       
       foreach($links as $link)

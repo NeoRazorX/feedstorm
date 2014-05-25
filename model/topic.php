@@ -341,7 +341,11 @@ class topic extends fs_model
          /// usamos las keywords para buscar artículos relacionados
          foreach($topic->keywords() as $key)
          {
-            $relateds = $story->search($key);
+            if( mt_rand(0, 2) != 2 )
+               $relateds = $story->search($key, TRUE);
+            else
+               $relateds = $story->search($key, FALSE);
+            
             for($i = 0; $i < count($relateds); $i++)
             {
                if( !in_array($topic->get_id(), $relateds[$i]->topics) )

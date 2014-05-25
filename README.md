@@ -1,9 +1,11 @@
 __FeedStorm__ es un lector/editor de noticias colaborativo, anónimo y software libre.
 
-FeedStorm usa RainTPL, MongoDB, php-curl y php-gd.
-Para instalar MongoDB sigue estos tutoriales:
+FeedStorm usa MongoDB y php-curl. Para instalar MongoDB sigue estos tutoriales:
 http://docs.mongodb.org/manual/tutorial/install-mongodb-on-ubuntu/
 http://www.php.net/manual/es/mongo.installation.php
+
+Si estás usando Ubuntu 14.04 o superior, usa este tutorial:
+http://symfonyando.wordpress.com/2014/04/18/mongodb-y-php-en-ubuntu/
 
 Una vez instalado y configurado MongoDB, copia FeedStorm a tu carpeta web,
 dale permisos al servidor web para escribir sobre esa carpeta. Por ejemplo

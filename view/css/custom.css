@@ -4,16 +4,14 @@ body {
 
 .fs_top_menu {
    margin: 0px 0px 15px 0px;
-   padding: 5px 0px 5px 0px;
    background-color: #466380;
-   border-top: 2px solid #2A3B4D;
    border-bottom: 1px solid #2A3B4D;
    box-shadow: 1px 1px 1px #666;
 }
 
 #fs_brand {
    color: white;
-   font-size: 30px;
+   font-size: 40px;
    text-shadow: 2px 2px 2px #2A3B4D;
 }
 
@@ -126,4 +124,14 @@ body {
 
 iframe {
    border: 0px;
+}
+
+hr {
+   margin: 5px 0px 5px 0px;
+   border: 0;
+   height: 1px;
+   background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0));
+   background-image:    -moz-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0));
+   background-image:     -ms-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0));
+   background-image:      -o-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.35), rgba(0,0,0,0));
 }

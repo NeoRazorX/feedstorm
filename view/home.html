@@ -10,7 +10,7 @@
                {include="advices"}
             {/if}
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
-            <!--{$fsc->preview->load($value2->link)}-->
+            <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
             {if condition="$fsc->preview->type"}
             <div class="storyp{if condition="$value2->readed()"} storyp_readed{/if}">
                <table width="100%">

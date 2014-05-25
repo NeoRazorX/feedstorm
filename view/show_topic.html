@@ -2,26 +2,35 @@
 
 {if condition="$fsc->topic"}
 <script type="text/javascript">
+   function check_url()
+   {
+      $("#p_info").removeClass('active');
+      $("#t_info").hide();
+      $("#p_edit").removeClass('active');
+      $("#t_edit").hide();
+      $("#p_delete").removeClass('active');
+      $("#t_delete").hide();
+      
+      if(window.location.hash.substring(1) == 'edit')
+      {
+         $("#p_edit").addClass('active');
+         $("#t_edit").show();
+      }
+      else if(window.location.hash.substring(1) == 'delete')
+      {
+         $("#p_delete").addClass('active');
+         $("#t_delete").show();
+      }
+      else
+      {
+         $("#p_info").addClass('active');
+         $("#t_info").show();
+      }
+   }
    $(document).ready(function() {
+      check_url();
       window.onpopstate = function(){ 
-         if(window.location.hash.substring(1) == 'edit')
-         {
-            $("#p_info").removeClass('active');
-            $("#t_info").hide();
-            $("#p_edit").addClass('active');
-            $("#t_edit").show();
-            $("#p_delete").removeClass('active');
-            $("#t_delete").hide();
-         }
-         else if(window.location.hash.substring(1) == 'delete')
-         {
-            $("#p_info").removeClass('active');
-            $("#t_info").hide();
-            $("#p_edit").removeClass('active');
-            $("#t_edit").hide();
-            $("#p_delete").addClass('active');
-            $("#t_delete").show();
-         }
+         check_url();
       }
    });
 </script>

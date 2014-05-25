@@ -649,11 +649,16 @@ class story extends fs_model
       return $stlist;
    }
    
-   public function search($query)
+   public function search($query, $title = TRUE)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      $search = array( 'title' => new MongoRegex('/'.$query.'/iu') );
+      
+      if($title)
+         $search = array( 'title' => new MongoRegex('/'.$query.'/iu') );
+      else
+         $search = array( 'description' => new MongoRegex('/'.$query.'/iu') );
+      
       foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
       {
          /// parece ser que las expresiones regulares no funciona muy bien en mongodb
@@ -667,15 +672,19 @@ class story extends fs_model
    {
       echo "\nActualizamos los artículos populares y publicamos...";
       $j = 0;
+      $max_public = 2;
       foreach($this->popular_stories(FS_MAX_STORIES * 4) as $ps)
       {
          /// obtenemos las menciones del artículo
          if( is_null($ps->published) )
             $ps->random_count();
          
-         /// si la noticia alcanza el TOP FS_MAX_STORIES, entonces la publicamos
-         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $ps->popularity > 1)
+         /// si la noticia alcanza el TOP FS_MAX_STORIES, entonces la publicamos (pero sólo 2)
+         if($j < FS_MAX_STORIES AND is_null($ps->published) AND $ps->popularity > 1 AND $max_public > 0)
+         {
             $ps->published = time();
+            $max_public--;
+         }
          
          $ps->save();
          $j++;

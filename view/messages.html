@@ -23,7 +23,7 @@
                {/if}
                <span class="pull-right small">{$value->timesince()}</span>
             </div>
-            <p>{$value->text}</p>
+            <p>{$value->text()}</p>
             <div style="margin-bottom: 5px; text-align: right;">
                {if condition="$fsc->visitor->nick!=$value->from_nick"}
                <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">

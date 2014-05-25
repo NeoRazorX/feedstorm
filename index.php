@@ -22,9 +22,14 @@
 date_default_timezone_set('Europe/Madrid');
 
 if( !class_exists('Mongo') )
-   echo "No tienes MongoDB instalado. Consulta la web oficial: https://github.com/NeoRazorX/feedstorm";
+{
+   echo "<h1>No tienes MongoDB instalado.</h1>Consulta la "
+   . "<a href='https://github.com/NeoRazorX/feedstorm' target='_blank'>web oficial</a>.";
+}
 else if( !file_exists('config.php') )
-   echo "Tienes que modificar el archivo config.php a partir del config-sample.php";
+{
+   echo "<h1>config.php</h1>Tienes que modificar el archivo config.php a partir del <b>config-sample.php</b>";
+}
 else
 {
    require_once 'config.php';
@@ -58,12 +63,13 @@ else
       raintpl::configure("tpl_dir", "view/" );
       
       /// ¿Se puede escribir sobre la carpeta temporal?
-      if( file_exists('tmp/test') )
-         raintpl::configure('cache_dir', 'tmp/');
-      else if( mkdir('tmp/test') )
+      if( is_writable('tmp') )
          raintpl::configure('cache_dir', 'tmp/');
       else
-         die('No se puede escribir sobre la carpeta temporal (la carpeta tmp de FeedStorm).');
+      {
+         die('<h1>Error de escritura</h1>No se puede escribir sobre la carpeta temporal (la carpeta tmp de FeedStorm). 
+            Consulta la <a href="https://github.com/NeoRazorX/feedstorm" target="_blank">web oficial</a>.');
+      }
       
       raintpl::configure("path_replace", FALSE);
       $tpl = new RainTPL();
@@ -72,6 +78,7 @@ else
       $tpl->assign('path', FS_PATH);
       $tpl->assign('analytics', FS_ANALYTICS);
       $tpl->assign('debug', FS_DEBUG);
+      $tpl->assign('cover', FS_COVER);
       $tpl->assign('fsc', $fsc);
       $tpl->draw( $fsc->template );
    }

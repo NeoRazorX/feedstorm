@@ -66,14 +66,19 @@ class message extends fs_model
       }
    }
    
-   public function timesince()
-   {
-      return $this->time2timesince($this->date);
-   }
-   
    public function install_indexes()
    {
       
+   }
+   
+   public function text()
+   {
+      return nl2br($this->text);
+   }
+   
+   public function timesince()
+   {
+      return $this->time2timesince($this->date);
    }
    
    public function get($id)
@@ -105,7 +110,7 @@ class message extends fs_model
    {
       $this->from = $this->var2str($this->from);
       $this->to = $this->var2str($this->to);
-      $this->text = $this->true_text_break($this->text, 999);
+      $this->text = $this->no_html($this->text);
       
       $data = array(
           'from' => $this->from,

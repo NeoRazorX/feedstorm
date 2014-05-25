@@ -276,7 +276,6 @@ abstract class fs_model
    public function no_html($t)
    {
       $newt = str_replace(' ', ' ', $t); /// sustituye el caracter de espacio raro
-      $newt = trim( preg_replace('/\s+/', ' ', $newt) );
       $newt = str_replace('<', '&lt;', $newt);
       $newt = str_replace('>', '&gt;', $newt);
       $newt = str_replace('"', '&quot;', $newt);

@@ -257,8 +257,11 @@ class show_story extends fs_controller
          {
             foreach($t0->stories() as $story)
             {
-               $stories[] = $story;
-               break;
+               if( $story->get_id() != $this->story->get_id() )
+               {
+                  $stories[] = $story;
+                  break;
+               }
             }
          }
       }
@@ -294,7 +297,7 @@ class show_story extends fs_controller
          
          foreach($aede_domains as $dom)
          {
-            if( strpos($parts[2], $dom) !== FALSE )
+            if( strpos($parts[2], '.'.$dom) !== FALSE OR $parts[2] == $dom )
             {
                $result = TRUE;
                break;
@@ -316,7 +319,7 @@ class show_story extends fs_controller
       if( $this->aede($this->story->link) )
       {
          $this->noindex = TRUE;
-         $this->new_message('Este artículo pertenece a un medio de AEDE, esa organización que pretende'
+         $this->new_message('Este artículo pertenece a un medio de <b>AEDE</b>, esa organización que pretende'
             . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
       }
       else if( !$this->story->native_lang OR $this->story->penalize )

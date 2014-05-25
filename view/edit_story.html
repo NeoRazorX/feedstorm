@@ -2,15 +2,27 @@
 
 {if condition="$fsc->story"}
 <script type="text/javascript">
+   function check_url()
+   {
+      if(window.location.hash.substring(1) == 'delete')
+      {
+         $("#b_edit").removeClass('active');
+         $("#s_edit").hide();
+         $("#b_delete").addClass('active');
+         $("#s_delete").show();
+      }
+      else
+      {
+         $("#b_delete").removeClass('active');
+         $("#s_delete").hide();
+         $("#b_edit").addClass('active');
+         $("#s_edit").show();
+      }
+   }
    $(document).ready(function() {
+      check_url();
       window.onpopstate = function(){ 
-         if(window.location.hash.substring(1) == 'delete')
-         {
-            $("#b_edit").removeClass('active');
-            $("#s_edit").hide();
-            $("#b_delete").addClass('active');
-            $("#s_delete").show();
-         }
+         check_url();
       }
    });
 </script>

@@ -78,10 +78,10 @@ class comment extends fs_model
       {
          $text = preg_replace("/(?:^|\s)(($urlize_protocols):\/\/[^\s<]+[\w\/#])([?!,.])?(?=$|\s)/i",
             " <a rel=\"nofollow\" target=\"_blank\" href=\"\\1\">\\1</a>\\3 ", $this->uncut($this->text));
-         return trim($text);
+         return nl2br($text);
       }
       else
-         return $this->text;
+         return nl2br($this->text);
    }
    
    public function url()
@@ -128,7 +128,7 @@ class comment extends fs_model
    {
       $this->thread = $this->var2str($this->thread);
       $this->visitor_id = $this->var2str($this->visitor_id);
-      $this->text = $this->true_text_break($this->text, 999);
+      $this->text = $this->no_html($this->text);
       
       $data = array(
           'thread' => $this->thread,

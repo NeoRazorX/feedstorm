@@ -1,4 +1,4 @@
-<!--{$option=mt_rand(0, 6)}-->
+<!--{$option=mt_rand(0, 12)}-->
 {if condition="$option==0"}
 <div class="alert alert-info">
    Si tienes problemas, dudas o sugerencias ¡No te cortes! Usa el formulario de contacto.
@@ -58,7 +58,7 @@
    Si tienes más información sobre un artículo,
    puedes editarlo haciendo clic en su pestaña <b>editar</b>.
 </div>
-{else}
+{elseif condition="$option==5"}
 <div class="well well-sm" style="text-align: center; background-color: black;">
    <iframe width="300" height="169" src="//www.youtube.com/embed/lrmNOofFUok" frameborder="0" allowfullscreen></iframe>
 </div>

@@ -12,6 +12,12 @@
    <link rel="shortcut icon" href="{$path}view/img/favicon.ico" />
    <link rel="stylesheet" href="{$path}view/css/bootstrap.min.css" />
    <link rel="stylesheet" href="{$path}view/css/custom.css" />
+   <style type="text/css">
+      .fs_top_menu {
+         background-image: url('{$path}view/img/{$cover}');
+         padding: 46px 0px 5px 0px;
+      }
+   </style>
    <script src="{$path}view/js/jquery.min.js"></script>
    <script src="{$path}view/js/bootstrap.min.js"></script>
    {if condition="$analytics"}
@@ -77,7 +83,12 @@
       </div>
       {else}
       <div class="row">
-         <div class="col-md-4 col-xs-4">
+         <div class="col-md-12 col-xs-12" style="text-align: center;">
+            <h3 style="margin-bottom: 50px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6 col-xs-6">
             <div class="btn-group">
                <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}">
                   <span class="glyphicon glyphicon-home" title="tu portada"></span>
@@ -98,10 +109,7 @@
                <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
             </a>
          </div>
-         <div class="col-md-4 col-xs-4" style="text-align: center;">
-            <h3 style="margin: 0px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
-         </div>
-         <div class="col-md-4 col-xs-4" style="text-align: right;">
+         <div class="col-md-6 col-xs-6" style="text-align: right;">
             <div class="btn-group">
                <div class="btn-group" style="text-align: left;">
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">

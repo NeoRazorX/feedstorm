@@ -5,7 +5,7 @@
       <div class="row">
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
-         <div class="col-lg-4 col-sm-6">
+         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
             {loop="$fsc->split_stories($fsc->editions, 3, $value1)"}
             <div class="story{if condition="$value2->visitor_id==$fsc->visitor->get_id()"} story_readed{/if}">
                <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>

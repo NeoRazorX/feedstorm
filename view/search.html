@@ -41,7 +41,7 @@
       <div class="row">
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
-         <div class="col-lg-4 col-sm-6">
+         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
             <!--{$fsc->preview->load($value2->link)}-->
             {if condition="$fsc->preview->type"}

@@ -33,12 +33,14 @@ class show_story extends fs_controller
    public $story;
    public $stories;
    public $txt_comment;
+   public $no_relateds;
    
    public function __construct()
    {
       parent::__construct('show_story', 'Artículo...');
       $this->preview = new story_preview();
-      $this->stories = array();
+      $this->stories = FALSE;
+      $this->no_relateds = FALSE;
       $story = new story();
       
       if( isset($_GET['id']) )
@@ -91,6 +93,7 @@ class show_story extends fs_controller
       }
       else
       {
+         $this->template = 'show_no_story';
          $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'index.php?page=search">Usa el buscador</a>.');
          $this->stories = $story->popular_stories();
          header("HTTP/1.0 404 Not Found");
@@ -233,40 +236,58 @@ class show_story extends fs_controller
    
    public function related_stories()
    {
-      $stories = array();
-      
-      $story = $this->story->related_story();
-      $max_stories = 5;
-      while($max_stories > 0)
+      if(!$this->stories)
       {
-         if($story)
+         $this->stories = array();
+         
+         /// navegamos por los artículos relacionados
+         $story = $this->story->related_story();
+         $max_stories = 6;
+         while($max_stories > 0)
          {
-            $stories[] = $story;
-            $story = $story->related_story();
-            $max_stories--;
-         }
-         else
-            break;
-      }
-      
-      if( count($stories) == 0 AND count($this->story->topics) > 0 )
-      {
-         $topic = new topic();
-         $t0 = $topic->get($this->story->topics[0]);
-         if($t0)
-         {
-            foreach($t0->stories() as $story)
+            if($story)
             {
-               if( $story->get_id() != $this->story->get_id() )
+               $this->stories[] = $story;
+               $story = $story->related_story();
+               $max_stories--;
+            }
+            else
+               break;
+         }
+         
+         /*
+          * Si no hay artículos relacionados, entonces hacemos una búsqueda por tema
+          * y añadimos esos artículos
+          */
+         if( count($this->stories) == 0 AND count($this->story->topics) > 0 )
+         {
+            $topic = new topic();
+            $t0 = $topic->get($this->story->topics[0]);
+            if($t0)
+            {
+               foreach($t0->stories() as $story)
                {
-                  $stories[] = $story;
-                  break;
+                  if( $story->get_id() != $this->story->get_id() )
+                  {
+                     $this->stories[] = $story;
+                     
+                     $max_stories--;
+                     if($max_stories <= 0)
+                        break;
+                  }
                }
             }
          }
+         
+         /// si aun así no hay nada, añadimos artículos populares
+         if( count($this->stories) == 0 )
+         {
+            $this->no_relateds = TRUE;
+            $this->stories = $this->story->popular_stories($max_stories);
+         }
       }
       
-      return $stories;
+      return $this->stories;
    }
    
    /// devuelve TRUE si el enlace pertenece a un medio de AEDE

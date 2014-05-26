@@ -1,6 +1,5 @@
 {include="header"}
 
-{if condition="$fsc->story"}
 <script type="text/javascript">
    function remove_comment(id)
    {
@@ -32,17 +31,17 @@
    });
 </script>
 
-<div class="container">
-   <ul class="nav nav-tabs">
-      <li id="p_info" class="active"><a href="{$fsc->story->url()}">Artículo</a></li>
-      <li><a href="{$fsc->story->edit_url()}">Editar</a></li>
-      <li id="p_sources"><a href="#sources">Fuentes</a></li>
-      {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="{$fsc->story->edit_url()}#delete">Eliminar</a></li>{/if}
-   </ul>
-   <div class="full_story">
-   <div id="s_info">
-      <div class="row">
-         <div class="col-md-12">
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-md-10">
+         <ul class="nav nav-tabs">
+            <li id="p_info" class="active"><a href="{$fsc->story->url()}">Artículo</a></li>
+            <li><a href="{$fsc->story->edit_url()}">Editar</a></li>
+            <li id="p_sources"><a href="#sources">Fuentes</a></li>
+            {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="{$fsc->story->edit_url()}#delete">Eliminar</a></li>{/if}
+         </ul>
+         <div class="full_story">
+         <div id="s_info">
             <div class="pull-right" style="text-align: right;">
                {if condition="$fsc->story->penalize"}
                   <span class="label label-danger" title="este artículo está penalizado">penalizado</span><br/>
@@ -117,37 +116,8 @@
                {/if}
             </div>
             {/if}
-         </div>
-      </div>
-      <div class="row">
-         <div class="col-md-12">
-            <div style="padding: 5px;">
-            {if condition="$fsc->visitor->mobile()"}
-               <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span>
-               <a class="label label-info" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter: {$fsc->story->tweets}</a>
-               <a class="label label-primary" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook: {$fsc->story->likes}</a>
-               <a class="label label-danger" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+: {$fsc->story->plusones}</a>
-            {else}
-               <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span> =
-               <span class="label label-default">Clics: {$fsc->story->clics}</span>
-               <a class="label label-info" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter: {$fsc->story->tweets}</a>
-               <a class="label label-primary" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook: {$fsc->story->likes}</a>
-               <a class="label label-danger" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+: {$fsc->story->plusones}</a>
-               {if condition="$fsc->meneame_link"}
-               <a class="label label-warning" rel="nofollow" href="{$fsc->meneame_link}" title="ver en menéame">Menéame: {$fsc->story->meneos}</a>
-               {else}
-               <span class="label label-warning">Menéame: {$fsc->story->meneos}</span>
-               {/if}
-               {if condition="$fsc->reddit_link"}
-               <a class="label label-default" rel="nofollow" href="{$fsc->reddit_link}" title="ver en reddit">Reddit</a>
-               {/if}
-            {/if}
-            </div>
-         </div>
-      </div>
-      {loop="$fsc->comments"}
-      <div class="row">
-         <div class="col-md-12">
+            
+            {loop="$fsc->comments"}
             <hr/>
             <div style="padding: 5px;">
                <span class="glyphicon glyphicon-user"></span>
@@ -164,280 +134,179 @@
                </span>
                <p style="margin: 5px 0px 0px 0px;">{$value->text()}</p>
             </div>
-         </div>
-      </div>
-      {/loop}
-      <form action="{$fsc->url()}" method="post">
-         <div class="row">
-            <div class="col-md-12">
+            {/loop}
+            <form action="{$fsc->url()}" method="post">
                <hr/>
                <div style="padding: 0px 5px 0px 5px;">
                   <textarea class="form-control" name="comment" rows="3" placeholder="¡Rápido, di lo primero que piensas!">{$fsc->txt_comment}</textarea>
                </div>
-            </div>
-         </div>
-         <div class="row">
-            {if condition="$fsc->visitor->admin"}
-            <div class="col-md-12">
+               {if condition="$fsc->visitor->admin"}
                <div class="small" style="padding: 5px; text-align: right;">
                   <input type="hidden" name="human" value=""/>
                   <input class="btn btn-sm btn-primary" type="submit" value="comentar"/>
                </div>
-            </div>
-            {else}
-            <div class="col-md-2 col-xs-3">
+               {else}
                <div style="padding: 5px;">
                   <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" size="3" maxlength="3" autocomplete="off"/>
                </div>
-            </div>
-            <div class="col-md-10 col-xs-9">
                <div class="small" style="padding: 5px; text-align: right;">
                   Borra el número para demostrar que eres humano
                   <input class="btn btn-sm btn-primary" type="submit" value="comentar"/>
                </div>
-            </div>
-            {/if}
-         </div>
-      </form>
-   </div>
-   <div class="row" id="s_sources" style="display: none;">
-      <div class="col-md-12">
-         <table class="table table-hover">
-            <thead>
-               <tr>
-                  <th>Fecha</th>
-                  <th>Enlace</th>
-                  <th>Fuente</th>
-               </tr>
-            </thead>
-            <tbody>
-               {loop="$fsc->feed_links"}
-               <tr>
-                  <td>{$value->timesince()}</td>
-                  <td><a href="{$value->link()}">{$value->title}</a></td>
-                  <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-               </tr>
-               {else}
-               <tr>
-                  <td>{$fsc->story->timesince()}</td>
-                  <td>-</td>
-                  <td>-</td>
-               </tr>
-               {/loop}
-            </tbody>
-         </table>
-         {if condition="$fsc->visitor->mobile()"}
-         <div style="padding: 5px;">
-            <span class="label label-default">Popularidad: {$fsc->story->popularity()}</span> =
-            <span class="label label-default">Clics: {$fsc->story->clics}</span>
-            <a class="label label-info" rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">Twitter: {$fsc->story->tweets}</a>
-            <a class="label label-primary" rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">Facebook: {$fsc->story->likes}</a>
-            <a class="label label-danger" rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">G+: {$fsc->story->plusones}</a>
-            <span class="label label-warning">Menéame: {$fsc->story->meneos}</span>
-         </div>
-         {/if}
-      </div>
-   </div>
-   </div>
-   
-   {loop="$fsc->related_stories()"}
-   <div class="row">
-      <div class="col-md-12">
-         <div class="well well-sm" style="background-color: white;">
-            <div class="pull-right"><span class="glyphicon glyphicon-paperclip" title="artículo relacionado"></span></div>
-            <h3 style="margin: 0px;">
-               <a href="{$value->url()}">{$value->title}</a>
-            </h3>
-            <p style="margin: 3px 0px 2px 0px;">
-               {$value->description}<br/>
-               <span class="small">Publicado {$value->timesince()}.</span>
-            </p>
-            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-            {if condition="$fsc->preview->type=='youtube'"}
-            <div style="text-align: center; margin-bottom: 10px;">
-               {if condition="$fsc->visitor->mobile()"}
-               <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-               {else}
-               <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
                {/if}
-            </div>
-            {elseif condition="$fsc->preview->type=='imgur'"}
-            <div style="text-align: center; margin-bottom: 10px;">
-               <a target="_blank" href="{$value->url()}">
-               {if condition="$fsc->visitor->mobile()"}
-                  <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-               {else}
-                  <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 900px;"/>
-               {/if}
-               </a>
-            </div>
-            {elseif condition="$fsc->preview->type=='image'"}
-            <div style="text-align: center; margin-bottom: 10px;">
-               <a target="_blank" href="{$value->url()}">
-               {if condition="$fsc->visitor->mobile()"}
-                  <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-               {else}
-                  <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 900px;"/>
-               {/if}
-               </a>
-            </div>
-            {elseif condition="$fsc->preview->type=='vimeo'"}
-            <div style="text-align: center; margin-bottom: 10px;">
-               {if condition="$fsc->visitor->mobile()"}
-               <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-               {else}
-               <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-               {/if}
-            </div>
-            {/if}
-         </div>
-      </div>
-   </div>
-   {else}
-   <div class="row">
-      <div class="col-md-12">
-         <div class="well well-sm" style="background-color: white;">
-            <p style="margin: 3px 0px 2px 0px;">
-               <big><span class="glyphicon glyphicon-hand-right"></span> Hola,</big>
-               probablemente es la primera vez que llegas aquí y <u>me sabe mal no tener más artículos relacionados</u> para demostrarte
-               que <b>{$name}</b> es más que un agregador de noticias ¿Por qué no le echas un vistazo a estos <u>artículos populares</u>?
-               A ver si así te convenzo...
-            </p>
-            
-            {loop="$fsc->story->popular_stories(5)"}
-               {if condition="$value->title != $fsc->story->title"}
-               <hr/>
-               <div>
-                  <div class="pull-right"><span class="glyphicon glyphicon-fire" title="artículo popular"></span></div>
-                  <h3 style="margin: 0px;">
-                     <a href="{$value->url()}">{$value->title}</a>
-                  </h3>
-                  <p style="margin: 3px 0px 2px 0px;">
-                     {$value->description}<br/>
-                     <span class="small">Publicado {$value->timesince()}.</span>
-                  </p>
-                  <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-                  {if condition="$fsc->preview->type=='youtube'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
-                     {if condition="$fsc->visitor->mobile()"}
-                     <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                     {else}
-                     <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                     {/if}
-                  </div>
-                  {elseif condition="$fsc->preview->type=='imgur'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
-                     <a target="_blank" href="{$value->url()}">
-                     {if condition="$fsc->visitor->mobile()"}
-                        <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-                     {else}
-                        <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 900px;"/>
-                     {/if}
-                     </a>
-                  </div>
-                  {elseif condition="$fsc->preview->type=='image'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
-                     <a target="_blank" href="{$value->url()}">
-                     {if condition="$fsc->visitor->mobile()"}
-                        <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-                     {else}
-                        <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 900px;"/>
-                     {/if}
-                     </a>
-                  </div>
-                  {elseif condition="$fsc->preview->type=='vimeo'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
-                     {if condition="$fsc->visitor->mobile()"}
-                     <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                     {else}
-                     <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                     {/if}
-                  </div>
-                  {/if}
-               </div>
-               {/if}
-            {/loop}
-         </div>
-      </div>
-   </div>
-   {/loop}
-</div>
-{else}
-   <script type="text/javascript">
-      $(document).ready(function() {
-         document.f_search.query.focus();
-      });
-   </script>
-   
-   <div class="container-fluid" style="margin-bottom: 20px;">
-      <div class="row">
-         <div class="col-md-4"></div>
-         <div class="col-md-4">
-            <form name="f_search" action="{$path}search" method="post">
-               <div class="input-group">
-                  <input type="text" class="form-control" name="query" autocomplete="off">
-                  <span class="input-group-btn">
-                     <button class="btn btn-default btn-primary" type="submit">Busca!</button>
-                  </span>
-               </div>
             </form>
          </div>
-         <div class="col-md-4"></div>
+         
+         <div id="s_sources" style="display: none;">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Fecha</th>
+                     <th>Enlace</th>
+                     <th>Fuente</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {loop="$fsc->feed_links"}
+                  <tr>
+                     <td>{$value->timesince()}</td>
+                     <td><a href="{$value->link()}">{$value->title}</a></td>
+                     <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+                  </tr>
+                  {else}
+                  <tr>
+                     <td>{$fsc->story->timesince()}</td>
+                     <td>-</td>
+                     <td>-</td>
+                  </tr>
+                  {/loop}
+               </tbody>
+            </table>
+         </div>
+         </div>
+      </div>
+      <div class="col-md-2">
+         <br/><br/>
+         <ul class="nav nav-pills nav-stacked" style="background-color: white;">
+            <li class="active">
+               <a href="#">
+                  <span class="badge pull-right">{$fsc->story->popularity()}</span>
+                  Popularidad
+               </a>
+            </li>
+            <li>
+               <a href="#">
+                  <span class="badge pull-right">{$fsc->story->clics}</span>
+                  Clics
+               </a>
+            </li>
+            <li>
+               <a rel="nofollow" target="_blank" href="{$fsc->twitter_url()}" title="compartir en twitter">
+                  <span class="badge pull-right">{$fsc->story->tweets}</span>
+                  Twitter
+               </a>
+            </li>
+            <li>
+               <a rel="nofollow" target="_blank" href="{$fsc->facebook_url()}" title="compartir en facebook">
+                  <span class="badge pull-right">{$fsc->story->likes}</span>
+                  Facebook
+               </a>
+            </li>
+            <li>
+               <a rel="nofollow" target="_blank" href="{$fsc->plusone_url()}" title="compartir en google+">
+                  <span class="badge pull-right">{$fsc->story->plusones}</span>
+                  Google+
+               </a>
+            </li>
+            {if condition="$fsc->meneame_link"}
+            <li>
+               <a rel="nofollow" href="{$fsc->meneame_link}" title="ver en menéame">
+                  <span class="badge pull-right">{$fsc->story->meneos}</span>
+                  Menéame
+               </a>
+            </li>
+            {else}
+            <li>
+               <a href="#">
+                  <span class="badge pull-right">{$fsc->story->meneos}</span>
+                  Menéame
+               </a>
+            </li>
+            {/if}
+            {if condition="$fsc->reddit_link"}
+            <li><a rel="nofollow" href="{$fsc->reddit_link}" title="ver en reddit">Reddit</a></li>
+            {/if}
+         </ul>
+         <br/>
       </div>
    </div>
    
-   <div class="container-fluid">
-      <div class="row">
-      <!--{$cols=array(1,2,3)}-->
+   {if condition="$fsc->related_stories()"}
+   <div class="row">
+      <!--{$cols=array(1,2)}-->
       {loop="$cols"}
-         <div class="col-lg-4 col-sm-6">
-            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
-            <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
-            {if condition="$fsc->preview->type"}
-            <div class="storyp{if condition="$value2->readed()"} storyp_readed{/if}">
-               <table width="100%">
-                  <tr>
-                     <td class="preview">
-                        <a href='{$value2->url()}'><img src="{$fsc->preview->preview()}" alt="{$value2->title}" width="120"/></a>
-                     </td>
-                     <td class="preview_txt">
-                        <div class="pull-right story_tags">
-                           {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                           {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                           {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
-                           {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-                        </div>
-                        <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
-                        <p>{$value2->description(100)}</p>
-                        <div class="small">
-                           Escrito {$value2->timesince()}.
-                           Popularidad: {$value2->popularity()}
-                        </div>
-                     </td>
-                  </tr>
-               </table>
-            </div>
-            {else}
-            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
-               <div class="pull-right story_tags">
-                  {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                  {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                  {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
-                  {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+         <div class="col-md-6 col-sm-6">
+            {loop="$fsc->split_stories($fsc->stories, 2, $value1)"}
+            <div class="well well-sm" style="background-color: white;">
+               <div class="pull-right">
+                  {if condition="$fsc->no_relateds"}
+                  <span class="glyphicon glyphicon-fire" title="artículo popular"></span>
+                  {else}
+                  <span class="glyphicon glyphicon-paperclip" title="artículo relacionado"></span>
+                  {/if}
                </div>
-               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
-               <p>{$value2->description()}</p>
-               <div class="small">
-                  {$value2->popularity()}
-                  <span class="pull-right">{$value2->timesince()}</span>
+               <h3 style="margin: 0px;">
+                  <a href="{$value2->url()}">{$value2->title}</a>
+               </h3>
+               <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
+               {if condition="$fsc->preview->type=='youtube'"}
+               <div style="text-align: center; margin-bottom: 10px;">
+                  {if condition="$fsc->visitor->mobile()"}
+                  <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+                  {else}
+                  <iframe width="427" height="240" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+                  {/if}
                </div>
+               {elseif condition="$fsc->preview->type=='imgur'"}
+               <div style="text-align: center; margin-bottom: 10px;">
+                  <a href="{$value2->url()}">
+                  {if condition="$fsc->visitor->mobile()"}
+                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 300px;"/>
+                  {else}
+                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 900px;"/>
+                  {/if}
+                  </a>
+               </div>
+               {elseif condition="$fsc->preview->type=='image'"}
+               <div style="text-align: center; margin-bottom: 10px;">
+                  <a href="{$value2->url()}">
+                  {if condition="$fsc->visitor->mobile()"}
+                     <img src="{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 300px;"/>
+                  {else}
+                     <img src="{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 900px;"/>
+                  {/if}
+                  </a>
+               </div>
+               {elseif condition="$fsc->preview->type=='vimeo'"}
+               <div style="text-align: center; margin-bottom: 10px;">
+                  {if condition="$fsc->visitor->mobile()"}
+                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                  {else}
+                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                  {/if}
+               </div>
+               {else}
+               <p style="margin: 3px 0px 2px 0px;">
+                  {$value2->description}<br/>
+                  <span class="small">Publicado {$value2->timesince()}.</span>
+               </p>
+               {/if}
             </div>
-            {/if}
             {/loop}
          </div>
       {/loop}
-      </div>
    </div>
-{/if}
+   {/if}
+</div>
 
 {include="footer"}

@@ -78,7 +78,7 @@
       </div>
       <div class="col-md-8">
          {loop="$fsc->stories"}
-            <!--{$fsc->preview->load($value->link)}-->
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {if condition="$fsc->preview->type"}
             <div class="storyp{if condition="$value->readed()"} storyp_readed{/if}">
                <table width="100%">

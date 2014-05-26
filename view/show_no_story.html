@@ -1,0 +1,74 @@
+{include="header"}
+
+<script type="text/javascript">
+   $(document).ready(function() {
+      document.f_search.query.focus();
+   });
+</script>
+
+<div class="container-fluid">
+   <div class="row">
+      <!--{$cols=array(1,2,3)}-->
+      {loop="$cols"}
+         <div class="col-lg-4 col-sm-6">
+            {if condition="$value1==1"}
+            <form name="f_search" action="{$path}search" method="post">
+               <div class="input-group">
+                  <input type="text" class="form-control" name="query" autocomplete="off">
+                  <span class="input-group-btn">
+                     <button class="btn btn-default btn-primary" type="submit">Busca!</button>
+                  </span>
+               </div>
+            </form>
+            <br/>
+            {/if}
+            
+            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
+            <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
+            {if condition="$fsc->preview->type"}
+            <div class="storyp{if condition="$value2->readed()"} storyp_readed{/if}">
+               <table width="100%">
+                  <tr>
+                     <td class="preview">
+                        <a href='{$value2->url()}'><img src="{$fsc->preview->preview()}" alt="{$value2->title}" width="120"/></a>
+                     </td>
+                     <td class="preview_txt">
+                        <div class="pull-right story_tags">
+                           {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
+                           {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
+                           {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
+                           {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                        </div>
+                        <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+                        <p>{$value2->description(100)}</p>
+                        <div class="small">
+                           Escrito {$value2->timesince()}.
+                           Popularidad: {$value2->popularity()}
+                        </div>
+                     </td>
+                  </tr>
+               </table>
+            </div>
+            {else}
+            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
+               <div class="pull-right story_tags">
+                  {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
+                  {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
+                  {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
+                  {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </div>
+               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
+               <p>{$value2->description()}</p>
+               <div class="small">
+                  {$value2->popularity()}
+                  <span class="pull-right">{$value2->timesince()}</span>
+               </div>
+            </div>
+            {/if}
+            {/loop}
+         </div>
+      {/loop}
+   </div>
+</div>
+
+{include="footer"}

@@ -283,7 +283,18 @@ class show_story extends fs_controller
          if( count($this->stories) == 0 )
          {
             $this->no_relateds = TRUE;
-            $this->stories = $this->story->popular_stories($max_stories);
+            $this->stories = $this->story->popular_stories($max_stories+1);
+            foreach($this->story->popular_stories($max_stories) as $story)
+            {
+               if( $story->get_id() != $this->story->get_id() )
+               {
+                  $this->stories[] = $story;
+                  
+                  $max_stories--;
+                  if($max_stories <= 0)
+                     break;
+               }
+            }
          }
       }
       

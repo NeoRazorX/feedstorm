@@ -115,6 +115,7 @@
                {/if}
             </div>
             {else}
+            <div style="padding: 0px 10px 2px 10px;">
                {loop="$fsc->topics()"}
                   {if condition="$value->icon!=''"}
                   <a href="{$value->url()}">
@@ -122,6 +123,7 @@
                   </a>
                   {/if}
                {/loop}
+            </div>
             {/if}
             
             {loop="$fsc->comments"}

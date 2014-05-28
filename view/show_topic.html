@@ -51,7 +51,9 @@
             <div class="col-md-12">
                <h1>
                   {if condition="$fsc->topic->icon!=''"}
-                  <div class="pull-right"><img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}"/></div>
+                  <div class="pull-right" style="margin: 2px 2px 5px 10px;">
+                     <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}"/>
+                  </div>
                   {else}
                   <span class="glyphicon glyphicon-book"></span>
                   {/if}

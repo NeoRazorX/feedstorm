@@ -105,5 +105,3 @@ else
    
    $mongo->close();
 }
-
-?>

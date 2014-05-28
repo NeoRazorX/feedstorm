@@ -42,5 +42,3 @@ class popular_stories extends fs_controller
          y más menciones en las redes sociales.';
    }
 }
-
-?>

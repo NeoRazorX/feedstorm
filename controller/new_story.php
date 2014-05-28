@@ -103,5 +103,3 @@ class new_story extends fs_controller
       header( 'Location: '.$story->url() );
    }
 }
-
-?>

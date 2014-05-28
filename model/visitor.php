@@ -404,5 +404,3 @@ class visitor extends fs_model
       }
    }
 }
-
-?>

@@ -92,5 +92,3 @@ class feed_list extends fs_controller
          o añade las tuyas, si no están ya.';
    }
 }
-
-?>

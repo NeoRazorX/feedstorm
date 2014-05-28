@@ -81,5 +81,3 @@ class feedback extends fs_controller
       return 'Feedback de '.FS_NAME.'.';
    }
 }
-
-?>

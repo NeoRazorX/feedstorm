@@ -86,5 +86,3 @@ else
    $tiempo = explode(' ', microtime());
    echo "\nTiempo de ejecución: ".number_format($tiempo[1] + $tiempo[0] - $uptime, 3)." s\n";
 }
-
-?>

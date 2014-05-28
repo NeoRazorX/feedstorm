@@ -103,5 +103,3 @@ class explore_feed extends fs_controller
          return parent::get_description();
    }
 }
-
-?>

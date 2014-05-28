@@ -238,5 +238,3 @@ class suscription extends fs_model
       
    }
 }
-
-?>

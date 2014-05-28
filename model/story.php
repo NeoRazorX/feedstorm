@@ -341,7 +341,9 @@ class story extends fs_model
               rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
-      $this->tweets = isset($json['count']) ? intval($json['count']) : 0;
+      $tweets = isset($json['count']) ? intval($json['count']) : 0;
+      if($tweets > $this->tweets)
+         $this->tweets = $tweets;
    }
    
    public function facebook_count()
@@ -350,7 +352,9 @@ class story extends fs_model
               rawurlencode($this->link), FALSE);
       $json = json_decode($json_string, TRUE);
       
-      $this->likes = isset($json[0]['total_count']) ? intval($json[0]['total_count']) : 0;
+      $likes = isset($json[0]['total_count']) ? intval($json[0]['total_count']) : 0;
+      if($likes > $this->likes)
+         $this->likes = $likes;
    }
    
    public function meneame_count()
@@ -359,9 +363,11 @@ class story extends fs_model
       $vars = explode( ' ', $string);
       
       if( count($vars) == 4 )
-         $this->meneos = intval( $vars[2] );
-      else
-         $this->meneos = 0;
+      {
+         $meneos = intval( $vars[2] );
+         if($meneos > $this->meneos)
+            $this->meneos = $meneos;
+      }
    }
    
    public function plusones_count()
@@ -378,7 +384,10 @@ class story extends fs_model
       $curl_results = curl_exec ($curl);
       curl_close ($curl);
       $json = json_decode($curl_results, TRUE);
-      $this->plusones = isset($json[0]['result']['metadata']['globalCounts']['count'])?intval( $json[0]['result']['metadata']['globalCounts']['count'] ):0;
+      
+      $plusones = isset($json[0]['result']['metadata']['globalCounts']['count'])?intval( $json[0]['result']['metadata']['globalCounts']['count'] ):0;
+      if($plusones > $this->plusones)
+         $this->plusones = $plusones;
    }
    
    public function random_count($meneame = TRUE)
@@ -693,5 +702,3 @@ class story extends fs_model
       }
    }
 }
-
-?>

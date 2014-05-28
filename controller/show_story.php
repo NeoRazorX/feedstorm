@@ -396,5 +396,3 @@ class show_story extends fs_controller
       return $tlist;
    }
 }
-
-?>

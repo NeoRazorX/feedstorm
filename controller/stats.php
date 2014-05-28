@@ -83,5 +83,3 @@ class stats extends fs_controller
       return $stlist;
    }
 }
-
-?>

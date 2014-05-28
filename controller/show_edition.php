@@ -82,5 +82,3 @@ class show_edition extends fs_controller
          return parent::get_description();
    }
 }
-
-?>

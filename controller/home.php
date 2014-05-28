@@ -72,5 +72,3 @@ class home extends fs_controller
       }
    }
 }
-
-?>

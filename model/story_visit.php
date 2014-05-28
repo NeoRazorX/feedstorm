@@ -240,5 +240,3 @@ class story_visit extends fs_model
       }
    }
 }
-
-?>

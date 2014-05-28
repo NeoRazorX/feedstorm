@@ -231,5 +231,3 @@ class story_edition extends fs_model
       
    }
 }
-
-?>

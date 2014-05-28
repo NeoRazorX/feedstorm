@@ -472,7 +472,7 @@ class feed extends fs_model
       else if( $story->date > time() - FS_MAX_AGE ) /// no guardamos noticias antiguas
       {
          $story->meneos = $meneos;
-         $story->random_count( !$this->meneame() );
+         $story->random_count( $meneos == 0 );
          $story->native_lang = $this->native_lang;
          $story->penalize = $this->penalize;
          $story->num_feeds = 1;
@@ -651,5 +651,3 @@ class feed extends fs_model
       }
    }
 }
-
-?>

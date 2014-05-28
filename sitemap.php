@@ -40,5 +40,3 @@ foreach($story->published_stories() as $s)
 $mongo->close();
 
 echo '</urlset>';
-
-?>

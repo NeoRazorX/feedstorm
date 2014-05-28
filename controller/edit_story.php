@@ -205,5 +205,3 @@ class edit_story extends fs_controller
       }
    }
 }
-
-?>

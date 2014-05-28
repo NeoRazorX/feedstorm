@@ -40,5 +40,3 @@ class comments extends fs_controller
       return 'Chat general de '.FS_NAME.' junto con todas las conversaciones recientes de la web.';
    }
 }
-
-?>

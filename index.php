@@ -83,5 +83,3 @@ else
       $tpl->draw( $fsc->template );
    }
 }
-
-?>

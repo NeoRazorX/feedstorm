@@ -300,5 +300,3 @@ class feed_story extends fs_model
       
    }
 }
-
-?>

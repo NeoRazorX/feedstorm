@@ -187,5 +187,3 @@ class comment extends fs_model
       
    }
 }
-
-?>

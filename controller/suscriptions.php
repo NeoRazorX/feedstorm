@@ -87,5 +87,3 @@ class suscriptions extends fs_controller
          para tener una portada acorde a tus intereses.';
    }
 }
-
-?>

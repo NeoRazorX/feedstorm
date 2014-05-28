@@ -39,5 +39,3 @@ class last_editions extends fs_controller
       return 'Últimas modificaciones realizadas por los usuarios. Artículos corregidos o mejorados.';
    }
 }
-
-?>

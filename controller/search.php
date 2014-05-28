@@ -61,5 +61,3 @@ class search extends fs_controller
          es irrelevante XD.';
    }
 }
-
-?>

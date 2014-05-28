@@ -43,5 +43,3 @@ class not_found extends fs_controller
       return 'Artículo no encontrado en '.FS_NAME.'. ¡Usa el buscador! A Ver si tienes más suerte.';
    }
 }
-
-?>

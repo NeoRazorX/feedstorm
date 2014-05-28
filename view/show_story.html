@@ -33,7 +33,7 @@
 
 <div class="container-fluid">
    <div class="row">
-      <div class="col-md-10">
+      <div class="col-md-9">
          <ul class="nav nav-tabs">
             <li id="p_info" class="active"><a href="{$fsc->story->url()}">Artículo</a></li>
             <li><a href="{$fsc->story->edit_url()}">Editar</a></li>
@@ -42,7 +42,7 @@
          </ul>
          <div class="full_story">
          <div id="s_info">
-            <div class="pull-right" style="text-align: right;">
+            <div class="pull-right story_tags" style="text-align: right;">
                {if condition="$fsc->story->penalize"}
                   <span class="label label-danger" title="este artículo está penalizado">penalizado</span><br/>
                {/if}
@@ -185,7 +185,7 @@
          </div>
          </div>
       </div>
-      <div class="col-md-2">
+      <div class="col-md-3">
          <br/><br/>
          <ul class="nav nav-pills nav-stacked" style="background-color: white;">
             <li class="active">
@@ -255,7 +255,7 @@
                   <span class="glyphicon glyphicon-paperclip" title="artículo relacionado"></span>
                   {/if}
                </div>
-               <h3 style="margin: 0px;">
+               <h3 style="margin: 0px 0px 5px 0px;">
                   <a href="{$value2->url()}">{$value2->title}</a>
                </h3>
                <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
@@ -273,7 +273,7 @@
                   {if condition="$fsc->visitor->mobile()"}
                      <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 300px;"/>
                   {else}
-                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 900px;"/>
+                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 500px;"/>
                   {/if}
                   </a>
                </div>
@@ -283,7 +283,7 @@
                   {if condition="$fsc->visitor->mobile()"}
                      <img src="{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 300px;"/>
                   {else}
-                     <img src="{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 900px;"/>
+                     <img src="{$fsc->preview->filename}" alt="{$value2->title}" style="max-width: 500px;"/>
                   {/if}
                   </a>
                </div>
@@ -296,11 +296,17 @@
                   {/if}
                </div>
                {else}
-               <p style="margin: 3px 0px 2px 0px;">
+               <p style="margin: 3px 0px 2px 0px; text-align: justify;">
                   {$value2->description}<br/>
                   <span class="small">Publicado {$value2->timesince()}.</span>
                </p>
                {/if}
+               <div class="story_tags" style="text-align: right;">
+                  {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
+                  {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
+                  {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
+                  {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </div>
             </div>
             {/loop}
          </div>

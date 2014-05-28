@@ -61,5 +61,3 @@ class discover_stories extends fs_controller
       return 'Descubre un mundo de noticias interesantes a golpe de clic.';
    }
 }
-
-?>

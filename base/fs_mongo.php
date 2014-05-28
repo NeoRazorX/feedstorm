@@ -78,5 +78,3 @@ class fs_mongo
          return 'Desconocida';
    }
 }
-
-?>

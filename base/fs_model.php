@@ -351,5 +351,3 @@ abstract class fs_model
       fclose($fp);
    }
 }
-
-?>

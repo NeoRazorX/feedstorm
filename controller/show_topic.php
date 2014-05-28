@@ -51,6 +51,7 @@ class show_topic extends fs_controller
                $this->topic->title = trim($_POST['title']);
                $this->topic->description = trim($_POST['description']);
                $this->topic->keywords = mb_strtolower( trim($_POST['keywords']), 'utf8' );
+               $this->topic->icon = trim($_POST['icon']);
                
                if($_POST['parent'] != '')
                {

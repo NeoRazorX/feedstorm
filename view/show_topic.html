@@ -50,7 +50,11 @@
          <div class="row">
             <div class="col-md-12">
                <h1>
+                  {if condition="$fsc->topic->icon!=''"}
+                  <div class="pull-right"><img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}"/></div>
+                  {else}
                   <span class="glyphicon glyphicon-book"></span>
+                  {/if}
                   {$fsc->topic->title}
                </h1>
                <p>
@@ -89,6 +93,12 @@
                      {else}
                      <input class="form-control" type="text" name="parent" placeholder="ID del tema" autocomplete="off"/>
                      {/if}
+                  </div>
+                  <div class="input-group">
+                     <span class="input-group-addon">
+                        <a target="_blank" href="https://imgur.com">Icono</a>
+                     </span>
+                     <input class="form-control" type="text" name="icon" placeholder="url del icono" value="{$fsc->topic->icon}" autocomplete="off"/>
                   </div>
                   <div style="margin-top: 5px; text-align: right;">
                      <input class="btn btn-primary btn-sm" type="submit" value="Guardar"/>

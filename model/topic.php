@@ -31,6 +31,7 @@ class topic extends fs_model
    public $importance;
    public $num_stories;
    public $num_children;
+   public $icon;
    
    public function __construct($t=FALSE)
    {
@@ -44,6 +45,7 @@ class topic extends fs_model
       $this->importance = 0;
       $this->num_stories = 0;
       $this->num_children = 0;
+      $this->icon = '';
       
       if($t)
       {
@@ -56,6 +58,9 @@ class topic extends fs_model
          $this->importance = $t['importance'];
          $this->num_stories = $t['num_stories'];
          $this->num_children = $t['num_children'];
+         
+         if( isset($t['icon']) )
+            $this->icon = $t['icon'];
       }
    }
    
@@ -248,7 +253,8 @@ class topic extends fs_model
           'keywords' => $this->keywords,
           'importance' => $this->importance,
           'num_stories' => $this->num_stories,
-          'num_children' => $this->num_children
+          'num_children' => $this->num_children,
+          'icon' => $this->icon
       );
       
       if( $this->exists() )

@@ -5,9 +5,12 @@
       <div class="row">
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
+         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}" style="padding: 0px 5px 0px 5px;">
             {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
             <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load_topics($value2->topics)}-->
+            {/if}
             {if condition="$fsc->preview->type"}
             <div class="storyp{if condition="$value2->readed()"} storyp_readed{/if}">
                <table width="100%">

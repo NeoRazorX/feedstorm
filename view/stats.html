@@ -6,7 +6,7 @@
       {loop="$cols"}
          <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
          {loop="$fsc->split_stories($fsc->visits, 3, $value1)"}
-            <div class="well well-sm" style="background-color: white;">
+            <div class="well well-sm">
                <h4 style="margin: 0px;">
                   <a href="{$value2['story']->url()}">{$value2['story']->title}</a>
                </h4>

@@ -26,6 +26,11 @@ if( !class_exists('Mongo') )
    echo "<h1>No tienes MongoDB instalado.</h1>Consulta la "
    . "<a href='https://github.com/NeoRazorX/feedstorm' target='_blank'>web oficial</a>.";
 }
+else if( !function_exists('curl_init') )
+{
+   echo "<h1>No tienes PHP-Curl instalado.</h1>Consulta la "
+   . "<a href='https://github.com/NeoRazorX/feedstorm' target='_blank'>web oficial</a>.";
+}
 else if( !file_exists('config.php') )
 {
    echo "<h1>config.php</h1>Tienes que modificar el archivo config.php a partir del <b>config-sample.php</b>";
@@ -78,7 +83,7 @@ else
       $tpl->assign('path', FS_PATH);
       $tpl->assign('analytics', FS_ANALYTICS);
       $tpl->assign('debug', FS_DEBUG);
-      $tpl->assign('cover', FS_COVER);
+      $tpl->assign('css', FS_CSS);
       $tpl->assign('fsc', $fsc);
       $tpl->draw( $fsc->template );
    }

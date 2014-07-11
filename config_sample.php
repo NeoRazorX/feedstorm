@@ -50,9 +50,7 @@ define('FS_MASTER_KEY', '');
 define('FS_DEBUG', FALSE);
 
 /*
- * ¿Qué imagen quieres usar para la cabecera?
- * Debes estar alojada en view/img/
+ * ¿Qué hoja de estilos quieres usar?
+ * Debes estar alojada en view/css/
  */
-define('FS_COVER', 'banner1.png');
-
-?>
+define('FS_CSS', 'locierto.css');

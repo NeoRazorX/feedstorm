@@ -17,15 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/topic.php';
+
 class story_preview
 {
    public $filename;
    public $link;
    public $type;
    
+   private $topic;
+   private $topic_list;
+   
    public function __construct()
    {
       $this->type = FALSE;
+      
+      $this->topic = new topic();
+      $this->topic_list = array();
    }
    
    public function load($url, $text='')
@@ -154,6 +162,46 @@ class story_preview
             $parts = explode('/', $this->filename);
             $this->filename = $parts[3];
             $this->type = 'imgur';
+            break;
+         }
+      }
+   }
+   
+   public function load_topics($topics)
+   {
+      foreach($topics as $tid)
+      {
+         $encontrado = FALSE;
+         foreach($this->topic_list as $topic)
+         {
+            if($topic->get_id() == $tid)
+            {
+               if($topic->icon != '')
+               {
+                  $this->load($topic->icon);
+               }
+               
+               $encontrado = TRUE;
+               break;
+            }
+         }
+         
+         if( !$encontrado )
+         {
+            $topic = $this->topic->get($tid);
+            if($topic)
+            {
+               $this->topic_list[] = $topic;
+               
+               if($topic->icon != '')
+               {
+                  $this->load($topic->icon);
+               }
+            }
+         }
+         
+         if($this->type)
+         {
             break;
          }
       }

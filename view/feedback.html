@@ -7,7 +7,7 @@
       {loop="$cols"}
          <div class="col-lg-4 col-sm-6">
          {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
-            <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+            <div class="well well-sm">
                <div style="margin-bottom: 5px;">
                   <span class="glyphicon glyphicon-user"></span>
                   <a href="{$path}messages?to={$value2->visitor_id}">{$value2->nick}</a>

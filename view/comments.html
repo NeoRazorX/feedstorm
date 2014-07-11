@@ -4,9 +4,9 @@
    <div class="row">
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
+         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}" style="padding: 0px 5px 0px 5px;">
          {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
-            <div class="well well-sm" style="background-color: white; padding-bottom: 0px;">
+            <div class="well well-sm">
                <div style="margin-bottom: 5px;">
                   <span class="glyphicon glyphicon-user"></span>
                   {if condition="$fsc->visitor->get_id()==$value2->visitor_id"}

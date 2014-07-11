@@ -52,7 +52,9 @@
                <h1>
                   {if condition="$fsc->topic->icon!=''"}
                   <div class="pull-right" style="margin: 2px 2px 5px 10px;">
-                     <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}"/>
+                     <div class="thumbnail thumbnail2">
+                        <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}" style="max-height: 200px; max-width: 200px;"/>
+                     </div>
                   </div>
                   {else}
                   <span class="glyphicon glyphicon-book"></span>
@@ -185,7 +187,7 @@
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
       <div class="col-md-4">
-         <div class="well well-sm" style="background-color: white;">
+         <div class="well well-sm">
             <ul>
                {loop="$fsc->split_stories($fsc->children_topics, 3, $value1)"}
                <li><a href="{$value2->url()}">{$value2->title}</a></li>
@@ -199,7 +201,7 @@
    
    <div class="row">
       <div class="col-md-12">
-         <div class="well well-sm" style="background-color: white;">
+         <div class="well well-sm">
             <h4>¿Quieres añadir un tema?</h4>
             <a class="btn btn-sm btn-primary" href="{$path}topic_list?parent={$fsc->topic->get_id()}">Añadir un tema</a>
          </div>

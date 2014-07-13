@@ -35,120 +35,75 @@
    });
 </script>
 
-<div class="container">
-   <ul class="nav nav-tabs">
-      <li id="p_info" class="active"><a href="{$fsc->topic->url()}">Tema</a></li>
-      {if condition="$fsc->visitor->admin OR $fsc->visitor->points >= 10"}
-      <li id="p_edit"><a href="#edit">Editar</a></li>
-      {/if}
-      {if condition="$fsc->visitor->admin"}
-      <li id="p_delete"><a href="#delete">Eliminar</a></li>
-      {/if}
-   </ul>
-   <div class="full_story">
-      <div id="t_info">
-         <div class="row">
-            <div class="col-md-12">
-               <h1>
-                  {if condition="$fsc->topic->icon!=''"}
-                  <div class="pull-right" style="margin: 2px 2px 5px 10px;">
-                     <div class="thumbnail thumbnail2">
-                        <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}" style="max-height: 200px; max-width: 200px;"/>
-                     </div>
-                  </div>
-                  {else}
-                  <span class="glyphicon glyphicon-book"></span>
-                  {/if}
-                  {$fsc->topic->title}
-               </h1>
-               <p>
-                  {$fsc->topic->description}
-                  <br/>
-                  <span class="small">
-                     Etiquetas de búsqueda: {$fsc->topic->keywords}.<br/>
-                     Importancia: {$fsc->topic->importance}, Artículos {$fsc->topic->num_stories}
-                     {if condition="$fsc->parent"}
-                     <br/>Pertenece a <a href="{$fsc->parent->url()}">{$fsc->parent->title}</a>
-                     {/if}
-                  </span>
-               </p>
+<ul class="nav nav-tabs">
+   <li id="p_info" class="active"><a href="{$fsc->topic->url()}">Tema</a></li>
+   {if condition="$fsc->visitor->admin OR $fsc->visitor->points >= 10"}
+   <li id="p_edit"><a href="#edit">Editar</a></li>
+   {/if}
+   {if condition="$fsc->visitor->admin"}
+   <li id="p_delete"><a href="#delete">Eliminar</a></li>
+   {/if}
+</ul>
+
+<div class="container-fluid">
+   <div id="t_info">
+      <div class="row">
+         <div class="col-lg-10">
+            {if condition="$fsc->topic->icon!=''"}
+            <div style="margin: 10px 0px 0px 0px;">
+               <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}" style="max-width: 200px; max-height: 150px;">
             </div>
+            {/if}
+            <h1 style="margin: 5px 0px 5px 0px;">{$fsc->topic->title}</h1>
+            <p>{$fsc->topic->description}</p>
          </div>
-      </div>
-      <div id="t_edit" style="display: none;">
-         <div class="row">
-            <div class="col-md-12">
-               <div style="padding: 5px;">
-               <form action="{$fsc->url()}" method="post">
-                  <div>
-                     <input class="form-control" type="text" name="title" placeholder="Título" value="{$fsc->topic->title}" autocomplete="off"/>
-                  </div>
-                  <div>
-                     <textarea class="form-control" name="description" rows="10" placeholder="Escribe aquí el texto.">{$fsc->topic->description}</textarea>
-                  </div>
-                  <div class="input-group">
-                     <span class="input-group-addon">Keywords</span>
-                     <input class="form-control" type="text" name="keywords" placeholder="Keywords" value="{$fsc->topic->keywords}" autocomplete="off"/>
-                  </div>
-                  <div class="input-group">
-                     <span class="input-group-addon">Pertenece a</span>
-                     {if condition="$fsc->parent"}
-                     <input class="form-control" type="text" name="parent" placeholder="ID del tema" value="{$fsc->parent->name}" autocomplete="off"/>
-                     {else}
-                     <input class="form-control" type="text" name="parent" placeholder="ID del tema" autocomplete="off"/>
-                     {/if}
-                  </div>
-                  <div class="input-group">
-                     <span class="input-group-addon">
-                        <a target="_blank" href="https://imgur.com">Icono</a>
-                     </span>
-                     <input class="form-control" type="text" name="icon" placeholder="url del icono" value="{$fsc->topic->icon}" autocomplete="off"/>
-                  </div>
-                  <div style="margin-top: 5px; text-align: right;">
-                     <input class="btn btn-primary btn-sm" type="submit" value="Guardar"/>
-                  </div>
-               </form>
-               </div>
-            </div>
-         </div>
-      </div>
-      <div id="t_delete" style="display: none;">
-         <div class="row">
-            <div class="col-md-12">
-               <h1>Eliminar</h1>
-               <p>
-                  ¿Realmente desde as eliminar este tema?
-               </p>
-               <div style="padding: 5px; text-align: right;">
-                  <a class="btn btn-danger" href="{$path}topic_list?delete={$fsc->topic->get_id()}">eliminar</a>
-               </div>
+         
+         <div class="col-lg-2" style="padding-right: 0px;">
+            <div class="list-group">
+               {if condition="$fsc->parent"}
+               <a href="{$fsc->parent->url()}" class="list-group-item">
+                  <h4 class="list-group-item-heading">Pertenece a:</h4>
+                  <p class="list-group-item-text">{$fsc->parent->title}</p>
+               </a>
+               {/if}
+               <a href="#" class="list-group-item">
+                  <h4 class="list-group-item-heading">Artículos:</h4>
+                  <p class="list-group-item-text">{$fsc->topic->num_stories}</p>
+               </a>
+               <a href="#" class="list-group-item">
+                  <h4 class="list-group-item-heading">Importancia:</h4>
+                  <p class="list-group-item-text">{$fsc->topic->importance}</p>
+               </a>
+               <a href="#" class="list-group-item">
+                  <h4 class="list-group-item-heading">Etiquetas de búsqueda:</h4>
+                  <p class="list-group-item-text">{$fsc->topic->keywords}</p>
+               </a>
             </div>
          </div>
       </div>
       
-      {loop="$fsc->topic->stories()"}
-         <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-         <div class="row">
-            <div class="col-md-12">
-               <div style="padding: 5px;">
-                  <hr/>
-                  <h3 style="margin: 0px 5px;">
-                     <a href="{$value->url()}">{$value->title}</a>
-                  </h3>
-                  <p style="margin: 3px 0px 2px 0px;">
-                     {$value->description}<br/>
-                     <span class="small">Publicado {$value->show_date()}.</span>
-                  </p>
-                  {if condition="$fsc->preview->type=='youtube'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
+      <div class="row">
+         <div class="col-lg-10">
+            {loop="$fsc->topic->stories()"}
+               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+               <h3 style="margin-bottom: 2px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h3>
+               <p style="margin: 3px 0px 2px 0px;">{$value->description}</p>
+               <div class="small">
+                  <span class="glyphicon glyphicon-time"></span> {$value->show_date()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->max_popularity()}
+               </div>
+               {if condition="$fsc->preview->type=='youtube'"}
+               <div style="text-align: center; margin-bottom: 10px;">
                      {if condition="$fsc->visitor->mobile()"}
                      <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
                      {else}
                      <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
                      {/if}
-                  </div>
-                  {elseif condition="$fsc->preview->type=='imgur'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
+               </div>
+               {elseif condition="$fsc->preview->type=='imgur'"}
+               <div style="text-align: center; margin-bottom: 10px;">
                      <a href="{$value->url()}">
                      {if condition="$fsc->visitor->mobile()"}
                         <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
@@ -156,9 +111,9 @@
                         <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
                      {/if}
                      </a>
-                  </div>
-                  {elseif condition="$fsc->preview->type=='image'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
+               </div>
+               {elseif condition="$fsc->preview->type=='image'"}
+               <div style="text-align: center; margin-bottom: 10px;">
                      <a href="{$value->url()}">
                      {if condition="$fsc->visitor->mobile()"}
                         <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
@@ -166,44 +121,75 @@
                         <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
                      {/if}
                      </a>
-                  </div>
-                  {elseif condition="$fsc->preview->type=='vimeo'"}
-                  <div style="text-align: center; margin-bottom: 10px;">
+               </div>
+               {elseif condition="$fsc->preview->type=='vimeo'"}
+               <div style="text-align: center; margin-bottom: 10px;">
                      {if condition="$fsc->visitor->mobile()"}
                      <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                      {else}
                      <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                      {/if}
-                  </div>
-                  {/if}
                </div>
+               {/if}
+            {/loop}
+         </div>
+         
+         <div class="col-lg-2" style="padding-right: 0px;">
+            <div class="list-group">
+               <a href="{$path}topic_list?parent={$fsc->topic->get_id()}" class="list-group-item active">Añadir...</a>
+               {loop="$fsc->children_topics"}
+               <a href="{$value->url()}" class="list-group-item">{$value->title}</a>
+               {/loop}
             </div>
          </div>
-      {/loop}
+      </div>
    </div>
    
-   {if condition="$fsc->children_topics"}
-   <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-      <div class="col-md-4">
-         <div class="well well-sm">
-            <ul>
-               {loop="$fsc->split_stories($fsc->children_topics, 3, $value1)"}
-               <li><a href="{$value2->url()}">{$value2->title}</a></li>
-               {/loop}
-            </ul>
+   <div id="t_edit" style="display: none;">
+      <div class="row">
+         <div class="col-lg-12" style="padding-top: 10px;">
+            <form action="{$fsc->url()}" method="post" class="form">
+               <div class="form-group">
+                  Título:
+                  <input class="form-control" type="text" name="title" placeholder="Título" value="{$fsc->topic->title}" autocomplete="off"/>
+               </div>
+               <div class="form-group">
+                  <textarea class="form-control" name="description" rows="10" placeholder="Escribe aquí el texto.">{$fsc->topic->description}</textarea>
+               </div>
+               <div class="input-group">
+                  <span class="input-group-addon">Keywords</span>
+                  <input class="form-control" type="text" name="keywords" placeholder="Keywords" value="{$fsc->topic->keywords}" autocomplete="off"/>
+               </div>
+               <div class="input-group">
+                  <span class="input-group-addon">Pertenece a</span>
+                  {if condition="$fsc->parent"}
+                  <input class="form-control" type="text" name="parent" placeholder="ID del tema" value="{$fsc->parent->name}" autocomplete="off"/>
+                  {else}
+                  <input class="form-control" type="text" name="parent" placeholder="ID del tema" autocomplete="off"/>
+                  {/if}
+               </div>
+               <div class="input-group">
+                  <span class="input-group-addon">
+                     <a target="_blank" href="https://imgur.com">Icono</a>
+                  </span>
+                  <input class="form-control" type="text" name="icon" placeholder="url del icono" value="{$fsc->topic->icon}" autocomplete="off"/>
+               </div>
+               <div style="margin-top: 5px; text-align: right;">
+                  <input class="btn btn-primary btn-sm" type="submit" value="Guardar"/>
+               </div>
+            </form>
          </div>
       </div>
-      {/loop}
    </div>
-   {/if}
    
-   <div class="row">
-      <div class="col-md-12">
-         <div class="well well-sm">
-            <h4>¿Quieres añadir un tema?</h4>
-            <a class="btn btn-sm btn-primary" href="{$path}topic_list?parent={$fsc->topic->get_id()}">Añadir un tema</a>
+   <div id="t_delete" style="display: none;">
+      <div class="row">
+         <div class="col-lg-12">
+            <h1>Eliminar</h1>
+            <p>¿Realmente desde as eliminar este tema?</p>
+            <div style="padding: 5px; text-align: right;">
+               <a class="btn btn-danger" href="{$path}topic_list?delete={$fsc->topic->get_id()}">eliminar</a>
+            </div>
          </div>
       </div>
    </div>

@@ -164,6 +164,36 @@ class story_preview
             $this->type = 'imgur';
             break;
          }
+         else if( strpos($link, 'twitter.com/') !== FALSE )
+         {
+            if( !file_exists('tmp/twitter') )
+               mkdir('tmp/twitter');
+            
+            $filename = 'tmp/twitter/'.str_replace( '/', '_', str_replace( ':', '_', $link) );
+            if( !file_exists($filename) )
+            {
+               $html = $this->curl_download($link);
+               $urls = array();
+               if( preg_match_all('#https://pbs.twimg.com/media/(\w*).(\w*)#', $html, $urls) )
+               {
+                  $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
+                  $file = fopen($filename, 'w');
+                  if($file)
+                  {
+                     fwrite($file, $this->filename);
+                     fclose($file);
+                  }
+               }
+            }
+            else
+            {
+               $this->filename = file_get_contents($filename);
+            }
+            
+            $this->link = $link;
+            $this->type = 'image';
+            break;
+         }
       }
    }
    

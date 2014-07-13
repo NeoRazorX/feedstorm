@@ -54,3 +54,8 @@ define('FS_DEBUG', FALSE);
  * Debes estar alojada en view/css/
  */
 define('FS_CSS', 'locierto.css');
+
+/*
+ * Lista de bots a ejecutar, separados por comas.
+ */
+define('FS_BOTS', '');

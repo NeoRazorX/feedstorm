@@ -27,18 +27,18 @@
    });
 </script>
 
+<ul class="nav nav-tabs">
+   <li><a href="{$fsc->story->url()}">Artículo</a></li>
+   <li id="b_edit" class="active"><a href="{$fsc->story->edit_url()}">Editar</a></li>
+   <li><a href="{$fsc->story->url()}#sources">Fuentes</a></li>
+   {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="#delete">Eliminar</a></li>{/if}
+</ul>
+
 <div class="container-fluid">
-   <ul class="nav nav-tabs">
-      <li><a href="{$fsc->story->url()}">Artículo</a></li>
-      <li id="b_edit" class="active"><a href="{$fsc->story->edit_url()}">Editar</a></li>
-      <li><a href="{$fsc->story->url()}#sources">Fuentes</a></li>
-      {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="#delete">Eliminar</a></li>{/if}
-   </ul>
-   <div class="full_story">
-      <div id="s_edit">
-      <form action="{$fsc->url()}" method="post">
+   <div id="s_edit">
+      <form action="{$fsc->url()}" method="post" class="form">
          <div class="row">
-            <div class="col-md-12">
+            <div class="col-lg-12">
                <div style="padding: 5px;">
                   <input class="form-control" type="text" name="title" value="{$fsc->story_edition->title}" autocomplete="off" placeholder="Título"/>
                   <textarea class="form-control" name="description" rows="10" placeholder="Descripción">{$fsc->story_edition->description}</textarea>
@@ -81,7 +81,7 @@
             </div>
          </div>
          <div class="row">
-            <div class="col-md-12">
+            <div class="col-lg-12">
                <div class="small" style="padding: 5px; text-align: right;">
                   <input type="hidden" name="human" value=""/>
                   <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
@@ -90,7 +90,7 @@
          </div>
          {else}
          <div class="row">
-            <div class="col-md-12">
+            <div class="col-lg-12">
                <div class="input-group" style="padding: 0px 5px 5px 5px;">
                   <span class="input-group-addon">Borra el número si eres humano</span>
                   <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
@@ -105,25 +105,25 @@
          </div>
          {/if}
       </form>
-      </div>
-      <div id="s_delete" style="display: none;">
-         <form action="{$fsc->url()}" method="post">
-            <input type="hidden" name="delete" value="TRUE"/>
-            <div class="row">
-               <div class="col-md-12">
-                  <div style="padding: 5px;">
-                     <h3 style="margin: 5px 0px 5px 0px;">¿Realmente deseas eliminar este <u>artículo</u>?</h3>
-                     <p>Ten en cuenta que se eliminarán todos los comentarios y ediciones.</p>
-                     <input class="btn btn-sm btn-danger" type="submit" value="eliminar"/>
-                  </div>
+   </div>
+   
+   <div id="s_delete" style="display: none;">
+      <form action="{$fsc->url()}" method="post">
+         <input type="hidden" name="delete" value="TRUE"/>
+         <div class="row">
+            <div class="col-lg-12">
+               <div style="padding: 5px;">
+                  <h3 style="margin: 5px 0px 5px 0px;">¿Realmente deseas eliminar este <u>artículo</u>?</h3>
+                  <p>Ten en cuenta que se eliminarán todos los comentarios y ediciones.</p>
+                  <input class="btn btn-sm btn-danger" type="submit" value="eliminar"/>
                </div>
             </div>
-         </form>
-      </div>
+         </div>
+      </form>
    </div>
    
    <div class="row">
-      <div class="col-md-12">
+      <div class="col-lg-12">
          <div class="table-responsive">
             <table class="table table-hover">
                <thead>

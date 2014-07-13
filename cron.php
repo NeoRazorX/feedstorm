@@ -20,9 +20,13 @@
 date_default_timezone_set('Europe/Madrid');
 
 if( !function_exists('curl_init') )
+{
    echo "Necesitas instalar php5-curl\n";
+}
 else if( !file_exists('config.php') )
+{
    echo "Tienes que modificar el archivo config.php a partir del config-sample.php\n";
+}
 else
 {
    $tiempo = explode(' ', microtime());
@@ -80,6 +84,21 @@ else
    $topic->cron_job();
    $topic_story->cron_job();
    $visitor->cron_job();
+   
+   if( defined('FS_BOTS') )
+   {
+      if(FS_BOTS != '')
+      {
+         echo "\nEjecutamos los bots... ";
+         $bots = explode(',', FS_BOTS);
+         foreach($bots as $bot)
+         {
+            echo "\n".$bot."... ";
+            include 'bots/'.$bot.'/cron.php';
+         }
+         echo "\n";
+      }
+   }
    
    $mongo->close();
    

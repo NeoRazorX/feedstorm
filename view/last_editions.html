@@ -5,14 +5,18 @@
       <div class="row">
       <!--{$cols=array(1,2,3)}-->
       {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}" style="padding: 0px 5px 0px 5px;">
+         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
             {loop="$fsc->split_stories($fsc->editions, 3, $value1)"}
-            <div class="story{if condition="$value2->visitor_id==$fsc->visitor->get_id()"} story_readed{/if}">
-               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
-               <p>{$value2->description()}</p>
+            <div>
+               <h3 style="margin-bottom: 5px;">
+                  <a href='{$value2->url()}'>{$value2->title}</a>
+               </h3>
+               <p style="text-align: justify; margin-bottom: 5px;">
+                  {$value2->description()}
+               </p>
                <div class="small">
-                  {$value2->points}
-                  <span class="pull-right">{$value2->timesince()}</span>
+                  <span class="glyphicon glyphicon-time"></span> {$value2->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-star"></span> {$value2->points}
                </div>
             </div>
             {/loop}
@@ -21,6 +25,5 @@
       </div>
    </div>
 {/if}
-
 
 {include="footer"}

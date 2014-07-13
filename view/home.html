@@ -1,64 +1,211 @@
 {include="header"}
 
 {if condition="$fsc->stories"}
-   <div class="container-fluid">
-      <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}" style="padding: 0px 5px 0px 5px;">
-            {if condition="$value1==3"}
-               {include="advices"}
-            {/if}
-            {loop="$fsc->split_stories($fsc->stories, 3, $value1)"}
-            <!--{$fsc->preview->load($value2->link, $value2->description_uncut())}-->
-            {if condition="!$fsc->preview->type"}
-            <!--{$fsc->preview->load_topics($value2->topics)}-->
-            {/if}
-            {if condition="$fsc->preview->type"}
-            <div class="storyp{if condition="$value2->readed()"} storyp_readed{/if}">
-               <table width="100%">
-                  <tr>
-                     <td class="preview">
-                        <a href='{$value2->url()}'><img src="{$fsc->preview->preview()}" alt="{$value2->title}" width="120"/></a>
-                     </td>
-                     <td class="preview_txt">
-                        <div class="pull-right story_tags">
-                           {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                           {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                           {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
-                           {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-                        </div>
-                        <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
-                        <p>{$value2->description(100)}</p>
-                        <div class="small">
-                           Escrito {$value2->timesince()}.
-                           Popularidad: {$value2->popularity()}
-                        </div>
-                     </td>
-                  </tr>
-               </table>
+<div class="container-fluid">
+   {if condition="count($fsc->stories)>0"}
+   <div class="row">
+      <div class="col-lg-12">
+         <!--{$fsc->preview->load($fsc->stories[0]->link, $fsc->stories[0]->description_uncut())}-->
+         {if condition="!$fsc->preview->type"}
+         <!--{$fsc->preview->load_topics($fsc->stories[0]->topics)}-->
+         {/if}
+         
+         {if condition="$fsc->preview->type"}
+         <div class="media">
+            <a class="pull-left" href="{$fsc->stories[0]->url()}">
+               <img class="media-object" src="{$fsc->preview->preview()}" alt="{$fsc->stories[0]->title}" style="max-height: 100px; max-width: 150px;">
+            </a>
+            <div class="media-body">
+               <h1 class="media-heading">
+                  <a href="{$fsc->stories[0]->url()}">{$fsc->stories[0]->title}</a>
+               </h1>
+               <p>
+                  {$fsc->stories[0]->description(500)}
+                  <br/>
+                  <span class="small">
+                     {if condition="$fsc->stories[0]->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                     <span class="glyphicon glyphicon-time"></span> {$fsc->stories[0]->timesince()} &nbsp;
+                     <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()}
+                     {if condition="$fsc->stories[0]->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                     {if condition="$fsc->stories[0]->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                     {if condition="!$fsc->stories[0]->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                     {if condition="$fsc->stories[0]->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                  </span>
+               </p>
             </div>
-            {else}
-            <div class="story{if condition="$value2->readed()"} story_readed{/if}">
-               <div class="pull-right story_tags">
-                  {if condition="$value2->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                  {if condition="$value2->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                  {if condition="!$value2->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
-                  {if condition="$value2->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-               </div>
-               <h4><a href='{$value2->url()}'>{$value2->title}</a></h4>
-               <p>{$value2->description()}</p>
-               <div class="small">
-                  {$value2->popularity()}
-                  <span class="pull-right">{$value2->timesince()}</span>
-               </div>
-            </div>
-            {/if}
-            {/loop}
          </div>
-      {/loop}
+         {else}
+         <h1>
+            <a href="{$fsc->stories[0]->url()}">{$fsc->stories[0]->title}</a>
+         </h1>
+         <p>
+            {$fsc->stories[0]->description(500)}
+            <br/>
+            <span class="small">
+               {if condition="$fsc->stories[0]->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+               <span class="glyphicon glyphicon-time"></span> {$fsc->stories[0]->timesince()} &nbsp;
+               <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()}
+               {if condition="$fsc->stories[0]->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+               {if condition="$fsc->stories[0]->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+               {if condition="!$fsc->stories[0]->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+               {if condition="$fsc->stories[0]->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+            </span>
+         </p>
+         {/if}
+         <hr/>
       </div>
    </div>
+   {/if}
+   
+   <div class="row">
+      <div class="col-lg-5">
+      {loop="$fsc->stories"}
+         {if condition="$counter>0 AND $counter<13"}
+            {if condition="$counter>1"}<hr/>{/if}
+            
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load_topics($value->topics)}-->
+            {/if}
+            
+            {if condition="!$fsc->preview->type"}
+            <h2 style="margin-top: 0px;">
+               <a href="{$value->url()}">{$value->title}</a>
+            </h2>
+            {elseif condition="strlen($value->title)<40"}
+            <div class="media">
+               <a class="pull-left" href="{$value->url()}">
+                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
+               </a>
+               <div class="media-body">
+                  <h2 class="media-heading">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h2>
+                  <p>
+                     {$value->description(255)}
+                     <br/>
+                     <span class="small">
+                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                        {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                        {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                        {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                        {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                     </span>
+                  </p>
+               </div>
+            </div>
+            {else}
+            <div class="media">
+               <a class="pull-left" href="{$value->url()}">
+                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
+               </a>
+               <div class="media-body">
+                  <h2 class="media-heading">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h2>
+               </div>
+            </div>
+            {/if}
+            
+            {if condition="!$fsc->preview->type OR strlen($value->title)>=40"}
+            <p>
+               {$value->description(255)}
+               <br/>
+               <span class="small">
+                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </span>
+            </p>
+            {/if}
+         {/if}
+      {/loop}
+      </div>
+         
+      <div class="col-lg-4">
+      {loop="$fsc->stories"}
+         {if condition="$counter>13 AND $counter<32"}
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load_topics($value->topics)}-->
+            {/if}
+            
+            {if condition="$fsc->preview->type"}
+            <div class="media">
+               <a class="pull-right" href="{$value->url()}">
+                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
+               </a>
+               <div class="media-body">
+                  <h4 class="media-heading">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h4>
+                  <p>
+                     {$value->description(200)}
+                     <br/>
+                     <span class="small">
+                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                        {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                        {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                        {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                        {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                     </span>
+                  </p>
+               </div>
+            </div>
+            {else}
+            <h4 style="margin-bottom: 0px;">
+               <a href="{$value->url()}">{$value->title}</a>
+            </h4>
+            <p>
+               {$value->description(200)}
+               <br/>
+               <span class="small">
+                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </span>
+            </p>
+            {/if}
+         {/if}
+      {/loop}
+      </div>
+         
+      <div class="col-lg-3">
+         {loop="$fsc->stories"}
+            {if condition="$counter>32"}
+            <h4 style="margin-bottom: 0px;">
+               <a href="{$value->url()}">{$value->title}</a>
+            </h4>
+            <p>
+               {$value->description(150)}
+               <br/>
+               <span class="small">
+                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </span>
+            </p>
+            {/if}
+         {/loop}
+      </div>
+   </div>
+</div>
 {else}
 <div class="container">
    <div class="row">

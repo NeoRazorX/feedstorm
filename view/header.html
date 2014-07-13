@@ -27,107 +27,85 @@
    {/if}
 </head>
 <body>
-   <div class="fs_top_menu">
-   <div class="container-fluid">
-      {if condition="$fsc->visitor->mobile()"}
-      <div class="row">
-         <div class="col-xs-12 col-sm-6">
-            <h3 style="margin: 0px 0px 5px 0px; text-align: center;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
+   <nav class="navbar navbar-default" role="navigation">
+      <div class="container-fluid">
+         <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{$path}">{$name}</a>
          </div>
-         <div class="col-xs-12 col-sm-6" style="text-align: center;">
-            <a class="btn btn-info{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
-               <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
-            </a>
-            <div class="btn-group">
-               <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}">
-                  <span class="glyphicon glyphicon-home" title="tu portada"></span>
-               </a>
+         
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+               <li{if condition="$fsc->page=='home'"} class="active"{/if}>
+                  <a href="{$path}">
+                     <span class="glyphicon glyphicon-home" title="tu portada"></span>
+                  </a>
+               </li>
                {if condition="$fsc->visitor->num_suscriptions > 0"}
-               <a class="btn btn-default{if condition="$fsc->page=='popular_stories'"} active{/if}" href="{$path}popular_stories">
-                  <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
-               </a>
+               <li{if condition="$fsc->page=='popular_stories'"} class="active"{/if}>
+                  <a href="{$path}popular_stories">
+                     <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
+                  </a>
+               </li>
                {/if}
-               <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}discover_stories">
-                  <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
-               </a>
-               <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}search">
-                  <span class="glyphicon glyphicon-search"></span>
-               </a>
-               <div class="btn-group" style="text-align: left;">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                     Más
-                     <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu">
+               <li{if condition="$fsc->page=='discover_stories'"} class="active"{/if}>
+                  <a href="{$path}discover_stories">
+                     <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
+                  </a>
+               </li>
+               
+               <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Más <span class="caret"></span></a>
+                  <ul class="dropdown-menu" role="menu">
                      <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}last_editions">Ediciones</a></li>
-                     {if condition="$fsc->visitor->admin"}
-                     <li{if condition="$fsc->page=='stats'"} class="active"{/if}><a href="{$path}stats">Estadísticas</a></li>
-                     <li{if condition="$fsc->page=='feedback'"} class="active"{/if}><a href="{$path}feedback">Feedback</a></li>
-                     {/if}
-                     <li{if condition="$fsc->page=='comments'"} class="active"{/if}><a href="{$path}comments">Foro</a></li>
-                     <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}feed_list">Fuentes</a></li>
-                     <li{if condition="$fsc->page=='messages'"} class="active"{/if}><a href="{$path}messages">Mensajes</a></li>
-                     <li{if condition="$fsc->page=='topic_list'"} class="active"{/if}><a href="{$path}topic_list">Temas</a></li>
-                  </ul>
-               </div>
-               <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}suscriptions">Tu perfil</a>
-            </div>
-         </div>
-      </div>
-      {else}
-      <div class="row">
-         <div class="col-md-12 col-xs-12 text-center">
-            <h3 style="margin-bottom: 50px;"><a id="fs_brand" href="{$fsc->url()}">{$name}</a></h3>
-         </div>
-      </div>
-      <div class="row">
-         <div class="col-md-6 col-xs-6">
-            <div class="btn-group">
-               <a class="btn btn-default{if condition="$fsc->page=='home'"} active{/if}" href="{$path}">
-                  <span class="glyphicon glyphicon-home" title="tu portada"></span>
-               </a>
-               {if condition="$fsc->visitor->num_suscriptions > 0"}
-               <a class="btn btn-default{if condition="$fsc->page=='popular_stories'"} active{/if}" href="{$path}popular_stories">
-                  <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
-               </a>
-               {/if}
-               <a class="btn btn-default{if condition="$fsc->page=='discover_stories'"} active{/if}" href="{$path}discover_stories">
-                  <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
-               </a>
-               <a class="btn btn-default{if condition="$fsc->page=='search'"} active{/if}" href="{$path}search">
-                  <span class="glyphicon glyphicon-search"></span>
-               </a>
-            </div>
-            <a class="btn btn-info{if condition="$fsc->page=='new_story'"} active{/if}" href="{$path}new_story">
-               <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
-            </a>
-         </div>
-         <div class="col-md-6 col-xs-6 text-right">
-            <div class="btn-group">
-               <div class="btn-group">
-                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                     Más
-                     <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu text-left">
-                     <li{if condition="$fsc->page=='last_editions'"} class="active"{/if}><a href="{$path}last_editions">Ediciones</a></li>
-                     {if condition="$fsc->visitor->admin"}
-                     <li{if condition="$fsc->page=='stats'"} class="active"{/if}><a href="{$path}stats">Estadísticas</a></li>
-                     <li{if condition="$fsc->page=='feedback'"} class="active"{/if}><a href="{$path}feedback">Feedback</a></li>
-                     {/if}
                      <li{if condition="$fsc->page=='comments'"} class="active"{/if}><a href="{$path}comments">Foro</a></li>
                      <li{if condition="$fsc->page=='feed_list'"} class="active"{/if}><a href="{$path}feed_list">Fuentes</a></li>
                      <li{if condition="$fsc->page=='topic_list'"} class="active"{/if}><a href="{$path}topic_list">Temas</a></li>
+                     {if condition="$fsc->visitor->admin"}
+                     <li class="divider"></li>
+                     <li{if condition="$fsc->page=='stats'"} class="active"{/if}><a href="{$path}stats">Estadísticas</a></li>
+                     <li{if condition="$fsc->page=='feedback'"} class="active"{/if}><a href="{$path}feedback">Feedback</a></li>
+                     {/if}
                   </ul>
-               </div>
-               <a class="btn btn-default{if condition="$fsc->page=='messages'"} active{/if}" href="{$path}messages">Mensajes</a>
-               <a class="btn btn-default{if condition="$fsc->page=='suscriptions'"} active{/if}" href="{$path}suscriptions">Tu perfil</a>
-            </div>
+               </li>
+               
+               <li{if condition="$fsc->page=='new_story'"} class="active"{/if}>
+                  <a class="bg-primary" href="#" onclick="$('#modal_new_story').modal('show');">
+                     <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+                  </a>
+               </li>
+            </ul>
+            
+            <ul class="nav navbar-nav navbar-right">
+               <li>
+                  <form class="navbar-form navbar-left" role="search" action="{$path}search" method="post">
+                     <div class="form-group">
+                        <input type="text" name="query" class="form-control" placeholder="Buscar...">
+                     </div>
+                     <button type="submit" class="btn btn-default">
+                        <span class="glyphicon glyphicon-search"></span>
+                     </button>
+                  </form>
+               </li>
+               <li{if condition="$fsc->page=='messages'"} class="active"{/if}>
+                  <a href="{$path}messages">
+                     <span class="glyphicon glyphicon-inbox" title="mensajes"></span>
+                  </a>
+               </li>
+               <li{if condition="$fsc->page=='suscriptions'"} class="active"{/if}>
+                  <a href="{$path}suscriptions">
+                     <span class="glyphicon glyphicon-user" title="tu perfil"></span>
+                  </a>
+               </li>
+            </ul>
          </div>
       </div>
-      {/if}
-   </div>
-   </div>
+   </nav>
    
    <div class="container-fluid">
       <div class="row">
@@ -145,3 +123,49 @@
          </div>
       </div>
    </div>
+   
+   <form name="f_new_story" action="{$path}new_story" method="post" class="form">
+      <div class="modal fade" id="modal_new_story">
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">
+                     <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+                  </button>
+                  <h4 class="modal-title">Escribe tu artículo...</h4>
+               </div>
+               <div class="modal-body">
+                  <div class="form-group">
+                     Titular:
+                     <input class="form-control" type="text" name="title" autocomplete="off" autofocus/>
+                  </div>
+                  <div class="form-group">
+                     Descripción:
+                     <textarea class="form-control" name="description" rows="10"></textarea>
+                  </div>
+                  <div class="form-group">
+                     Enlace (opcional):
+                     <input class="form-control" type="text" name="link" autocomplete="off"/>
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  {if condition="$fsc->visitor->admin"}
+                  <input type="hidden" name="human" value=""/>
+                  <input class="btn btn-sm btn-primary" type="submit" value="Guardar"/>
+                  {else}
+                  <div class="input-group">
+                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                     <span class="input-group-btn">
+                        <button class="btn btn-primary" type="submit">
+                           <span class="glyphicon glyphicon-floppy-disk"></span>
+                           &nbsp; Guardar
+                        </button>
+                     </span>
+                  </div>
+                  <p class="help-block">Borra el número si eres humano.</p>
+                  {/if}
+               </div>
+            </div>
+         </div>
+      </div>
+   </form>

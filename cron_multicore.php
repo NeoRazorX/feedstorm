@@ -21,9 +21,13 @@ date_default_timezone_set('Europe/Madrid');
 ///error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 if( !function_exists('curl_init') )
+{
    echo "Necesitas instalar php5-curl\n";
+}
 else if( !file_exists('config.php') )
+{
    echo "Tienes que modificar el archivo config.php a partir del config-sample.php\n";
+}
 else
 {
    require_once 'config.php';
@@ -69,6 +73,21 @@ else
          $topic_story->cron_job();
          $visitor->cron_job();
          echo "\n";
+         
+         if( defined('FS_BOTS') )
+         {
+            if(FS_BOTS != '')
+            {
+               echo "\nEjecutamos los bots... ";
+               $bots = explode(',', FS_BOTS);
+               foreach($bots as $bot)
+               {
+                  echo "\n".$bot."... ";
+                  include 'bots/'.$bot.'/cron.php';
+               }
+               echo "\n";
+            }
+         }
       }
       else
       {

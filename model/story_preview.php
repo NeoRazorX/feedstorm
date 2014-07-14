@@ -135,22 +135,17 @@ class story_preview
                if( preg_match_all('#<meta name="twitter:image" content="http://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'http://i.imgur.com/'.$urls[1][0].'.'.$urls[2][0];
-                  $file = fopen($filename, 'w');
-                  if($file)
-                  {
-                     fwrite($file, $this->filename);
-                     fclose($file);
-                  }
                }
                else if( preg_match_all('#<meta name="twitter:image0:src" content="http://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'http://i.imgur.com/'.$urls[1][0].'.'.$urls[2][0];
-                  $file = fopen($filename, 'w');
-                  if($file)
-                  {
-                     fwrite($file, $this->filename);
-                     fclose($file);
-                  }
+               }
+               
+               $file = fopen($filename, 'w');
+               if($file)
+               {
+                  fwrite($file, $this->filename);
+                  fclose($file);
                }
             }
             else
@@ -177,21 +172,24 @@ class story_preview
                if( preg_match_all('#https://pbs.twimg.com/media/(\w*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
-                  $file = fopen($filename, 'w');
-                  if($file)
-                  {
-                     fwrite($file, $this->filename);
-                     fclose($file);
-                  }
+                  $this->link = $link;
+                  $this->type = 'image';
+               }
+               
+               $file = fopen($filename, 'w');
+               if($file)
+               {
+                  fwrite($file, $this->filename);
+                  fclose($file);
                }
             }
             else
             {
                $this->filename = file_get_contents($filename);
+               $this->link = $link;
+               $this->type = 'image';
             }
             
-            $this->link = $link;
-            $this->type = 'image';
             break;
          }
       }

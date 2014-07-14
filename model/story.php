@@ -250,6 +250,35 @@ class story extends fs_model
       return $this->uncut($this->description);
    }
    
+   public function description_plus()
+   {
+      $desc = $this->description;
+      
+      $keys = explode(', ', $this->keywords);
+      if($keys)
+      {
+         foreach($keys as $k)
+         {
+            $desc = str_replace($k, '<b>'.$k.'</b>', $desc);
+            $desc = str_replace(strtoupper($k), '<b>'.strtoupper($k).'</b>', $desc);
+            
+            $aux = explode(' ', $k);
+            $k2 = '';
+            foreach($aux as $a)
+            {
+               if($k2 == '')
+                  $k2 = ucfirst($a);
+               else
+                  $k2 .= ' '.ucfirst($a);
+            }
+            
+            $desc = str_replace($k2, '<b>'.$k2.'</b>', $desc);
+         }
+      }
+      
+      return $desc;
+   }
+   
    private function calculate_popularity()
    {
       $tclics = $this->clics;

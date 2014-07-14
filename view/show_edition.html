@@ -1,32 +1,28 @@
 {include="header"}
 
 {if condition="$fsc->edition"}
-<div class="container">
-   <ul class="nav nav-tabs">
-      <li class="active"><a href="{$fsc->edition->url()}">Edición</a></li>
-      <li><a href="{$fsc->story->url()}">Artículo</a></li>
-   </ul>
-   <div class="full_story">
-      <div class="row">
-         <div class="col-md-12">
-            <h1>
-               <a target="_blank" href="{$fsc->story->link()}">{$fsc->edition->title}</a>
-            </h1>
-            <p>
-               {$fsc->edition->description}
-               <br/><br/>
-               <span class="label label-primary">{$fsc->edition->points} puntos</span>
-               <span class="small">
-                  Creada por <b>@{$fsc->edition->nick}</b> {$fsc->edition->timesince()}.
-               </span>
-            </p>
+<ul class="nav nav-tabs">
+   <li class="active"><a href="{$fsc->edition->url()}">Edición</a></li>
+   <li><a href="{$fsc->story->url()}">Artículo</a></li>
+</ul>
+
+<div class="container-fluid">
+   <div class="row">
+      <div class="col-lg-8">
+         <h1>
+            <a target="_blank" href="{$fsc->story->link()}">{$fsc->edition->title}</a>
+         </h1>
+         <p style="margin-bottom: 5px;">{$fsc->edition->description}</p>
+         <div class="small">
+            <b>@{$fsc->edition->nick}</b> &nbsp;
+            <span class="glyphicon glyphicon-time"></span> {$fsc->edition->timesince()} &nbsp;
+            <span class="glyphicon glyphicon-star"></span> {$fsc->edition->points}
          </div>
       </div>
-   </div>
-   {if condition="$fsc->visitor->admin"}
-   <div class="row">
-      <div class="col-md-12">
-         <div class="well well-sm">
+      
+      {if condition="$fsc->visitor->admin"}
+      <div class="col-lg-4">
+         <div class="well well-sm" style="margin-top: 20px;">
             <h3 style="margin: 5px 0px 5px 0px;">¿Deseas eliminar esta <u>edición</u> del artículo?</h3>
             <p>Piensatelo bien, porque no hay vuelta atrás.</p>
             <form action="{$fsc->url()}" method="post">
@@ -35,8 +31,8 @@
             </form>
          </div>
       </div>
+      {/if}
    </div>
-   {/if}
 </div>
 {/if}
 

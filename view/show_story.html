@@ -86,7 +86,7 @@
                <a class="label label-default" href="{$value->url()}">{$value->title}</a>
                {/loop}
             </div>
-            <p>{$fsc->story->description}</p>
+            <p>{$fsc->story->description_plus()}</p>
             {if condition="$fsc->preview->type=='youtube'"}
             <div style="margin-bottom: 10px;">
                {if condition="$fsc->visitor->mobile()"}

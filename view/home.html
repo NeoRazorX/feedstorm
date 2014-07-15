@@ -25,7 +25,11 @@
                   <span class="small">
                      {if condition="$fsc->stories[0]->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                      <span class="glyphicon glyphicon-time"></span> {$fsc->stories[0]->timesince()} &nbsp;
-                     <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()}
+                     <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()} &nbsp;
+                     {if condition="$fsc->stories[0]->num_comments>0"}
+                     <span class="glyphicon glyphicon-comment"></span> {$fsc->stories[0]->num_comments}
+                     {/if}
+                     
                      {if condition="$fsc->stories[0]->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                      {if condition="$fsc->stories[0]->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                      {if condition="!$fsc->stories[0]->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -44,7 +48,11 @@
             <span class="small">
                {if condition="$fsc->stories[0]->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                <span class="glyphicon glyphicon-time"></span> {$fsc->stories[0]->timesince()} &nbsp;
-               <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()}
+               <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()} &nbsp;
+               {if condition="$fsc->stories[0]->num_comments>0"}
+               <span class="glyphicon glyphicon-comment"></span> {$fsc->stories[0]->num_comments}
+               {/if}
+               
                {if condition="$fsc->stories[0]->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                {if condition="$fsc->stories[0]->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                {if condition="!$fsc->stories[0]->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -58,7 +66,7 @@
    {/if}
    
    <div class="row">
-      <div class="col-lg-5">
+      <div class="col-lg-5 col-md-12">
       {loop="$fsc->stories"}
          {if condition="$counter>0 AND $counter<13"}
             {if condition="$counter>1"}<hr/>{/if}
@@ -87,7 +95,11 @@
                      <span class="small">
                         {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                         <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                        {if condition="$value->num_comments>0"}
+                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                        {/if}
+                        
                         {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                         {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                         {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -116,7 +128,11 @@
                <span class="small">
                   {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                   <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  {if condition="$value->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                  {/if}
+                  
                   {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                   {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                   {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -128,7 +144,7 @@
       {/loop}
       </div>
          
-      <div class="col-lg-4">
+      <div class="col-lg-4 col-md-7">
       {loop="$fsc->stories"}
          {if condition="$counter>13 AND $counter<32"}
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
@@ -151,7 +167,11 @@
                      <span class="small">
                         {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                         <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                        {if condition="$value->num_comments>0"}
+                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                        {/if}
+                        
                         {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                         {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                         {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -170,7 +190,11 @@
                <span class="small">
                   {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                   <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  {if condition="$value->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                  {/if}
+                  
                   {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                   {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                   {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -182,7 +206,7 @@
       {/loop}
       </div>
          
-      <div class="col-lg-3">
+      <div class="col-lg-3 col-md-5">
          {loop="$fsc->stories"}
             {if condition="$counter>32"}
             <h4 style="margin-bottom: 0px;">
@@ -194,7 +218,11 @@
                <span class="small">
                   {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
                   <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()}
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  {if condition="$value->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                  {/if}
+                  
                   {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
                   {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
                   {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
@@ -209,7 +237,7 @@
 {else}
 <div class="container">
    <div class="row">
-      <div class="col-md-12">
+      <div class="col-lg-12">
          <div class="well">
             <h1>¡Hola!</h1>
             <div>

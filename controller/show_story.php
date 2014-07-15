@@ -34,6 +34,7 @@ class show_story extends fs_controller
    public $stories;
    public $txt_comment;
    public $no_relateds;
+   public $topic_text;
    
    public function __construct()
    {
@@ -41,12 +42,12 @@ class show_story extends fs_controller
       $this->preview = new story_preview();
       $this->stories = FALSE;
       $this->no_relateds = FALSE;
+      $this->topic_text = FALSE;
       $story = new story();
       
+      $this->story = FALSE;
       if( isset($_GET['id']) )
          $this->story = $story->get($_GET['id']);
-      else
-         $this->story = FALSE;
       
       if($this->story)
       {
@@ -87,7 +88,7 @@ class show_story extends fs_controller
          {
             if( !$this->story->native_lang )
                $this->new_message('¿Te atreves a traducir este artículo? Haz clic en la pestaña <b>editar</b>.');
-            else if(mt_rand(0, 9) == 0)
+            else if(mt_rand(0, 14) == 0)
                $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
          }
       }
@@ -215,6 +216,10 @@ class show_story extends fs_controller
                $comment->text = $this->txt_comment;
                $comment->save();
                $all_comments[] = $comment;
+               
+               /// actualizamos el artículo
+               $this->story->num_comments++;
+               $this->story->save();
                
                /// actualizamos al visitante
                $this->visitor->num_comments++;
@@ -360,6 +365,23 @@ class show_story extends fs_controller
       else
       {
          $this->noindex = FALSE;
+         
+         /// si la descripción es muy corta, completamos usando el tema menos conocido (con menos artículos)
+         if( mb_strlen($this->story->description) < 200 )
+         {
+            $num = -1;
+            foreach($this->topics() as $tpic)
+            {
+               if($num < 0 OR $tpic->num_stories < $num)
+                  $num = $tpic->num_stories;
+            }
+            
+            foreach($this->topics() as $tpic)
+            {
+               if($tpic->num_stories == $num)
+                  $this->topic_text = $tpic->description;
+            }
+         }
       }
    }
    

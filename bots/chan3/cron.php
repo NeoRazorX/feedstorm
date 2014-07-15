@@ -27,7 +27,7 @@
 function chan3(&$topic, &$story, &$topic_story)
 {
    $all_topics = $topic->all();
-   $last_stories = array_merge($story->last_stories(), $story->random_stories());
+   $last_stories = array_merge($story->last_stories(), $story->random_stories(100));
    
    foreach($last_stories as $i => $lsto)
    {

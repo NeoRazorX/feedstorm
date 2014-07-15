@@ -48,7 +48,7 @@
 <div class="container-fluid">
    <div id="t_info">
       <div class="row">
-         <div class="col-lg-10">
+         <div class="col-lg-10 col-md-9">
             {if condition="$fsc->topic->icon!=''"}
             <div style="margin: 10px 0px 0px 0px;">
                <img src="{$fsc->topic->icon}" alt="{$fsc->topic->title}" style="max-width: 200px; max-height: 150px;">
@@ -58,7 +58,7 @@
             <p>{$fsc->topic->description}</p>
          </div>
          
-         <div class="col-lg-2" style="padding-right: 0px;">
+         <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
             <div class="list-group">
                {if condition="$fsc->parent"}
                <a href="{$fsc->parent->url()}" class="list-group-item">
@@ -83,7 +83,7 @@
       </div>
       
       <div class="row">
-         <div class="col-lg-10">
+         <div class="col-lg-10 col-md-9">
             {loop="$fsc->topic->stories()"}
                <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
                <h3 style="margin-bottom: 2px;">
@@ -134,7 +134,7 @@
             {/loop}
          </div>
          
-         <div class="col-lg-2" style="padding-right: 0px;">
+         <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
             <div class="list-group">
                <a href="{$path}topic_list?parent={$fsc->topic->get_id()}" class="list-group-item active">Añadir...</a>
                {loop="$fsc->children_topics"}

@@ -79,45 +79,59 @@
       <div class="col-md-8">
          {loop="$fsc->stories"}
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load_topics($value->topics)}-->
+            {/if}
+            
             {if condition="$fsc->preview->type"}
-            <div class="storyp{if condition="$value->readed()"} storyp_readed{/if}">
-               <table width="100%">
-                  <tr>
-                     <td class="preview">
-                        <a href='{$value->url()}'><img src="{$fsc->preview->preview()}" alt="{$value->title}" width="120"/></a>
-                     </td>
-                     <td class="preview_txt">
-                        <div class="pull-right story_tags">
-                           {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                           {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                           {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
-                           {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-                        </div>
-                        <h4><a href='{$value->url()}'>{$value->title}</a></h4>
-                        <p>{$value->description(100)}</p>
-                        <div class="small">
-                           Escrito {$value->timesince()}.
-                           Popularidad: {$value->popularity()}
-                        </div>
-                     </td>
-                  </tr>
-               </table>
+            <div class="media">
+               <a class="pull-left" href="{$value->url()}">
+                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
+               </a>
+               <div class="media-body">
+                  <h4 class="media-heading">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h4>
+                  <p>
+                     {$value->description(200)}
+                     <br/>
+                     <span class="small">
+                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                        {if condition="$value->num_comments>0"}
+                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                        {/if}
+                        
+                        {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                        {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                        {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                        {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                     </span>
+                  </p>
+               </div>
             </div>
             {else}
-            <div class="story{if condition="$value->readed()"} story_readed{/if}">
-               <div class="pull-right story_tags">
-                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span><br/>{/if}
-                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span><br/>{/if}
-                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span><br/>{/if}
+            <h4 style="margin-bottom: 0px;">
+               <a href="{$value->url()}">{$value->title}</a>
+            </h4>
+            <p>
+               {$value->description(200)}
+               <br/>
+               <span class="small">
+                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  {if condition="$value->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                  {/if}
+                  
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
                   {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-               </div>
-               <h4><a href='{$value->url()}'>{$value->title}</a></h4>
-               <p>{$value->description()}</p>
-               <div class="small">
-                  {$value->popularity()}
-                  <span class="pull-right">{$value->timesince()}</span>
-               </div>
-            </div>
+               </span>
+            </p>
             {/if}
          {else}
          <div class="alert alert-info">

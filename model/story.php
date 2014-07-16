@@ -638,11 +638,11 @@ class story extends fs_model
       return $stories;
    }
    
-   public function last_stories()
+   public function last_stories($num = FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      foreach($this->collection->find()->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $s)
+      foreach($this->collection->find()->sort(array('date'=>-1))->limit($num) as $s)
          $stlist[] = new story($s);
       return $stlist;
    }

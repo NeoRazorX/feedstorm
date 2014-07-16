@@ -18,13 +18,13 @@
  */
 
 /**
- * Procesa un mix entre los últimos artículos y una ración aleatoria
- * para eliminar el texto repetitivo del final.
+ * Corrige descripciones y enlaces de artículos
  * @param type $story
+ * @param type $topic_story
  */
-function chan4(&$story)
+function chan4(&$story, &$topic_story)
 {
-   $last_stories = array_merge($story->last_stories(), $story->random_stories(100));
+   $last_stories = array_merge($story->last_stories(250), $story->random_stories(250));
    
    foreach($last_stories as $i => $lsto)
    {
@@ -33,11 +33,19 @@ function chan4(&$story)
       if( strpos($lsto->description, 'Continuar leyendo...') !== FALSE )
       {
          $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, 'Continuar leyendo...'));
+         
+         /// también reseteamos temas y keywords por si ha habido falsos positivos
+         $last_stories[$i]->topics = array();
+         $last_stories[$i]->keywords = '';
          $last_stories[$i]->save();
+         
+         /// y eliminamos las relaciones con temas
+         foreach($topic_story->all4story($lsto->get_id()) as $ts0)
+            $ts0->delete();
          
          echo '-';
       }
    }
 }
 
-chan4($story);
+chan4($story, $topic_story);

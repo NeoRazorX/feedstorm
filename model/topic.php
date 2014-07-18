@@ -94,7 +94,7 @@ class topic extends fs_model
          return FS_PATH.'index.php?page=show_topic&id='.$this->id;
    }
    
-   public function stories()
+   public function stories($gruop='W-Y')
    {
       $topic_story = new topic_story();
       $story = new story();
@@ -108,7 +108,7 @@ class topic extends fs_model
          {
             $current_ts = $ts;
          }
-         else if( Date('W-Y', $ts->date) != Date('W-Y', $current_ts->date) )
+         else if( Date($gruop, $ts->date) != Date($gruop, $current_ts->date) )
          {
             $best_tss[] = $current_ts;
             $current_ts = $ts;

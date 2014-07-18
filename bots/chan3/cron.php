@@ -57,6 +57,8 @@ function chan3(&$topic, &$story, &$topic_story)
                   $ts0->date = $lsto->date;
                   $ts0->popularity = $lsto->max_popularity();
                   $ts0->save();
+                  
+                  break;
                }
             }
          }

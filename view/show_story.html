@@ -86,12 +86,7 @@
                <a class="label label-default" href="{$value->url()}">{$value->title}</a>
                {/loop}
             </div>
-            
             <p>{$fsc->story->description_plus()}</p>
-            
-            {if condition="$fsc->topic_text"}
-            <p>{$fsc->topic_text}</p>
-            {/if}
             
             {if condition="$fsc->preview->type=='youtube'"}
             <div style="margin-bottom: 10px;">
@@ -129,6 +124,10 @@
                <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
                {/if}
             </div>
+            {/if}
+            
+            {if condition="$fsc->topic_text"}
+            <p>{$fsc->topic_text}</p>
             {/if}
             
             {loop="$fsc->comments"}

@@ -113,7 +113,7 @@ class story extends fs_model
          
          if( isset($item['topics']) )
          {
-            $this->topics = $item['topics'];
+            $this->topics = array_unique($item['topics']);
             $this->keywords = $item['keywords'];
             $this->related_id = $item['related_id'];
          }

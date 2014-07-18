@@ -24,7 +24,7 @@
  */
 function chan4(&$story, &$topic_story)
 {
-   $last_stories = array_merge($story->last_stories(250), $story->random_stories(250));
+   $last_stories = array_merge($story->last_stories(300), $story->random_stories(300));
    
    foreach($last_stories as $i => $lsto)
    {
@@ -44,6 +44,34 @@ function chan4(&$story, &$topic_story)
             $ts0->delete();
          
          echo '-';
+      }
+      else if( strpos($lsto->description, '… Lea más →') !== FALSE )
+      {
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, '… Lea más →'));
+         $last_stories[$i]->save();
+         
+         echo '-';
+      }
+      else if( strpos($lsto->description, '… Sigue leyendo →') !== FALSE )
+      {
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, '… Sigue leyendo →'));
+         $last_stories[$i]->save();
+         
+         echo '-';
+      }
+      else if( stripos($lsto->title, '[humor]') !== FALSE OR stripos($lsto->title, '(humor)') !== FALSE )
+      {
+         $last_stories[$i]->parody = TRUE;
+         $last_stories[$i]->save();
+         
+         echo 'P';
+      }
+      else if( substr($lsto->link, 0, 22) == 'https://humanos.uci.cu' )
+      {
+         $last_stories[$i]->link = str_replace('https://', 'http://', $lsto->link);
+         $last_stories[$i]->save();
+         
+         echo 'L';
       }
    }
 }

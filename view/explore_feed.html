@@ -78,6 +78,10 @@
       </div>
       <div class="col-md-8">
          {loop="$fsc->stories"}
+            {if condition="$counter>0"}
+            <hr/>
+            {/if}
+            
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {if condition="!$fsc->preview->type"}
             <!--{$fsc->preview->load_topics($value->topics)}-->
@@ -116,7 +120,7 @@
                <a href="{$value->url()}">{$value->title}</a>
             </h4>
             <p>
-               {$value->description(200)}
+               {$value->description(300)}
                <br/>
                <span class="small">
                   {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}

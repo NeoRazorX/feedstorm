@@ -71,4 +71,23 @@ class home extends fs_controller
          }
       }
    }
+   
+   public function get_keywords()
+   {
+      $keys = array();
+      
+      if($this->stories)
+      {
+         foreach($this->stories as $s)
+         {
+            foreach( explode(',', $s->keywords) as $k2 )
+            {
+               if(trim($k2) != '')
+                  $keys[] = trim($k2);
+            }
+         }
+      }
+      
+      return join(', ', array_unique($keys));
+   }
 }

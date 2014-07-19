@@ -59,7 +59,14 @@ function chan4(&$story, &$topic_story)
          
          echo '-';
       }
-      else if( stripos($lsto->title, '[humor]') !== FALSE OR stripos($lsto->title, '(humor)') !== FALSE )
+      else if( strpos($lsto->description, 'Read more...') !== FALSE )
+      {
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, 'Read more...'));
+         $last_stories[$i]->save();
+         
+         echo '-';
+      }
+      else if( !$lsto->parody AND (stripos($lsto->title, '[humor]') !== FALSE OR stripos($lsto->title, '(humor)') !== FALSE) )
       {
          $last_stories[$i]->parody = TRUE;
          $last_stories[$i]->save();

@@ -358,7 +358,7 @@ class show_story extends fs_controller
          $this->new_message('Este artículo pertenece a un medio de <b>AEDE</b>, esa organización que pretende'
             . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
       }
-      else if( !$this->story->native_lang OR $this->story->penalize )
+      else if( !$this->story->native_lang OR $this->story->penalize OR mb_strlen($this->story->description) == 0 )
       {
          $this->noindex = TRUE;
       }

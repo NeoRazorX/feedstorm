@@ -72,15 +72,31 @@ function chan5(&$topic, &$story)
                {
                   foreach($tpic->stories() as $sto)
                   {
-                     if( count($sto->comments()) == 0)
+                     if( count($sto->comments()) == 0 )
                      {
                         $comm = new comment();
                         $comm->thread = $sto->get_id();
                         $comm->nick = 'chan5';
-                        $comm->text = 'Yo no digo na, pero cada vez que se menciona a '.$tpic->title
-                                .' también se menciona '.$tpic2->title.".";
-                        $comm->save();
                         
+                        switch ( mt_rand(0,3) )
+                        {
+                           case 0:
+                              $comm->text = 'Es matemático, cada vez que se menciona a '.$tpic->title
+                                .' también se menciona '.$tpic2->title.".";
+                              break;
+                           
+                           case 1:
+                              $comm->text = 'No os parece curioso que cada vez que se menciona a '.$tpic->title
+                                .' también se menciona '.$tpic2->title.".";
+                              break;
+                           
+                           default:
+                              $comm->text = 'Yo no digo na, pero cada vez que se menciona a '.$tpic->title
+                                .' también se menciona '.$tpic2->title.".";
+                              break;
+                        }
+                        
+                        $comm->save();
                         echo '+';
                      }
                      

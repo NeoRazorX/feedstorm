@@ -30,6 +30,18 @@ function chan5(&$topic, &$story)
    {
       echo '.';
       
+      /// añadimos los temas a excluri: actual, padre, abuelo...
+      $exclude = array( $tpic->get_id() );
+      $ex_tpic = $topic->get($tpic->parent);
+      while($ex_tpic)
+      {
+         $exclude[] = $ex_tpic->get_id();
+         $ex_tpic = $topic->get($ex_tpic->parent);
+      }
+      /// también excluimos a los hijos:
+      foreach($topic->all_from($tpic->get_id()) as $children)
+         $exclude[] = $children->get_id();
+      
       $common_topics = array();
       $max = 0;
       
@@ -37,7 +49,7 @@ function chan5(&$topic, &$story)
       {
          foreach($sto->topics as $tid)
          {
-            if( !in_array($tid, array($tpic->get_id(), $tpic->parent)) )
+            if( !in_array($tid, $exclude) )
             {
                $found = FALSE;
                foreach($common_topics as $i => $value)
@@ -72,7 +84,7 @@ function chan5(&$topic, &$story)
                {
                   foreach($tpic->stories() as $sto)
                   {
-                     if( count($sto->comments()) == 0 )
+                     if( count($sto->comments()) == 0 AND in_array($tpic2->get_id(), $sto->topics) AND mt_rand(0,3) == 0)
                      {
                         $comm = new comment();
                         $comm->thread = $sto->get_id();

@@ -33,15 +33,13 @@ class edit_story extends fs_controller
       
       $this->story_edition = new story_edition();
       $this->story_visit = new story_visit();
+      $this->story = FALSE;
       
       if( isset($_GET['id']) )
       {
          $story = new story();
          $this->story = $story->get($_GET['id']);
       }
-      else
-         $this->story = FALSE;
-      
       
       if($this->story AND isset($_POST['delete']) AND $this->visitor->admin)
       {
@@ -80,11 +78,15 @@ class edit_story extends fs_controller
                
                /// otra comprobación más para evitar el spam
                if( strpos($_POST['description'], '<a href=') !== FALSE )
+               {
                   $this->new_error_msg('De eso nada, aquí no se permite HTML.');
+               }
                else if( $_POST['human'] != '' AND !$this->visitor->admin )
+               {
                   $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano, y si no eres
                      humano no puedes editar artículos. Y si, ya sé que esto es nazismo puro,
                      pero es una forma sencilla de atajar el SPAM.');
+               }
                else
                {
                   $this->story_edition->save();
@@ -97,6 +99,8 @@ class edit_story extends fs_controller
                      $this->story->description = $this->story_edition->description;
                      $this->story->native_lang = isset($_POST['native_lang']);
                      $this->story->parody = isset($_POST['parody']);
+                     $this->story->featured = FALSE;
+                     $this->story->penalize = FALSE;
                      
                      if( isset($_POST['featured']) )
                      {

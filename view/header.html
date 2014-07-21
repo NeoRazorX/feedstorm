@@ -10,7 +10,11 @@
    <meta name="robots" content="{if condition="$fsc->noindex"}noindex{else}all{/if}" />
    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
    <link rel="shortcut icon" href="{$path}view/img/favicon.ico" />
+   {if condition="$fsc->page=='home'"}
+   <link rel="canonical" href="{$fsc->domain()}" />
+   {else}
    <link rel="canonical" href="{$fsc->domain()}{$fsc->url()}" />
+   {/if}
    <link rel="stylesheet" href="{$path}view/css/{$css}" />
    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -44,19 +48,22 @@
             <ul class="nav navbar-nav">
                <li{if condition="$fsc->page=='home'"} class="active"{/if}>
                   <a href="{$path}">
-                     <span class="glyphicon glyphicon-home" title="tu portada"></span>
+                     <span class="glyphicon glyphicon-home hidden-xs" title="tu portada"></span>
+                     <span class="visible-xs">Tu portada</span>
                   </a>
                </li>
                {if condition="$fsc->visitor->num_suscriptions > 0"}
                <li{if condition="$fsc->page=='popular_stories'"} class="active"{/if}>
                   <a href="{$path}popular_stories">
-                     <span class="glyphicon glyphicon-fire" title="artículos populares"></span>
+                     <span class="glyphicon glyphicon-fire hidden-xs" title="artículos populares"></span>
+                     <span class="visible-xs">Populares</span>
                   </a>
                </li>
                {/if}
                <li{if condition="$fsc->page=='discover_stories'"} class="active"{/if}>
                   <a href="{$path}discover_stories">
-                     <span class="glyphicon glyphicon-random" title="descubrir artículos"></span>
+                     <span class="glyphicon glyphicon-random hidden-xs" title="descubrir artículos"></span>
+                     <span class="visible-xs">Aleatorio</span>
                   </a>
                </li>
                
@@ -77,7 +84,8 @@
                
                <li{if condition="$fsc->page=='new_story'"} class="active"{/if}>
                   <a class="bg-primary" href="#" onclick="$('#modal_new_story').modal('show');">
-                     <span class="glyphicon glyphicon-pencil" title="escribe un artículo"></span>
+                     <span class="glyphicon glyphicon-pencil hidden-xs" title="escribe un artículo"></span>
+                     <span class="visible-xs">Escribir...</span>
                   </a>
                </li>
             </ul>
@@ -95,12 +103,14 @@
                </li>
                <li{if condition="$fsc->page=='messages'"} class="active"{/if}>
                   <a href="{$path}messages">
-                     <span class="glyphicon glyphicon-inbox" title="mensajes"></span>
+                     <span class="glyphicon glyphicon-inbox hidden-xs" title="mensajes"></span>
+                     <span class="visible-xs">Mensajes</span>
                   </a>
                </li>
                <li{if condition="$fsc->page=='suscriptions'"} class="active"{/if}>
                   <a href="{$path}suscriptions">
-                     <span class="glyphicon glyphicon-user" title="tu perfil"></span>
+                     <span class="glyphicon glyphicon-user hidden-xs" title="tu perfil"></span>
+                     <span class="visible-xs">Tu perfil</span>
                   </a>
                </li>
             </ul>

@@ -40,7 +40,7 @@
 
 <div class="container-fluid">
    <div class="row">
-      <div id="s_info">
+      <div id="s_info" itemscope itemtype="http://data-vocabulary.org/Review-aggregate">
          <div class="col-lg-10 col-md-9">
             <!--{$fsc->preview->load($fsc->story->link, $fsc->story->description_uncut())}-->
             
@@ -56,7 +56,7 @@
                </div>
             {/if}
             
-            <h1 style="margin: 5px 0px 5px 0px;">
+            <h1 style="margin: 5px 0px 5px 0px;" itemprop="itemreviewed">
                {if condition="$fsc->preview->link==$fsc->story->link"}
                   {$fsc->story->title}
                {else}
@@ -68,6 +68,7 @@
                {if condition="$fsc->story->published"}
                <span class="glyphicon glyphicon-fire"></span> {$fsc->story->timesince(TRUE)} &nbsp;
                {/if}
+               <span class="glyphicon glyphicon-star"></span> <span itemprop="rating">{$fsc->stars}</span> &nbsp;
                
                {if condition="$fsc->story->penalize"}
                <span class="label label-danger" title="este artículo está penalizado">penalizado</span>
@@ -100,9 +101,9 @@
             <div style="margin-bottom: 10px;">
                <a target="_blank" href="{$fsc->story->link()}">
                {if condition="$fsc->visitor->mobile()"}
-                  <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
+                  <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
                {else}
-                  <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
+                  <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
                {/if}
                </a>
             </div>
@@ -110,9 +111,9 @@
             <div style="margin-bottom: 10px;">
                <a target="_blank" href="{$fsc->story->link()}">
                {if condition="$fsc->visitor->mobile()"}
-                  <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
+                  <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
                {else}
-                  <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
+                  <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
                {/if}
                </a>
             </div>
@@ -159,7 +160,7 @@
                </li>
                <li>
                   <a href="#">
-                     <span class="badge pull-right">{$fsc->story->clics}</span>
+                     <span itemprop="votes" class="badge pull-right">{$fsc->story->clics}</span>
                      Clics
                   </a>
                </li>

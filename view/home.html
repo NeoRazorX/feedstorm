@@ -12,7 +12,7 @@
          
          {if condition="$fsc->preview->type"}
          <div class="media">
-            <a class="pull-left" href="{$fsc->stories[0]->url()}">
+            <a class="pull-left hidden-xs" href="{$fsc->stories[0]->url()}">
                <img class="media-object" src="{$fsc->preview->preview()}" alt="{$fsc->stories[0]->title}" style="max-height: 100px; max-width: 150px;">
             </a>
             <div class="media-body">
@@ -82,7 +82,7 @@
             </h2>
             {elseif condition="strlen($value->title)<40"}
             <div class="media">
-               <a class="pull-left" href="{$value->url()}">
+               <a class="pull-left hidden-xs" href="{$value->url()}">
                   <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
                </a>
                <div class="media-body">
@@ -110,7 +110,7 @@
             </div>
             {else}
             <div class="media">
-               <a class="pull-left" href="{$value->url()}">
+               <a class="pull-left hidden-xs" href="{$value->url()}">
                   <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
                </a>
                <div class="media-body">

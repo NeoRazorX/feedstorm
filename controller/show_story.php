@@ -35,6 +35,7 @@ class show_story extends fs_controller
    public $txt_comment;
    public $no_relateds;
    public $topic_text;
+   public $stars;
    
    public function __construct()
    {
@@ -351,6 +352,8 @@ class show_story extends fs_controller
     */
    private function eval_quality()
    {
+      $this->stars = 0;
+      
       /// si es de AEDE no lo publicamos
       if( $this->aede($this->story->link) )
       {
@@ -382,6 +385,11 @@ class show_story extends fs_controller
                   $this->topic_text = $tpic->description;
             }
          }
+         
+         /// calculamos el número de estrellas para SEO
+         $this->stars = min(
+            array(5, $this->story->clics, $this->story->num_comments + $this->story->num_editions + $this->story->num_feeds + count($this->story->topics))
+         );
       }
    }
    

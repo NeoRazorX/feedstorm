@@ -75,7 +75,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '2.1b2';
+      return '2.1b3';
    }
    
    public function php_version()

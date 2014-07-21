@@ -297,9 +297,7 @@ class story extends fs_model
             $tclics++;
          
          if( mb_strlen($this->description) > 250 )
-            $tclics++;
-         else if( mb_strlen($this->description) < 150 )
-            $tclics  = min( array(0, $tclics-2) );
+            $tclics += 2;
          
          if($this->tweets > 1000)
             $tclics += min( array($this->tweets, 10 + 2*$this->clics) );

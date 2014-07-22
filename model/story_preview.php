@@ -169,7 +169,7 @@ class story_preview
             {
                $html = $this->curl_download($link);
                $urls = array();
-               if( preg_match_all('#https://pbs.twimg.com/media/(\w*).(\w*)#', $html, $urls) )
+               if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-]*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
                   $this->link = $link;
@@ -185,9 +185,13 @@ class story_preview
             }
             else
             {
-               $this->filename = file_get_contents($filename);
-               $this->link = $link;
-               $this->type = 'image';
+               $aux2 = trim( file_get_contents($filename) );
+               if($aux2 != '')
+               {
+                  $this->filename = $aux2;
+                  $this->link = $link;
+                  $this->type = 'image';
+               }
             }
             
             break;

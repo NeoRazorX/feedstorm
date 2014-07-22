@@ -388,8 +388,10 @@ class show_story extends fs_controller
          
          /// calculamos el número de estrellas para SEO
          $this->stars = min(
-            array(5, $this->story->clics, $this->story->num_comments + $this->story->num_editions + $this->story->num_feeds + count($this->story->topics))
+            array(4, $this->story->clics, $this->story->num_comments + $this->story->num_editions + $this->story->num_feeds + count($this->story->topics))
          );
+         if($this->story->published)
+            $this->stars++;
       }
    }
    

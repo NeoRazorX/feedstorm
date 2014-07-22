@@ -704,8 +704,14 @@ class story extends fs_model
       foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $s)
       {
          /// parece ser que las expresiones regulares no funciona muy bien en mongodb
-         if( preg_match('/\b'.$query.'\b/iu', $s['title']) )
+         if( $title AND preg_match('/\b'.$query.'\b/iu', $s['title']) )
+         {
             $stlist[] = new story($s);
+         }
+         else if( !$title AND preg_match('/\b'.$query.'\b/iu', $s['description']) )
+         {
+            $stlist[] = new story($s);
+         }
       }
       return $stlist;
    }

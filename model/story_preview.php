@@ -168,10 +168,22 @@ class story_preview
             if( !file_exists($filename) )
             {
                $html = $this->curl_download($link);
+               if( strpos($html, '<div class="replies-to') !== FALSE )
+               {
+                  /// cortamos hasta las respuestas
+                  $html = substr($html, 0, strpos($html, '<div class="replies-to'));
+               }
+               
                $urls = array();
-               if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-]*).(\w*)#', $html, $urls) )
+               if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-_]*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
+                  $this->link = $link;
+                  $this->type = 'image';
+               }
+               else if(preg_match_all('#https://pbs.twimg.com/profile_images/(\w*)/(\w*)_bigger.(\w*)#', $html, $urls) )
+               {
+                  $this->filename = 'https://pbs.twimg.com/profile_images/'.$urls[1][0].'/'.$urls[2][0].'_bigger.'.$urls[3][0];
                   $this->link = $link;
                   $this->type = 'image';
                }

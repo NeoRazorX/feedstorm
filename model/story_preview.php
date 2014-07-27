@@ -155,8 +155,11 @@ class story_preview
             
             $this->link = $link;
             $parts = explode('/', $this->filename);
-            $this->filename = $parts[3];
-            $this->type = 'imgur';
+            if( count($parts) >= 3 )
+            {
+               $this->filename = $parts[3];
+               $this->type = 'imgur';
+            }
             break;
          }
          else if( strpos($link, 'twitter.com/') !== FALSE )

@@ -1,5 +1,10 @@
 <IfModule mod_rewrite.c>
    RewriteEngine On
+
+   RewriteCond %{HTTP_USER_AGENT} libwww-perl.* 
+   RewriteRule .* – [F,L]
+
+   RewriteRule ^sitemap\.xml$ sitemap.php [L]
    RewriteRule ^view/  -  [L]
    RewriteRule ^tmp/  -  [L]
    RewriteRule ^(.*)/(.*)$ index.php?page=$1&id=$2&%{QUERY_STRING} [L]

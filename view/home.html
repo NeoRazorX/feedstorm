@@ -68,7 +68,7 @@
    <div class="row">
       <div class="col-lg-5 col-md-12">
       {loop="$fsc->stories"}
-         {if condition="$counter>0 AND $counter<13"}
+         {if condition="$counter>0 AND $counter<14"}
             {if condition="$counter>1"}<hr/>{/if}
             
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
@@ -146,7 +146,7 @@
          
       <div class="col-lg-4 col-md-7">
       {loop="$fsc->stories"}
-         {if condition="$counter>13 AND $counter<32"}
+         {if condition="$counter>=14 AND $counter<31"}
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {if condition="!$fsc->preview->type"}
             <!--{$fsc->preview->load_topics($value->topics)}-->
@@ -208,7 +208,7 @@
          
       <div class="col-lg-3 col-md-5">
          {loop="$fsc->stories"}
-            {if condition="$counter>32"}
+            {if condition="$counter>=31"}
             <h4 style="margin-bottom: 0px;">
                <a href="{$value->url()}">{$value->title}</a>
             </h4>

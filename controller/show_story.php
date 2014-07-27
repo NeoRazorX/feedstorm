@@ -370,7 +370,7 @@ class show_story extends fs_controller
          $this->noindex = FALSE;
          
          /// si la descripción es muy corta, completamos usando el tema menos conocido (con menos artículos)
-         if( mb_strlen($this->story->description) < 200 )
+         if( mb_strlen($this->story->description) < 255 )
          {
             $num = -1;
             foreach($this->topics() as $tpic)

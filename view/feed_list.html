@@ -9,28 +9,22 @@
                <thead>
                   <tr>
                      <th>Fuente</th>
-                     {if condition="$fsc->visitor->mobile()"}
                      <th>Artículos</th>
-                     {else}
                      <th>En español</th>
                      <th>Artículos</th>
                      <th>Suscriptores</th>
                      <th>Última actualización</th>
-                     {/if}
                   </tr>
                </thead>
                <tbody>
                   {loop="$fsc->feed_list"}
                   <tr>
                      <td><a href='{$value->url()}'>{$value->name}</a></td>
-                     {if condition="$fsc->visitor->mobile()"}
                      <td>{$value->num_stories}</td>
-                     {else}
                      <td>{if condition="$value->native_lang"}-{else}No{/if}</td>
                      <td>{$value->num_stories}</td>
                      <td>{$value->suscriptors}</td>
                      <td>{$value->last_update_timesince()}</td>
-                     {/if}
                   </tr>
                   {else}
                   <tr>

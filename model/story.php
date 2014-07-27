@@ -21,6 +21,7 @@ require_once 'base/fs_model.php';
 require_once 'model/comment.php';
 require_once 'model/feed_story.php';
 require_once 'model/story_edition.php';
+require_once 'model/topic_story.php';
 
 class story extends fs_model
 {
@@ -264,20 +265,9 @@ class story extends fs_model
          {
             if( !in_array($k, $no_keys) )
             {
-               $desc = str_replace($k, '<b>'.$k.'</b>', $desc);
-               $desc = str_replace(strtoupper($k), '<b>'.strtoupper($k).'</b>', $desc);
-               
-               $aux = explode(' ', $k);
-               $k2 = '';
-               foreach($aux as $a)
-               {
-                  if($k2 == '')
-                     $k2 = ucfirst($a);
-                  else
-                     $k2 .= ' '.ucfirst($a);
-               }
-               
-               $desc = str_replace($k2, '<b>'.$k2.'</b>', $desc);
+               $desc = preg_replace_callback("#\b".$k."\b#iu", function($coincidencia) {
+                  return '<b>'.$coincidencia[0].'</b>';
+               }, $desc);
             }
          }
       }
@@ -613,6 +603,10 @@ class story extends fs_model
       
       foreach($this->comments() as $com)
          $com->delete();
+      
+      $ts0 = new topic_story();
+      foreach($ts0->all4story($this->id) as $ts)
+         $ts->delete();
    }
    
    public function all()

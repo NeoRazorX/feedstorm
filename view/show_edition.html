@@ -14,7 +14,11 @@
          </h1>
          <p style="margin-bottom: 5px;">{$fsc->edition->description}</p>
          <div class="small">
-            <b>@{$fsc->edition->nick}</b> &nbsp;
+            {if condition="$fsc->visitor->get_id()==$fsc->edition->visitor_id"}
+               <b>Tú</b> &nbsp;
+            {else}
+               <a href="{$path}messages?to={$fsc->edition->visitor_id}">@{$fsc->edition->nick}</a> &nbsp;
+            {/if}
             <span class="glyphicon glyphicon-time"></span> {$fsc->edition->timesince()} &nbsp;
             <span class="glyphicon glyphicon-star"></span> {$fsc->edition->points}
          </div>

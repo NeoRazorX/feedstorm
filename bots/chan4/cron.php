@@ -30,9 +30,9 @@ function chan4(&$story, &$topic_story)
    {
       echo '.';
       
-      if( strpos($lsto->description, 'Continuar leyendo...') !== FALSE )
+      if( mb_strpos($lsto->description, 'Continuar leyendo...') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, 'Continuar leyendo...'));
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, 'Continuar leyendo...'));
          
          /// también reseteamos temas y keywords por si ha habido falsos positivos
          $last_stories[$i]->topics = array();
@@ -45,23 +45,23 @@ function chan4(&$story, &$topic_story)
          
          echo '-';
       }
-      else if( strpos($lsto->description, '… Lea más →') !== FALSE )
+      else if( mb_strpos($lsto->description, '… Lea más →') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, '… Lea más →'));
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, '… Lea más →'));
          $last_stories[$i]->save();
          
          echo '-';
       }
-      else if( strpos($lsto->description, '… Sigue leyendo →') !== FALSE )
+      else if( mb_strpos($lsto->description, '… Sigue leyendo →') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, '… Sigue leyendo →'));
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, '… Sigue leyendo →'));
          $last_stories[$i]->save();
          
          echo '-';
       }
-      else if( strpos($lsto->description, 'Read more...') !== FALSE )
+      else if( mb_strpos($lsto->description, 'Read more...') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, strpos($lsto->description, 'Read more...'));
+         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, 'Read more...'));
          $last_stories[$i]->save();
          
          echo '-';
@@ -79,6 +79,13 @@ function chan4(&$story, &$topic_story)
          $last_stories[$i]->save();
          
          echo 'L';
+      }
+      else if( mb_strpos($lsto->description, 'function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;') !== FALSE )
+      {
+         $last_stories[$i]->description = str_replace('function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;', ' ', $last_stories[$i]->description);
+         $last_stories[$i]->save();
+         
+         echo '-';
       }
    }
 }

@@ -254,20 +254,24 @@ class story extends fs_model
    public function description_plus($exclude = FALSE)
    {
       $desc = $this->description;
-      $no_keys = array();
-      if($exclude)
-         $no_keys = explode(', ', $exclude);
       
-      $keys = explode(', ', $this->keywords);
-      if($keys)
+      if($this->keywords != '')
       {
-         foreach($keys as $k)
+         $no_keys = array();
+         if($exclude)
+            $no_keys = explode(', ', $exclude);
+         
+         $keys = explode(', ', $this->keywords);
+         if($keys)
          {
-            if( !in_array($k, $no_keys) )
+            foreach($keys as $k)
             {
-               $desc = preg_replace_callback("#\b".$k."\b#iu", function($coincidencia) {
-                  return '<b>'.$coincidencia[0].'</b>';
-               }, $desc);
+               if( !in_array($k, $no_keys) )
+               {
+                  $desc = preg_replace_callback("#\b".$k."\b#iu", function($coincidencia) {
+                     return '<b>'.$coincidencia[0].'</b>';
+                  }, $desc);
+               }
             }
          }
       }
@@ -281,13 +285,14 @@ class story extends fs_model
       
       if($this->native_lang AND !$this->penalize AND mb_strlen($this->description) > 0)
       {
-         $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count($this->topics);
+         if(mb_strlen($this->description) > 70)
+            $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count($this->topics);
          
          if($this->related_id)
             $tclics++;
          
          if( mb_strlen($this->description) > 250 )
-            $tclics += 2;
+            $tclics += 2 * count($this->topics);
          
          if($this->tweets > 1000)
             $tclics += min( array($this->tweets, 10 + 2*$this->clics) );

@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story_preview.php';
-
 /**
  * Devuelve TRUE si el enlace pertenece a un medio de AEDE
  * @param type $link
@@ -82,7 +80,7 @@ function chan7(&$story, &$feed)
    }
    
    /// ¿Hacemos una pasada completa por los artículos?
-   if( mt_rand(0, 23) == 0 )
+   if( mt_rand(0, 47) == 0 )
    {
       foreach($story->all() as $sto)
       {

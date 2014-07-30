@@ -62,18 +62,24 @@ class story_preview
          }
          else if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
          {
-            $this->link = $link;
             $parts = explode('/', $link);
-            $this->filename = $parts[3];
-            $this->type = 'imgur';
+            if( count($parts) >= 4 )
+            {
+               $this->filename = $parts[3];
+               $this->type = 'imgur';
+               $this->link = $link;
+            }
             break;
          }
          else if( mb_substr($link, 0, 29) == 'http://www.youtube.com/embed/' )
          {
-            $this->link = $link;
             $parts = explode('/', $link);
-            $this->filename = $this->clean_youtube_id($parts[4]);
-            $this->type = 'youtube';
+            if( count($parts) >= 5 )
+            {
+               $this->filename = $this->clean_youtube_id($parts[4]);
+               $this->type = 'youtube';
+               $this->link = 'http://www.youtube.com/embed/'.$this->filename;
+            }
             break;
          }
          else if( mb_substr($link, 0, 23) == 'http://www.youtube.com/' OR mb_substr($link, 0, 24) == 'https://www.youtube.com/' )
@@ -82,18 +88,21 @@ class story_preview
             parse_str( parse_url($link, PHP_URL_QUERY), $my_array_of_vars);
             if( isset($my_array_of_vars['v']) )
             {
-               $this->link = $link;
                $this->filename = $this->clean_youtube_id($my_array_of_vars['v']);
                $this->type = 'youtube';
+               $this->link = 'http://www.youtube.com/embed/'.$this->filename;
                break;
             }
          }
          else if( mb_substr($link, 0, 16) == 'http://youtu.be/' )
          {
-            $this->link = $link;
             $parts = explode('/', $link);
-            $this->filename = $this->clean_youtube_id($parts[3]);
-            $this->type = 'youtube';
+            if( count($parts) >= 4 )
+            {
+               $this->filename = $this->clean_youtube_id($parts[3]);
+               $this->type = 'youtube';
+               $this->link = 'http://www.youtube.com/embed/'.$this->filename;
+            }
             break;
          }
          else if( mb_substr($link, 0, 17) == 'http://vimeo.com/' )
@@ -101,25 +110,44 @@ class story_preview
             if( !file_exists('tmp/vimeo') )
                mkdir('tmp/vimeo');
             
-            $this->link = $link;
-            $this->type = 'vimeo';
             $parts = explode('/', $link);
-            $this->filename = $this->clean_youtube_id($parts[3]);
-            if( is_numeric($this->filename) )
+            if( count($parts) >= 4 )
             {
-               if( !file_exists('tmp/vimeo/'.$this->filename) )
+               $video_id = $this->clean_youtube_id($parts[3]);
+               $this->filename = 'tmp/vimeo/'.str_replace( '/', '_', str_replace( ':', '_', $link) );
+               if( is_numeric($video_id) )
                {
-                  try
+                  if( !file_exists($this->filename) )
                   {
-                     $hash = unserialize( $this->curl_download('http://vimeo.com/api/v2/video/'.$this->filename.'.php', FALSE) );
-                     $this->curl_save($hash[0]['thumbnail_medium'], 'tmp/vimeo/'.$this->filename);
+                     try
+                     {
+                        $html = $this->curl_download('http://vimeo.com/api/v2/video/'.$video_id.'.php', FALSE);
+                        if($html)
+                        {
+                           $hash = unserialize($html);
+                           if( isset($hash[0]['thumbnail_medium']) )
+                           {
+                              $this->curl_save($hash[0]['thumbnail_medium'], 'tmp/vimeo/'.$video_id);
+                              $this->type = 'vimeo';
+                              $this->filename = $video_id;
+                              $this->link = 'http://vimeo.com/'.$video_id;
+                              break;
+                           }
+                        }
+                     }
+                     catch(Exception $e)
+                     {
+                        $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$link."\n".$e);
+                     }
                   }
-                  catch(Exception $e)
+                  else if( filesize($this->filename) > 0 )
                   {
-                     $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$link."\n".$e);
+                     $this->type = 'vimeo';
+                     $this->filename = $video_id;
+                     $this->link = 'http://vimeo.com/'.$video_id;
+                     break;
                   }
                }
-               break;
             }
          }
          else if( strpos($link, 'imgur.com/') !== FALSE )
@@ -153,12 +181,12 @@ class story_preview
                $this->filename = file_get_contents($filename);
             }
             
-            $this->link = $link;
             $parts = explode('/', $this->filename);
-            if( count($parts) >= 3 )
+            if( count($parts) >= 4 )
             {
                $this->filename = $parts[3];
                $this->type = 'imgur';
+               $this->link = $link;
             }
             break;
          }
@@ -181,32 +209,37 @@ class story_preview
                if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-_]*).(\w*)#', $html, $urls) )
                {
                   $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
-                  $this->link = $link;
+                  $this->link = $this->filename;
                   $this->type = 'image';
                }
-               else if(preg_match_all('#https://pbs.twimg.com/profile_images/(\w*)/(\w*)_bigger.(\w*)#', $html, $urls) )
+               else if( preg_match_all('#data-expanded-url="https://www.youtube.com/watch\?v=([a-zA-Z0-9\-_]*)#', $html, $urls) )
+               {
+                  $this->filename = $urls[1][0];
+                  $this->link = 'http://www.youtube.com/embed/'.$this->filename;
+                  $this->type = 'youtube';
+               }
+               else if( preg_match_all('#https://pbs.twimg.com/profile_images/(\w*)/(\w*)_bigger.(\w*)#', $html, $urls) )
                {
                   $this->filename = 'https://pbs.twimg.com/profile_images/'.$urls[1][0].'/'.$urls[2][0].'_bigger.'.$urls[3][0];
-                  $this->link = $link;
+                  $this->link = $this->filename;
                   $this->type = 'image';
                }
                
                $file = fopen($filename, 'w');
                if($file)
                {
-                  fwrite($file, $this->filename);
+                  fwrite($file, 'filename = "'.$this->filename."\";\n");
+                  fwrite($file, 'link = "'.$this->link."\";\n");
+                  fwrite($file, 'type = "'.$this->type."\";\n");
                   fclose($file);
                }
             }
             else
             {
-               $aux2 = trim( file_get_contents($filename) );
-               if($aux2 != '')
-               {
-                  $this->filename = $aux2;
-                  $this->link = $link;
-                  $this->type = 'image';
-               }
+               $aux2 = parse_ini_file($filename);
+               $this->filename = $aux2['filename'];
+               $this->link = $aux2['link'];
+               $this->type = $aux2['type'];
             }
             
             break;

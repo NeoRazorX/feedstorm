@@ -31,7 +31,19 @@ class iframe extends fs_controller
       $max_stories = 6;
       if( isset($_GET['search']) )
       {
-         $this->stories = $story->search($_GET['search']);
+         $this->stories = array();
+         
+         foreach($story->search($_GET['search']) as $st0)
+         {
+            if($max_stories > 0)
+            {
+               $this->stories[] = $st0;
+            }
+            else
+               break;
+            
+            $max_stories--;
+         }
       }
       else
          $this->stories = $story->popular_stories($max_stories);

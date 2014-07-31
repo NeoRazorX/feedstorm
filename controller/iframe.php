@@ -31,7 +31,7 @@ class iframe extends fs_controller
       $max_stories = 6;
       if( isset($_GET['link']) )
       {
-         $st0 = $story->get_by_link( urldecode($_POST['link']) );
+         $st0 = $story->get_by_link( urldecode($_GET['link']) );
          if($st0)
          {
             $this->stories = array();

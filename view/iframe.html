@@ -1,0 +1,8 @@
+{loop="$fsc->stories"}
+<div>
+   <h4 style="margin-bottom: 0px;">
+      <a href="{$value->url()}">{$value->title}</a>
+   </h4>
+   <p>{$value->description(150)}</p>
+</div>
+{/loop}

@@ -22,14 +22,17 @@
                <div class="panel-footer text-right">
                {if condition="$fsc->visitor->admin"}
                   <input type="hidden" name="human" value=""/>
-                  <input class="btn btn-sm btn-primary" type="submit" value="Guardar"/>
+                  <button class="btn btn-sm btn-primary" type="submit">
+                     <span class="glyphicon glyphicon-send"></span>
+                     &nbsp; Enviar
+                  </button>
                {else}
                   <div class="input-group">
                      <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
                      <span class="input-group-btn">
                         <button class="btn btn-primary" type="submit">
-                           <span class="glyphicon glyphicon-floppy-disk"></span>
-                           &nbsp; Guardar
+                           <span class="glyphicon glyphicon-send"></span>
+                           &nbsp; Enviar
                         </button>
                      </span>
                   </div>

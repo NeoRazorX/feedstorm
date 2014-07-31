@@ -145,7 +145,7 @@
       </div>
    </div>
    
-   <div id="t_edit" style="display: none;">
+   <div id="t_edit" style="display: none; margin-bottom: 50px;">
       <div class="row">
          <div class="col-lg-12" style="padding-top: 10px;">
             <form action="{$fsc->url()}" method="post" class="form">
@@ -175,7 +175,10 @@
                   <input class="form-control" type="text" name="icon" placeholder="url del icono" value="{$fsc->topic->icon}" autocomplete="off"/>
                </div>
                <div style="margin-top: 5px; text-align: right;">
-                  <input class="btn btn-primary btn-sm" type="submit" value="Guardar"/>
+                  <button class="btn btn-primary btn-sm" type="submit">
+                     <span class="glyphicon glyphicon-floppy-disk"></span>
+                     &nbsp; Guardar
+                  </button>
                </div>
             </form>
          </div>

@@ -44,6 +44,12 @@ class iframe extends fs_controller
             
             $max_stories--;
          }
+         
+         if($max_stories > 0)
+         {
+            foreach($story->popular_stories($max_stories) as $st0)
+               $this->stories[] = $st0;
+         }
       }
       else
          $this->stories = $story->popular_stories($max_stories);

@@ -1,7 +1,7 @@
 {loop="$fsc->stories"}
 <div>
    <h4 style="margin-bottom: 0px;">
-      <a href="{$fsc->domain()}{$value->url(false)}">{$value->title}</a>
+      <a href="{$fsc->domain()}{$value->url(false)}" target="_blank">{$value->title}</a>
    </h4>
    <p>{$value->description(150)}</p>
 </div>

@@ -29,70 +29,9 @@ class iframe extends fs_controller
       $story = new story();
       
       $max_stories = 6;
-      if( isset($_GET['link']) )
+      if( isset($_GET['search']) )
       {
-         $st0 = $story->get_by_link( urldecode($_GET['link']) );
-         if($st0)
-         {
-            $this->stories = array();
-            
-            /// navegamos por los artículos relacionados
-            $st1 = $st0->related_story();
-            while($max_stories > 0)
-            {
-               if($st1)
-               {
-                  $this->stories[] = $st1;
-                  $st1 = $st1->related_story();
-                  $max_stories--;
-               }
-               else
-                  break;
-            }
-            
-            /*
-             * Si no hay artículos relacionados, entonces hacemos una búsqueda por tema
-             * y añadimos esos artículos
-             */
-            if( count($this->stories) == 0 AND count($st0->topics) > 0 )
-            {
-               $topic = new topic();
-               $t0 = $topic->get($st0->topics[0]);
-               if($t0)
-               {
-                  foreach($t0->stories() as $st3)
-                  {
-                     if( $st3->get_id() != $st0->get_id() )
-                     {
-                        $this->stories[] = $st3;
-                        
-                        $max_stories--;
-                        if($max_stories <= 0)
-                           break;
-                     }
-                  }
-               }
-            }
-            
-            /// si aun así no hay nada, añadimos artículos populares
-            if( count($this->stories) == 0 )
-            {
-               $this->no_relateds = TRUE;
-               foreach($story->popular_stories($max_stories) as $st4)
-               {
-                  if( $st4->get_id() != $st0->get_id() )
-                  {
-                     $this->stories[] = $st4;
-                     
-                     $max_stories--;
-                     if($max_stories <= 0)
-                        break;
-                  }
-               }
-            }
-         }
-         else
-            $this->stories = $story->popular_stories($max_stories);
+         $this->stories = $story->search($_GET['search']);
       }
       else
          $this->stories = $story->popular_stories($max_stories);

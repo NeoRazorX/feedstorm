@@ -175,19 +175,7 @@ class topic extends fs_model
             if($data)
                return new topic($data);
             else
-            {
-               /// buscamos la raiz
-               $parts = explode('-', substr($id, 0, -5));
-               $new_name = '';
-               for($i = 0; $i < count($parts)-1; $i++)
-                  $new_name .= $parts[$i].'-';
-               
-               $data = $this->collection->findone( array('name' => new MongoRegex('/'.$new_name.'/')) );
-               if($data)
-                  return new topic($data);
-               else
-                  return FALSE;
-            }
+               return FALSE;
          }
          else
          {
@@ -332,7 +320,6 @@ class topic extends fs_model
    
    public function cron_job()
    {
-      $story = new story();
       $topic_story = new topic_story();
       $max_importance = 0;
       
@@ -340,94 +327,6 @@ class topic extends fs_model
       foreach($this->all() as $topic)
       {
          echo '.';
-         
-         $story_ids = array();
-         $stories = array();
-         
-         /// usamos las keywords para buscar artículos relacionados
-         foreach($topic->keywords() as $key)
-         {
-            if( mt_rand(0, 2) != 2 )
-               $relateds = $story->search($key, TRUE);
-            else
-               $relateds = $story->search($key, FALSE);
-            
-            for($i = 0; $i < count($relateds); $i++)
-            {
-               if( !in_array($topic->get_id(), $relateds[$i]->topics) )
-               {
-                  if($relateds[$i]->keywords == '')
-                     $relateds[$i]->keywords = $key;
-                  else if( strpos($relateds[$i]->keywords, $key) === FALSE )
-                     $relateds[$i]->keywords .= ', '.$key;
-                  
-                  $relateds[$i]->topics[] = $topic->get_id();
-                  $relateds[$i]->save();
-                  
-                  $ts0 = new topic_story();
-                  $ts0->topic_id = $topic->get_id();
-                  $ts0->story_id = $relateds[$i]->get_id();
-                  $ts0->date = $relateds[$i]->date;
-                  $ts0->popularity = $relateds[$i]->max_popularity();
-                  $ts0->save();
-               }
-               else
-               {
-                  /// ¿Actualizamos la popularidad?
-                  $ts0 = $topic_story->get2($topic->get_id(), $relateds[$i]->get_id());
-                  if($ts0)
-                  {
-                     if( $ts0->popularity != $relateds[$i]->max_popularity() )
-                     {
-                        $ts0->popularity = $relateds[$i]->max_popularity();
-                        $ts0->save();
-                     }
-                  }
-                  else
-                  {
-                     $relateds[$i]->topics = array();
-                     $relateds[$i]->keywords = '';
-                     $relateds[$i]->save();
-                  }
-               }
-               
-               if( !in_array($relateds[$i]->get_id(), $story_ids) )
-               {
-                  $story_ids[] = $relateds[$i]->get_id();
-                  $stories[] = $relateds[$i];
-               }
-            }
-         }
-         
-         if( count($stories) > 0 )
-         {
-            /// ordenamos los artículos por popularidad
-            usort($stories, function($a, $b) {
-               if($a->popularity == $b->popularity)
-                  return 0;
-               else if($a->popularity > $b->popularity)
-                  return -1;
-               else
-                  return 1;
-            } );
-            
-            /// interrelacionamos los artículos
-            for($i = 0; $i < count($stories); $i++)
-            {
-               if( !isset($stories[$i]->related_id) )
-               {
-                  for($j = 0; $j < count($stories); $j++)
-                  {
-                     if( $stories[$j]->date < $stories[$i]->date AND $stories[$j]->native_lang AND !$stories[$j]->penalize AND !$stories[$j]->parody )
-                     {
-                        $stories[$i]->related_id = $stories[$j]->get_id();
-                        $stories[$i]->save();
-                        break;
-                     }
-                  }
-               }
-            }
-         }
          
          /*
           * Ahora vamos a comprobar la importancia del tema.

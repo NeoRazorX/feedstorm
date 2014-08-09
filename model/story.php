@@ -49,6 +49,7 @@ class story extends fs_model
    public $keywords;
    public $topics;
    public $related_id;
+   public $related_id2; /// artículo relacionado de forma dinámica (puede variar a lo largo del tiempo)
    public $edition_id;
    public $num_editions;
    public $num_feeds;
@@ -118,6 +119,9 @@ class story extends fs_model
             $this->keywords = $item['keywords'];
             $this->related_id = $item['related_id'];
          }
+         
+         if( isset($item['related_id2']) )
+            $this->related_id2 = $item['related_id2'];
          
          if( isset($item['edition_id']) )
             $this->edition_id = $item['edition_id'];
@@ -237,6 +241,8 @@ class story extends fs_model
    {
       if( isset($this->related_id) )
          return $this->get($this->related_id);
+      else if( isset($this->related_id2) )
+         return $this->get($this->related_id2);
       else
          return FALSE;
    }
@@ -288,7 +294,7 @@ class story extends fs_model
          if(mb_strlen($this->description) > 70)
             $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count($this->topics);
          
-         if($this->related_id)
+         if($this->related_id OR $this->related_id2)
             $tclics++;
          
          if( mb_strlen($this->description) > 250 )
@@ -469,7 +475,7 @@ class story extends fs_model
                for($i = 0; $i < count($parts)-1; $i++)
                   $new_name .= $parts[$i].'-';
                
-               $data = $this->collection->findone( array('name' => new MongoRegex('/'.$new_name.'/')) );
+               $data = $this->collection->findone( array('name' => new MongoRegex('/^'.$new_name.'-[0-9]{1,3}.html/')) );
                if($data)
                   return new story($data);
                else
@@ -522,6 +528,7 @@ class story extends fs_model
       $this->title = $this->true_text_break($this->title, 140, 18);
       $this->description = $this->true_text_break($this->description, 999, 25);
       $this->related_id = $this->var2str($this->related_id);
+      $this->related_id2 = $this->var2str($this->related_id2);
       $this->edition_id = $this->var2str($this->edition_id);
       $this->calculate_popularity();
       
@@ -545,6 +552,7 @@ class story extends fs_model
           'keywords' => $this->keywords,
           'topics' => $this->topics,
           'related_id' => $this->related_id,
+          'related_id2' => $this->related_id2,
           'edition_id' => $this->edition_id,
           'num_editions' => $this->num_editions,
           'num_feeds' => $this->num_feeds,

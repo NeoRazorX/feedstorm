@@ -38,6 +38,7 @@ else
    require_once 'model/message.php';
    require_once 'model/story.php';
    require_once 'model/story_edition.php';
+   require_once 'model/story_preview.php';
    require_once 'model/story_visit.php';
    require_once 'model/suscription.php';
    require_once 'model/topic.php';

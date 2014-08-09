@@ -158,7 +158,18 @@ class topic_story extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       
       $tlist = array();
-      foreach($this->collection->find(array('story_id'=>  $this->var2str($sid))) as $t)
+      foreach($this->collection->find(array('story_id'=>$this->var2str($sid))) as $t)
+         $tlist[] = new topic_story($t);
+      
+      return $tlist;
+   }
+   
+   public function all4topic($tid, $offset=0)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      
+      $tlist = array();
+      foreach($this->collection->find(array('topic_id'=>$this->var2str($tid)))->sort(array('date'=>-1))->skip($offset)->limit(FS_MAX_STORIES) as $t)
          $tlist[] = new topic_story($t);
       
       return $tlist;

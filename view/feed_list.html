@@ -19,7 +19,7 @@
                <tbody>
                   {loop="$fsc->feed_list"}
                   <tr>
-                     <td><a href='{$value->url()}'>{$value->name}</a></td>
+                     <td><a href='{$value->url()}' title="{$value->url}">{$value->name}</a></td>
                      <td>{$value->num_stories}</td>
                      <td>{if condition="$value->native_lang"}-{else}No{/if}</td>
                      <td>{$value->num_stories}</td>

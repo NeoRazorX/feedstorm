@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story_preview.php';
-
 /**
  * Hace una previsualización de artículos para forzar la comprobación de imágenes.
  * @param type $story

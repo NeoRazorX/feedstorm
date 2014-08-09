@@ -39,7 +39,7 @@
             </div>
          </div>
          {else}
-         <h1>
+         <h1 style="margin-bottom: 0px;">
             <a href="{$fsc->stories[0]->url()}">{$fsc->stories[0]->title}</a>
          </h1>
          <p>
@@ -235,43 +235,41 @@
    </div>
 </div>
 {else}
-<div class="container">
+<div class="container-fluid">
    <div class="row">
       <div class="col-lg-12">
-         <div class="well">
-            <h1>¡Hola!</h1>
-            <div>
-               <p>No tengo ningún artículo para mostrarte. Esto puede significar varias cosas:</p>
-               <ul>
-                  <li>
-                     Acabas de instalar FeedStorm.
-                     <ul>
-                        <li>
-                           <b>Solución:</b> <a href="{$path}new_story">escribe un artículo</a> o
-                           <a href="{$path}feed_list">añade alguna fuente</a>.
-                        </li>
-                     </ul>
-                  </li>
-                  <li>
-                     Te has suscrito a fuentes que no tienen artículos.
-                     <ul>
-                        <li>
-                            <b>Solución:</b> comprueba <a href="{$path}suscriptions">tus suscriptiones</a>.
-                        </li>
-                     </ul>
-                  </li>
-                  <li>
-                     La civilización ha colapsado (casi seguro). @chan2 ya me avisó de que esto podía pasar.
-                     <ul>
-                        <li>
-                            <b>Solución:</b> construye una nueva civilización. Me he visto unos cuantos videotutoriales
-                            y creo que puedo ayudarte, pero lo primero es que <a href="{$path}new_story">escribas un artículo</a>
-                            informando a todo el mundo.
-                        </li>
-                     </ul>
-                  </li>
-               </ul>
-            </div>
+         <h1>¡Hola!</h1>
+         <div>
+            <p>No tengo ningún artículo para mostrarte. Esto puede significar varias cosas:</p>
+            <ul>
+               <li>
+                  Acabas de instalar FeedStorm.
+                  <ul>
+                     <li>
+                        <b>Solución:</b> <a href="{$path}new_story">escribe un artículo</a> o
+                        <a href="{$path}feed_list">añade alguna fuente</a>.
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  Te has suscrito a fuentes que no tienen artículos.
+                  <ul>
+                     <li>
+                        <b>Solución:</b> comprueba <a href="{$path}suscriptions">tus suscriptiones</a>.
+                     </li>
+                  </ul>
+               </li>
+               <li>
+                  La civilización ha colapsado (casi seguro). @chan2 ya me avisó de que esto podía pasar.
+                  <ul>
+                     <li>
+                        <b>Solución:</b> construye una nueva civilización. Me he visto unos cuantos videotutoriales
+                        y creo que puedo ayudarte, pero lo primero es que <a href="{$path}new_story">escribas un artículo</a>
+                        informando a todo el mundo.
+                     </li>
+                  </ul>
+               </li>
+            </ul>
          </div>
       </div>
    </div>

@@ -84,7 +84,7 @@ function chan5(&$topic, &$story)
                {
                   foreach($tpic->stories() as $sto)
                   {
-                     if( count($sto->comments()) == 0 AND in_array($tpic2->get_id(), $sto->topics) AND mt_rand(0,29) == 0)
+                     if( count($sto->comments()) == 0 AND in_array($tpic2->get_id(), $sto->topics) AND mt_rand(0,49) == 0)
                      {
                         $comm = new comment();
                         $comm->thread = $sto->get_id();

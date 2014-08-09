@@ -33,7 +33,6 @@ class show_story extends fs_controller
    public $story;
    public $stories;
    public $txt_comment;
-   public $no_relateds;
    public $topic_text;
    public $stars;
    
@@ -42,7 +41,6 @@ class show_story extends fs_controller
       parent::__construct('show_story', 'Artículo...');
       $this->preview = new story_preview();
       $this->stories = FALSE;
-      $this->no_relateds = FALSE;
       $this->topic_text = FALSE;
       $story = new story();
       
@@ -260,91 +258,9 @@ class show_story extends fs_controller
             else
                break;
          }
-         
-         /*
-          * Si no hay artículos relacionados, entonces hacemos una búsqueda por tema
-          * y añadimos esos artículos
-          */
-         if( count($this->stories) == 0 AND count($this->story->topics) > 0 )
-         {
-            $topic = new topic();
-            $t0 = $topic->get($this->story->topics[0]);
-            if($t0)
-            {
-               foreach($t0->stories() as $story)
-               {
-                  if( $story->get_id() != $this->story->get_id() )
-                  {
-                     $this->stories[] = $story;
-                     
-                     $max_stories--;
-                     if($max_stories <= 0)
-                        break;
-                  }
-               }
-            }
-         }
-         
-         /// si aun así no hay nada, añadimos artículos populares
-         if( count($this->stories) == 0 )
-         {
-            $this->no_relateds = TRUE;
-            foreach($this->story->popular_stories($max_stories) as $story)
-            {
-               if( $story->get_id() != $this->story->get_id() )
-               {
-                  $this->stories[] = $story;
-                  
-                  $max_stories--;
-                  if($max_stories <= 0)
-                     break;
-               }
-            }
-         }
       }
       
       return $this->stories;
-   }
-   
-   /// devuelve TRUE si el enlace pertenece a un medio de AEDE
-   private function aede($link)
-   {
-      $aede_domains = array(
-          'abc.es', 'aede.es', 'as.com', 'canarias7.es', 'cincodias.com', 'deia.com', 'diaridegirona.cat',
-          'diaridetarragona.com', 'diarideterrassa.es', 'diariocordoba.com', 'diariodeavila.es', 'diariodeavisos.com',
-          'diariodecadiz.es', 'diariodeibiza.es', 'diariodejerez.es', 'diariodelaltoaragon.es', 'diariodeleon.es',
-          'diariodemallorca.es', 'diariodenavarra.es', 'diariodenoticias.org', 'diariodesevilla.es', 'diarioinformacion.com',
-          'diariojaen.es', 'diariopalentino.es', 'diariovasco.com', 'diariovasco.com', 'eladelantado.com', 'elalmeria.es',
-          'elcomercio.es', 'elcorreo.com', 'elcorreoweb.es', 'eldiadecordoba.es', 'eldiariomontanes.es', 'eleconomista.es',
-          'elmundo.es', 'elpais.com', 'elpais.es', 'elperiodico.com', 'elperiodicodearagon.com', 'elperiodicoextremadura.com',
-          'elperiodicomediterraneo.com', 'elprogreso.es', 'europasur.es', 'expansion.com', 'farodevigo.es', 'granadahoy.com',
-          'heraldo.es', 'heraldodesoria.es', 'hoy.es', 'ideal.es', 'intereconomia.com/la-gaceta', 'lagacetadesalamanca.es',
-          'laopinion.es', 'laopinioncoruna.es', 'laopiniondemalaga.es', 'laopiniondemurcia.es', 'laopiniondezamora.es',
-          'laprovincia.es', 'larazon.es', 'larioja.com', 'lasprovincias.es', 'latribunadealbacete.es', 'latribunadeciudadreal.es',
-          'latribunadetalavera.es', 'latribunadetoledo.es', 'lavanguardia.com', 'laverdad.es', 'laverdad.es', 'lavozdealmeria.es',
-          'lavozdegalicia.es', 'lavozdigital.es', 'levante-emv.com', 'lne.es', 'majorcadailybulletin.es', 'malagahoy.es',
-          'marca.com', 'mundodeportivo.com', 'noticiasdealava.com', 'noticiasdegipuzkoa.com', 'regio7.cat', 'sport.es',
-          'superdeporte.es', 'ultimahora.es'
-      );
-      
-      $parts = explode('/', $link);
-      if( count($parts) >= 3 )
-      {
-         $result = FALSE;
-         
-         foreach($aede_domains as $dom)
-         {
-            if( strpos($parts[2], '.'.$dom) !== FALSE OR $parts[2] == $dom )
-            {
-               $result = TRUE;
-               break;
-            }
-         }
-         
-         return $result;
-      }
-      else
-         return FALSE;
    }
    
    /*
@@ -354,37 +270,30 @@ class show_story extends fs_controller
    {
       $this->stars = 0;
       
-      /// si es de AEDE no lo publicamos
-      if( $this->aede($this->story->link) )
+      /// si la descripción es muy corta, completamos usando el tema menos conocido (con menos artículos)
+      if( mb_strlen($this->story->description) < 255 )
       {
-         $this->noindex = TRUE;
-         $this->new_message('Este artículo pertenece a un medio de <b>AEDE</b>, esa organización que pretende'
-            . ' cobrar un canon cada vez que alguien ponga un enlace a otra web.');
+         $num = -1;
+         foreach($this->topics() as $tpic)
+         {
+            if($num < 0 OR $tpic->num_stories < $num)
+               $num = $tpic->num_stories;
+         }
+            
+         foreach($this->topics() as $tpic)
+         {
+            if($tpic->num_stories == $num)
+               $this->topic_text = $tpic->description;
+         }
       }
-      else if( !$this->story->native_lang OR $this->story->penalize OR mb_strlen($this->story->description) == 0 )
+      
+      if( !$this->story->native_lang OR $this->story->penalize OR mb_strlen($this->story->description) == 0 )
       {
          $this->noindex = TRUE;
       }
       else
       {
          $this->noindex = FALSE;
-         
-         /// si la descripción es muy corta, completamos usando el tema menos conocido (con menos artículos)
-         if( mb_strlen($this->story->description) < 255 )
-         {
-            $num = -1;
-            foreach($this->topics() as $tpic)
-            {
-               if($num < 0 OR $tpic->num_stories < $num)
-                  $num = $tpic->num_stories;
-            }
-            
-            foreach($this->topics() as $tpic)
-            {
-               if($tpic->num_stories == $num)
-                  $this->topic_text = $tpic->description;
-            }
-         }
          
          /// calculamos el número de estrellas para SEO
          $this->stars = min(

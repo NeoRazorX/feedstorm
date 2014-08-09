@@ -18,71 +18,199 @@
  */
 
 /**
- * Procesa un mix entre los últimos artículos y una ración aleatoria
- * para enlazarlas con los temas.
- * @param type $topic
- * @param type $story
- * @param type $topic_story
+ * Asigna temas a los artículos.
  */
-function chan3(&$topic, &$story, &$topic_story)
+class chan3
 {
-   $all_topics = $topic->all();
-   $last_stories = array_merge($story->last_stories(200), $story->random_stories(100));
+   private $all_topics;
+   private $story;
+   private $topic;
+   private $topic_story;
    
-   foreach($last_stories as $i => $lsto)
+   public function __construct()
    {
-      echo '.';
+      $this->story = new story();
+      $this->topic = new topic();
+      $this->topic_story = new topic_story();
+      $this->all_topics = $this->topic->all();
       
-      foreach($all_topics as $tpic)
+      /*
+      foreach($this->story->all() as $sto)
       {
-         if( !in_array($tpic->get_id(), $lsto->topics) )
+         echo '-';
+         
+         $sto->topics = array();
+         $sto->keywords = '';
+         $sto->related_id = NULL;
+         $sto->save();
+         
+         /// y eliminamos las relaciones con temas
+         foreach($this->topic_story->all4story($sto->get_id()) as $ts0)
+            $ts0->delete();
+      }
+       */
+      
+      if( mt_rand(0, 4) == 0 )
+      {
+         $this->search_all_topics();
+      }
+      else
+      {
+         $this->topics4some_stories();
+      }
+   }
+   
+   private function search_all_topics()
+   {
+      foreach($this->all_topics as $tpic)
+      {
+         foreach($tpic->keywords() as $key)
          {
-            foreach($tpic->keywords() as $key)
+            echo '('.$key.')';
+            $search_title = (mt_rand(0, 1) == 0);
+            
+            foreach($this->story->search($key, $search_title) as $lsto)
             {
-               if( preg_match('/\b'.$key.'\b/iu', $lsto->title) OR preg_match('/\b'.$key.'\b/iu', $lsto->description) )
+               if( !in_array($tpic->get_id(), $lsto->topics) )
                {
                   echo '+';
                   
-                  if($last_stories[$i]->keywords == '')
-                     $last_stories[$i]->keywords = $key;
-                  else if( strpos($last_stories[$i]->keywords, $key) === FALSE )
-                     $last_stories[$i]->keywords .= ', '.$key;
+                  /// añadimos la keyword
+                  if($lsto->keywords == '')
+                  {
+                     $lsto->keywords = $key;
+                  }
+                  else if( strpos($lsto->keywords, $key) === FALSE )
+                     $lsto->keywords .= ', '.$key;
                   
-                  $last_stories[$i]->topics[] = $tpic->get_id();
-                  $last_stories[$i]->save();
+                  $lsto->topics[] = $tpic->get_id();
                   
-                  $ts0 = new topic_story();
-                  $ts0->topic_id = $tpic->get_id();
-                  $ts0->story_id = $lsto->get_id();
-                  $ts0->date = $lsto->date;
-                  $ts0->popularity = $lsto->max_popularity();
-                  $ts0->save();
-                  
-                  break;
+                  if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
+                  {
+                     $ts0 = new topic_story();
+                     $ts0->topic_id = $tpic->get_id();
+                     $ts0->story_id = $lsto->get_id();
+                     $ts0->date = $lsto->date;
+                     $ts0->popularity = $lsto->max_popularity();
+                     $ts0->save();
+                  }
                }
-            }
-         }
-         else
-         {
-            /// ¿Actualizamos la popularidad?
-            $ts0 = $topic_story->get2($tpic->get_id(), $last_stories[$i]->get_id());
-            if($ts0)
-            {
-               if( $ts0->popularity != $last_stories[$i]->max_popularity() )
-               {
-                  $ts0->popularity = $last_stories[$i]->max_popularity();
-                  $ts0->save();
-               }
-            }
-            else
-            {
-               $last_stories[$i]->topics = array();
-               $last_stories[$i]->keywords = '';
-               $last_stories[$i]->save();
+               
+               $this->fix_topics4story($lsto);
+               $lsto->save();
             }
          }
       }
    }
+   
+   private function topics4some_stories()
+   {
+      $last_stories = array_merge($this->story->last_stories(1000), $this->story->popular_stories(1000), $this->story->random_stories(1000));
+      foreach($last_stories as $i => $lsto)
+      {
+         echo '.';
+         
+         foreach($this->all_topics as $tpic)
+         {
+            if( !in_array($tpic->get_id(), $lsto->topics) )
+            {
+               foreach($tpic->keywords() as $key)
+               {
+                  if( preg_match('/\b'.$key.'\b/iu', $lsto->title.' '.$lsto->description_uncut()) )
+                  {
+                     echo '+';
+                     
+                     /// añadimos la keyword
+                     if($last_stories[$i]->keywords == '')
+                     {
+                        $last_stories[$i]->keywords = $key;
+                     }
+                     else if( strpos($last_stories[$i]->keywords, $key) === FALSE )
+                        $last_stories[$i]->keywords .= ', '.$key;
+                     
+                     $last_stories[$i]->topics[] = $tpic->get_id();
+                     
+                     if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
+                     {
+                        $ts0 = new topic_story();
+                        $ts0->topic_id = $tpic->get_id();
+                        $ts0->story_id = $lsto->get_id();
+                        $ts0->date = $lsto->date;
+                        $ts0->popularity = $lsto->max_popularity();
+                        $ts0->save();
+                     }
+                     
+                     break;
+                  }
+               }
+            }
+            else if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
+            {
+               /// ¿Actualizamos la popularidad?
+               $ts0 = $this->topic_story->get2($tpic->get_id(), $last_stories[$i]->get_id());
+               if($ts0)
+               {
+                  if( $ts0->popularity != $last_stories[$i]->max_popularity() )
+                  {
+                     $ts0->popularity = $last_stories[$i]->max_popularity();
+                     $ts0->save();
+                  }
+               }
+               else
+               {
+                  $last_stories[$i]->topics = array();
+                  $last_stories[$i]->keywords = '';
+                  $last_stories[$i]->save();
+               }
+            }
+            else
+            {
+               /*
+                * No quiero que parodias, artículos penalizados o que no estén en español
+                * cuenten para los temas.
+                */
+               $ts0 = $this->topic_story->get2($tpic->get_id(), $last_stories[$i]->get_id());
+               if($ts0)
+               {
+                  echo '-';
+                  $ts0->delete();
+               }
+            }
+         }
+         
+         $this->fix_topics4story($last_stories[$i]);
+         $last_stories[$i]->save();
+      }
+   }
+   
+   private function fix_topics4story(&$sto)
+   {
+      $aux_topics = array();
+      
+      foreach($sto->topics as $tid)
+      {
+         foreach($this->all_topics as $tpic2)
+         {
+            if( $tpic2->get_id() == $tid )
+            {
+               foreach($tpic2->keywords() as $key)
+               {
+                  if( preg_match('/\b'.$key.'\b/iu', $sto->title.' '.$sto->description_uncut()) )
+                  {
+                     $aux_topics[ stripos($sto->title.' '.$sto->description_uncut(), $key) ] = $tid;
+                  }
+               }
+               
+               break;
+            }
+         }
+      }
+      
+      ksort($aux_topics);
+      $sto->topics = array();
+      foreach($aux_topics as $atopic)
+         $sto->topics[] = $atopic;
+   }
 }
 
-chan3($topic, $story, $topic_story);
+new chan3();

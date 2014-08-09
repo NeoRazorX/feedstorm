@@ -157,4 +157,9 @@ abstract class fs_controller
       
       return $list;
    }
+   
+   public function add2header()
+   {
+      return '';
+   }
 }

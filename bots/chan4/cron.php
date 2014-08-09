@@ -18,76 +18,89 @@
  */
 
 /**
- * Corrige descripciones y enlaces de artículos
- * @param type $story
- * @param type $topic_story
+ * Corrige descripciones y enlaces de artículos.
  */
-function chan4(&$story, &$topic_story)
+class chan4
 {
-   $last_stories = array_merge($story->last_stories(300), $story->random_stories(300));
+   public function __construct()
+   {
+      $story = new story();
+      
+      if( mt_rand(0, 23) == 0 )
+      {
+         foreach($story->all() as $sto)
+            $this->check_story($sto);
+      }
+      else
+      {
+         foreach($story->last_stories(1000) as $sto)
+            $this->check_story($sto);
+      }
+   }
    
-   foreach($last_stories as $i => $lsto)
+   private function check_story(&$sto)
    {
       echo '.';
       
-      if( mb_strpos($lsto->description, 'Continuar leyendo...') !== FALSE )
+      if( mb_strpos($sto->description, 'Continuar leyendo...') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, 'Continuar leyendo...'));
+         $sto->description = mb_substr($sto->description, 0, mb_strpos($sto->description, 'Continuar leyendo...'));
          
          /// también reseteamos temas y keywords por si ha habido falsos positivos
-         $last_stories[$i]->topics = array();
-         $last_stories[$i]->keywords = '';
-         $last_stories[$i]->save();
+         $sto->topics = array();
+         $sto->keywords = '';
+         $sto->save();
          
          /// y eliminamos las relaciones con temas
-         foreach($topic_story->all4story($lsto->get_id()) as $ts0)
+         $topic_story = new topic_story();
+         foreach($topic_story->all4story($sto->get_id()) as $ts0)
             $ts0->delete();
          
          echo '-';
       }
-      else if( mb_strpos($lsto->description, '… Lea más →') !== FALSE )
+      else if( mb_strpos($sto->description, '… Lea más →') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, '… Lea más →'));
-         $last_stories[$i]->save();
+         $sto->description = mb_substr($sto->description, 0, mb_strpos($sto->description, '… Lea más →'));
+         $sto->save();
          
          echo '-';
       }
-      else if( mb_strpos($lsto->description, '… Sigue leyendo →') !== FALSE )
+      else if( mb_strpos($sto->description, '… Sigue leyendo →') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, '… Sigue leyendo →'));
-         $last_stories[$i]->save();
+         $sto->description = mb_substr($sto->description, 0, mb_strpos($sto->description, '… Sigue leyendo →'));
+         $sto->save();
          
          echo '-';
       }
-      else if( mb_strpos($lsto->description, 'Read more...') !== FALSE )
+      else if( mb_strpos($sto->description, 'Read more...') !== FALSE )
       {
-         $last_stories[$i]->description = mb_substr($lsto->description, 0, mb_strpos($lsto->description, 'Read more...'));
-         $last_stories[$i]->save();
+         $sto->description = mb_substr($sto->description, 0, mb_strpos($sto->description, 'Read more...'));
+         $sto->save();
          
          echo '-';
       }
-      else if( !$lsto->parody AND (stripos($lsto->title, '[humor]') !== FALSE OR stripos($lsto->title, '(humor)') !== FALSE) )
+      else if( !$sto->parody AND (stripos($sto->title, '[humor]') !== FALSE OR stripos($sto->title, '(humor)') !== FALSE) )
       {
-         $last_stories[$i]->parody = TRUE;
-         $last_stories[$i]->save();
+         $sto->parody = TRUE;
+         $sto->save();
          
          echo 'P';
       }
-      else if( substr($lsto->link, 0, 22) == 'https://humanos.uci.cu' )
+      else if( substr($sto->link, 0, 22) == 'https://humanos.uci.cu' )
       {
-         $last_stories[$i]->link = str_replace('https://', 'http://', $lsto->link);
-         $last_stories[$i]->save();
+         $sto->link = str_replace('https://', 'http://', $sto->link);
+         $sto->save();
          
          echo 'L';
       }
-      else if( mb_strpos($lsto->description, 'function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;') !== FALSE )
+      else if( mb_strpos($sto->description, 'function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;') !== FALSE )
       {
-         $last_stories[$i]->description = str_replace('function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;', ' ', $last_stories[$i]->description);
-         $last_stories[$i]->save();
+         $sto->description = str_replace('function(d,s,id){va​r js,fjs=d.getElementsByTag​Name(s)[0];if(!d.getElemen​tById(id)){js=d.createElem​ent(s);js.id=id;js.src="//​platform.twitter.com/widge​ts.js";fjs.parentNode.inse​rtBefore(js,fjs);}}(docume​nt,"script","twitter-wjs")​;', ' ', $sto->description);
+         $sto->save();
          
          echo '-';
       }
    }
 }
 
-chan4($story, $topic_story);
+new chan4();

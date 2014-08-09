@@ -225,7 +225,9 @@ abstract class fs_model
       $desc = $this->true_word_break( $this->no_html($str), $max_w_width );
       
       if( mb_strlen($desc) <= $max_t_width )
-         return $desc;
+      {
+         return trim($desc);
+      }
       else
       {
          $description = '';
@@ -243,7 +245,7 @@ abstract class fs_model
                break;
          }
          
-         return $description.'...';
+         return trim($description).'...';
       }
    }
    

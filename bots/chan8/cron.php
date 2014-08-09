@@ -17,19 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require_once 'model/story_preview.php';
-
+/**
+ * Busca imágenes y videos en los enlaces de los artículos.
+ * @param type $story
+ */
 function chan8(&$story)
 {
    $story_preview = new story_preview();
    
-   $last_stories = array_merge($story->last_stories( mt_rand(10,100) ), $story->random_stories( mt_rand(10,100) ));
-   foreach($last_stories as $sto)
+   foreach($story->popular_stories( mt_rand(10, 100) ) as $sto)
    {
       echo '.';
       
       $story_preview->load($sto->link, $sto->description_uncut());
-      if( !$story_preview->type AND mb_strlen($sto->description) < 500 )
+      if( !$story_preview->type AND mb_strlen($sto->description) < 500 AND $sto->num_editions == 0 )
       {
          $html = $story_preview->curl_download($sto->link);
          $urls = array();
@@ -38,7 +39,7 @@ function chan8(&$story)
             foreach($urls[1] as $url)
             {
                $story_preview->load($url);
-               if($story_preview->type)
+               if($story_preview->type AND stripos($url, 'logo') === FALSE)
                {
                   $sto->description .= ' '.$story_preview->link;
                   $sto->save();

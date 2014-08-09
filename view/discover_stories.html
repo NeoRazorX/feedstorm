@@ -40,7 +40,7 @@
             </div>
          </div>
          {else}
-         <h1 style="margin-top: 0px;">
+         <h1 style="margin-bottom: 0px;">
             <a href="{$value->url()}">{$value->title}</a>
          </h1>
          <p>
@@ -242,15 +242,11 @@
    </div>
 </div>
 {else}
-<div class="container">
+<div class="container-fluid">
    <div class="row">
-      <div class="col-md-12">
-         <div class="well">
-            <h1>Ha habido un problema :s</h1>
-            <p>
-               Por desgracia no tengo ningún artículo para mostrarte.
-            </p>
-         </div>
+      <div class="col-lg-12">
+         <h1>Ha habido un problema :s</h1>
+         <p>Por desgracia no tengo ningún artículo para mostrarte.</p>
       </div>
    </div>
 </div>

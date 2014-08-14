@@ -148,62 +148,6 @@
                <p style="margin: 2px 0px 10px 0px;">{$value->text()}</p>
             </div>
             {/loop}
-            
-            {loop="$fsc->related_stories()"}
-            <div>
-               <h3 style="margin: 20px 0px 0px 0px;">
-                  <a href="{$value->url()}">{$value->title}</a>
-               </h3>
-               <p style="margin: 3px 0px 2px 0px; text-align: justify;">{$value->description_plus($fsc->story->keywords)}</p>
-               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-               {if condition="$fsc->preview->type=='youtube'"}
-               <div style="margin-top: 10px;">
-                  {if condition="$fsc->visitor->mobile()"}
-                  <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                  {else}
-                  <iframe width="427" height="240" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                  {/if}
-               </div>
-               {elseif condition="$fsc->preview->type=='imgur'"}
-               <div style="margin-top: 10px;">
-                  <a href="{$value->url()}">
-                  {if condition="$fsc->visitor->mobile()"}
-                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-                  {else}
-                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 500px;"/>
-                  {/if}
-                  </a>
-               </div>
-               {elseif condition="$fsc->preview->type=='image'"}
-               <div style="margin-top: 10px;">
-                  <a href="{$value->url()}">
-                  {if condition="$fsc->visitor->mobile()"}
-                     <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
-                  {else}
-                     <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 500px;"/>
-                  {/if}
-                  </a>
-               </div>
-               {elseif condition="$fsc->preview->type=='vimeo'"}
-               <div style="margin-top: 10px;">
-                  {if condition="$fsc->visitor->mobile()"}
-                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                  {else}
-                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                  {/if}
-               </div>
-               {/if}
-               <div class="small">
-                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
-                  
-                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-               </div>
-            </div>
-            {/loop}
          </div>
          
          <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
@@ -265,33 +209,83 @@
          </div>
       </div>
       
-      <div id="s_sources" class="col-lg-12" style="display: none;">
-         <div class="table-responsive">
-            <table class="table table-hover">
-               <thead>
-                  <tr>
-                     <th>Fecha</th>
-                     <th>Enlace</th>
-                     <th>Fuente</th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {loop="$fsc->feed_links"}
-                  <tr>
-                     <td>{$value->timesince()}</td>
-                     <td><a href="{$value->link()}">{$value->title}</a></td>
-                     <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
-                  </tr>
+      <div id="s_sources" class="table-responsive" style="display: none;">
+         <table class="table table-hover">
+            <thead>
+               <tr>
+                  <th>Fecha</th>
+                  <th>Enlace</th>
+                  <th>Fuente</th>
+               </tr>
+            </thead>
+            <tbody>
+               {loop="$fsc->feed_links"}
+               <tr>
+                  <td>{$value->timesince()}</td>
+                  <td><a href="{$value->link()}">{$value->title}</a></td>
+                  <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+               </tr>
+               {else}
+               <tr>
+                  <td>{$fsc->story->timesince()}</td>
+                  <td>-</td>
+                  <td>-</td>
+               </tr>
+               {/loop}
+            </tbody>
+         </table>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-lg-10">
+         {loop="$fsc->related_stories()"}
+            <div style="margin: 40px 0px 10px 0px;">
+               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+               {if condition="$fsc->preview->type=='youtube'"}
+                  {if condition="$fsc->visitor->mobile()"}
+                  <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
                   {else}
-                  <tr>
-                     <td>{$fsc->story->timesince()}</td>
-                     <td>-</td>
-                     <td>-</td>
-                  </tr>
-                  {/loop}
-               </tbody>
-            </table>
-         </div>
+                  <iframe width="427" height="240" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+                  {/if}
+               {elseif condition="$fsc->preview->type=='imgur'"}
+                  <a href="{$value->url()}">
+                  {if condition="$fsc->visitor->mobile()"}
+                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
+                  {else}
+                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 500px;"/>
+                  {/if}
+                  </a>
+               {elseif condition="$fsc->preview->type=='image'"}
+                  <a href="{$value->url()}">
+                  {if condition="$fsc->visitor->mobile()"}
+                     <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 300px;"/>
+                  {else}
+                     <img src="{$fsc->preview->filename}" alt="{$value->title}" style="max-width: 500px;"/>
+                  {/if}
+                  </a>
+               {elseif condition="$fsc->preview->type=='vimeo'"}
+                  {if condition="$fsc->visitor->mobile()"}
+                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                  {else}
+                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                  {/if}
+               {/if}
+               <h3 style="margin: 10px 0px 0px 0px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h3>
+               <p style="margin: 3px 0px 2px 0px; text-align: justify;">{$value->description_plus($fsc->story->keywords)}</p>
+               <div class="small">
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </div>
+            </div>
+         {/loop}
       </div>
    </div>
 </div>

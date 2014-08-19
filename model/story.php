@@ -466,7 +466,9 @@ class story extends fs_model
          {
             $data = $this->collection->findone( array('name' => $id) );
             if($data)
+            {
                return new story($data);
+            }
             else
             {
                /// buscamos la raiz
@@ -475,9 +477,11 @@ class story extends fs_model
                for($i = 0; $i < count($parts)-1; $i++)
                   $new_name .= $parts[$i].'-';
                
-               $data = $this->collection->findone( array('name' => new MongoRegex('/^'.$new_name.'-[0-9]{1,3}.html/')) );
+               $data = $this->collection->findone( array('name' => new MongoRegex('/^'.$new_name.'[0-9]{1,3}.html/')) );
                if($data)
+               {
                   return new story($data);
+               }
                else
                   return FALSE;
             }
@@ -486,7 +490,9 @@ class story extends fs_model
          {
             $data = $this->collection->findone( array('_id' => new MongoId($id)) );
             if($data)
+            {
                return new story($data);
+            }
             else
                return FALSE;
          }
@@ -503,7 +509,9 @@ class story extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $data = $this->collection->findone( array('link' => $url) );
       if($data)
+      {
          return new story($data);
+      }
       else
          return FALSE;
    }
@@ -511,7 +519,9 @@ class story extends fs_model
    public function exists()
    {
       if( is_null($this->id) )
+      {
          return FALSE;
+      }
       else
       {
          $this->add2history(__CLASS__.'::'.__FUNCTION__);

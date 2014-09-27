@@ -127,7 +127,7 @@ class feed_story extends fs_model
    
    public function meneame()
    {
-      return ( mb_substr($this->link, 0, 23) == 'http://www.meneame.net/' );
+      return ( mb_substr($this->link, 0, 23) == 'http://www.meneame.net/' OR mb_substr($this->link, 0, 24) == 'https://www.meneame.net/' );
    }
    
    public function reddit()

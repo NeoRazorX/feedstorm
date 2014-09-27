@@ -17,6 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Enlaza artículos en función de los temas.
+ */
 class chan9
 {
    public function __construct()
@@ -24,7 +27,7 @@ class chan9
       $story = new story();
       $topic_story = new topic_story();
       
-      foreach($story->popular_stories(500) as $lsto)
+      foreach($story->popular_stories( mt_rand(100, 500) ) as $lsto)
       {
          echo '.';
          
@@ -34,6 +37,13 @@ class chan9
             $option3 = FALSE;
             $offset = 0;
             $continuar = TRUE;
+            
+            /// si ya hay algún artículo relacionado, no hace falta buscar siempre
+            if( !is_null($lsto->related_id2) AND mt_rand(0,4) > 0 )
+            {
+               $continuar = FALSE;
+            }
+            
             while($continuar)
             {
                $continuar = FALSE;
@@ -115,7 +125,7 @@ class chan9
                $lsto->save();
             }
          }
-         else if( is_null($lsto->related_id) AND count($lsto->topics) == 1 )
+         else if( is_null($lsto->related_id) AND is_null($lsto->related_id2) AND count($lsto->topics) == 1 )
          {
             foreach($topic_story->best4topic($lsto->topics[0]) as $ts)
             {

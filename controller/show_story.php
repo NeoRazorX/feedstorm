@@ -86,9 +86,9 @@ class show_story extends fs_controller
          if(count($this->get_errors()) + count($this->get_messages()) == 0)
          {
             if( !$this->story->native_lang )
+            {
                $this->new_message('¿Te atreves a traducir este artículo? Haz clic en la pestaña <b>editar</b>.');
-            else if(mt_rand(0, 14) == 0)
-               $this->new_message('Si tienes más información o hay algún error en el artículo, no lo dudes, haz clic en la pestaña <b>editar</b>.');
+            }
          }
       }
       else
@@ -257,6 +257,47 @@ class show_story extends fs_controller
             }
             else
                break;
+         }
+         
+         /*
+          * Si no hay artículos relacionados, entonces hacemos una búsqueda por tema
+          * y añadimos esos artículos
+          */
+         if( count($this->stories) == 0 AND count($this->story->topics) > 0 )
+         {
+            $topic = new topic();
+            $t0 = $topic->get($this->story->topics[0]);
+            if($t0)
+            {
+               foreach($t0->stories() as $story)
+               {
+                  if( $story->get_id() != $this->story->get_id() )
+                  {
+                     $this->stories[] = $story;
+                     
+                     $max_stories--;
+                     if($max_stories <= 0)
+                        break;
+      }
+               }
+            }
+         }
+      
+         /// si aun así no hay nada, añadimos artículos populares
+         if( count($this->stories) == 0 )
+         {
+            $this->no_relateds = TRUE;
+            foreach($this->story->popular_stories($max_stories) as $story)
+            {
+               if( $story->get_id() != $this->story->get_id() )
+               {
+                  $this->stories[] = $story;
+                  
+                  $max_stories--;
+                  if($max_stories <= 0)
+                     break;
+               }
+            }
          }
       }
       

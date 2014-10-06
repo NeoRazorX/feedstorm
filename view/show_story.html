@@ -148,52 +148,6 @@
                <p style="margin: 2px 0px 10px 0px;">{$value->text()}</p>
             </div>
             {/loop}
-            
-            <div>
-            {if condition="$fsc->visitor->mobile()"}
-               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-               <!-- feedstorm_movil -->
-               <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
-               <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-               </script>
-            {else}
-               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-               <!-- feedstorm -->
-               <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
-               <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-               </script>
-            {/if}
-            </div>
-            
-            {loop="$fsc->related_stories()"}
-            <div style="margin: 40px 0px 10px 0px;">
-               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-               {if condition="!$fsc->preview->type"}
-               <!--{$fsc->preview->load_topics($value->topics)}-->
-               {/if}
-               
-               {if condition="$fsc->preview->type"}
-               <div class="pull-right">
-                  <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px; margin-left: 10px;">
-               </div>
-               {/if}
-               <h3 style="margin: 10px 0px 0px 0px;">
-                  <a href="{$value->url()}">{$value->title}</a>
-               </h3>
-               <p style="margin: 3px 0px 2px 0px; text-align: justify;">{$value->description_plus($fsc->story->keywords)}</p>
-               <div class="small">
-                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
-                  
-                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-               </div>
-            </div>
-            {/loop}
          </div>
          
          <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
@@ -252,16 +206,6 @@
                <span class="glyphicon glyphicon-comment"></span>
                &nbsp; Comentar...
             </button>
-            
-            <div class="text-center">
-               <br/>
-               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-               <!-- Feedstorm_lateral2 -->
-               <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="7583406407"></ins>
-               <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-               </script>
-            </div>
          </div>
       </div>
       
@@ -290,6 +234,68 @@
                {/loop}
             </tbody>
          </table>
+      </div>
+   </div>
+   
+   <div class="row">
+      <div class="col-lg-10 col-md-9">
+         <div>
+            {if condition="$fsc->visitor->mobile()"}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm_movil -->
+               <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+            {else}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm -->
+               <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+            {/if}
+         </div>
+         
+         {loop="$fsc->related_stories()"}
+            <div style="margin: 40px 0px 10px 0px;">
+               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+               {if condition="!$fsc->preview->type"}
+               <!--{$fsc->preview->load_topics($value->topics)}-->
+               {/if}
+               
+               {if condition="$fsc->preview->type"}
+               <div class="pull-right">
+                  <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px; margin-left: 10px;">
+               </div>
+               {/if}
+               <h3 style="margin: 10px 0px 0px 0px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h3>
+               <p style="margin: 3px 0px 2px 0px; text-align: justify;">{$value->description_plus($fsc->story->keywords)}</p>
+               <div class="small">
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </div>
+            </div>
+         {/loop}
+      </div>
+      
+      <div class="col-lg-2 col-md-3 text-center">
+         {if condition="!$fsc->visitor->mobile()"}
+         <br/>
+         <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+         <!-- Feedstorm_lateral2 -->
+         <ins class="adsbygoogle" style="display:inline-block;width:160px;height:600px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="7583406407"></ins>
+         <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+         </script>
+         {/if}
       </div>
    </div>
 </div>

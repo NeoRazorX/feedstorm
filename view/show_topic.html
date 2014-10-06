@@ -112,6 +112,24 @@
       
       <div class="row">
          <div class="col-lg-10 col-md-9">
+            <div>
+            {if condition="$fsc->visitor->mobile()"}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm_movil -->
+               <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+            {else}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm -->
+               <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+            {/if}
+            </div>
+            
             {loop="$fsc->stories"}
                <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
                <h3 style="margin-bottom: 2px;">

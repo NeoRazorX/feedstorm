@@ -34,23 +34,7 @@ class chan3
       $this->topic_story = new topic_story();
       $this->all_topics = $this->topic->all();
       
-      /*
-      foreach($this->story->all() as $sto)
-      {
-         echo '-';
-         
-         $sto->topics = array();
-         $sto->keywords = '';
-         $sto->related_id = NULL;
-         $sto->save();
-         
-         /// y eliminamos las relaciones con temas
-         foreach($this->topic_story->all4story($sto->get_id()) as $ts0)
-            $ts0->delete();
-      }
-       */
-      
-      if( mt_rand(0, 4) == 0 )
+      if( mt_rand(0, 9) == 0 )
       {
          $this->search_all_topics();
       }
@@ -64,40 +48,45 @@ class chan3
    {
       foreach($this->all_topics as $tpic)
       {
-         foreach($tpic->keywords() as $key)
+         if( $tpic->valid )
          {
-            echo '('.$key.')';
-            $search_title = (mt_rand(0, 1) == 0);
-            
-            foreach($this->story->search($key, $search_title) as $lsto)
+            foreach($tpic->keywords() as $key)
             {
-               if( !in_array($tpic->get_id(), $lsto->topics) )
-               {
-                  echo '+';
-                  
-                  /// añadimos la keyword
-                  if($lsto->keywords == '')
-                  {
-                     $lsto->keywords = $key;
-                  }
-                  else if( strpos($lsto->keywords, $key) === FALSE )
-                     $lsto->keywords .= ', '.$key;
-                  
-                  $lsto->topics[] = $tpic->get_id();
-                  
-                  if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
-                  {
-                     $ts0 = new topic_story();
-                     $ts0->topic_id = $tpic->get_id();
-                     $ts0->story_id = $lsto->get_id();
-                     $ts0->date = $lsto->date;
-                     $ts0->popularity = $lsto->max_popularity();
-                     $ts0->save();
-                  }
-               }
+               echo '('.$key.')';
+               $search_title = (mt_rand(0, 1) == 0);
                
-               $this->fix_topics4story($lsto);
-               $lsto->save();
+               foreach($this->story->search($key, $search_title) as $lsto)
+               {
+                  if( !in_array($tpic->get_id(), $lsto->topics) )
+                  {
+                     echo '+';
+                     
+                     /// añadimos la keyword
+                     if($lsto->keywords == '')
+                     {
+                        $lsto->keywords = $key;
+                     }
+                     else if( strpos($lsto->keywords, $key) === FALSE )
+                     {
+                        $lsto->keywords .= ', '.$key;
+                     }
+                     
+                     $lsto->topics[] = $tpic->get_id();
+                     
+                     if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
+                     {
+                        $ts0 = new topic_story();
+                        $ts0->topic_id = $tpic->get_id();
+                        $ts0->story_id = $lsto->get_id();
+                        $ts0->date = $lsto->date;
+                        $ts0->popularity = $lsto->max_popularity();
+                        $ts0->save();
+                     }
+                  }
+                  
+                  $this->fix_topics4story($lsto);
+                  $lsto->save();
+               }
             }
          }
       }
@@ -105,14 +94,14 @@ class chan3
    
    private function topics4some_stories()
    {
-      $last_stories = array_merge($this->story->last_stories(1000), $this->story->popular_stories(1000), $this->story->random_stories(1000));
+      $last_stories = array_merge($this->story->last_stories(500), $this->story->popular_stories(500), $this->story->random_stories(500));
       foreach($last_stories as $i => $lsto)
       {
          echo '.';
          
          foreach($this->all_topics as $tpic)
          {
-            if( !in_array($tpic->get_id(), $lsto->topics) )
+            if( !in_array($tpic->get_id(), $lsto->topics) AND $tpic->valid )
             {
                foreach($tpic->keywords() as $key)
                {
@@ -126,7 +115,9 @@ class chan3
                         $last_stories[$i]->keywords = $key;
                      }
                      else if( strpos($last_stories[$i]->keywords, $key) === FALSE )
+                     {
                         $last_stories[$i]->keywords .= ', '.$key;
+                     }
                      
                      $last_stories[$i]->topics[] = $tpic->get_id();
                      

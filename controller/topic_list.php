@@ -37,12 +37,11 @@ class topic_list extends fs_controller
       $this->t_description = '';
       $this->t_keywords = '';
       
-      if( isset($_GET['parent']) )
-         $this->t_parent = $_GET['parent'];
-      else if( isset($_POST['parent']) )
-         $this->t_parent = $_POST['parent'];
-      else
-         $this->t_parent = NULL;
+      $this->t_parent = NULL;
+      if( isset($_REQUEST['parent']) )
+      {
+         $this->t_parent = $_REQUEST['parent'];
+      }
       
       if( isset($_POST['title']) )
       {
@@ -50,34 +49,38 @@ class topic_list extends fs_controller
          $this->t_description = trim($_POST['description']);
          $this->t_keywords = mb_strtolower( trim($_POST['title']), 'utf8' );
          
-         if( !$this->visitor->admin AND $this->visitor->points < 10 )
+         if($this->t_parent != '')
          {
-            $this->new_error_msg('Sólo un administrador o un usuario con más de 10 puntos puede añadir un tema.');
-         }
-         else
-         {
-            if($this->t_parent != '')
+            $parent = $this->topic->get($this->t_parent);
+            if($parent)
             {
-               $parent = $this->topic->get($this->t_parent);
-               if($parent)
-               {
-                  $this->topic->parent = $parent->get_id();
-                  $this->topic->importance = $parent->importance + 1;
-               }
+               $this->topic->parent = $parent->get_id();
+               $this->topic->importance = $parent->importance + 1;
             }
-            
-            $this->topic->title = $this->t_title;
-            $this->topic->description = $this->t_description;
-            $this->topic->keywords = $this->t_keywords;
-            $this->topic->save();
-            $this->new_message('Tema añadido correctamente.');
-            
-            $this->t_title = '';
-            $this->t_description = '';
-            $this->t_keywords = '';
-            
-            header( 'Location: '.$this->topic->url() );
          }
+         
+         $this->topic->title = $this->t_title;
+         $this->topic->description = $this->t_description;
+         $this->topic->keywords = $this->t_keywords;
+         $this->topic->valid = $this->visitor->admin;
+         $this->topic->save();
+         $this->new_message('Tema añadido correctamente.');
+         
+         /// ¿Avisamos al admin?
+         if(!$this->topic->valid)
+         {
+            $comment = new comment();
+            $comment->visitor_id = $this->visitor->get_id();
+            $comment->nick = $this->visitor->nick;
+            $comment->text = 'Nuevo tema añadido: '.$this->domain().$this->topic->url();
+            $comment->save();
+         }
+         
+         $this->t_title = '';
+         $this->t_description = '';
+         $this->t_keywords = '';
+         
+         header( 'Location: '.$this->topic->url() );
       }
       else if( isset($_GET['delete']) )
       {

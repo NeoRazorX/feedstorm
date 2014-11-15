@@ -17,22 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Hace una previsualización de artículos para forzar la comprobación de imágenes.
- * @param type $story
- */
-function chan6(&$story)
+require_once 'model/story.php';
+require_once 'model/story_preview.php';
+
+class cookies extends fs_controller
 {
-   $story_preview = new story_preview();
-   $last_stories = array_merge($story->last_stories(200), $story->random_stories(100));
-   
-   foreach($last_stories as $value)
+   public function __construct()
    {
-      echo '.';
-      
-      $story_preview->load($value->link, $value->description_uncut());
-      $story_preview->set_downloads(5);
+      parent::__construct('cookies', 'Política de cookies de '.FS_NAME);
    }
 }
-
-chan6($story);

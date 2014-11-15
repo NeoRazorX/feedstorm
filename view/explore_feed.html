@@ -1,126 +1,258 @@
 {include="header"}
 
 {if condition="$fsc->feed"}
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#suscribir" aria-controls="suscribir" role="tab" data-toggle="tab">{$fsc->suscribe_text}</a>
+      </li>
+      {if condition="$fsc->visitor->admin"}
+      <li role="presentation">
+         <a href="#editar" aria-controls="editar" role="tab" data-toggle="tab">Editar</a>
+      </li>
+      {/if}
+   </ul>
+   
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="suscribir">
+         <div class="container-fluid">
+            <div class="row">
+               <div class="col-lg-10">
+                  <h2 style="margin-top: 10px; margin-bottom: 0px;">{$fsc->feed->name}</h2>
+                  <p>{$fsc->feed->description}<br/>Fuente: {$fsc->feed->url}</p>
+                  <div class="small">
+                     {if condition="$fsc->feed->popularity > 0"}
+                     <span class="glyphicon glyphicon-fire" title="popularidad"></span> {$fsc->feed->popularity}, &nbsp;
+                     {/if}
+                     {$fsc->feed->num_stories} artículos, {$fsc->feed->suscriptors} suscriptores.
+                     Última actualización {$fsc->feed->last_update_timesince()}.
+                     Última comprobación {$fsc->feed->last_check_timesince()}, {$fsc->feed->strikes} errores.
+                  </div>
+               </div>
+               <div class="col-lg-2 text-right" style="margin-top: 10px;">
+                  {if condition="$fsc->visitor->human()"}
+                  <div>
+                     {if condition="$fsc->unsuscribe"}
+                     <a class="btn btn-sm btn-danger" href="{$fsc->suscribe_url}">
+                        <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>
+                        &nbsp; {$fsc->suscribe_text}
+                     </a>
+                     {else}
+                     <a class="btn btn-sm btn-success" href="{$fsc->suscribe_url}">
+                        <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+                        &nbsp; {$fsc->suscribe_text}
+                     </a>
+                     {/if}
+                  </div>
+                  {/if}
+               </div>
+            </div>
+         </div>
+         <hr/>
+      </div>
+      {if condition="$fsc->visitor->admin"}
+      <div role="tabpanel" class="tab-pane" id="editar">
+         <div class="container-fluid" style="margin-top: 10px;">
+            <div class="row">
+               <div class="col-md-6">
+                  <div class="panel panel-info">
+                     <div class="panel-heading">
+                        <h3 class="panel-title">Editar</h3>
+                     </div>
+                     <div class="panel-body">
+                        <form action="{$fsc->url()}" method="post">
+                           <input type="hidden" name="modify" value="TRUE"/>
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="native_lang" value="TRUE"{if condition="$fsc->feed->native_lang"} checked="checked"{/if}/>
+                                 Está en español.
+                              </label>
+                           </div>
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="parody" value="TRUE"{if condition="$fsc->feed->parody"} checked="checked"{/if}/>
+                                 Es una fuente de parodia o de contenido humoristico o sarcástico.
+                              </label>
+                           </div>
+                           <div class="checkbox">
+                              <label>
+                                 <input type="checkbox" name="penalize" value="TRUE"{if condition="$fsc->feed->penalize"} checked="checked"{/if}/>
+                                 Penalizar esta fuente.
+                              </label>
+                           </div>
+                           <button class="btn btn-info btn-sm" type="submit">
+                              <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-md-6">
+                  <div class="panel panel-danger">
+                     <div class="panel-heading">
+                        <h3 class="panel-title">Borrar</h3>
+                     </div>
+                     <div class="panel-body">
+                        <p>Si realmente deseas eliminar esta fuente, pulsa borrar.</p>
+                        <form action="{$fsc->url()}" method="post">
+                           <input type="hidden" name="delete" value="TRUE"/>
+                           <button class="btn btn-danger btn-sm" type="submit">
+                              <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
+                           </button>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      {/if}
+   </div>
+</div>
+
 <div class="container-fluid">
    <div class="row">
-      <div class="col-md-4">
-         <div class="panel panel-primary">
-            <div class="panel-heading">
-               <h3 class="panel-title">{$fsc->feed->name}</h3>
-            </div>
-            <div class="panel-body">
-               <p>
-                  {$fsc->feed->description}<br/>Fuente: {$fsc->feed->url}
-               </p>
-               {if condition="$fsc->visitor->human()"}
-               <div>
-               {if condition="$fsc->unsuscribe"}
-                  <a class="btn btn-sm btn-danger" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
-               {else}
-                  <a class="btn btn-sm btn-success" href="{$fsc->suscribe_url}">{$fsc->suscribe_text}</a>
-               {/if}
-               </div>
-               {/if}
-            </div>
-            <div class="panel-footer small">
-               {$fsc->feed->num_stories} artículos,
-               {$fsc->feed->suscriptors} suscriptores.
-               Última actualización {$fsc->feed->last_update_timesince()}.
-            </div>
-         </div>
-         {if condition="$fsc->visitor->admin"}
-         <div class="panel panel-info">
-            <div class="panel-heading">
-               <h3 class="panel-title">Editar</h3>
-            </div>
-            <div class="panel-body">
-               <form action="{$fsc->url()}" method="post">
-                  <input type="hidden" name="modify" value="TRUE"/>
-                  <div>
-                     <label>
-                        <input type="checkbox" name="native_lang" value="TRUE"{if condition="$fsc->feed->native_lang"} checked="checked"{/if}/>
-                        Está en español.
-                     </label>
-                  </div>
-                  <div>
-                     <label>
-                        <input type="checkbox" name="parody" value="TRUE"{if condition="$fsc->feed->parody"} checked="checked"{/if}/>
-                        Es una fuente de parodia o de contenido humoristico o sarcástico.
-                     </label>
-                  </div>
-                  <div>
-                     <label>
-                        <input type="checkbox" name="penalize" value="TRUE"{if condition="$fsc->feed->penalize"} checked="checked"{/if}/>
-                        Penalizar esta fuente.
-                     </label>
-                  </div>
-                  <input class="btn btn-info btn-sm" type="submit" value="Guardar"/>
-               </form>
-            </div>
-            <div class="panel-footer small">
-               Última comprobación {$fsc->feed->last_check_timesince()},
-               {$fsc->feed->strikes} errores.
-            </div>
-         </div>
-         <div class="panel panel-danger">
-            <div class="panel-heading">
-               <h3 class="panel-title">Borrar</h3>
-            </div>
-            <div class="panel-body">
-               <p>Si realmente deseas eliminar esta fuente, pulsa borrar.</p>
-               <form action="{$fsc->url()}" method="post">
-                  <input type="hidden" name="delete" value="TRUE"/>
-                  <input class="btn btn-danger btn-sm" type="submit" value="Eliminar"/>
-               </form>
-            </div>
-         </div>
+   {loop="$fsc->stories"}
+      {if condition="$counter<2"}
+      <div class="col-lg-6" style="padding-top: 5px;">
+         <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+         {if condition="!$fsc->preview->type"}
+         <!--{$fsc->preview->load_topics($value->topics)}-->
          {/if}
-      </div>
-      <div class="col-md-8">
-         {loop="$fsc->stories"}
-            {if condition="$counter>0"}
-            <hr/>
+         
+         <div>
+            {if condition="$fsc->preview->type"}
+            <div class="pull-left">
+               <a href="{$value->url()}">
+                  <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 150px; margin-right: 10px;">
+               </a>
+            </div>
             {/if}
+            <h1 style="margin-bottom: 0px;">
+               <a href="{$value->url()}">{$value->title}</a>
+            </h1>
+            <p>
+               {$value->description(500)}
+               <br/>
+               <span class="small">
+                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                  {if condition="$value->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                  {/if}
+                  
+                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+               </span>
+            </p>
+         </div>
+         
+         {if condition="$counter==0"}<hr class="hidden-lg"/>{/if}
+      </div>
+      {/if}
+   {/loop}
+   </div>
+   
+   <div class="row">
+      <div class="col-lg-12"><hr/></div>
+   </div>
+   
+   <div class="row">
+      <div class="col-lg-5 col-md-12">
+      {loop="$fsc->stories"}
+         {if condition="$counter>=2 AND $counter<15"}
+            {if condition="$counter>2"}<hr/>{/if}
             
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {if condition="!$fsc->preview->type"}
             <!--{$fsc->preview->load_topics($value->topics)}-->
             {/if}
             
-            {if condition="$fsc->preview->type"}
-            <div class="media">
-               <a class="pull-left" href="{$value->url()}">
-                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
-               </a>
-               <div class="media-body">
-                  <h4 class="media-heading">
-                     <a href="{$value->url()}">{$value->title}</a>
-                  </h4>
-                  <p>
-                     {$value->description(200)}
-                     <br/>
-                     <span class="small">
-                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
-                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
-                        {if condition="$value->num_comments>0"}
-                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
-                        {/if}
-                        
-                        {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                        {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                        {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                        {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-                     </span>
-                  </p>
+            <div>
+               {if condition="$fsc->preview->type"}
+               <div class="pull-left">
+                  <a href="{$value->url()}">
+                     <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px; margin-right: 10px;">
+                  </a>
                </div>
+               {/if}
+               <h3 style="margin-top: 0px; margin-bottom: 5px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h3>
+               <p>
+                  {$value->description(255)}
+                  <br/>
+                  <span class="small">
+                     {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                     <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                     <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                     {if condition="$value->num_comments>0"}
+                     <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                     {/if}
+                     
+                     {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                     {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                     {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                     {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                  </span>
+               </p>
             </div>
-            {else}
-            <h4 style="margin-bottom: 0px;">
+         {/if}
+      {/loop}
+      </div>
+      
+      <div class="col-lg-4 col-md-7">
+      {loop="$fsc->stories"}
+         {if condition="$counter>=15 AND $counter<31"}
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load_topics($value->topics)}-->
+            {/if}
+            
+            <div style="margin-bottom: 25px;">
+               {if condition="$fsc->preview->type"}
+               <div class="pull-left">
+                  <a href="{$value->url()}">
+                     <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 100px; margin-right: 10px;">
+                  </a>
+               </div>
+               {/if}
+               <h4 style="margin-top: 0px; margin-bottom: 0px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h4>
+               <p>
+                  {$value->description(200)}
+                  <br/>
+                  <span class="small">
+                     {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                     <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                     <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                     {if condition="$value->num_comments>0"}
+                     <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                     {/if}
+                     
+                     {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                     {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                     {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                     {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                  </span>
+               </p>
+            </div>
+         {/if}
+      {/loop}
+      </div>
+      
+      <div class="col-lg-3 col-md-5">
+         {loop="$fsc->stories"}
+            {if condition="$counter>=31"}
+            <h4 style="margin-top: 0px; margin-bottom: 0px;">
                <a href="{$value->url()}">{$value->title}</a>
             </h4>
             <p>
-               {$value->description(300)}
+               {$value->description(150)}
                <br/>
                <span class="small">
                   {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
@@ -137,10 +269,6 @@
                </span>
             </p>
             {/if}
-         {else}
-         <div class="alert alert-info">
-            Esta fuente no tiene artículos relacionados. Si la acabas de añadir, debes esperar unos minutos a que sea examinada.
-         </div>
          {/loop}
       </div>
    </div>

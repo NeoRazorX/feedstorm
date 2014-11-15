@@ -32,6 +32,8 @@ class topic extends fs_model
    public $num_stories;
    public $num_children;
    public $icon;
+   public $valid;
+   public $popularity;
    
    public function __construct($t=FALSE)
    {
@@ -46,6 +48,8 @@ class topic extends fs_model
       $this->num_stories = 0;
       $this->num_children = 0;
       $this->icon = '';
+      $this->valid = FALSE;
+      $this->popularity = 0;
       
       if($t)
       {
@@ -60,7 +64,20 @@ class topic extends fs_model
          $this->num_children = $t['num_children'];
          
          if( isset($t['icon']) )
+         {
             $this->icon = $t['icon'];
+         }
+         
+         $this->valid = TRUE;
+         if( isset($t['valid']) )
+         {
+            $this->valid = $t['valid'];
+         }
+         
+         if( isset($t['popularity']) )
+         {
+            $this->popularity = $t['popularity'];
+         }
       }
    }
    
@@ -128,7 +145,9 @@ class topic extends fs_model
          {
             $st0 = $story->get($ts->story_id);
             if($st0)
+            {
                $stories[] = $st0;
+            }
             else
                $ts->delete();
          }
@@ -242,7 +261,9 @@ class topic extends fs_model
           'importance' => $this->importance,
           'num_stories' => $this->num_stories,
           'num_children' => $this->num_children,
-          'icon' => $this->icon
+          'icon' => $this->icon,
+          'valid' => $this->valid,
+          'popularity' => $this->popularity
       );
       
       if( $this->exists() )
@@ -286,6 +307,17 @@ class topic extends fs_model
       
       $tlist = array();
       foreach($this->collection->find(array('parent'=>$this->var2str($parent)))->sort(array('name'=>1)) as $t)
+         $tlist[] = new topic($t);
+      
+      return $tlist;
+   }
+   
+   public function popular()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      
+      $tlist = array();
+      foreach($this->collection->find()->sort(array('popularity'=>-1))->limit(30) as $t)
          $tlist[] = new topic($t);
       
       return $tlist;

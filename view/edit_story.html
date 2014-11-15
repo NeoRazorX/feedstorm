@@ -31,7 +31,13 @@
    <li><a href="{$fsc->story->url()}">Artículo</a></li>
    <li id="b_edit" class="active"><a href="{$fsc->story->edit_url()}">Editar</a></li>
    <li><a href="{$fsc->story->url()}#sources">Fuentes</a></li>
-   {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="#delete">Eliminar</a></li>{/if}
+   {if condition="$fsc->visitor->admin"}
+   <li id="b_delete">
+      <a href="#delete">
+         <span class="glyphicon glyphicon-trash"></span>
+      </a>
+   </li>
+   {/if}
 </ul>
 
 <div class="container-fluid" style="margin-top: 10px; margin-bottom: 50px;">
@@ -114,57 +120,57 @@
       <form action="{$fsc->url()}" method="post">
          <input type="hidden" name="delete" value="TRUE"/>
          <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-10">
                <div style="padding: 5px;">
                   <h3 style="margin: 5px 0px 5px 0px;">¿Realmente deseas eliminar este <u>artículo</u>?</h3>
                   <p>Ten en cuenta que se eliminarán todos los comentarios y ediciones.</p>
-                  <input class="btn btn-sm btn-danger" type="submit" value="eliminar"/>
                </div>
+            </div>
+            <div class="col-lg-2 text-right">
+               <button class="btn btn-danger" type="submit">
+                  <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
+               </button>
             </div>
          </div>
       </form>
    </div>
-   
-   <div class="row">
-      <div class="col-lg-12">
-         <div class="table-responsive">
-            <table class="table table-hover">
-               <thead>
-                  <tr>
-                     <th>Fecha</th>
-                     <th>Nick</th>
-                     <th>Puntos</th>
-                     <th></th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {loop="$fsc->story->editions()"}
-                  <tr>
-                     <td>{$value->timesince()}</td>
-                     <td>
-                        {if condition="$value->visitor_id==$fsc->visitor->get_id()"}
-                        <a href="{$value->url()}">Tú</a>
-                        {else}
-                        <a href="{$value->url()}">@{$value->nick}</a>
-                        {/if}
-                     </td>
-                     <td>{$value->points}</td>
-                     <td>
-                        {if condition="$value->get_id()==$fsc->story->edition_id"}
-                        <span class="label label-success">seleccionada</span>
-                        {/if}
-                     </td>
-                  </tr>
-                  {else}
-                  <tr>
-                     <td colspan="4">No hay ediciones de este artículo.</td>
-                  </tr>
-                  {/loop}
-               </tbody>
-            </table>
-         </div>
-      </div>
-   </div>
+</div>
+
+<div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th>Fecha</th>
+            <th>Nick</th>
+            <th>Puntos</th>
+            <th></th>
+         </tr>
+      </thead>
+      <tbody>
+         {loop="$fsc->story->editions()"}
+         <tr>
+            <td>{$value->timesince()}</td>
+            <td>
+               {if condition="$value->visitor_id==$fsc->visitor->get_id()"}
+               <a href="{$value->url()}">Tú</a>
+               {else}
+               <a href="{$value->url()}">@{$value->nick}</a>
+               {/if}
+            </td>
+            <td>{$value->points}</td>
+            <td>
+               {if condition="$value->get_id()==$fsc->story->edition_id"}
+               <span class="label label-success">seleccionada</span>
+               {/if}
+            </td>
+         </tr>
+         {else}
+         <tr>
+            <td colspan="4">No hay ediciones de este artículo.</td>
+         </tr>
+         {/loop}
+      </tbody>
+   </table>
 </div>
 {/if}
 

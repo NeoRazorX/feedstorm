@@ -59,7 +59,7 @@ else
    $topic = new topic();
    $topic_story = new topic_story();
    $visitor = new visitor();
-   /*
+   
    echo "Comprobamos los índices... ";
    $comment->install_indexes();
    $feed->install_indexes();
@@ -85,7 +85,7 @@ else
    $topic->cron_job();
    $topic_story->cron_job();
    $visitor->cron_job();
-   */
+   
    if( defined('FS_BOTS') )
    {
       if(FS_BOTS != '')

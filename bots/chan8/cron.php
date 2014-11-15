@@ -78,6 +78,8 @@ function chan8(&$story)
             }
          }
       }
+      
+      $story_preview->set_downloads(5);
    }
 }
 

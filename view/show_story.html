@@ -35,7 +35,13 @@
    <li id="p_info" class="active"><a href="{$fsc->story->url()}">Artículo</a></li>
    <li><a href="{$fsc->story->edit_url()}">Editar</a></li>
    <li id="p_sources"><a href="#sources">Fuentes</a></li>
-   {if condition="$fsc->visitor->admin"}<li id="b_delete"><a href="{$fsc->story->edit_url()}#delete">Eliminar</a></li>{/if}
+   {if condition="$fsc->visitor->admin"}
+   <li id="b_delete">
+      <a href="{$fsc->story->edit_url()}#delete">
+         <span class="glyphicon glyphicon-trash"></span>
+      </a>
+   </li>
+   {/if}
 </ul>
 
 <div class="container-fluid">
@@ -99,22 +105,14 @@
             </div>
             {elseif condition="$fsc->preview->type=='imgur'"}
             <div style="margin-bottom: 10px;">
-               <a target="_blank" href="{$fsc->story->link()}">
-               {if condition="$fsc->visitor->mobile()"}
-                  <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
-               {else}
-                  <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
-               {/if}
+               <a target="_blank" href="{$fsc->story->link()}" class="thumbnail">
+                  <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}"/>
                </a>
             </div>
             {elseif condition="$fsc->preview->type=='image'"}
             <div style="margin-bottom: 10px;">
-               <a target="_blank" href="{$fsc->story->link()}">
-               {if condition="$fsc->visitor->mobile()"}
-                  <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
-               {else}
-                  <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
-               {/if}
+               <a target="_blank" href="{$fsc->story->link()}" class="thumbnail">
+                  <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$fsc->story->title}"/>
                </a>
             </div>
             {elseif condition="$fsc->preview->type=='vimeo'"}
@@ -150,7 +148,7 @@
             {/loop}
          </div>
          
-         <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
+         <div class="col-lg-2 col-md-3" style="padding-right: 0px; padding-left: 0px;">
             <ul class="nav nav-pills nav-stacked">
                <li class="active">
                   <a href="#">
@@ -223,7 +221,12 @@
                <tr>
                   <td>{$value->timesince()}</td>
                   <td><a href="{$value->link()}">{$value->title}</a></td>
-                  <td><a href="{$value->feed_url()}">{$value->feed_name()}</a></td>
+                  <td>
+                     <a href="{$value->feed_url()}">{$value->feed_name()}</a>
+                     {if condition="$fsc->visitor->in_suscriptions($value->feed_id)"}
+                     &nbsp; <span class="glyphicon glyphicon-check" title="estás suscrito a esta fuente"></span>
+                     {/if}
+                  </td>
                </tr>
                {else}
                <tr>
@@ -239,6 +242,7 @@
    
    <div class="row">
       <div class="col-lg-10 col-md-9">
+         {if condition="!$fsc->visitor->admin"}
          <div>
             {if condition="$fsc->visitor->mobile()"}
                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
@@ -256,6 +260,7 @@
                </script>
             {/if}
          </div>
+         {/if}
          
          {loop="$fsc->related_stories()"}
             <div style="margin: 40px 0px 10px 0px;">
@@ -287,7 +292,8 @@
       </div>
       
       <div class="col-lg-2 col-md-3 text-center">
-         {if condition="!$fsc->visitor->mobile()"}
+         {if condition="$fsc->visitor->admin"}
+         {elseif condition="!$fsc->visitor->mobile()"}
          <br/>
          <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
          <!-- Feedstorm_lateral2 -->
@@ -318,14 +324,15 @@
             <div class="modal-footer">
                {if condition="$fsc->visitor->admin"}
                <input type="hidden" name="human" value=""/>
-               <input class="btn btn-sm btn-primary" type="submit" value="Comentar"/>
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-comment"></span> &nbsp; Comentar
+               </button>
                {else}
                <div class="input-group">
                   <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
                   <span class="input-group-btn">
                      <button class="btn btn-primary" type="submit">
-                        <span class="glyphicon glyphicon-comment"></span>
-                        &nbsp; Comentar
+                        <span class="glyphicon glyphicon-comment"></span> &nbsp; Comentar
                      </button>
                   </span>
                </div>

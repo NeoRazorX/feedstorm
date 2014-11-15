@@ -89,16 +89,44 @@ class topic_story extends fs_model
       }
    }
    
+   /**
+    * He detectado muchos duplicados, así que he modificado esta función para eliminarlos.
+    * Una vez solucionado habrá que encontrar el error que produce los duplicados
+    * y volver a cambiar esta función.
+    */
    public function exists()
    {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $data = $data2 = FALSE;
+      
+      if( isset($this->story_id) AND isset($this->topic_id) )
+      {
+         $data = $this->get2($this->topic_id, $this->story_id);
+      }
+      
       if( isset($this->id) )
       {
-         $this->add2history(__CLASS__.'::'.__FUNCTION__);
-         $data = $this->collection->findone( array('_id' => $this->id) );
-         if($data)
-            return TRUE;
-         else
-            return FALSE;
+         $data2 = $this->collection->findone( array('_id' => $this->id) );
+      }
+      
+      if($data AND $data2)
+      {
+         $this->id = $data->get_id();
+         
+         /// eliminamos el duplicado
+         $aux = new topic_story($data2);
+         $aux->delete();
+         
+         return TRUE;
+      }
+      else if($data)
+      {
+         $this->id = $data->get_id();
+         return TRUE;
+      }
+      else if($data2)
+      {
+         return TRUE;
       }
       else
          return FALSE;
@@ -181,8 +209,22 @@ class topic_story extends fs_model
       
       $tlist = array();
       $search = array( 'topic_id' => $this->var2str($tid) );
+      $tssid = FALSE;
       foreach($this->collection->find($search)->sort(array('popularity'=>-1))->limit(FS_MAX_STORIES) as $t)
-         $tlist[] = new topic_story($t);
+      {
+         /// aprobechamos para buscar fallos
+         if($t['story_id'] == $tssid)
+         {
+            $this->new_error('Se ha detectado un artículo duplicado enlazado a este tema.');
+            $fail = new topic_story($t);
+            $fail->delete();
+         }
+         else
+         {
+            $tssid = $t['story_id'];
+            $tlist[] = new topic_story($t);
+         }
+      }
       
       /// ordenamos por fecha
       usort($tlist, function($a, $b) {

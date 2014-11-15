@@ -1,24 +1,76 @@
 {include="header"}
 
-<div class="container-fluid">
-   <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
-         {loop="$fsc->split_stories($fsc->visits, 3, $value1)"}
-            <div class="well well-sm">
-               <h4 style="margin: 0px;">
-                  <a href="{$value2['story']->url()}">{$value2['story']->title}</a>
-               </h4>
-               <p style="margin: 3px 0px 2px 0px;">
-                  <span class="badge">{$value2['spc']}</span> segundos entre clics,
-                  <span class="badge">{$value2['visits']}</span> visitas.
-               </p>
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Visitas</a>
+      </li>
+      <li role="presentation">
+         <a href="#visitors" aria-controls="visitors" role="tab" data-toggle="tab">Usuarios</a>
+      </li>
+   </ul>
+   
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="home">
+         <div class="container-fluid">
+            <div class="row">
+            {loop="$fsc->visits"}
+               {if condition="$counter%3==0"}
+               </div><div class="row" style="margin-bottom: 15px;">
+               {/if}
+               <div class="col-md-4">
+                  <h4 style="margin-bottom: 5px;">
+                     <a href="{$value['story']->url()}">{$value['story']->title}</a>
+                  </h4>
+                  <div class="small">
+                     <span class="glyphicon glyphicon-time" aria-hidden="true"></span> {$value['spc']} segundos entre clics,
+                     <span class="glyphicon glyphicon-stats" aria-hidden="true"></span> {$value['visits']} visitas.
+                  </div>
+               </div>
+            {/loop}
             </div>
-         {/loop}
          </div>
-      {/loop}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="visitors">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Nick</th>
+                     <th>Useragent</th>
+                     <th>IP</th>
+                     <th class="text-right">Visitas</th>
+                     <th class="text-right">Suscripciones</th>
+                     <th class="text-right">Ediciones</th>
+                     <th class="text-right">Artículos</th>
+                     <th class="text-right">Comentarios</th>
+                     <th class="text-right">Último login</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->visitor->usuals()"}
+               <tr>
+                  <td>
+                     {$value->nick}
+                     {if condition="$value->admin"}
+                     <span class="glyphicon glyphicon-tower" aria-hidden="true"></span>
+                     {/if}
+                  </td>
+                  <td>{$value->user_agent}</td>
+                  <td>{$value->ip}</td>
+                  <td class="text-right">{$value->num_visits}</td>
+                  <td class="text-right">{$value->num_suscriptions}</td>
+                  <td class="text-right">{$value->num_editions}</td>
+                  <td class="text-right">{$value->num_stories}</td>
+                  <td class="text-right">{$value->num_comments}</td>
+                  <td class="text-right">{$value->login_timesince()}</td>
+               </tr>
+               {/loop}
+            </table>
+         </div>
+      </div>
    </div>
 </div>
+
+
 
 {include="footer"}

@@ -47,22 +47,24 @@ abstract class fs_controller
       {
          $visitor = $this->visitor->get($_COOKIE['key']);
          if($visitor)
+         {
             $this->visitor = $visitor;
+         }
          else
             $this->new_error_msg('No se encuentra el usuario.');
       }
       
-      if($this->visitor->noob)
-      {
-         $this->new_message(FS_NAME.' usa cookies propias y de terceros para
-            mejorar tu experiencia de navegación y realizar tareas de análisis.
-            Al continuar con tu navegación entendemos que das tu consentimiento
-            a nuestra política de cookies.');
-      }
-      
       $this->visitor->login();
-      if( $this->visitor->save() )
+      if( isset($_GET['cookies_ok']) )
+      {
+         $this->visitor->cookies_ok = TRUE;
+         $this->visitor->need_save = TRUE;
+         $this->visitor->save();
+      }
+      else if( $this->visitor->save() )
+      {
          setcookie('key', $this->visitor->get_id(), time()+FS_MAX_AGE, FS_PATH);
+      }
       
       $this->template = $name;
       $this->noindex = TRUE;
@@ -75,7 +77,7 @@ abstract class fs_controller
    
    public function version()
    {
-      return '2.1.1';
+      return '2.2';
    }
    
    public function php_version()

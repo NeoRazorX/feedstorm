@@ -6,8 +6,6 @@
    {
       $("#p_info").removeClass('active');
       $("#t_info").hide();
-      $("#p_grafo").removeClass('active');
-      $("#t_grafo").hide();
       $("#p_edit").removeClass('active');
       $("#t_edit").hide();
       $("#p_delete").removeClass('active');
@@ -22,31 +20,6 @@
       {
          $("#p_delete").addClass('active');
          $("#t_delete").show();
-      }
-      else if(window.location.hash.substring(1) == 'grafo')
-      {
-         $("#p_grafo").addClass('active');
-         $("#t_grafo").show();
-         
-         var nodes = [
-            {loop="$fsc->nodes"}
-            {id: {$value[0]}, label: '{$value[1]}'},
-            {/loop}
-         ];
-         
-         var edges = [
-            {loop="$fsc->edges"}
-            {from: {$value[0]}, to: {$value[1]}, value: {$value[2]/2}},
-            {/loop}
-         ];
-         
-         var container = document.getElementById('grafo-container');
-         var data = {
-            nodes: nodes,
-            edges: edges
-         };
-         var options = {};
-         var network = new vis.Network(container, data, options);
       }
       else
       {
@@ -64,12 +37,11 @@
 
 <ul class="nav nav-tabs">
    <li id="p_info" class="active"><a href="{$fsc->topic->url()}">Tema</a></li>
-   <li id="p_grafo"><a href="#grafo">Grafo</a></li>
    {if condition="$fsc->visitor->admin OR $fsc->visitor->points >= 10"}
    <li id="p_edit"><a href="#edit">Editar</a></li>
    {/if}
    {if condition="$fsc->visitor->admin"}
-   <li id="p_delete"><a href="#delete">Eliminar</a></li>
+   <li id="p_delete"><a href="#delete"><span class="glyphicon glyphicon-trash"></span></a></li>
    {/if}
 </ul>
 
@@ -94,6 +66,12 @@
                   <p class="list-group-item-text">{$fsc->parent->title}</p>
                </a>
                {/if}
+               {if condition="$fsc->topic->popularity > 0"}
+               <a href="#" class="list-group-item">
+                  <h4 class="list-group-item-heading">Popularidad:</h4>
+                  <p class="list-group-item-text">{$fsc->topic->popularity}</p>
+               </a>
+               {/if}
                <a href="#" class="list-group-item">
                   <h4 class="list-group-item-heading">Artículos:</h4>
                   <p class="list-group-item-text">{$fsc->topic->num_stories}</p>
@@ -112,23 +90,25 @@
       
       <div class="row">
          <div class="col-lg-10 col-md-9">
+            {if condition="!$fsc->visitor->admin"}
             <div>
-            {if condition="$fsc->visitor->mobile()"}
+               {if condition="$fsc->visitor->mobile()"}
                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                <!-- feedstorm_movil -->
                <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
                <script>
                   (adsbygoogle = window.adsbygoogle || []).push({});
                </script>
-            {else}
+               {else}
                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
                <!-- feedstorm -->
                <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
                <script>
                   (adsbygoogle = window.adsbygoogle || []).push({});
                </script>
-            {/if}
+               {/if}
             </div>
+            {/if}
             
             {loop="$fsc->stories"}
                <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
@@ -182,7 +162,9 @@
          
          <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
             <div class="list-group">
-               <a href="{$path}topic_list?parent={$fsc->topic->get_id()}" class="list-group-item active">Añadir...</a>
+               <a href="{$path}topic_list?parent={$fsc->topic->get_id()}" class="list-group-item active">
+                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Añadir...
+               </a>
                {loop="$fsc->children_topics"}
                <a href="{$value->url()}" class="list-group-item">{$value->title}</a>
                {/loop}
@@ -191,17 +173,9 @@
       </div>
    </div>
    
-   <div id="t_grafo" style="margin-bottom: 50px; padding-top: 20px;">
+   <div id="t_edit" style="margin-bottom: 50px; padding-top: 20px;">
       <div class="row">
          <div class="col-lg-12">
-            <div id="grafo-container"></div>
-         </div>
-      </div>
-   </div>
-   
-   <div id="t_edit" style="margin-bottom: 50px;">
-      <div class="row">
-         <div class="col-lg-12" style="padding-top: 10px;">
             <form action="{$fsc->url()}" method="post" class="form">
                <div class="form-group">
                   Título:
@@ -228,6 +202,12 @@
                   </span>
                   <input class="form-control" type="text" name="icon" placeholder="url del icono" value="{$fsc->topic->icon}" autocomplete="off"/>
                </div>
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="valid" value="TRUE"{if condition="$fsc->topic->valid"} checked="checked"{/if}/>
+                     tema validado
+                  </label>
+               </div>
                <div style="margin-top: 5px; text-align: right;">
                   <button class="btn btn-primary btn-sm" type="submit">
                      <span class="glyphicon glyphicon-floppy-disk"></span>
@@ -242,11 +222,13 @@
    <div id="t_delete" style="margin-bottom: 50px;">
       <div class="row">
          <div class="col-lg-10">
-            <h1>Eliminar</h1>
-            <p>¿Realmente desde as eliminar este tema?</p>
+            <h2 style="margin-bottom: 5px;">¿Realmente deseas eliminar este tema?</h2>
+            <p>Piensatelo bien, porque no hay vuelta atrás. A menos que tengas una copia de seguridad :D</p>
          </div>
          <div class="col-lg-2 text-right" style="padding-top: 20px;">
-            <a class="btn btn-danger" href="{$path}topic_list?delete={$fsc->topic->get_id()}">eliminar</a>
+            <a class="btn btn-danger" href="{$path}topic_list?delete={$fsc->topic->get_id()}">
+               <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
+            </a>
          </div>
       </div>
    </div>

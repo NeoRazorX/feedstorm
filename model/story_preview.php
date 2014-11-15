@@ -28,18 +28,31 @@ class story_preview
    private $topic;
    private $topic_list;
    
+   private static $downloads;
+   
    public function __construct()
    {
       $this->type = FALSE;
       
       $this->topic = new topic();
       $this->topic_list = array();
+      
+      if( !isset(self::$downloads) )
+      {
+         self::$downloads = 2;
+      }
+   }
+   
+   public function set_downloads($num)
+   {
+      self::$downloads = $num;
    }
    
    public function load($url, $text='')
    {
       $this->link = FALSE;
       $this->type = FALSE;
+      $this->filename = FALSE;
       
       $links = array($url);
       
@@ -53,14 +66,7 @@ class story_preview
       
       foreach($links as $link)
       {
-         if( $this->is_valid_image_url($link) )
-         {
-            $this->link = $link;
-            $this->filename = $link;
-            $this->type = 'image';
-            break;
-         }
-         else if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
+         if( mb_substr($link, 0, 19) == 'http://i.imgur.com/' )
          {
             $parts = explode('/', $link);
             if( count($parts) >= 4 )
@@ -69,6 +75,13 @@ class story_preview
                $this->type = 'imgur';
                $this->link = $link;
             }
+            break;
+         }
+         else if( $this->is_valid_image_url($link) )
+         {
+            $this->link = $link;
+            $this->filename = $link;
+            $this->type = 'image';
             break;
          }
          else if( mb_substr($link, 0, 29) == 'http://www.youtube.com/embed/' )
@@ -119,25 +132,30 @@ class story_preview
                {
                   if( !file_exists($this->filename) )
                   {
-                     try
+                     if( self::$downloads > 0 )
                      {
-                        $html = $this->curl_download('http://vimeo.com/api/v2/video/'.$video_id.'.php', FALSE);
-                        if($html)
+                        try
                         {
-                           $hash = unserialize($html);
-                           if( isset($hash[0]['thumbnail_medium']) )
+                           $html = $this->curl_download('http://vimeo.com/api/v2/video/'.$video_id.'.php', FALSE);
+                           if($html)
                            {
-                              $this->curl_save($hash[0]['thumbnail_medium'], 'tmp/vimeo/'.$video_id);
-                              $this->type = 'vimeo';
-                              $this->filename = $video_id;
-                              $this->link = 'http://vimeo.com/'.$video_id;
-                              break;
+                              $hash = unserialize($html);
+                              if( isset($hash[0]['thumbnail_medium']) )
+                              {
+                                 $this->curl_save($hash[0]['thumbnail_medium'], 'tmp/vimeo/'.$video_id);
+                                 $this->type = 'vimeo';
+                                 $this->filename = $video_id;
+                                 $this->link = 'http://vimeo.com/'.$video_id;
+                                 break;
+                              }
                            }
                         }
-                     }
-                     catch(Exception $e)
-                     {
-                        $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$link."\n".$e);
+                        catch(Exception $e)
+                        {
+                           $this->new_error('Imposible obtener los datos del vídeo de vimeo: '.$link."\n".$e);
+                        }
+                        
+                        self::$downloads--;
                      }
                   }
                   else if( filesize($this->filename) > 0 )
@@ -158,22 +176,44 @@ class story_preview
             $filename = 'tmp/imgur2/'.str_replace( '/', '_', str_replace( ':', '_', $link) );
             if( !file_exists($filename) )
             {
-               $html = $this->curl_download($link);
-               $urls = array();
-               if( preg_match_all('#<meta name="twitter:image" content="http://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
+               if( self::$downloads > 0 )
                {
-                  $this->filename = 'http://i.imgur.com/'.$urls[1][0].'.'.$urls[2][0];
-               }
-               else if( preg_match_all('#<meta name="twitter:image0:src" content="http://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
-               {
-                  $this->filename = 'http://i.imgur.com/'.$urls[1][0].'.'.$urls[2][0];
-               }
-               
-               $file = fopen($filename, 'w');
-               if($file)
-               {
-                  fwrite($file, $this->filename);
-                  fclose($file);
+                  $html = $this->curl_download($link);
+                  $urls = array();
+                  if( preg_match_all('#content="https://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
+                  {
+                     foreach($urls[1] as $i => $value)
+                     {
+                        if( $this->is_valid_image_url('https://i.imgur.com/'.$urls[1][$i].'.'.$urls[2][$i]) )
+                        {
+                           $this->filename = 'https://i.imgur.com/'.$urls[1][$i].'.'.$urls[2][$i];
+                           break;
+                        }
+                     }
+                  }
+                  else if( preg_match_all('#content="http://i.imgur.com/(\w*).(\w*)#', $html, $urls) )
+                  {
+                     foreach($urls[1] as $i => $value)
+                     {
+                        if( $this->is_valid_image_url('https://i.imgur.com/'.$urls[1][$i].'.'.$urls[2][$i]) )
+                        {
+                           $this->filename = 'http://i.imgur.com/'.$urls[1][$i].'.'.$urls[2][$i];
+                           break;
+                        }
+                     }
+                  }
+                  
+                  if($this->filename)
+                  {
+                     $file = fopen($filename, 'w');
+                     if($file)
+                     {
+                        fwrite($file, $this->filename);
+                        fclose($file);
+                     }
+                  }
+                  
+                  self::$downloads--;
                }
             }
             else
@@ -198,40 +238,45 @@ class story_preview
             $filename = 'tmp/twitter/'.str_replace( '/', '_', str_replace( ':', '_', $link) );
             if( !file_exists($filename) )
             {
-               $html = $this->curl_download($link);
-               if( strpos($html, '<div class="replies-to') !== FALSE )
+               if( self::$downloads > 0 )
                {
-                  /// cortamos hasta las respuestas
-                  $html = substr($html, 0, strpos($html, '<div class="replies-to'));
-               }
-               
-               $urls = array();
-               if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-_]*).(\w*)#', $html, $urls) )
-               {
-                  $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
-                  $this->link = $this->filename;
-                  $this->type = 'image';
-               }
-               else if( preg_match_all('#data-expanded-url="https://www.youtube.com/watch\?v=([a-zA-Z0-9\-_]*)#', $html, $urls) )
-               {
-                  $this->filename = $urls[1][0];
-                  $this->link = 'http://www.youtube.com/embed/'.$this->filename;
-                  $this->type = 'youtube';
-               }
-               else if( preg_match_all('#https://pbs.twimg.com/profile_images/(\w*)/(\w*)_bigger.(\w*)#', $html, $urls) )
-               {
-                  $this->filename = 'https://pbs.twimg.com/profile_images/'.$urls[1][0].'/'.$urls[2][0].'_bigger.'.$urls[3][0];
-                  $this->link = $this->filename;
-                  $this->type = 'image';
-               }
-               
-               $file = fopen($filename, 'w');
-               if($file)
-               {
-                  fwrite($file, 'filename = "'.$this->filename."\";\n");
-                  fwrite($file, 'link = "'.$this->link."\";\n");
-                  fwrite($file, 'type = "'.$this->type."\";\n");
-                  fclose($file);
+                  $html = $this->curl_download($link);
+                  if( strpos($html, '<div class="replies-to') !== FALSE )
+                  {
+                     /// cortamos hasta las respuestas
+                     $html = substr($html, 0, strpos($html, '<div class="replies-to'));
+                  }
+                  
+                  $urls = array();
+                  if( preg_match_all('#https://pbs.twimg.com/media/([a-zA-Z0-9\-_]*).(\w*)#', $html, $urls) )
+                  {
+                     $this->filename = 'https://pbs.twimg.com/media/'.$urls[1][0].'.'.$urls[2][0];
+                     $this->link = $this->filename;
+                     $this->type = 'image';
+                  }
+                  else if( preg_match_all('#data-expanded-url="https://www.youtube.com/watch\?v=([a-zA-Z0-9\-_]*)#', $html, $urls) )
+                  {
+                     $this->filename = $urls[1][0];
+                     $this->link = 'http://www.youtube.com/embed/'.$this->filename;
+                     $this->type = 'youtube';
+                  }
+                  else if( preg_match_all('#https://pbs.twimg.com/profile_images/(\w*)/(\w*)_bigger.(\w*)#', $html, $urls) )
+                  {
+                     $this->filename = 'https://pbs.twimg.com/profile_images/'.$urls[1][0].'/'.$urls[2][0].'_bigger.'.$urls[3][0];
+                     $this->link = $this->filename;
+                     $this->type = 'image';
+                  }
+                  
+                  $file = fopen($filename, 'w');
+                  if($file)
+                  {
+                     fwrite($file, 'filename = "'.$this->filename."\";\n");
+                     fwrite($file, 'link = "'.$this->link."\";\n");
+                     fwrite($file, 'type = "'.$this->type."\";\n");
+                     fclose($file);
+                  }
+                  
+                  self::$downloads--;
                }
             }
             else
@@ -314,7 +359,7 @@ class story_preview
          
          case 'imgur':
             $parts2 = explode('.', $this->filename);
-            $thumbnail = 'http://i.imgur.com/'.$parts2[0].'s.'.$parts2[1];
+            $thumbnail = 'http://i.imgur.com/'.$parts2[0].'b.'.$parts2[1];
             break;
          
          case 'youtube':
@@ -350,11 +395,21 @@ class story_preview
       $extensions = array('.png', '.jpg', 'jpeg', '.gif', 'webp');
       
       if( mb_substr($url, 0, 4) != 'http' )
+      {
          $status = FALSE;
+      }
       else if( mb_strlen($url) > 200 )
+      {
          $status = FALSE;
+      }
       else if( !in_array( mb_strtolower( mb_substr($url, -4) ), $extensions) )
+      {
          $status = FALSE;
+      }
+      else if( mb_substr($url, -9) == 'blank.jpg' )
+      {
+         $status = FALSE;
+      }
       
       return $status;
    }

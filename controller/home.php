@@ -23,8 +23,10 @@ require_once 'model/story_preview.php';
 
 class home extends fs_controller
 {
+   public $featured;
    public $preview;
    public $stories;
+   public $topic;
    
    public function __construct()
    {
@@ -33,6 +35,15 @@ class home extends fs_controller
       $this->noindex = FALSE;
       $this->preview = new story_preview();
       $this->stories = $this->visitor->last_stories();
+      $this->topic = new topic();
+      
+      foreach($this->stories as $i => $value)
+      {
+         if($i == 0 OR $value->featured)
+         {
+            $this->featured = $value;
+         }
+      }
       
       if( $this->visitor->admin )
       {

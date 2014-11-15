@@ -59,7 +59,9 @@
                            mensaje masivo
                         </label>
                      </span>
-                     <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+                     <button class="btn btn-sm btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> &nbsp; Enviar
+                     </button>
                   </div>
                   {else}
                   <div style="margin-top: 5px; text-align: right;">
@@ -67,7 +69,9 @@
                         <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
                      </div>
                      Borra el número si eres humano
-                     <input class="btn btn-sm btn-primary" type="submit" value="guardar"/>
+                     <button class="btn btn-sm btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> &nbsp; Enviar
+                     </button>
                   </div>
                   {/if}
                </form>

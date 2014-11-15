@@ -1,52 +1,206 @@
 {include="header"}
 
 {if condition="$fsc->stories"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      $("#b_sabias_que").click(function(event) {
+         event.preventDefault();
+         $("#div_portada").hide();
+         $("#div_temas").hide();
+         $("#div_sabias_que").show();
+         $("#li_portada").removeClass('active');
+         $("#li_temas").removeClass('active');
+         $("#li_sabias_que").addClass('active');
+      });
+      $("#b_portada").click(function(event) {
+         event.preventDefault();
+         $("#div_sabias_que").hide();
+         $("#div_temas").hide();
+         $("#div_portada").show();
+         $("#li_sabias_que").removeClass('active');
+         $("#li_temas").removeClass('active');
+         $("#li_portada").addClass('active');
+      });
+      $("#b_temas").click(function(event) {
+         event.preventDefault();
+         $("#div_sabias_que").hide();
+         $("#div_portada").hide();
+         $("#div_temas").show();
+         $("#li_sabias_que").removeClass('active');
+         $("#li_portada").removeClass('active');
+         $("#li_temas").addClass('active');
+      });
+   });
+</script>
+
 <div class="container-fluid">
-   {if condition="count($fsc->stories)>0"}
+   {if condition="$fsc->featured"}
    <div class="row">
       <div class="col-lg-12">
-         <!--{$fsc->preview->load($fsc->stories[0]->link, $fsc->stories[0]->description_uncut())}-->
+         <!--{$fsc->preview->load($fsc->featured->link, $fsc->featured->description_uncut())}-->
          {if condition="!$fsc->preview->type"}
-         <!--{$fsc->preview->load_topics($fsc->stories[0]->topics)}-->
+         <!--{$fsc->preview->load_topics($fsc->featured->topics)}-->
          {/if}
          
          <div>
             {if condition="$fsc->preview->type"}
             <div class="pull-left">
-               <img src="{$fsc->preview->preview()}" alt="{$fsc->stories[0]->title}" style="max-height: 100px; max-width: 150px; margin-right: 10px;">
+               <img src="{$fsc->preview->preview()}" alt="{$fsc->featured->title}" style="max-height: 100px; max-width: 150px; margin-right: 10px;">
             </div>
             {/if}
             <h1 style="margin-bottom: 0px;">
-               <a href="{$fsc->stories[0]->url()}">{$fsc->stories[0]->title}</a>
+               <a href="{$fsc->featured->url()}">{$fsc->featured->title}</a>
             </h1>
             <p>
-               {$fsc->stories[0]->description(500)}
+               {$fsc->featured->description(500)}
                <br/>
                <span class="small">
-                  {if condition="$fsc->stories[0]->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
-                  <span class="glyphicon glyphicon-time"></span> {$fsc->stories[0]->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$fsc->stories[0]->popularity()} &nbsp;
-                  {if condition="$fsc->stories[0]->num_comments>0"}
-                  <span class="glyphicon glyphicon-comment"></span> {$fsc->stories[0]->num_comments}
+                  {if condition="$fsc->featured->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                  <span class="glyphicon glyphicon-time"></span> {$fsc->featured->timesince()} &nbsp;
+                  <span class="glyphicon glyphicon-fire"></span> {$fsc->featured->popularity()} &nbsp;
+                  {if condition="$fsc->featured->num_comments>0"}
+                  <span class="glyphicon glyphicon-comment"></span> {$fsc->featured->num_comments}
                   {/if}
                   
-                  {if condition="$fsc->stories[0]->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                  {if condition="$fsc->stories[0]->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                  {if condition="!$fsc->stories[0]->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                  {if condition="$fsc->stories[0]->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                  {if condition="$fsc->featured->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                  {if condition="$fsc->featured->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                  {if condition="!$fsc->featured->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                  {if condition="$fsc->featured->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
                </span>
             </p>
          </div>
-         <hr/>
       </div>
    </div>
    {/if}
    
    <div class="row">
+      <div class="col-lg-12" style="margin-bottom: 10px; margin-top: 10px;">
+         <ul class="nav nav-tabs">
+            <li role="presentation" class="active" id="li_portada">
+               <a href="#" id="b_portada">Portada</a>
+            </li>
+            <li role="presentation" id="li_temas">
+               <a href="#" id="b_temas">Temas</a>
+            </li>
+            <li role="presentation" id="li_sabias_que">
+               <a href="#" id="b_sabias_que">Sabías que...</a>
+            </li>
+         </ul>
+      </div>
+   </div>
+   <div id="div_sabias_que" style="margin-bottom: 50px; display: none;">
+      <div class="row">
+         <div class="col-md-6">
+            <h3 style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-check" aria-hidden="true"></span>
+               <a href="{$path}suscriptions">Suscripciones</a>
+            </h3>
+            <p>
+               Puedes suscribirte a las fuentes que tú quieras,
+               así tu portada se generará a partir de los artículos de esas fuentes.
+               Y sin perderte la portada original, que la tendrás en la sección populares.
+            </p>
+         </div>
+         <div class="col-md-6">
+            <h3 style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+               <a href="{$path}feed_list">Fuentes</a>
+            </h3>
+            <p>
+               ¿Tienes blog? No te cortes y añádelo a las fuentes de {$name}. Conseguirás que
+               tus artículos lleguen a más gente sin miedo a votos negativos.
+            </p>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <h3 style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>
+               Aquí no hay mafia
+            </h3>
+            <p>
+               Puedes agregar tus propios artículos o los de tus fuentes favoritas sin miedo
+               a los votos de SPAM, irrelevante, microbloging o cualquier tipo de voto negativo que
+               se invente Ricardo Gallir para permitir que un pequeño grupo de usuarios tumbe noticias
+               que no se ajustan a su particular punto de vista (respira).
+            </p>
+         </div>
+         <div class="col-md-6">
+            <h3 style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+               <a href="{$path}topic_list">Temas</a>
+            </h3>
+            <p>
+               Las categorías son demasiado genéricas, por eso en {$name} usamos temas. Los temas
+               sirven para agrupar artículos y aportar más información como imágenes o la descripción
+               del tema (para un personaje, evento, etc).
+            </p>
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-md-6">
+            <h3 style="margin-bottom: 5px;">
+               <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+               Pon tu granito de arena
+            </h3>
+            <p>
+               Con tan solo un clic puedes hacer que más gente conozca {$name}. Ayúdanos a construir
+               una web mejor ;-)
+            </p>
+            
+            {if condition="mt_rand(0,1)==0"}
+            <div>
+               <script src="https://apis.google.com/js/platform.js" async defer>
+                  {lang: 'es'}
+               </script>
+               <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="300"></div>
+            </div>
+            {else}
+            <div>
+               <a href="https://twitter.com/share" class="twitter-share-button" data-via="neorazorx" data-size="large" data-hashtags="facturascripts">Tweet</a>
+               <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            </div>
+            {/if}
+         </div>
+      </div>
+   </div>
+   <div id="div_temas" style="margin-bottom: 50px; display: none;">
+      <div class="row">
+         {loop="$fsc->topic->popular()"}
+            {if condition="$counter%4==0"}
+            </div><div class="row">
+            {/if}
+            <div class="col-md-3">
+               <h3 style="margin-bottom: 5px; margin-top: 10px;"><a href="{$value->url()}">{$value->title}</a></h3>
+               {if condition="$value->icon!=''"}
+               <div class="pull-right">
+                  <img src="{$value->icon}" alt="{$value->title}" style="max-width: 80px; max-height: 80px; margin-left: 5px;"/>
+               </div>
+               {/if}
+               <p class="text-justify" style="margin-bottom: 0px;">{$value->description()}</p>
+               <div class="small" style="margin-bottom: 15px;">
+                  {if condition="$value->popularity>0"}
+                  <span class="glyphicon glyphicon-fire" title="popularidad"></span> {$value->popularity} &nbsp;
+                  {/if}
+                  <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                  {$value->num_stories} artículos.
+               </div>
+            </div>
+         {else}
+            <div class="col-md-12">
+               <h3>No hay ningún tema creado.</h3>
+               <p>Usa la pestaña <b>Nuevo...</b> para añadir unos cuantos.</p>
+            </div>
+         {/loop}
+      </div>
+   </div>
+   
+   <div class="row" id="div_portada">
       <div class="col-lg-5 col-md-12">
+      <!--{$hr=false}-->
       {loop="$fsc->stories"}
-         {if condition="$counter>0 AND $counter<14"}
-            {if condition="$counter>1"}<hr/>{/if}
+         {if condition="$value->get_id()!=$fsc->featured->get_id() AND $counter<14"}
+            {if condition="$hr"}<hr/>{else}<!--{$hr=true}-->{/if}
             
             <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {if condition="!$fsc->preview->type"}
@@ -56,12 +210,14 @@
             <div>
                {if condition="$fsc->preview->type"}
                <div class="pull-left">
-                  <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px; margin-right: 10px;">
+                  <a href="{$value->url()}">
+                     <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px; margin-right: 10px;">
+                  </a>
                </div>
                {/if}
-               <h2 style="margin-top: 0px; margin-bottom: 5px;">
+               <h3 style="margin-top: 0px; margin-bottom: 5px;">
                   <a href="{$value->url()}">{$value->title}</a>
-               </h2>
+               </h3>
                <p>
                   {$value->description(255)}
                   <br/>
@@ -92,56 +248,35 @@
             <!--{$fsc->preview->load_topics($value->topics)}-->
             {/if}
             
-            {if condition="$fsc->preview->type"}
-            <div class="media">
-               <a class="pull-right" href="{$value->url()}">
-                  <img class="media-object" src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 120px;">
-               </a>
-               <div class="media-body">
-                  <h4 class="media-heading">
-                     <a href="{$value->url()}">{$value->title}</a>
-                  </h4>
-                  <p>
-                     {$value->description(200)}
-                     <br/>
-                     <span class="small">
-                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
-                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                        <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
-                        {if condition="$value->num_comments>0"}
-                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
-                        {/if}
-                        
-                        {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                        {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                        {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                        {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-                     </span>
-                  </p>
+            <div style="margin-bottom: 15px;">
+               {if condition="$fsc->preview->type"}
+               <div class="pull-right">
+                  <a href="{$value->url()}">
+                     <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 100px; margin-left: 10px;">
+                  </a>
                </div>
+               {/if}
+               <h4 style="margin-top: 0px; margin-bottom: 0px;">
+                  <a href="{$value->url()}">{$value->title}</a>
+               </h4>
+               <p>
+                  {$value->description(200)}
+                  <br/>
+                  <span class="small">
+                     {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                     <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                     <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
+                     {if condition="$value->num_comments>0"}
+                     <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                     {/if}
+                     
+                     {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
+                     {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
+                     {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
+                     {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
+                  </span>
+               </p>
             </div>
-            {else}
-            <h4 style="margin-bottom: 0px;">
-               <a href="{$value->url()}">{$value->title}</a>
-            </h4>
-            <p>
-               {$value->description(200)}
-               <br/>
-               <span class="small">
-                  {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
-                  <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->popularity()} &nbsp;
-                  {if condition="$value->num_comments>0"}
-                  <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
-                  {/if}
-                  
-                  {if condition="$value->penalize"}<span class="label label-danger" title="este artículo está destacado">penalizado</span>{/if}
-                  {if condition="$value->featured"}<span class="label label-success" title="este artículo está destacado">destacada</span>{/if}
-                  {if condition="!$value->native_lang"}<span class="label label-default" title="este artículo NO está en español"><s>español</s></span>{/if}
-                  {if condition="$value->parody"}<span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>{/if}
-               </span>
-            </p>
-            {/if}
          {/if}
       {/loop}
       </div>
@@ -149,7 +284,7 @@
       <div class="col-lg-3 col-md-5">
          {loop="$fsc->stories"}
             {if condition="$counter>=31"}
-            <h4 style="margin-bottom: 0px;">
+            <h4 style="margin-top: 0px; margin-bottom: 0px;">
                <a href="{$value->url()}">{$value->title}</a>
             </h4>
             <p>
@@ -186,7 +321,7 @@
                   Acabas de instalar FeedStorm.
                   <ul>
                      <li>
-                        <b>Solución:</b> <a href="{$path}new_story">escribe un artículo</a> o
+                        <b>Solución:</b> <a href="#" onclick="$('#modal_new_story').modal('show');">escribe un artículo</a> o
                         <a href="{$path}feed_list">añade alguna fuente</a>.
                      </li>
                   </ul>
@@ -204,7 +339,7 @@
                   <ul>
                      <li>
                         <b>Solución:</b> construye una nueva civilización. Me he visto unos cuantos videotutoriales
-                        y creo que puedo ayudarte, pero lo primero es que <a href="{$path}new_story">escribas un artículo</a>
+                        y creo que puedo ayudarte, pero lo primero es que <a href="#" onclick="$('#modal_new_story').modal('show');">escribas un artículo</a>
                         informando a todo el mundo.
                      </li>
                   </ul>

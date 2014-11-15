@@ -25,11 +25,8 @@ class show_topic extends fs_controller
    public $children_topics;
    public $parent;
    public $preview;
-   public $topic;
-   
    public $stories;
-   public $nodes;
-   public $edges;
+   public $topic;
    
    public function __construct()
    {
@@ -37,8 +34,6 @@ class show_topic extends fs_controller
       $this->noindex = FALSE;
       $topic = new topic();
       $this->preview = new story_preview();
-      $this->nodes = array();
-      $this->edges = array();
       
       $this->topic = FALSE;
       if( isset($_GET['id']) )
@@ -59,6 +54,11 @@ class show_topic extends fs_controller
                $this->topic->keywords = mb_strtolower( trim($_POST['keywords']), 'utf8' );
                $this->topic->icon = trim($_POST['icon']);
                
+               if($this->visitor->admin)
+               {
+                  $this->topic->valid = isset($_POST['valid']);
+               }
+               
                if($_POST['parent'] != '')
                {
                   $parent = $this->topic->get($_POST['parent']);
@@ -77,8 +77,8 @@ class show_topic extends fs_controller
          $this->title = $this->topic->title;
          $this->children_topics = $this->topic->all_from($this->topic->get_id());
          $this->parent = $topic->get($this->topic->parent);
+         
          $this->stories = $this->topic->stories();
-         $this->topic_relations();
       }
       else
       {
@@ -110,55 +110,4 @@ class show_topic extends fs_controller
       else
          return parent::url();
    }
-   
-   public function add2header()
-   {
-      return '<link rel="stylesheet" href="'.FS_PATH.'view/css/vis.min.css" />'.
-           '<script src="'.FS_PATH.'view/js/vis.min.js"></script>';
    }
-   
-   private function topic_relations()
-   {
-      $num = 1;
-      $topics = array();
-      
-      foreach($this->stories as $sto)
-      {
-         $nums = array();
-         
-         foreach($sto->topics as $tid)
-         {
-            $tpic = $this->topic->get($tid);
-            
-            if( !isset($topics[$tpic->title]) )
-            {
-               $this->nodes[] = array($num, $tpic->title);
-               $topics[$tpic->title] = $num;
-               $num++;
-            }
-            
-            $nums[] = $topics[$tpic->title];
-         }
-         
-         foreach($nums as $n1)
-         {
-            foreach($nums as $n2)
-            {
-               if($n1 != $n2)
-               {
-                  if( isset($this->edges[$n1.'-'.$n2]) )
-                  {
-                     $this->edges[$n1.'-'.$n2][2]++;
-                  }
-                  else if( isset($this->edges[$n2.'-'.$n1]) )
-                  {
-                     $this->edges[$n2.'-'.$n1][2]++;
-                  }
-                  else
-                     $this->edges[$n1.'-'.$n2] = array($n1, $n2, 1);
-               }
-            }
-         }
-      }
-   }
-}

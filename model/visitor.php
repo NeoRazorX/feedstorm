@@ -38,6 +38,7 @@ class visitor extends fs_model
    public $num_visits;
    public $points;
    public $extra_points;
+   public $cookies_ok;
    
    public $noob;
    public $need_save;
@@ -61,6 +62,8 @@ class visitor extends fs_model
       $this->num_visits = 0;
       $this->points = 0;
       $this->extra_points = 0;
+      $this->cookies_ok = FALSE;
+      
       $this->noob = TRUE;
       $this->need_save = FALSE;
       
@@ -98,6 +101,9 @@ class visitor extends fs_model
          
          if( isset($k['extra_points']) )
             $this->extra_points = $k['extra_points'];
+         
+         if( isset($k['cookies_ok']) )
+            $this->cookies_ok = $k['cookies_ok'];
          
          $this->noob = FALSE;
       }
@@ -219,6 +225,22 @@ class visitor extends fs_model
       return $this->suscriptions;
    }
    
+   public function in_suscriptions($fid)
+   {
+      $yes = FALSE;
+      
+      foreach($this->suscriptions() as $sus)
+      {
+         if($sus->feed_id == $fid)
+         {
+           $yes = TRUE;
+           break;
+         }
+      }
+      
+      return $yes;
+   }
+   
    public function browser()
    {
       return $this->true_text_break($this->user_agent, 70);
@@ -301,7 +323,8 @@ class visitor extends fs_model
              'num_comments' => $this->num_comments,
              'num_visits' => $this->num_visits,
              'points' => $this->points,
-             'extra_points' => $this->extra_points
+             'extra_points' => $this->extra_points,
+             'cookies_ok' => $this->cookies_ok
          );
          
          if( $this->exists() )

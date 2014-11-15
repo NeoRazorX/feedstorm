@@ -1,30 +1,50 @@
 {include="header"}
 
-<div class="container-fluid">
-   <div class="row">
-      <div class="col-md-9">
-         <div class="well well-sm">
-            <div class="table-responsive">
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Todas las fuentes</a>
+      </li>
+      <li role="presentation">
+         <a href="#popular" aria-controls="popular" role="tab" data-toggle="tab">Populares</a>
+      </li>
+      <li>
+         <a href="#editar" data-toggle="modal" data-target="#modal_new_feed">Añadir...</a>
+      </li>
+  </ul>
+   
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="home">
+         <div class="table-responsive">
             <table class="table table-hover">
                <thead>
                   <tr>
                      <th>Fuente</th>
-                     <th>Artículos</th>
                      <th>En español</th>
-                     <th>Artículos</th>
-                     <th>Suscriptores</th>
-                     <th>Última actualización</th>
+                     <th class="text-right">Artículos</th>
+                     <th class="text-right">Suscriptores</th>
+                     <th class="text-right">Popularidad</th>
+                     <th class="text-right">Última actualización</th>
                   </tr>
                </thead>
                <tbody>
                   {loop="$fsc->feed_list"}
                   <tr>
-                     <td><a href='{$value->url()}' title="{$value->url}">{$value->name}</a></td>
-                     <td>{$value->num_stories}</td>
+                     <td>
+                        <a href='{$value->url()}' title="{$value->url}">{$value->name}</a>
+                        {if condition="$fsc->visitor->in_suscriptions($value->get_id())"}
+                        &nbsp; <span class="glyphicon glyphicon-check" title="estás suscrito a esta fuente"></span>
+                        {/if}
+                     </td>
                      <td>{if condition="$value->native_lang"}-{else}No{/if}</td>
-                     <td>{$value->num_stories}</td>
-                     <td>{$value->suscriptors}</td>
-                     <td>{$value->last_update_timesince()}</td>
+                     <td class="text-right">{$value->num_stories}</td>
+                     <td class="text-right">{$value->suscriptors}</td>
+                     <td class="text-right">
+                        {if condition="$value->popularity>0"}
+                        {$value->popularity} <span class="glyphicon glyphicon-fire"></span>
+                        {/if}
+                     </td>
+                     <td class="text-right">{$value->last_update_timesince()}</td>
                   </tr>
                   {else}
                   <tr>
@@ -33,40 +53,90 @@
                   {/loop}
                </tbody>
             </table>
-            </div>
          </div>
       </div>
-      <div class="col-md-3">
-         <form action="{$path}feed_list" method="post">
-            <div class="panel panel-primary">
-               <div class="panel-heading">
-                  <h3 class="panel-title">Añadir una fuente...</h3>
-               </div>
-               <div class="panel-body">
-                  <b>¿Tienes blog?</b>
-                  Si quieres agregarlo a {$name},
-                  aquí tienes el formulario que necesitas:
-                  <div>
-                     <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog"/>
-                  </div>
-                  {if condition="$fsc->visitor->admin"}
-                  <input type="hidden" name="human" value=""/>
+      <div role="tabpanel" class="tab-pane" id="popular">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Fuente</th>
+                     <th>En español</th>
+                     <th class="text-right">Artículos</th>
+                     <th class="text-right">Suscriptores</th>
+                     <th class="text-right">Popularidad</th>
+                     <th class="text-right">Última actualización</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {loop="$fsc->popular_feeds"}
+                  <tr>
+                     <td>
+                        <a href='{$value->url()}' title="{$value->url}">{$value->name}</a>
+                        {if condition="$fsc->visitor->in_suscriptions($value->get_id())"}
+                        &nbsp; <span class="glyphicon glyphicon-check" title="estás suscrito a esta fuente"></span>
+                        {/if}
+                     </td>
+                     <td>{if condition="$value->native_lang"}-{else}No{/if}</td>
+                     <td class="text-right">{$value->num_stories}</td>
+                     <td class="text-right">{$value->suscriptors}</td>
+                     <td class="text-right">
+                        {if condition="$value->popularity>0"}
+                        {$value->popularity} <span class="glyphicon glyphicon-fire"></span>
+                        {/if}
+                     </td>
+                     <td class="text-right">{$value->last_update_timesince()}</td>
+                  </tr>
                   {else}
-                  <div>
-                     <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
-                  </div>
-                  {/if}
-               </div>
-               <div class="panel-footer small" style="text-align: right;">
-                  {if condition="!$fsc->visitor->admin"}
-                  Borra el número si eres humano
-                  {/if}
-                  <input class="btn btn-primary btn-sm" type="submit" value="Agregar"/>
-               </div>
-            </div>
-         </form>
+                  <tr>
+                     <td colspan="5">No hay fuentes guardadas ¿Por qué no añades una? Usa el formulario de la izquierda.</td>
+                  </tr>
+                  {/loop}
+               </tbody>
+            </table>
+         </div>
       </div>
    </div>
 </div>
+
+<form action="{$path}feed_list" method="post">
+   <div class="modal fade" id="modal_new_feed">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">
+                  <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+               </button>
+               <h4 class="modal-title">Añadir una fuente...</h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                  <input class="form-control" type="text" name="feed_url" placeholder=" RSS/ATOM de tu blog" autofocus/>
+                  <p class="help-block">
+                     Para añadir una fuente (tu blog, tu canal de youtube, tu web favorita)
+                     solamente tienes que escribir el RSS/ATOM de dicha fuente.
+                  </p>
+               </div>
+               {if condition="$fsc->visitor->admin"}
+               <input type="hidden" name="human" value=""/>
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-send"></span> &nbsp; Enviar
+               </button>
+               {else}
+               <div class="input-group">
+                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  <span class="input-group-btn">
+                     <button class="btn btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
+                     </button>
+                  </span>
+               </div>
+               <p class="help-block">Borra el número si eres humano.</p>
+               {/if}
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
 
 {include="footer"}

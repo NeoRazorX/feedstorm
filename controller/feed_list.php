@@ -24,6 +24,7 @@ class feed_list extends fs_controller
 {
    public $feed;
    public $feed_list;
+   public $popular_feeds;
    
    public function __construct()
    {
@@ -84,6 +85,7 @@ class feed_list extends fs_controller
       }
       
       $this->feed_list = $this->feed->all();
+      $this->popular_feeds = $this->feed->popular();
    }
    
    public function get_description()

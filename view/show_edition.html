@@ -31,7 +31,9 @@
             <p>Piensatelo bien, porque no hay vuelta atrás.</p>
             <form action="{$fsc->url()}" method="post">
                <input type="hidden" name="delete" value="TRUE"/>
-               <input class="btn btn-sm btn-danger" type="submit" value="eliminar"/>
+               <button class="btn btn-sm btn-danger" type="submit">
+                  <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
+               </button>
             </form>
          </div>
       </div>

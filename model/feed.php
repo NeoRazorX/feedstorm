@@ -35,6 +35,7 @@ class feed extends fs_model
    public $native_lang;
    public $parody;
    public $penalize;
+   public $popularity;
    
    public function __construct($f=FALSE)
    {
@@ -52,6 +53,7 @@ class feed extends fs_model
       $this->native_lang = TRUE;
       $this->parody = FALSE;
       $this->penalize = FALSE;
+      $this->popularity = 0;
       
       if($f)
       {
@@ -71,6 +73,9 @@ class feed extends fs_model
          
          if( isset($f['penalize']) )
             $this->penalize = $f['penalize'];
+         
+         if( isset($f['popularity']) )
+            $this->popularity = $f['popularity'];
       }
    }
    
@@ -533,7 +538,9 @@ class feed extends fs_model
          $this->suscriptors = 0;
       
       if( filter_var($this->url, FILTER_VALIDATE_URL) )
+      {
          return TRUE;
+      }
       else
       {
          $this->new_error('URL no válida.');
@@ -559,7 +566,8 @@ class feed extends fs_model
              'num_stories' => $this->num_stories,
              'native_lang' => $this->native_lang,
              'parody' => $this->parody,
-             'penalize' => $this->penalize
+             'penalize' => $this->penalize,
+             'popularity' => $this->popularity
          );
          
          if( $this->exists() )
@@ -597,6 +605,15 @@ class feed extends fs_model
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $feeds = array();
       foreach($this->collection->find()->sort(array('name'=>1)) as $f)
+         $feeds[] = new feed($f);
+      return $feeds;
+   }
+   
+   public function popular()
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      $feeds = array();
+      foreach($this->collection->find()->sort(array('popularity'=>-1)) as $f)
          $feeds[] = new feed($f);
       return $feeds;
    }

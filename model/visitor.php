@@ -129,7 +129,7 @@ class visitor extends fs_model
       $time = $this->last_login_date - $this->first_login_date;
       
       if($time <= 60)
-         return $time.' segundos';
+         return '-';
       else if(60 < $time && $time <= 3600)
          return round($time/60,0).' minutos';
       else if(3600 < $time && $time <= 86400)
@@ -188,7 +188,9 @@ class visitor extends fs_model
       }
       
       if( $this->num_editions < (2*$this->num_visits) AND $this->num_stories < (2*$this->num_visits) )
+      {
          $this->points = intval( ($this->num_comments+$this->num_editions+$this->num_stories)/3 ) + $this->extra_points;
+      }
       else
          $this->points = 0;
    }
@@ -307,6 +309,13 @@ class visitor extends fs_model
    {
       if( $this->need_save AND $this->human() )
       {
+         if( $this->num_editions < (2*$this->num_visits) AND $this->num_stories < (2*$this->num_visits) )
+         {
+            $this->points = intval( ($this->num_comments+$this->num_editions+$this->num_stories)/3 ) + $this->extra_points;
+         }
+         else
+            $this->points = 0;
+         
          if( mt_rand(0, 1) == 0 )
             $this->last_visits();
          
@@ -410,9 +419,11 @@ class visitor extends fs_model
    public function usuals($num=FS_MAX_STORIES)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      
       $vlist = array();
-      foreach($this->collection->find()->sort(array('num_visits'=>-1))->limit($num) as $v)
+      foreach($this->collection->find()->sort(array('points'=>-1))->limit($num) as $v)
          $vlist[] = new visitor($v);
+      
       return $vlist;
    }
    

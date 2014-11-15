@@ -18,7 +18,7 @@
  */
 
 /**
- * Calcula la popularidad de fuentes y temas.
+ * Calcula la popularidad de fuentes, temas y premia a los usuarios habituales.
  */
 class chan10
 {
@@ -80,6 +80,20 @@ class chan10
          }
          
          $tpic->save();
+      }
+      
+      /// premiamos a los usuarios habituales
+      $visitor = new visitor();
+      foreach($visitor->last() as $vis)
+      {
+         echo '.';
+         
+         if($vis->last_login_date != $vis->first_login_date AND $vis->last_login_date > time()-3600)
+         {
+            $vis->extra_points++;
+            $vis->need_save = TRUE;
+            $vis->save();
+         }
       }
    }
 }

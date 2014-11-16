@@ -190,38 +190,52 @@ class visitor extends fs_model
    
    public function last_visits($save=TRUE)
    {
-      $sv = new story_visit();
-      
-      $num_visits = $sv->count4visitor($this->id);
-      if($this->num_visits != $num_visits)
+      if( is_null($this->id) )
       {
-         $this->num_visits = $num_visits;
-         $this->need_save = TRUE;
-         
-         if($save)
-         {
-            $this->save();
-         }
+         return array();
       }
-      
-      return $sv->all4visitor($this->id);
+      else
+      {
+         $sv = new story_visit();
+         
+         $num_visits = $sv->count4visitor($this->id);
+         if($this->num_visits != $num_visits)
+         {
+            $this->num_visits = $num_visits;
+            $this->need_save = TRUE;
+            
+            if($save)
+            {
+               $this->save();
+            }
+         }
+         
+         return $sv->all4visitor($this->id);
+      }
    }
    
    public function suscriptions()
    {
-      if( !isset($this->suscriptions) )
+      if( is_null($this->id) )
       {
-         $sus0 = new suscription();
-         $this->suscriptions = $sus0->all4visitor($this->id);
-         
-         if($this->num_suscriptions != count($this->suscriptions) )
-         {
-            $this->num_suscriptions = count($this->suscriptions);
-            $this->need_save = TRUE;
-            $this->save();
-         }
+         return array();
       }
-      return $this->suscriptions;
+      else
+      {
+         if( !isset($this->suscriptions) )
+         {
+            $sus0 = new suscription();
+            $this->suscriptions = $sus0->all4visitor($this->id);
+            
+            if($this->num_suscriptions != count($this->suscriptions) )
+            {
+               $this->num_suscriptions = count($this->suscriptions);
+               $this->need_save = TRUE;
+               $this->save();
+            }
+         }
+         return $this->suscriptions;
+      }
    }
    
    public function in_suscriptions($fid)
@@ -290,7 +304,9 @@ class visitor extends fs_model
    public function exists()
    {
       if( is_null($this->id) )
+      {
          return FALSE;
+      }
       else
       {
          $this->add2history(__CLASS__.'::'.__FUNCTION__);
@@ -308,6 +324,11 @@ class visitor extends fs_model
       {
          if( $this->num_editions < (2*$this->num_visits) AND $this->num_stories < (2*$this->num_visits) )
          {
+            if($this->extra_points < 0)
+            {
+               $this->extra_points = 0;
+            }
+            
             $this->points = intval( ($this->num_comments+$this->num_editions+$this->num_stories)/3 ) + $this->extra_points;
          }
          else

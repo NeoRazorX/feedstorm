@@ -186,16 +186,9 @@ class visitor extends fs_model
          $this->last_login_date = time();
          $this->need_save = TRUE;
       }
-      
-      if( $this->num_editions < (2*$this->num_visits) AND $this->num_stories < (2*$this->num_visits) )
-      {
-         $this->points = intval( ($this->num_comments+$this->num_editions+$this->num_stories)/3 ) + $this->extra_points;
-      }
-      else
-         $this->points = 0;
    }
    
-   public function last_visits()
+   public function last_visits($save=TRUE)
    {
       $sv = new story_visit();
       
@@ -204,7 +197,11 @@ class visitor extends fs_model
       {
          $this->num_visits = $num_visits;
          $this->need_save = TRUE;
-         $this->save();
+         
+         if($save)
+         {
+            $this->save();
+         }
       }
       
       return $sv->all4visitor($this->id);
@@ -317,7 +314,9 @@ class visitor extends fs_model
             $this->points = 0;
          
          if( mt_rand(0, 1) == 0 )
-            $this->last_visits();
+         {
+            $this->last_visits(FALSE);
+         }
          
          $data = array(
              'nick' => $this->nick,

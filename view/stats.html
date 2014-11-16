@@ -2,9 +2,18 @@
 
 <div role="tabpanel">
    <ul class="nav nav-tabs" role="tablist">
+      {if condition="$fsc->selected_visitor"}
+      <li role="presentation" class="active">
+         <a href="#s_visitor" aria-controls="s_visitor" role="tab" data-toggle="tab">@{$fsc->selected_visitor->nick}</a>
+      </li>
+      <li role="presentation">
+         <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Artículos</a>
+      </li>
+      {else}
       <li role="presentation" class="active">
          <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Artículos</a>
       </li>
+      {/if}
       <li role="presentation">
          <a href="#top_visitors" aria-controls="last_visitors" role="tab" data-toggle="tab">TOP usuarios</a>
       </li>
@@ -14,7 +23,100 @@
    </ul>
    
    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="home">
+      {if condition="$fsc->selected_visitor"}
+      <div role="tabpanel" class="tab-pane active" id="s_visitor">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Nick</th>
+                     <th>Navegador</th>
+                     <th>IP</th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true" title="visitas"></span>
+                     </th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-check" aria-hidden="true" title="suscripciones"></span>
+                     </th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true" title="ediciones"></span>
+                     </th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true" title="artículos"></span>
+                     </th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-comment" aria-hidden="true" title="comentarios"></span>
+                     </th>
+                     <th class="text-right">
+                        <span class="glyphicon glyphicon-fire" aria-hidden="true" title="puntos"></span>
+                     </th>
+                     <th class="text-right">Edad</th>
+                     <th class="text-right">Último login</th>
+                  </tr>
+               </thead>
+               <tr>
+                  <td>
+                     <a href="{$path}messages?to={$fsc->selected_visitor->get_id()}">@{$fsc->selected_visitor->nick}</a>
+                     {if condition="$fsc->selected_visitor->admin"}
+                     <span class="glyphicon glyphicon-tower" aria-hidden="true" title="administrador"></span>
+                     {/if}
+                  </td>
+                  <td>
+                     <span title="{$fsc->selected_visitor->user_agent}">{$fsc->selected_visitor->browser()}</span>
+                  </td>
+                  <td>{$fsc->selected_visitor->ip}</td>
+                  <td class="text-right">
+                     <span title="visitas">{if condition="$fsc->selected_visitor->num_visits>0"}{$fsc->selected_visitor->num_visits}{/if}</span>
+                  </td>
+                  <td class="text-right">
+                     <span title="suscripciones">{if condition="$fsc->selected_visitor->num_suscriptions>0"}{$fsc->selected_visitor->num_suscriptions}{/if}</span>
+                  </td>
+                  <td class="text-right">
+                     <span title="ediciones">{if condition="$fsc->selected_visitor->num_editions>0"}{$fsc->selected_visitor->num_editions}{/if}</span>
+                  </td>
+                  <td class="text-right">
+                     <span title="artículos">{if condition="$fsc->selected_visitor->num_stories>0"}{$fsc->selected_visitor->num_stories}{/if}</span>
+                  </td>
+                  <td class="text-right">
+                     <span title="comentarios">{if condition="$fsc->selected_visitor->num_comments>0"}{$fsc->selected_visitor->num_comments}{/if}</span>
+                  </td>
+                  <td class="text-right">
+                     <span title="puntos">{if condition="$fsc->selected_visitor->points>0"}{$fsc->selected_visitor->points}{/if}</span>
+                  </td>
+                  <td class="text-right">{$fsc->selected_visitor->age()}</td>
+                  <td class="text-right">{$fsc->selected_visitor->login_timesince()}</td>
+               </tr>
+            </table>
+         </div>
+         <div class="panel panel-success" style="margin: 0px 5px 0px 5px;">
+            <div class="panel-heading">
+               <h3 class="panel-title">Su historial</h3>
+            </div>
+            <div class="panel-body">
+               <table class="table table-hover">
+                  <tbody>
+                  {loop="$fsc->selected_visitor->last_visits()"}
+                     {if condition="$value->url()!='#'"}
+                     <tr>
+                        <td><a href="{$value->url()}">{$value->title()}</a></td>
+                        <td align="center">
+                           {if condition="$value->edition_id"}
+                           <a href="{$value->edition_url()}">edición</a>
+                           {/if}
+                        </td>
+                        <td class="small" style="text-align: right;">{$value->timesince()}</td>
+                     </tr>
+                     {/if}
+                  {else}
+                     <tr><td colspan="2">Sin resultados.</td></tr>
+                  {/loop}
+                  </tbody>
+               </table>
+            </div>
+         </div>
+      </div>
+      {/if}
+      <div role="tabpanel" class="tab-pane{if condition="!$fsc->selected_visitor"} active{/if}" id="home">
          <div class="container-fluid">
             <div class="row">
             {loop="$fsc->visits"}
@@ -39,6 +141,7 @@
             <table class="table table-hover">
                <thead>
                   <tr>
+                     <th></th>
                      <th>Nick</th>
                      <th>Navegador</th>
                      <th>IP</th>
@@ -65,32 +168,39 @@
                   </tr>
                </thead>
                {loop="$fsc->visitor->usuals()"}
-               <tr>
+               <tr{if condition="$value->get_id()==$fsc->visitor->get_id()"} class="bg-success"{elseif condition="$value->ip==$fsc->visitor->ip"} class="bg-info"{/if}>
+                  <td class="text-center">
+                     <a href="{$fsc->url()}&vid={$value->get_id()}" title="detalles del usuario">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                     </a>
+                  </td>
                   <td>
                      <a href="{$path}messages?to={$value->get_id()}">@{$value->nick}</a>
                      {if condition="$value->admin"}
                      <span class="glyphicon glyphicon-tower" aria-hidden="true" title="administrador"></span>
                      {/if}
                   </td>
-                  <td>{$value->user_agent}</td>
+                  <td>
+                     <span title="{$value->user_agent}">{$value->browser()}</span>
+                  </td>
                   <td>{$value->ip}</td>
                   <td class="text-right">
-                     {if condition="$value->num_visits>0"}{$value->num_visits}{/if}
+                     <span title="visitas">{if condition="$value->num_visits>0"}{$value->num_visits}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_suscriptions>0"}{$value->num_suscriptions}{/if}
+                     <span title="suscripciones">{if condition="$value->num_suscriptions>0"}{$value->num_suscriptions}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_editions>0"}{$value->num_editions}{/if}
+                     <span title="ediciones">{if condition="$value->num_editions>0"}{$value->num_editions}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_stories>0"}{$value->num_stories}{/if}
+                     <span title="artículos">{if condition="$value->num_stories>0"}{$value->num_stories}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_comments>0"}{$value->num_comments}{/if}
+                     <span title="comentarios">{if condition="$value->num_comments>0"}{$value->num_comments}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->points>0"}{$value->points}{/if}
+                     <span title="puntos">{if condition="$value->points>0"}{$value->points}{/if}</span>
                   </td>
                   <td class="text-right">{$value->age()}</td>
                   <td class="text-right">{$value->login_timesince()}</td>
@@ -104,6 +214,7 @@
             <table class="table table-hover">
                <thead>
                   <tr>
+                     <th></th>
                      <th>Nick</th>
                      <th>Navegador</th>
                      <th>IP</th>
@@ -130,32 +241,39 @@
                   </tr>
                </thead>
                {loop="$fsc->visitor->last()"}
-               <tr>
+               <tr{if condition="$value->get_id()==$fsc->visitor->get_id()"} class="bg-success"{elseif condition="$value->ip==$fsc->visitor->ip"} class="bg-info"{/if}>
+                  <td class="text-center">
+                     <a href="{$fsc->url()}&vid={$value->get_id()}" title="detalles del usuario">
+                        <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                     </a>
+                  </td>
                   <td>
                      <a href="{$path}messages?to={$value->get_id()}">@{$value->nick}</a>
                      {if condition="$value->admin"}
                      <span class="glyphicon glyphicon-tower" aria-hidden="true" title="administrador"></span>
                      {/if}
                   </td>
-                  <td>{$value->user_agent}</td>
+                  <td>
+                     <span title="{$value->user_agent}">{$value->browser()}</span>
+                  </td>
                   <td>{$value->ip}</td>
                   <td class="text-right">
-                     {if condition="$value->num_visits>0"}{$value->num_visits}{/if}
+                     <span title="visitas">{if condition="$value->num_visits>0"}{$value->num_visits}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_suscriptions>0"}{$value->num_suscriptions}{/if}
+                     <span title="suscripciones">{if condition="$value->num_suscriptions>0"}{$value->num_suscriptions}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_editions>0"}{$value->num_editions}{/if}
+                     <span title="ediciones">{if condition="$value->num_editions>0"}{$value->num_editions}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_stories>0"}{$value->num_stories}{/if}
+                     <span title="artículos">{if condition="$value->num_stories>0"}{$value->num_stories}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->num_comments>0"}{$value->num_comments}{/if}
+                     <span title="comentarios">{if condition="$value->num_comments>0"}{$value->num_comments}{/if}</span>
                   </td>
                   <td class="text-right">
-                     {if condition="$value->points>0"}{$value->points}{/if}
+                     <span title="puntos">{if condition="$value->points>0"}{$value->points}{/if}</span>
                   </td>
                   <td class="text-right">{$value->age()}</td>
                   <td class="text-right">{$value->login_timesince()}</td>
@@ -166,7 +284,5 @@
       </div>
    </div>
 </div>
-
-
 
 {include="footer"}

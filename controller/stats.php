@@ -19,24 +19,32 @@
 
 class stats extends fs_controller
 {
+   public $selected_visitor;
    public $visits;
    
    public function __construct()
    {
       parent::__construct('stats', 'Estadísticas &lsaquo; '.FS_NAME);
       
+      $this->selected_visitor = FALSE;
+      if( isset($_GET['vid']) )
+      {
+         $this->selected_visitor = $this->visitor->get($_GET['vid']);
+      }
+      
       $this->visits = $this->analyze_visits();
       
       if( count($this->visits) == 0 )
+      {
          $this->new_message('No hay suficientes visitas para analizar.');
+      }
    }
    
    private function analyze_visits()
    {
+      $ip = 'unknown';
       if( isset($_SERVER['REMOTE_ADDR']) )
          $ip = $_SERVER['REMOTE_ADDR'];
-      else
-         $ip = 'unknown';
       
       $visit0 = new story_visit();
       $visits = $visit0->last(FS_MAX_STORIES * 4, $ip);

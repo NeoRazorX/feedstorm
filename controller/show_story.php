@@ -67,12 +67,12 @@ class show_story extends fs_controller
          
          $this->eval_quality();
          
-         if( !$this->story->readed() AND $this->visitor->human() AND  isset($_SERVER['REMOTE_ADDR']) )
+         if( !$this->story->readed() AND $this->visitor->human() )
          {
             $this->story->read();
             
             $story_visit = new story_visit();
-            $sv0 = $story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
+            $sv0 = $story_visit->get_by_params($this->story->get_id(), $this->visitor->ip);
             if( !$sv0 )
             {
                $story_visit->visitor_id = $this->visitor->get_id();

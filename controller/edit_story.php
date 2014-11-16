@@ -145,7 +145,7 @@ class edit_story extends fs_controller
                }
             }
             
-            $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $_SERVER['REMOTE_ADDR']);
+            $sv0 = $this->story_visit->get_by_params($this->story->get_id(), $this->visitor->ip);
             if( $sv0 )
             {
                $sv0->edition_id = $this->story_edition->get_id();
@@ -153,6 +153,7 @@ class edit_story extends fs_controller
             }
             else
             {
+               $this->story_visit->visitor_id = $this->visitor->get_id();
                $this->story_visit->story_id = $this->story->get_id();
                $this->story_visit->edition_id = $this->story_edition->get_id();
                $this->story_visit->save();

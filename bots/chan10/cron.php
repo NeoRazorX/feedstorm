@@ -95,6 +95,20 @@ class chan10
             $vis->save();
          }
       }
+      
+      /// castigamos a los usuarios que no vuelven
+      $visitor = new visitor();
+      foreach($visitor->usuals() as $vis)
+      {
+         echo '-';
+         
+         if($vis->last_login_date < time()-604800)
+         {
+            $vis->extra_points--;
+            $vis->need_save = TRUE;
+            $vis->save();
+         }
+      }
    }
 }
 

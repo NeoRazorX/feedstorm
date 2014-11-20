@@ -34,18 +34,45 @@
 </script>
 
 <div class="container-fluid">
+   {if condition="$fsc->visitor->points==1"}
+   <div class="row">
+      <div class="col-md-12 text-center">
+         <h3 style="margin-bottom: 5px;">
+            <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> Pon tu granito de arena
+         </h3>
+         <p>Con tan solo un clic puedes hacer que más gente conozca {$name}. Ayúdanos a construir una web mejor ;-)</p>
+         {if condition="mt_rand(0,1)==0"}
+         <div>
+            <script src="https://apis.google.com/js/platform.js" async defer>
+               {lang: 'es'}
+            </script>
+            <div class="g-plusone" data-size="tall" data-annotation="inline" data-width="300"></div>
+         </div>
+         {else}
+         <div>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-via="neorazorx" data-size="large" data-hashtags="facturascripts">Tweet</a>
+            <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+         </div>
+         {/if}
+      </div>
+   </div>
+   {/if}
+   
    {if condition="$fsc->featured"}
    <div class="row">
       <div class="col-lg-12">
-         <!--{$fsc->preview->load($fsc->featured->link, $fsc->featured->description_uncut())}-->
-         {if condition="!$fsc->preview->type"}
+         <!--{$fsc->preview->clean()}-->
          <!--{$fsc->preview->load_topics($fsc->featured->topics)}-->
+         {if condition="!$fsc->preview->type"}
+         <!--{$fsc->preview->load($fsc->featured->link, $fsc->featured->description_uncut())}-->
          {/if}
          
          <div>
             {if condition="$fsc->preview->type"}
             <div class="pull-left">
-               <img src="{$fsc->preview->preview()}" alt="{$fsc->featured->title}" style="max-height: 100px; max-width: 150px; margin-right: 10px;">
+               <a href="{$fsc->featured->url()}">
+                  <img src="{$fsc->preview->preview()}" alt="{$fsc->featured->title}" style="max-height: 100px; max-width: 150px; margin-right: 10px;">
+               </a>
             </div>
             {/if}
             <h1 style="margin-bottom: 0px;">
@@ -137,17 +164,13 @@
             </p>
          </div>
       </div>
+      {if condition="$fsc->visitor->points!=1"}
       <div class="row">
-         <div class="col-md-6">
+         <div class="col-md-12 text-center">
             <h3 style="margin-bottom: 5px;">
-               <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
-               Pon tu granito de arena
+               <span class="glyphicon glyphicon-heart" aria-hidden="true"></span> Pon tu granito de arena
             </h3>
-            <p>
-               Con tan solo un clic puedes hacer que más gente conozca {$name}. Ayúdanos a construir
-               una web mejor ;-)
-            </p>
-            
+            <p>Con tan solo un clic puedes hacer que más gente conozca {$name}. Ayúdanos a construir una web mejor ;-)</p>
             {if condition="mt_rand(0,1)==0"}
             <div>
                <script src="https://apis.google.com/js/platform.js" async defer>
@@ -163,6 +186,7 @@
             {/if}
          </div>
       </div>
+      {/if}
    </div>
    <div id="div_temas" style="margin-bottom: 50px; display: none;">
       <div class="row">
@@ -171,14 +195,17 @@
             </div><div class="row">
             {/if}
             <div class="col-md-3">
-               <h3 style="margin-bottom: 5px; margin-top: 10px;"><a href="{$value->url()}">{$value->title}</a></h3>
-               {if condition="$value->icon!=''"}
-               <div class="pull-right">
-                  <img src="{$value->icon}" alt="{$value->title}" style="max-width: 80px; max-height: 80px; margin-left: 5px;"/>
+               <!--{$fsc->preview->load($value->icon)}-->
+               {if condition="$fsc->preview->type"}
+               <div class="pull-left">
+                  <a href="{$value->url()}">
+                     <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 80px; margin-right: 10px;">
+                  </a>
                </div>
                {/if}
+               <h3 style="margin-bottom: 5px; margin-top: 10px;"><a href="{$value->url()}">{$value->title}</a></h3>
                <p class="text-justify" style="margin-bottom: 0px;">{$value->description()}</p>
-               <div class="small" style="margin-bottom: 15px;">
+               <div class="small" style="margin-bottom: 30px;">
                   {if condition="$value->popularity>0"}
                   <span class="glyphicon glyphicon-fire" title="popularidad"></span> {$value->popularity} &nbsp;
                   {/if}
@@ -202,9 +229,10 @@
          {if condition="$value->get_id()!=$fsc->featured->get_id() AND $counter<14"}
             {if condition="$hr"}<hr/>{else}<!--{$hr=true}-->{/if}
             
-            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->clean()}-->
             <!--{$fsc->preview->load_topics($value->topics)}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {/if}
             
             <div>
@@ -243,9 +271,10 @@
       <div class="col-lg-4 col-md-7">
       {loop="$fsc->stories"}
          {if condition="$counter>=14 AND $counter<31"}
-            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->clean()}-->
             <!--{$fsc->preview->load_topics($value->topics)}-->
+            {if condition="!$fsc->preview->type"}
+            <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
             {/if}
             
             <div style="margin-bottom: 15px;">

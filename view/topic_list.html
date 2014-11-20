@@ -29,13 +29,16 @@
                {if condition="$counter%4==0"}
                </div><div class="row">
                {/if}
-               <div class="col-md-3 col-sm-6">
-                  <h3 style="margin-bottom: 5px;"><a href="{$value->url()}">{$value->title}</a></h3>
-                  {if condition="$value->icon!=''"}
-                  <div class="pull-right">
-                     <img src="{$value->icon}" alt="{$value->title}" style="max-width: 80px; max-height: 80px; margin-left: 5px;"/>
+               <div class="col-md-3 col-sm-6" style="padding-top: 15px; padding-bottom: 20px;">
+                  <!--{$fsc->preview->load($value->icon)}-->
+                  {if condition="$fsc->preview->type"}
+                  <div class="pull-left">
+                     <a href="{$value->url()}">
+                        <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 80px; margin-right: 10px;">
+                     </a>
                   </div>
                   {/if}
+                  <h3 style="margin-bottom: 5px; margin-top: 0px;"><a href="{$value->url()}">{$value->title}</a></h3>
                   <p class="text-justify" style="margin-bottom: 0px;">{$value->description()}</p>
                   <div class="small">
                      {if condition="$value->popularity>0"}
@@ -61,13 +64,16 @@
                {if condition="$counter%4==0"}
                </div><div class="row">
                {/if}
-               <div class="col-md-3">
-                  <h3 style="margin-bottom: 5px;"><a href="{$value->url()}">{$value->title}</a></h3>
-                  {if condition="$value->icon!=''"}
-                  <div class="pull-right">
-                     <img src="{$value->icon}" alt="{$value->title}" style="max-width: 80px; max-height: 80px; margin-left: 5px;"/>
+               <div class="col-md-3 col-sm-6" style="padding-top: 15px; padding-bottom: 20px;">
+                  <!--{$fsc->preview->load($value->icon)}-->
+                  {if condition="$fsc->preview->type"}
+                  <div class="pull-left">
+                     <a href="{$value->url()}">
+                        <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 80px; margin-right: 10px;">
+                     </a>
                   </div>
                   {/if}
+                  <h3 style="margin-bottom: 5px; margin-top: 0px;"><a href="{$value->url()}">{$value->title}</a></h3>
                   <p class="text-justify" style="margin-bottom: 0px;">{$value->description()}</p>
                   <div class="small">
                      {if condition="$value->popularity>0"}
@@ -107,10 +113,12 @@
                <div class="form-group">
                   <textarea class="form-control" name="description" rows="10" placeholder="Escribe aquí el texto.">{$fsc->t_description}</textarea>
                </div>
+            </div>
+            <div class="modal-footer">
                {if condition="$fsc->visitor->admin"}
                <input type="hidden" name="human" value=""/>
                <button class="btn btn-sm btn-primary" type="submit">
-                  <span class="glyphicon glyphicon-send"></span> &nbsp; Enviar
+                  <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
                </button>
                {else}
                <div class="input-group">

@@ -17,10 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'model/story_preview.php';
 require_once 'model/topic.php';
 
 class topic_list extends fs_controller
 {
+   public $preview;
    public $topic;
    public $t_title;
    public $t_description;
@@ -32,6 +34,8 @@ class topic_list extends fs_controller
       parent::__construct('topic_list', 'Temas &lsaquo; '.FS_NAME);
       
       $this->noindex = FALSE;
+      
+      $this->preview = new story_preview();
       $this->topic = new topic();
       $this->t_title = '';
       $this->t_description = '';

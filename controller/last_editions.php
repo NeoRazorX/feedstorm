@@ -29,9 +29,6 @@ class last_editions extends fs_controller
       
       $se = new story_edition();
       $this->editions = $se->last_editions();
-      
-      if( count($this->editions) == 0 )
-         $this->new_message('No hay ediciones guardadas :-(');
    }
    
    public function get_description()

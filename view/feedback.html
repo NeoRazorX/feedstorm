@@ -1,24 +1,28 @@
 {include="header"}
 
 {if condition="$fsc->visitor->admin"}
-<div class="container-fluid">
-   <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-         <div class="col-lg-4 col-sm-6">
-         {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
-            <div class="well well-sm">
-               <div style="margin-bottom: 5px;">
-                  <span class="glyphicon glyphicon-user"></span>
-                  <a href="{$path}messages?to={$value2->visitor_id}">{$value2->nick}</a>
-                  <span class="pull-right small">{$value2->timesince()}</span>
-               </div>
-               <p>{$value2->text()}</p>
-            </div>
-         {/loop}
-         </div>
+<div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th>Autor / fecha</th>
+            <th>Mensaje</th>
+         </tr>
+      </thead>
+      {loop="$fsc->comments"}
+      <tr>
+         <td>
+            <a href="{$path}messages?to={$value->visitor_id}">@{$value->nick}</a>
+            {$value->timesince()}
+         </td>
+         <td>{$value->text()}</td>
+      </tr>
+      {else}
+      <tr class="bg-warning">
+         <td colspan="2">Sin resultados.</td>
+      </tr>
       {/loop}
-   </div>
+   </table>
 </div>
 {else}
 <script type="text/javascript">

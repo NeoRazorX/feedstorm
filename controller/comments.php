@@ -30,9 +30,6 @@ class comments extends fs_controller
       $this->noindex = FALSE;
       $comment = new comment();
       $this->comments = $comment->all();
-      
-      if( count($this->comments) == 0 )
-         $this->new_message('Aun no hay comentarios :-(');
    }
    
    public function get_description()

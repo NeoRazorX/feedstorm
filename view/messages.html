@@ -3,82 +3,135 @@
 {if condition="$fsc->msg_to_nick"}
 <script type="text/javascript">
    $(document).ready(function() {
+      $("#modal_new_message").modal('show');
       document.f_new_msg.text.focus();
    });
 </script>
 {/if}
 
-<div class="container-fluid">
-   <div class="row">
-      <div class="col-md-8">
-         <a name="messages"></a>
-         {loop="$fsc->messages"}
-         <div class="well well-sm">
-            <div style="margin-bottom: 5px;">
-               <span class="glyphicon glyphicon-user"></span>
-               {if condition="$fsc->visitor->nick==$value->from_nick"}
-                  <b>Tú</b>
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Recibidos</a>
+      </li>
+      <li role="presentation">
+         <a href="#enviados" aria-controls="enviados" role="tab" data-toggle="tab">Enviados</a>
+      </li>
+      <li>
+         <a href="#messages" data-toggle="modal" data-target="#modal_new_message">Nuevo..</a>
+      </li>
+   </ul>
+   
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="home">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Autor / fecha</th>
+                     <th>Mensaje</th>
+                     <th></th>
+                  </tr>
+               </thead>
+               {loop="$fsc->messages"}
+               <tr>
+                  <td>
+                     {if condition="$fsc->visitor->nick==$value->from_nick"}
+                     <b>Tú</b>
+                     {else}
+                     <a href="{$path}messages?to={$value->from}">@{$value->from_nick}</a>
+                     {/if}
+                     {$value->timesince()}
+                  </td>
+                  <td>{$value->text()}</td>
+                  <td class="text-right">
+                     {if condition="$fsc->visitor->nick!=$value->from_nick"}
+                     <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">
+                        <span class="glyphicon glyphicon-share"></span>
+                     </a>
+                     {/if}
+                  </td>
+               </tr>
                {else}
-                  <a href="{$path}messages?to={$value->from}">@{$value->from_nick}</a>
-               {/if}
-               <span class="pull-right small">{$value->timesince()}</span>
-            </div>
-            <p>{$value->text()}</p>
-            <div style="margin-bottom: 5px; text-align: right;">
-               {if condition="$fsc->visitor->nick!=$value->from_nick"}
-               <a class="btn btn-sm btn-default" href="{$path}messages?to={$value->from}" title="responder">
-                  <span class="glyphicon glyphicon-share"></span>
-               </a>
-               {/if}
-            </div>
+               <tr class="bg-warning">
+                  <td colspan="3">Sin resultados.</td>
+               </tr>
+               {/loop}
+            </table>
          </div>
-         {else}
-         <div class="alert alert-info">No tienes mensajes.</div>
-         {/loop}
       </div>
-      <div class="col-md-4">
-         <div class="panel panel-primary">
-            <div class="panel-heading">
-               <h3 class="panel-title">Nuevo mensaje:</h3>
-            </div>
-            <div class="panel-body">
-               <form name="f_new_msg" action="{$fsc->url()}" method="post">
-                  <input type="hidden" name="to" value="{$fsc->msg_to}"/>
-                  <div>
-                     <input class="form-control" type="text" name="to_nick" value="{$fsc->msg_to_nick}" placeholder="enviar a:"/>
-                  </div>
-                  <div>
-                     <textarea class="form-control" name="text" rows="10" placeholder="Escribe aquí el mensaje.">{$fsc->msg_txt}</textarea>
-                  </div>
-                  {if condition="$fsc->visitor->admin"}
-                  <div style="margin-top: 5px; text-align: right;">
-                     <input type="hidden" name="human" value=""/>
-                     <span class="pull-left">
-                        <label>
-                           <input type="checkbox" name="broadcast" value="TRUE"/>
-                           mensaje masivo
-                        </label>
-                     </span>
-                     <button class="btn btn-sm btn-primary" type="submit">
-                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> &nbsp; Enviar
-                     </button>
-                  </div>
-                  {else}
-                  <div style="margin-top: 5px; text-align: right;">
-                     <div class="pull-left">
-                        <input class="form-control" type="text" name="human" size="3" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
-                     </div>
-                     Borra el número si eres humano
-                     <button class="btn btn-sm btn-primary" type="submit">
-                        <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> &nbsp; Enviar
-                     </button>
-                  </div>
-                  {/if}
-               </form>
-            </div>
+      <div role="tabpanel" class="tab-pane" id="enviados">
+         <div class="table-responsive">
+            <table class="table table-hover">
+               <thead>
+                  <tr>
+                     <th>Fecha</th>
+                     <th>Mensaje</th>
+                  </tr>
+               </thead>
+               {loop="$fsc->enviados"}
+               <tr>
+                  <td>{$value->timesince()}</td>
+                  <td>{$value->text()}</td>
+               </tr>
+               {else}
+               <tr class="bg-warning">
+                  <td colspan="2">Sin resultados.</td>
+               </tr>
+               {/loop}
+            </table>
          </div>
       </div>
    </div>
 </div>
+
+<form name="f_new_msg" action="{$fsc->url()}" method="post" class="form">
+   <input type="hidden" name="to" value="{$fsc->msg_to}"/>
+   <div class="modal" id="modal_new_message">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal">
+                  <span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span>
+               </button>
+               <h4 class="modal-title">Nuevo mensaje...</h4>
+            </div>
+            <div class="modal-body">
+               <div class="form-group">
+                  <input class="form-control" type="text" name="to_nick" value="{$fsc->msg_to_nick}" placeholder="enviar a:"/>
+               </div>
+               <div class="form-group">
+                  <textarea class="form-control" name="text" rows="10" placeholder="Escribe aquí el mensaje.">{$fsc->msg_txt}</textarea>
+               </div>
+               {if condition="$fsc->visitor->admin"}
+               <div class="checkbox">
+                  <label>
+                     <input type="checkbox" name="broadcast" value="TRUE"/> mensaje masivo
+                  </label>
+               </div>
+               {/if}
+            </div>
+            <div class="modal-footer">
+               {if condition="$fsc->visitor->admin"}
+               <input type="hidden" name="human" value=""/>
+               <button class="btn btn-sm btn-primary" type="submit">
+                  <span class="glyphicon glyphicon-comment" aria-hidden="true"></span> &nbsp; Enviar
+               </button>
+               {else}
+               <div class="input-group">
+                  <input class="form-control" type="text" name="human" value="{function="mt_rand(0, 999)"}" maxlength="3" autocomplete="off"/>
+                  <span class="input-group-btn">
+                     <button class="btn btn-primary" type="submit">
+                        <span class="glyphicon glyphicon-send"></span> &nbsp; Enviar
+                     </button>
+                  </span>
+               </div>
+               <p class="help-block">Borra el número si eres humano.</p>
+               {/if}
+            </div>
+         </div>
+      </div>
+   </div>
+</form>
 
 {include="footer"}

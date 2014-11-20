@@ -21,6 +21,7 @@ require_once 'model/message.php';
 
 class messages extends fs_controller
 {
+   public $enviados;
    public $messages;
    public $msg_txt;
    public $msg_to;
@@ -82,6 +83,7 @@ class messages extends fs_controller
             $this->new_error_msg('Tienes que borrar el número para demostrar que eres humano.');
       }
       
+      $this->enviados = $msg->all_from_visitor( $this->visitor->get_id() );
       $this->messages = $msg->all2visitor( $this->visitor->get_id() );
       
       /// marcamos los mensajes como leídos

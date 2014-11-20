@@ -1,29 +1,30 @@
 {include="header"}
 
-{if condition="$fsc->editions"}
-   <div class="container-fluid">
-      <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}">
-            {loop="$fsc->split_stories($fsc->editions, 3, $value1)"}
-            <div>
-               <h3 style="margin-bottom: 5px;">
-                  <a href='{$value2->url()}'>{$value2->title}</a>
-               </h3>
-               <p style="text-align: justify; margin-bottom: 5px;">
-                  {$value2->description()}
-               </p>
-               <div class="small">
-                  <span class="glyphicon glyphicon-time"></span> {$value2->timesince()} &nbsp;
-                  <span class="glyphicon glyphicon-star"></span> {$value2->points}
-               </div>
-            </div>
-            {/loop}
-         </div>
+<div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            <th class="text-left">Autor</th>
+            <th class="text-left">Artículo</th>
+            <th class="text-right">Puntos</th>
+            <th class="text-right">Fecha</th>
+         </tr>
+      </thead>
+      {loop="$fsc->editions"}
+      <tr{if condition="$value->visitor_id==$fsc->visitor->get_id()"} class="bg-success"{elseif condition="$value->ip==$fsc->visitor->ip"} class="bg-info"{/if}>
+         <td>@{$value->nick}</td>
+         <td>
+            <a href='{$value->url()}'>{$value->title}</a>
+         </td>
+         <td class="text-right">{$value->points}</td>
+         <td class="text-right">{$value->timesince()}</td>
+      </tr>
+      {else}
+      <tr class="bg-warning">
+         <td colspan="4">Sin resultados.</td>
+      </tr>
       {/loop}
-      </div>
-   </div>
-{/if}
+   </table>
+</div>
 
 {include="footer"}

@@ -1,30 +1,39 @@
 {include="header"}
 
-<div class="container-fluid">
-   <div class="row">
-      <!--{$cols=array(1,2,3)}-->
-      {loop="$cols"}
-         <div class="col-md-4 {if condition="$value1==3"}col-sm-12{else}col-sm-6{/if}" style="padding: 0px 5px 0px 5px;">
-         {loop="$fsc->split_stories($fsc->comments, 3, $value1)"}
-            <div class="well well-sm">
-               <div style="margin-bottom: 5px;">
-                  <span class="glyphicon glyphicon-user"></span>
-                  {if condition="$fsc->visitor->get_id()==$value2->visitor_id"}
-                     <b>Tú</b>
-                  {else}
-                     <a href="{$path}messages?to={$value2->visitor_id}">@{$value2->nick}</a>
-                  {/if}
-                  <span class="pull-right small">{$value2->timesince()}</span>
-               </div>
-               <p>
-                  {$value2->text}
-                  <a href='{$value2->url()}'>leer más</a>.
-               </p>
-            </div>
-         {/loop}
-         </div>
+<div class="table-responsive">
+   <table class="table table-hover">
+      <thead>
+         <tr>
+            {if condition="$fsc->visitor->admin"}
+            <th></th>
+            {/if}
+            <th class="text-left">Autor / fecha</th>
+            <th class="text-left">Comentario</th>
+         </tr>
+      </thead>
+      {loop="$fsc->comments"}
+      <tr{if condition="$value->visitor_id==$fsc->visitor->get_id()"} class="bg-success"{elseif condition="$value->ip==$fsc->visitor->ip"} class="bg-info"{/if}>
+         {if condition="$fsc->visitor->admin"}
+         <td class="text-center">
+            <a href="{$path}stats?vid={$value->visitor_id}" title="detalles del usuario">
+               <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </a>
+         </td>
+         {/if}
+         <td>
+            <a href="{$path}messages?to={$value->visitor_id}">@{$value->nick}</a>
+            {$value->timesince()}
+         </td>
+         <td>
+            {$value->text} <a href='{$value->url()}'>leer más</a>.
+         </td>
+      </tr>
+      {else}
+      <tr class="bg-warning">
+         <td colspan="3">Sin resultados.</td>
+      </tr>
       {/loop}
-   </div>
+   </table>
 </div>
 
 {include="footer"}

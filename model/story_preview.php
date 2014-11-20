@@ -43,6 +43,13 @@ class story_preview
       }
    }
    
+   public function clean()
+   {
+      $this->link = FALSE;
+      $this->type = FALSE;
+      $this->filename = FALSE;
+   }
+   
    public function set_downloads($num)
    {
       self::$downloads = $num;

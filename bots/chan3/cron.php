@@ -94,7 +94,21 @@ class chan3
    
    private function topics4some_stories()
    {
-      $last_stories = array_merge($this->story->last_stories(500), $this->story->popular_stories(500), $this->story->random_stories(500));
+      switch( mt_rand(0,2) )
+      {
+         case 0:
+            $last_stories = $this->story->last_stories(500);
+            break;
+         
+         case 1:
+            $last_stories = $this->story->popular_stories(500);
+            break;
+         
+         default:
+            $last_stories = $this->story->random_stories(500);
+            break;
+      }
+      
       foreach($last_stories as $i => $lsto)
       {
          echo '.';
@@ -138,12 +152,12 @@ class chan3
             else if($lsto->native_lang AND !$lsto->parody AND !$lsto->penalize)
             {
                /// ¿Actualizamos la popularidad?
-               $ts0 = $this->topic_story->get2($tpic->get_id(), $last_stories[$i]->get_id());
+               $ts0 = $this->topic_story->get2($tpic->get_id(), $lsto->get_id());
                if($ts0)
                {
-                  if( $ts0->popularity != $last_stories[$i]->max_popularity() )
+                  if( $ts0->popularity != $lsto->max_popularity() )
                   {
-                     $ts0->popularity = $last_stories[$i]->max_popularity();
+                     $ts0->popularity = $lsto->max_popularity();
                      $ts0->save();
                   }
                }
@@ -160,7 +174,7 @@ class chan3
                 * No quiero que parodias, artículos penalizados o que no estén en español
                 * cuenten para los temas.
                 */
-               $ts0 = $this->topic_story->get2($tpic->get_id(), $last_stories[$i]->get_id());
+               $ts0 = $this->topic_story->get2($tpic->get_id(), $lsto->get_id());
                if($ts0)
                {
                   echo '-';
@@ -184,12 +198,26 @@ class chan3
          {
             if( $tpic2->get_id() == $tid )
             {
+               $pos = -1;
                foreach($tpic2->keywords() as $key)
                {
                   if( preg_match('/\b'.$key.'\b/iu', $sto->title.' '.$sto->description_uncut()) )
                   {
-                     $aux_topics[ stripos($sto->title.' '.$sto->description_uncut(), $key) ] = $tid;
+                     $pos2 = stripos($sto->title.' '.$sto->description_uncut(), $key);
+                     if($pos2 < $pos OR $pos == -1)
+                     {
+                        $pos = $pos2;
+                     }
                   }
+               }
+               
+               if($pos == -1)
+               {
+                  $aux_topics[ count($aux_topics) ] = $tid;
+               }
+               else
+               {
+                  $aux_topics[$pos] = $tid;
                }
                
                break;

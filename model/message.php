@@ -167,6 +167,18 @@ class message extends fs_model
       return $mlist;
    }
    
+   public function all_from_visitor($vid)
+   {
+      $this->add2history(__CLASS__.'::'.__FUNCTION__);
+      
+      $mlist = array();
+      $search = array( 'from' => $this->var2str($vid) );
+      foreach($this->collection->find($search)->sort(array('date'=>-1))->limit(FS_MAX_STORIES) as $m)
+         $mlist[] = new message($m);
+      
+      return $mlist;
+   }
+   
    public function cron_job()
    {
       $visitor = new visitor();

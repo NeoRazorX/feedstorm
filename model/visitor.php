@@ -167,7 +167,9 @@ class visitor extends fs_model
          return FALSE;
       else if( strpos(strtolower($this->user_agent), 'sistrix') !== FALSE)
          return FALSE;
-      else if( strpos(strtolower($this->user_agent), 'yahoo slurp') !== FALSE)
+      else if( strpos(strtolower($this->user_agent), 'yahoo! slurp') !== FALSE)
+         return FALSE;
+      else if( strpos(strtolower($this->user_agent), 'crawler') !== FALSE)
          return FALSE;
       else
          return TRUE;

@@ -94,19 +94,36 @@ class chan3
    
    private function topics4some_stories()
    {
-      switch( mt_rand(0,2) )
+      $last_stories = $this->story->last_stories(500);
+      foreach($this->story->popular_stories(500) as $sto)
       {
-         case 0:
-            $last_stories = $this->story->last_stories(500);
-            break;
+         $encontrada = FALSE;
+         foreach($last_stories as $sto2)
+         {
+            if($sto->get_id() == $sto2->get_id())
+            {
+               $encontrada = TRUE;
+               break;
+            }
+         }
          
-         case 1:
-            $last_stories = $this->story->popular_stories(500);
-            break;
+         if(!$encontrada)
+            $last_stories[] = $sto;
+      }
+      foreach($this->story->random_stories(500) as $sto)
+      {
+         $encontrada = FALSE;
+         foreach($last_stories as $sto2)
+         {
+            if($sto->get_id() == $sto2->get_id())
+            {
+               $encontrada = TRUE;
+               break;
+            }
+         }
          
-         default:
-            $last_stories = $this->story->random_stories(500);
-            break;
+         if(!$encontrada)
+            $last_stories[] = $sto;
       }
       
       foreach($last_stories as $i => $lsto)
@@ -160,12 +177,6 @@ class chan3
                      $ts0->popularity = $lsto->max_popularity();
                      $ts0->save();
                   }
-               }
-               else
-               {
-                  $last_stories[$i]->topics = array();
-                  $last_stories[$i]->keywords = '';
-                  $last_stories[$i]->save();
                }
             }
             else

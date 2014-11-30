@@ -31,25 +31,12 @@ class chan10
          echo '.';
          
          $f0->popularity = 0;
-         $num = 0;
-         
          foreach($f0->stories() as $st)
          {
-            if($st->published)
-            {
-               $f0->popularity += 10*$st->popularity;
-            }
-            else
-               $f0->popularity += $st->popularity;
-            
-            $num++;
+            $f0->popularity += $st->popularity;
          }
          
-         if($num > 0)
-         {
-            $f0->popularity = intval($f0->popularity / $num);
-         }
-         
+         $f0->popularity = intval($f0->popularity);
          $f0->save();
       }
       
@@ -60,25 +47,12 @@ class chan10
          echo '*';
          
          $tpic->popularity = 0;
-         $num = 0;
-         
-         foreach($tpic->stories() as $st)
+         foreach($tpic->stories('d-m-Y') as $st)
          {
-            if($st->published)
-            {
-               $tpic->popularity += 10*$st->popularity;
-            }
-            else
-               $tpic->popularity += $st->popularity;
-            
-            $num++;
+            $tpic->popularity += $st->popularity;
          }
          
-         if($num > 0)
-         {
-            $tpic->popularity = intval($tpic->popularity / $num);
-         }
-         
+         $tpic->popularity = intval($tpic->popularity);
          $tpic->save();
       }
       

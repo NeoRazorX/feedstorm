@@ -30,7 +30,7 @@ function chan8(&$story)
       echo '.';
       
       $story_preview->load($sto->link, $sto->description_uncut());
-      if( !$story_preview->type AND mb_strlen($sto->description) < 500 AND $sto->num_editions == 0 )
+      if( !$story_preview->type AND mb_strlen($sto->description) < 500 AND $sto->num_editions == 0 AND empty($sto->topics) )
       {
          $html = $story_preview->curl_download($sto->link);
          $urls = array();

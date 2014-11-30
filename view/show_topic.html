@@ -56,6 +56,25 @@
             {/if}
             <h1 style="margin: 5px 0px 5px 0px;">{$fsc->topic->title}</h1>
             <p>{$fsc->topic->description}</p>
+            {if condition="!$fsc->visitor->admin"}
+            <div>
+               {if condition="$fsc->visitor->mobile()"}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm_movil -->
+               <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+               {else}
+               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+               <!-- feedstorm -->
+               <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
+               <script>
+                  (adsbygoogle = window.adsbygoogle || []).push({});
+               </script>
+               {/if}
+            </div>
+            {/if}
          </div>
          
          <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
@@ -84,90 +103,6 @@
                   <h4 class="list-group-item-heading">Etiquetas de búsqueda:</h4>
                   <p class="list-group-item-text">{$fsc->topic->keywords}</p>
                </a>
-            </div>
-         </div>
-      </div>
-      
-      <div class="row">
-         <div class="col-lg-10 col-md-9">
-            {if condition="!$fsc->visitor->admin"}
-            <div>
-               {if condition="$fsc->visitor->mobile()"}
-               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-               <!-- feedstorm_movil -->
-               <ins class="adsbygoogle" style="display:inline-block;width:320px;height:100px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="3432408406"></ins>
-               <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-               </script>
-               {else}
-               <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-               <!-- feedstorm -->
-               <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-7967042768660878" data-ad-slot="8001025602"></ins>
-               <script>
-                  (adsbygoogle = window.adsbygoogle || []).push({});
-               </script>
-               {/if}
-            </div>
-            {/if}
-            
-            {loop="$fsc->stories"}
-               <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
-               <h3 style="margin-bottom: 2px;">
-                  <a href="{$value->url()}">{$value->title}</a>
-               </h3>
-               <p style="margin: 3px 0px 2px 0px;">{$value->description}</p>
-               <div class="small">
-                  <span class="glyphicon glyphicon-time"></span> {$value->show_date()} &nbsp;
-                  <span class="glyphicon glyphicon-fire"></span> {$value->max_popularity()}
-               </div>
-               {if condition="$fsc->preview->type=='youtube'"}
-               <div style="margin-top: 10px;">
-                  {if condition="$fsc->visitor->mobile()"}
-                  <iframe width="300" height="169" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                  {else}
-                  <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
-                  {/if}
-               </div>
-               {elseif condition="$fsc->preview->type=='imgur'"}
-               <div style="margin-top: 10px;">
-                  <a href="{$value->url()}">
-                  {if condition="$fsc->visitor->mobile()"}
-                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
-                  {else}
-                     <img src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
-                  {/if}
-                  </a>
-               </div>
-               {elseif condition="$fsc->preview->type=='image'"}
-               <div style="margin-top: 10px;">
-                  <a href="{$value->url()}">
-                  {if condition="$fsc->visitor->mobile()"}
-                     <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 300px;"/>
-                  {else}
-                     <img src="{$fsc->preview->filename}" alt="{$fsc->story->title}" style="max-width: 900px;"/>
-                  {/if}
-                  </a>
-               </div>
-               {elseif condition="$fsc->preview->type=='vimeo'"}
-               <div style="margin-top: 10px;">
-                  {if condition="$fsc->visitor->mobile()"}
-                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="300" height="169" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                  {else}
-                  <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-                  {/if}
-               </div>
-               {/if}
-            {/loop}
-         </div>
-         
-         <div class="col-lg-2 col-md-3" style="padding-right: 0px;">
-            <div class="list-group">
-               <a href="{$path}topic_list?parent={$fsc->topic->get_id()}" class="list-group-item active">
-                  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> &nbsp; Añadir...
-               </a>
-               {loop="$fsc->children_topics"}
-               <a href="{$value->url()}" class="list-group-item">{$value->title}</a>
-               {/loop}
             </div>
          </div>
       </div>
@@ -210,8 +145,7 @@
                </div>
                <div style="margin-top: 5px; text-align: right;">
                   <button class="btn btn-primary btn-sm" type="submit">
-                     <span class="glyphicon glyphicon-floppy-disk"></span>
-                     &nbsp; Guardar
+                     <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
                   </button>
                </div>
             </form>
@@ -229,6 +163,98 @@
             <a class="btn btn-danger" href="{$path}topic_list?delete={$fsc->topic->get_id()}">
                <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
             </a>
+         </div>
+      </div>
+   </div>
+</div>
+
+<br/>
+
+<div role="tabpanel">
+   <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active">
+         <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Artículos</a>
+      </li>
+      <li role="presentation">
+         <a href="#temas" aria-controls="profile" role="tab" data-toggle="tab">Temas</a>
+      </li>
+      <li>
+         <a href="{$path}topic_list?parent={$fsc->topic->get_id()}">Nuevo tema...</a>
+      </li>
+   </ul>
+   <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="home">
+         <div class="container-fluid" style="margin-top: 10px;">
+            <div class="row">
+            {loop="$fsc->stories"}
+               <div class="col-md-6" style="padding-bottom: 20px;">
+                  <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+                  {if condition="!$fsc->preview->type"}
+                  <!--{$fsc->preview->load_topics($value->topics)}-->
+                  {/if}
+                  
+                  {if condition="$fsc->preview->type"}
+                  <div class="{if condition="$counter%2==0"}pull-left{else}pull-right{/if}">
+                     <a href="{$value->url()}">
+                        <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 100px; max-width: 100px; {if condition="$counter%2==0"}margin-right: 10px;{else}margin-left: 10px;{/if}">
+                     </a>
+                  </div>
+                  {/if}
+                  <h3 style="margin-top: 0px; margin-bottom: 0px;">
+                     <a href="{$value->url()}">{$value->title}</a>
+                  </h3>
+                  <p>
+                     {$value->description(255)}
+                     <br/>
+                     <span class="small">
+                        {if condition="$value->readed()"}<span class="glyphicon glyphicon-eye-open" title="ya lo has leído"></span> &nbsp;{/if}
+                        <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+                        <span class="glyphicon glyphicon-fire"></span> {$value->max_popularity()} &nbsp;
+                        {if condition="$value->num_comments>0"}
+                        <span class="glyphicon glyphicon-comment"></span> {$value->num_comments}
+                        {/if}
+                     </span>
+                  </p>
+               </div>
+               {if condition="($counter+1)%2==0"}
+               </div><div class="row">
+               {/if}
+            {/loop}
+            </div>
+         </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="temas">
+         <div class="container-fluid" style="margin-top: 10px;">
+            <div class="row">
+            {loop="$fsc->children_topics"}
+               {if condition="$counter%4==0"}
+               </div><div class="row">
+               {/if}
+               <div class="col-md-3">
+                  <!--{$fsc->preview->load($value->icon)}-->
+                  {if condition="$fsc->preview->type"}
+                  <div class="pull-left">
+                     <a href="{$value->url()}">
+                        <img src="{$fsc->preview->preview()}" alt="{$value->title}" style="max-height: 80px; max-width: 80px; margin-right: 10px;">
+                     </a>
+                  </div>
+                  {/if}
+                  <h3 style="margin-bottom: 5px; margin-top: 10px;"><a href="{$value->url()}">{$value->title}</a></h3>
+                  <p class="text-justify" style="margin-bottom: 0px;">{$value->description()}</p>
+                  <div class="small" style="margin-bottom: 30px;">
+                     {if condition="$value->popularity>0"}
+                     <span class="glyphicon glyphicon-fire" title="popularidad"></span> {$value->popularity} &nbsp;
+                     {/if}
+                     <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+                     {$value->num_stories} artículos.
+                  </div>
+               </div>
+            {else}
+            <div class="col-md-12">
+               <h3>Sin temas relacionados.</h3>
+            </div>
+            {/loop}
+            </div>
          </div>
       </div>
    </div>

@@ -278,7 +278,7 @@ class show_story extends fs_controller
                      $max_stories--;
                      if($max_stories <= 0)
                         break;
-      }
+                  }
                }
             }
          }

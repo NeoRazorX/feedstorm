@@ -163,6 +163,17 @@
          {/loop}
       </div>
    </div>
+   {if condition="$fsc->totales"}
+   <div class="row" style='margin-top: 30px;'>
+      <div class="col-lg-12 col-md-12 text-center">
+         <p>
+            Los artículos de esta portada suman un total de <b>{$fsc->show_number($fsc->totales['clics'])}</b> clics,
+            <b>{$fsc->show_number($fsc->totales['tweets'])}</b> menciones en twitter, <b>{$fsc->show_number($fsc->totales['likes'])}</b> en facebook,
+            <b>{$fsc->show_number($fsc->totales['plusones'])}</b> en Google+ y <b>{$fsc->show_number($fsc->totales['meneos'])}</b> en menéame.
+         </p>
+      </div>
+   </div>
+   {/if}
 </div>
 {else}
 <div class="container-fluid">

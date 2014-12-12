@@ -76,7 +76,7 @@ class chan10
       {
          echo '-';
          
-         if($vis->last_login_date < time()-604800)
+         if($vis->last_login_date < time()-1209600)
          {
             $vis->extra_points--;
             $vis->need_save = TRUE;

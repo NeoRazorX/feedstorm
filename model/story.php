@@ -291,7 +291,7 @@ class story extends fs_model
       
       if($this->native_lang AND !$this->penalize AND mb_strlen($this->description) > 0)
       {
-         if(mb_strlen($this->description) > 70)
+         if(mb_strlen($this->description) > 100)
             $tclics += $this->num_editions + $this->num_feeds + $this->num_comments + count($this->topics);
          
          if($this->related_id OR $this->related_id2)

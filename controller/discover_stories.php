@@ -25,6 +25,7 @@ class discover_stories extends fs_controller
 {
    public $preview;
    public $stories;
+   public $totales;
    
    public function __construct()
    {
@@ -54,10 +55,37 @@ class discover_stories extends fs_controller
             $i++;
          }
       }
+      
+      $this->totales = array(
+          'clics' => 0,
+          'tweets' => 0,
+          'likes' => 0,
+          'plusones' => 0,
+          'meneos' => 0
+      );
+      
+      foreach($this->stories as $i => $value)
+      {
+         $this->totales['clics'] += $value->clics;
+         $this->totales['tweets'] += $value->tweets;
+         $this->totales['likes'] += $value->likes;
+         $this->totales['plusones'] += $value->plusones;
+         $this->totales['meneos'] += $value->meneos;
+      }
    }
    
    public function get_description()
    {
       return 'Descubre un mundo de noticias interesantes a golpe de clic.';
+   }
+   
+   public function show_number($num)
+   {
+      if($num >= 1000)
+      {
+         return intval($num/1000).'K';
+      }
+      else
+         return $num;
    }
 }

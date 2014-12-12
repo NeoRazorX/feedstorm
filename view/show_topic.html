@@ -175,9 +175,11 @@
       <li role="presentation" class="active">
          <a href="#home" aria-controls="home" role="tab" data-toggle="tab">Artículos</a>
       </li>
+      {if condition="$fsc->children_topics"}
       <li role="presentation">
          <a href="#temas" aria-controls="profile" role="tab" data-toggle="tab">Temas</a>
       </li>
+      {/if}
       <li>
          <a href="{$path}topic_list?parent={$fsc->topic->get_id()}">Nuevo tema...</a>
       </li>

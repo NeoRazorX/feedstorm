@@ -27,6 +27,7 @@ class home extends fs_controller
    public $preview;
    public $stories;
    public $topic;
+   public $totales;
    
    public function __construct()
    {
@@ -36,6 +37,13 @@ class home extends fs_controller
       $this->preview = new story_preview();
       $this->stories = $this->visitor->last_stories();
       $this->topic = new topic();
+      $this->totales = array(
+          'clics' => 0,
+          'tweets' => 0,
+          'likes' => 0,
+          'plusones' => 0,
+          'meneos' => 0
+      );
       
       foreach($this->stories as $i => $value)
       {
@@ -43,6 +51,12 @@ class home extends fs_controller
          {
             $this->featured = $value;
          }
+         
+         $this->totales['clics'] += $value->clics;
+         $this->totales['tweets'] += $value->tweets;
+         $this->totales['likes'] += $value->likes;
+         $this->totales['plusones'] += $value->plusones;
+         $this->totales['meneos'] += $value->meneos;
       }
       
       if( $this->visitor->admin )
@@ -100,5 +114,15 @@ class home extends fs_controller
       }
       
       return join(', ', array_unique($keys));
+   }
+   
+   public function show_number($num)
+   {
+      if($num >= 1000)
+      {
+         return intval($num/1000).'K';
+      }
+      else
+         return $num;
    }
 }

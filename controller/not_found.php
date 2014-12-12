@@ -24,6 +24,7 @@ class not_found extends fs_controller
 {
    public $preview;
    public $stories;
+   public $totales;
    
    public function __construct()
    {
@@ -35,6 +36,7 @@ class not_found extends fs_controller
       $this->preview = new story_preview();
       $story = new story();
       $this->stories = $story->popular_stories();
+      $this->totales = FALSE;
       header("HTTP/1.0 404 Not Found");
    }
    

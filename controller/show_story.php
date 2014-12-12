@@ -96,7 +96,28 @@ class show_story extends fs_controller
          $this->template = 'show_no_story';
          $this->new_error_msg('Artículo no encontrado. <a href="'.FS_PATH.'index.php?page=search">Usa el buscador</a>.');
          $this->stories = $story->popular_stories();
-         header("HTTP/1.0 404 Not Found");
+         
+         /// intentamos redireccionar a un tema
+         $encontrado = FALSE;
+         $topic = new topic();
+         foreach($topic->all() as $tpic)
+         {
+            foreach($tpic->keywords() as $key)
+            {
+               if( strstr(str_replace('-', ' ', $_GET['id']), $key) !== FALSE )
+               {
+                  $encontrado = TRUE;
+                  header("HTTP/1.1 301 Moved Permanently"); 
+                  header("Location: ".$this->domain().$tpic->url());
+                  break;
+               }
+            }
+         }
+         
+         if(!$encontrado)
+         {
+            header("HTTP/1.0 404 Not Found");
+         }
       }
    }
    
@@ -337,8 +358,8 @@ class show_story extends fs_controller
          $this->noindex = FALSE;
          
          /// calculamos el número de estrellas para SEO
-         $this->stars = min(
-            array(5, $this->story->clics, $this->story->num_comments + $this->story->num_editions + $this->story->num_feeds + count($this->story->topics))
+         $this->stars += min(
+            array(3, $this->story->clics, $this->story->num_comments + $this->story->num_editions + $this->story->num_feeds + count($this->story->topics))
          );
          if($this->story->published)
             $this->stars++;

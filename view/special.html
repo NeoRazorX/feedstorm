@@ -1,0 +1,218 @@
+{include="header"}
+
+{if="$fsc->data"}
+<script type="text/javascript">
+   $(document).ready(function() {
+      $(".fuentes").hide();
+      $(".temas").hide();
+      
+      $("#b_articulos").click(function() {
+         $("#b_articulos").addClass('active');
+         $("#b_fuentes").removeClass('active');
+         $("#b_temas").removeClass('active');
+         $(".fuentes").hide();
+         $(".temas").hide();
+         $(".articulos").show();
+      });
+      $("#b_fuentes").click(function() {
+         $("#b_fuentes").addClass('active');
+         $("#b_articulos").removeClass('active');
+         $("#b_temas").removeClass('active');
+         $(".temas").hide();
+         $(".articulos").hide();
+         $(".fuentes").show();
+      });
+      $("#b_temas").click(function() {
+         $("#b_temas").addClass('active');
+         $("#b_articulos").removeClass('active');
+         $("#b_fuentes").removeClass('active');
+         $(".fuentes").hide();
+         $(".articulos").hide();
+         $(".temas").show();
+      });
+   });
+</script>
+
+<div class="jumbotron" style="padding-bottom: 10px;">
+   <h1>{$fsc->data->title} en {$name}</h1>
+   <div class="btn-group" role="group" aria-label="...">
+     <button type="button" id="b_articulos" class="btn btn-default active">Artículos</button>
+     <button type="button" id="b_fuentes" class="btn btn-default">Fuentes</button>
+     <button type="button" id="b_temas" class="btn btn-default">Temas</button>
+   </div>
+   <br/><br/>
+   <p class="articulos">
+      Ha habido más de {$fsc->show_number($fsc->data->stories->total)} artículos publicados en este periodo,
+      con un total de {$fsc->show_number($fsc->data->stories->clics)} clics,
+      {$fsc->show_number($fsc->data->stories->tweets)} menciones en twitter,
+      {$fsc->show_number($fsc->data->stories->likes)} en facebook,
+      {$fsc->show_number($fsc->data->stories->plusones)} en Google+ y
+      {$fsc->show_number($fsc->data->stories->meneos)} meneos.
+      Pero de entre todos los artículos, han destacado estos 5:
+   </p>
+   <p class="fuentes">
+      Hemos trabajado con {$fsc->show_number($fsc->data->feeds->total)} fuentes distintas,
+      ninguna perteneciente a AEDE, por supuesto. Con una media de
+      {$fsc->divide_number($fsc->data->feeds->stories,$fsc->data->feeds->total)} artículos por fuente y
+      {$fsc->show_number($fsc->data->feeds->suscriptors)} suscriptores.
+      Pero de entre todas las fuentes, han destacado estas 5:
+   </p>
+   <p class="temas">
+      Y todos estos artículos los hemos organizado en {$fsc->show_number($fsc->data->topics->total)} temas,
+      con {$fsc->divide_number($fsc->data->topics->stories,$fsc->data->topics->total)} artículos de media cada uno.
+      Pero de entre todos los temas, han destacado estos 5:
+   </p>
+</div>
+
+<div class="container-fluid articulos">
+{loop="$fsc->stories"}
+   {if="$counter>0"}
+   <div class="row">
+      <div class="col-md-12">
+         <hr/>
+      </div>
+   </div>
+   {/if}
+   
+   <div class="row">
+      <div class="col-md-9">
+         <h2>{$value->title}</h2>
+         <div class="small" style="margin-bottom: 10px;">
+            <span class="glyphicon glyphicon-time"></span> {$value->timesince()} &nbsp;
+            <span class="glyphicon glyphicon-fire"></span> {$value->max_popularity()} &nbsp;
+            
+            {if condition="$value->penalize"}
+            <span class="label label-danger" title="este artículo está penalizado">penalizado</span>
+            {/if}
+            {if condition="$value->featured"}
+            <span class="label label-success" title="este artículos está destacado">destacado</span>
+            {/if}
+            {if condition="!$value->native_lang"}
+            <span class="label label-default" title="este artículos no está en español"><s>español</s></span>
+            {/if}
+            {if condition="$value->parody"}
+            <span class="label label-warning" title="este artículo es una parodia o sátira">parodia</span>
+            {/if}
+         </div>
+         <p>{$value->description_plus()}</p>
+         <a href="{$value->url()}" class="btn btn-sm btn-default">Leer más...</a>
+      </div>
+      <!--{$fsc->preview->load($value->link, $value->description_uncut())}-->
+      {if condition="$fsc->preview->type=='youtube'"}
+      <div class="col-md-3">
+         <div class="embed-responsive embed-responsive-16by9">
+            <iframe width="640" height="360" src="http://www.youtube.com/embed/{$fsc->preview->filename}" allowfullscreen></iframe>
+         </div>
+      </div>
+      {elseif condition="$fsc->preview->type=='imgur'"}
+      <div class="col-md-3">
+         <a href="{$value->link()}" class="thumbnail">
+            <img itemprop="photo" src="http://i.imgur.com/{$fsc->preview->filename}" alt="{$value->title}"/>
+         </a>
+      </div>
+      {elseif condition="$fsc->preview->type=='image'"}
+      <div class="col-md-3">
+         <a href="{$value->link()}" class="thumbnail">
+            <img itemprop="photo" src="{$fsc->preview->filename}" alt="{$value->title}"/>
+         </a>
+      </div>
+      {elseif condition="$fsc->preview->type=='vimeo'"}
+      <div class="col-md-3">
+         <div class="embed-responsive embed-responsive-16by9">
+            <iframe src="http://player.vimeo.com/video/{$fsc->preview->filename}" width="500" height="281" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+         </div>
+      </div>
+      {else}
+         {loop="$fsc->get_topics($value1->topics)"}
+         <div class="col-md-1">
+            {if condition="$value2->icon!=''"}
+            <a href="{$value1->url()}" class="thumbnail">
+               <img src="{$value2->icon}" alt="{$value1->title}"/>
+            </a>
+            {/if}
+         </div>
+         {/loop}
+      {/if}
+   </div>
+{/loop}
+</div>
+
+<div class="container fuentes">
+{loop="$fsc->feeds"}
+   {if="$counter>0"}
+   <div class="row">
+      <div class="col-md-12">
+         <hr/>
+      </div>
+   </div>
+   {/if}
+   
+   <div class="row">
+      <div class="col-md-10">
+         <h2 style="margin-bottom: 0px;">{$value->name}</h2>
+         <p>{$value->description}</p>
+         <a href="{$value->url()}" class="btn btn-sm btn-default">Examinar...</a>
+      </div>
+      <div class="col-md-2">
+         <ul class="list-group">
+            <li class="list-group-item">
+               <span class="badge">{$value->num_stories}</span>
+               Artículos
+            </li>
+            <li class="list-group-item">
+               <span class="badge">{$value->suscriptors}</span>
+               Suscriptores
+            </li>
+            <li class="list-group-item">
+               <span class="badge">{$value->popularity}</span>
+               Popularidad
+            </li>
+         </ul>
+      </div>
+   </div>
+{/loop}
+</div>
+
+<div class="container-fluid temas">
+{loop="$fsc->topics"}
+   {if="$counter>0"}
+   <div class="row">
+      <div class="col-md-12">
+         <hr/>
+      </div>
+   </div>
+   {/if}
+   
+   <div class="row">
+      <div class="col-md-2">
+         {if condition="$value->icon!=''"}
+         <a href="{$value->url()}" class="thumbnail">
+            <img src="{$value->icon}" alt="{$value->title}"/>
+         </a>
+         {/if}
+      </div>
+      <div class="col-md-7">
+         <h2>{$value->title}</h2>
+         <p style="margin-bottom: 5px;">{$value->description}</p>
+         <div class="small" style="margin-bottom: 10px;">
+            {if condition="$value->popularity>0"}
+            <span class="glyphicon glyphicon-fire" title="popularidad"></span> {$value->popularity} &nbsp;
+            {/if}
+            <span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+            {$value->num_stories} artículos.
+         </div>
+         <a href="{$value->url()}" class="btn btn-sm btn-default">Leer más...</a>
+      </div>
+      {loop="$fsc->get_children($value1->get_id())"}
+      <div class="col-md-1">
+         <a href="{$value2->url()}" class="thumbnail">
+            <img src="{$value2->icon}" alt="{$value2->title}"/>
+         </a>
+      </div>
+      {/loop}
+   </div>
+{/loop}
+</div>
+{/if}
+
+{include="footer"}

@@ -39,7 +39,7 @@ class story_preview
       
       if( !isset(self::$downloads) )
       {
-         self::$downloads = 0;
+         self::$downloads = 1;
       }
    }
    

@@ -18,111 +18,112 @@
  */
 
 /**
- * Busca relaciones entre temas.
- * @param type $story
- * @param type $topic_story
+ * Este bot se encarga de comentar los artículos.
  */
-function chan5(&$topic, &$story)
+class chan5
 {
-   $all_topìcs = $topic->all();
-   
-   foreach($all_topìcs as $tpic)
+   public function __construct()
    {
-      echo '.';
-      
-      /// añadimos los temas a excluri: actual, padre, abuelo...
-      $exclude = array( $tpic->get_id() );
-      $ex_tpic = $topic->get($tpic->parent);
-      while($ex_tpic)
+      $story = new story();
+      $last_stories = $story->published_stories();
+      if($last_stories)
       {
-         $exclude[] = $ex_tpic->get_id();
-         $ex_tpic = $topic->get($ex_tpic->parent);
-      }
-      /// también excluimos a los hijos:
-      foreach($topic->all_from($tpic->get_id()) as $children)
-         $exclude[] = $children->get_id();
-      
-      $common_topics = array();
-      $max = 0;
-      
-      foreach($tpic->stories('d-m-Y') as $sto)
-      {
-         foreach($sto->topics as $tid)
+         switch( mt_rand(0, 23) )
          {
-            if( !in_array($tid, $exclude) )
-            {
-               $found = FALSE;
-               foreach($common_topics as $i => $value)
-               {
-                  if($value['tid'] == $tid)
-                  {
-                     $common_topics[$i]['count']++;
-                     if($max < $common_topics[$i]['count'])
-                        $max = $common_topics[$i]['count'];
-                     
-                     $found = TRUE;
-                     break;
-                  }
-               }
-               if(!$found)
-               {
-                  $common_topics[] = array('tid' => $tid, 'count' => 1);
-                  if($max < 1)
-                     $max = 1;
-               }
-            }
-         }
-      }
-      
-      foreach($common_topics as $i => $value)
-      {
-         if($value['count'] == $max AND $max > 5)
-         {
-            foreach($all_topìcs as $tpic2)
-            {
-               if($tpic2->get_id() == $value['tid'])
-               {
-                  foreach($tpic->stories() as $sto)
-                  {
-                     if( count($sto->comments()) == 0 AND in_array($tpic2->get_id(), $sto->topics) AND mt_rand(0,49) == 0)
-                     {
-                        $comm = new comment();
-                        $comm->thread = $sto->get_id();
-                        $comm->nick = 'chan5';
-                        
-                        switch ( mt_rand(0,3) )
-                        {
-                           case 0:
-                              $comm->text = 'Es matemático, cada vez que se menciona a '.$tpic->title
-                                .' también se menciona '.$tpic2->title.".";
-                              break;
-                           
-                           case 1:
-                              $comm->text = 'No os parece curioso que cada vez que se menciona a '.$tpic->title
-                                .' también se menciona '.$tpic2->title.".";
-                              break;
-                           
-                           default:
-                              $comm->text = 'Yo no digo na, pero cada vez que se menciona a '.$tpic->title
-                                .' también se menciona '.$tpic2->title.".";
-                              break;
-                        }
-                        
-                        $comm->save();
-                        echo '+';
-                     }
-                     
-                     break;
-                  }
-                  
-                  break;
-               }
-            }
+            case 0:
+               $this->comentar_por_refranero($last_stories);
+               break;
             
-            break;
+            case 1:
+               $this->comentar_por_tema($last_stories);
+               break;
+            
+            case 2:
+               $this->comentar_por_fuente($last_stories);
+               break;
          }
       }
    }
+   
+   private function comentar_por_refranero($stories)
+   {
+      foreach($stories as $sto)
+      {
+         echo '.';
+         
+         if($sto->num_comments == 0)
+         {
+            $archivo = FALSE;
+            if( preg_match('/\bgato\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_gatos.txt';
+            }
+            else if( preg_match('/\bgatos\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_gatos.txt';
+            }
+            else if( preg_match('/\bdinero\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_dinero.txt';
+            }
+            else if( preg_match('/\btrabajo\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_trabajo.txt';
+            }
+            else if( preg_match('/\boptimizar\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_optimizacion.txt';
+            }
+            else if( preg_match('/\boptimización\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_optimizacion.txt';
+            }
+            else if( preg_match('/\bprogramador\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_optimizacion.txt';
+            }
+            else if( preg_match('/\bgoogle\b/iu', $sto->title.' '.$sto->description_uncut()) )
+            {
+               $archivo = 'refranes_optimizacion.txt';
+            }
+            
+            if($archivo)
+            {
+               $refranes = explode("\n", file_get_contents('bots/chan5/'.$archivo));
+               
+               $comm = new comment();
+               $comm->thread = $sto->get_id();
+               $comm->nick = __CLASS__;
+               
+               if($archivo == 'refranes_optimizacion.txt')
+               {
+                  if( mt_rand(0, 1) == 0 )
+                  {
+                     $comm->text = "Siempre que leo algo relacionado con programación me acuerdo de Jeff Dean:\n";
+                  }
+                  else
+                     $comm->text = "Esta es una buena ocasión para hablaros de Jeff Dean:\n";
+               }
+               
+               $comm->text .= $refranes[ mt_rand(0, count($refranes)-1) ];
+               $comm->save();
+               echo '+';
+               
+               break;
+            }
+         }
+      }
+   }
+   
+   private function comentar_por_tema($stories)
+   {
+      
+   }
+   
+   private function comentar_por_fuente($stories)
+   {
+      
+   }
 }
 
-chan5($topic, $story);
+new chan5();

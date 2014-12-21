@@ -678,11 +678,11 @@ class story extends fs_model
       return $stlist;
    }
    
-   public function published_stories()
+   public function published_stories($offset = 0)
    {
       $this->add2history(__CLASS__.'::'.__FUNCTION__);
       $stlist = array();
-      foreach($this->collection->find()->sort(array('published'=>-1))->limit(FS_MAX_STORIES) as $s)
+      foreach($this->collection->find()->sort(array('published'=>-1))->skip($offset)->limit(FS_MAX_STORIES) as $s)
       {
          if( isset($s['published']) )
             $stlist[] = new story($s);

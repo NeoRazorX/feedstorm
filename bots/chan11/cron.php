@@ -24,7 +24,7 @@ class chan11
 {
    public function __construct()
    {
-      if( Date('m') != Date('m', strtotime('+1 day')) AND !file_exists('tmp/special/'.$this->mes(Date('m')).'_'.Date('Y').'.json') )
+      if( Date('m') != Date('m', strtotime('+2 hours')) AND !file_exists('tmp/special/'.$this->mes(Date('m')).'_'.Date('Y').'.json') )
       {
          $data = array(
              'title' => 'Resumen de '.$this->mes(Date('m')).' de '.Date('Y'),
@@ -206,20 +206,35 @@ class chan11
    private function share_special_page($name, &$data)
    {
       $story = new story();
-      foreach($story->published_stories() as $ps)
+      $story->link = 'http://'.FS_DOMAIN.FS_PATH.'special/'.$name;
+      $story->featured = TRUE;
+      $story->published = time();
+      $story->title = $data['title'];
+      $story->description = $data['stories']['total'].' artículos publicados en este periodo, ';
+      $story->description .= $data['feeds']['total'].' fuentes y ';
+      $story->description .= $data['topics']['total'].' temas. Este es el '.$data['title'].'. ';
+      $story->description .= 'Haz clic en el enlace para ver con detalle este resumen elaborado por chan11 ;-)';
+      $story->save();
+      
+      $comm = new comment();
+      $comm->thread = $story->get_id();
+      $comm->nick = __CLASS__;
+      switch ( mt_rand(0,2) )
       {
-         $story->link = 'http://'.FS_DOMAIN.FS_PATH.'special/'.$name;
-         $story->featured = TRUE;
-         $story->published = time();
-         $story->title = $data['title'];
+         case 0:
+            $comm->text = "Se admiten sugerencias para el próximo resumen ;-)";
+            break;
          
-         $story->description = $data['stories']['total'].' artículos publicados en este periodo, ';
-         $story->description .= $data['feeds']['total'].' fuentes y ';
-         $story->description .= $data['topics']['total'].' temas.';
+         case 1:
+            $comm->text = "Para los que creen que este resumen es sectario, aquí tenéis mi código fuente "
+                 . "https://github.com/NeoRazorX/feedstorm/blob/master/bots/chan11/cron.php :D";
+            break;
          
-         $story->save();
-         break;
+         default:
+            $comm->text = "Este es el mejor resumen del mes, y si no ¡Desmiéntemelo!";
+            break;
       }
+      $comm->save();
    }
 }
 

@@ -31,7 +31,7 @@ class special extends fs_controller
    public function __construct()
    {
       parent::__construct(__CLASS__, 'Especial');
-      
+      $this->noindex = FALSE;
       $this->preview = new story_preview();
       
       $this->data = FALSE;
@@ -45,6 +45,8 @@ class special extends fs_controller
       
       if($this->data)
       {
+         $this->title = $this->data->title;
+         
          $this->stories = array();
          $story = new story();
          foreach($this->data->stories->popular as $sid)
@@ -140,5 +142,38 @@ class special extends fs_controller
       }
       
       return $tlist;
+   }
+   
+   public function get_description()
+   {
+      if($this->data)
+      {
+         return $this->data->title.': un análisis de todos los artículos, sus fuentes y los temas relacionados.';
+      }
+      else
+         return '';
+   }
+   
+   public function get_keywords()
+   {
+      if($this->stories)
+      {
+         $keys = '';
+         foreach($this->stories as $sto)
+         {
+            if($keys == '')
+            {
+               $keys = $sto->keywords;
+            }
+            else
+            {
+               $keys .= ', '.$sto->keywords;
+            }
+         }
+         
+         return $keys;
+      }
+      else
+         return '';
    }
 }
